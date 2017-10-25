@@ -5,13 +5,19 @@
         <title>Poddycast</title>
         <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
         <script type="text/javascript" src="./js/itunes.js"></script>
+        <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body>
+    <body onload="getPodcasts()">
         <h1>Poddycast</h1>
 
-        <div id="rest-body">
+        <div id="content">
+            <div id="search">
+                <input type="text" name="search" placeholder="Podcast name">
+            </div>
+            <div id="content-body">
 
+            </div>
         </div>
     </body>
 </html>
