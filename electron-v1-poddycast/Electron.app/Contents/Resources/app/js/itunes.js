@@ -23,7 +23,7 @@ function getPodcasts()
         {
             // console.log('BODY: ' + chunk);
 
-            document.getElementById("content-body").innerHTML += chunk
+            document.getElementById("res").innerHTML += chunk
         });
     });
 
@@ -32,8 +32,31 @@ function getPodcasts()
         console.log('problem with request: ' + e.message);
     });
 
-    // write data to request body
-    req.write('data\n');
-    req.write('data\n');
     req.end();
+}
+
+function getArtistName()
+{
+    chunk = document.getElementById("res").innerHTML
+
+    var obj = JSON.parse(chunk);
+
+    for (var i = 0; i < obj.results.length; i++)
+    {
+        console.log(obj.results[i].artistName)
+    }
+
+    getCollectionName()
+}
+
+function getCollectionName()
+{
+    chunk = document.getElementById("res").innerHTML
+
+    var obj = JSON.parse(chunk);
+
+    for (var i = 0; i < obj.results.length; i++)
+    {
+        console.log(obj.results[i].collectionName)
+    }
 }
