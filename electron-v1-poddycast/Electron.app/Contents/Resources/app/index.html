@@ -2,15 +2,27 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Trakt TV</title>
-        <script type="text/javascript" src="./js/rest.js"></script>
+        <title>Poddycast</title>
+        <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
+        <script type="text/javascript" src="./js/itunes.js"></script>
+        <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body>
-        <h1>Trakt TV</h1>
+    <body onload="getPodcasts()">
+        <h1>Poddycast</h1>
 
-        <div id="rest-body">
+        <div id="content">
+            <div id="search">
+                <input type="text" name="search" placeholder="Podcast name">
+            </div>
+            <div id="content-body">
+                <div id="list">
 
+                </div>
+                <div id="res" onclick="getArtistName()">
+
+                </div>
+            </div>
         </div>
     </body>
 </html>
