@@ -1,0 +1,24 @@
+h1
+{
+    /*background-color: #EEE;*/
+    margin: 0;
+    padding: 0.5em;
+}
+
+#content-right
+{
+    position: fixed;
+    left: 200px;
+    right: 1.5em;
+    overflow: auto;
+    height: 100%;
+}
+
+#content-right-body
+{
+    background-color: #FFF;
+    padding: 0.5em;
+    right: 1em;
+    border: 1px solid silver;
+    border-radius: 4px;
+}
