@@ -14,15 +14,15 @@
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body onload="getPodcasts()">
+    <body onload="getPodcasts('ted')">
         <div id="content">
             <div id="content-left">
                 <div id="search">
-                    <input type="text" name="search" placeholder="Search">
+                    <input type="text" name="search" placeholder="Search" onkeyup="search(this, event)">
                 </div>
                 <div id="menu">
                     <ul>
-                        <li class="selected" onclick="selectMenuItem(this); getArtistName()">Podcasts</li>
+                        <li class="selected" onclick="selectMenuItem(this); getResults()">Podcasts</li>
                         <li onclick="selectMenuItem(this)">History</li>
                         <li onclick="selectMenuItem(this)">Favorites</li>
                     </ul>

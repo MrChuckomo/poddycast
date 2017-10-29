@@ -4,13 +4,16 @@
 
 var https = require('https');
 
-function getPodcasts()
+function getPodcasts(_SearchTerm)
 {
+    _SearchTerm = _SearchTerm.replace(/ /g, "%20")
+
     var options =
     {
         host: 'itunes.apple.com',
         port: 443,
-        path: '/search?term=freakshow&media=podcast',
+        path: '/search?term=' + _SearchTerm + '&media=podcast',
+        // path: '/search?term=freakshow&media=podcast',
         method: 'GET',
     };
 
@@ -45,7 +48,9 @@ function getPodcasts()
     req.end();
 }
 
-function getArtistName()
+
+// function getArtistName()
+function getResults()
 {
     // chunk = document.getElementById("res").innerHTML
     chunk = document.getElementById("res").getAttribute("return-value")
