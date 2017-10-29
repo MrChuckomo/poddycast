@@ -41,12 +41,20 @@ function getArtistName()
 
     var obj = JSON.parse(chunk);
 
+    clearContent()
+
+    List = document.getElementById("list")
+
     for (var i = 0; i < obj.results.length; i++)
     {
         console.log(obj.results[i].artistName)
-    }
 
-    getCollectionName()
+        ListElement = document.createElement("li")
+
+        ListElement.innerHTML = obj.results[i].artistName
+
+        List.append(ListElement)
+    }
 }
 
 function getCollectionName()
@@ -59,4 +67,9 @@ function getCollectionName()
     {
         console.log(obj.results[i].collectionName)
     }
+}
+
+function clearContent()
+{
+    document.getElementById("res").innerHTML = ""
 }

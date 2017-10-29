@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="./css/content_right.css">
         <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
         <script type="text/javascript" src="./js/itunes.js"></script>
+        <script type="text/javascript" src="./js/search.js"></script>
+        <script type="text/javascript" src="./js/menu.js"></script>
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
@@ -19,20 +21,19 @@
                 </div>
                 <div id="menu">
                     <ul>
-                        <li class="selected" onclick="getArtistName()">Podcasts</li>
-                        <li>History</li>
-                        <li>Favorites</li>
+                        <li class="selected" onclick="selectMenuItem(this); getArtistName()">Podcasts</li>
+                        <li onclick="selectMenuItem(this)">History</li>
+                        <li onclick="selectMenuItem(this)">Favorites</li>
                     </ul>
                 </div>
             </div>
             <div id="content-right">
                 <h1>Poddycast</h1>
                 <div id="content-right-body">
-                    <div id="list">
-
+                    <div>
+                        <ul id="list"></ul>
                     </div>
                     <div id="res">
-
                     </div>
                 </div>
             </div>
