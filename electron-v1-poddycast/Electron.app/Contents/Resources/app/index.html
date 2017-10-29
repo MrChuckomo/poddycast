@@ -3,24 +3,37 @@
     <head>
         <meta charset="utf-8">
         <title>Poddycast</title>
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="./css/content_left.css">
+        <link rel="stylesheet" href="./css/content_right.css">
         <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
+        <script type="text/javascript" src="./js/favorite.js"></script>
         <script type="text/javascript" src="./js/itunes.js"></script>
+        <script type="text/javascript" src="./js/search.js"></script>
+        <script type="text/javascript" src="./js/menu.js"></script>
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body onload="getPodcasts()">
-        <h1>Poddycast</h1>
-
+    <body onload="getPodcasts('ted')">
         <div id="content">
-            <div id="search">
-                <input type="text" name="search" placeholder="Podcast name">
-            </div>
-            <div id="content-body">
-                <div id="list">
-
+            <div id="content-left">
+                <div id="search">
+                    <input type="text" name="search" placeholder="Search" onkeyup="search(this, event)">
                 </div>
-                <div id="res" onclick="getArtistName()">
-
+                <div id="menu">
+                    <ul>
+                        <li class="selected" onclick="selectMenuItem(this); getResults()">Podcasts</li>
+                        <li onclick="selectMenuItem(this)">History</li>
+                        <li onclick="selectMenuItem(this)">Favorites</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="content-right">
+                <h1>Poddycast</h1>
+                <div id="content-right-body">
+                    <div id="res">
+                        <ul id="list"></ul>
+                    </div>
                 </div>
             </div>
         </div>

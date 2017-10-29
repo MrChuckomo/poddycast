@@ -8,8 +8,10 @@ function createWindow()
 {
     win = new  BrowserWindow
     ({
-        width: 800,
-        height: 600
+        width: 1000,
+        minWidth: 800,
+        height: 600,
+        minHeight: 400
     })
 
     win.loadURL(url.format
