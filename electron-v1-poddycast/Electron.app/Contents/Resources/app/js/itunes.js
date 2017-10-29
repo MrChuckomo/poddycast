@@ -38,6 +38,11 @@ function getPodcasts(_SearchTerm)
                 document.getElementById("res").setAttribute("return-value", Value)
             }
         });
+
+        res.on("end", function()
+        {
+            getResults()
+        })
     });
 
     req.on('error', function(e)
