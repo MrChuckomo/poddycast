@@ -23,7 +23,17 @@ function getPodcasts()
         {
             // console.log('BODY: ' + chunk);
 
-            document.getElementById("res").innerHTML += chunk
+            // document.getElementById("res").innerHTML += chunk
+
+            if (document.getElementById("res").getAttribute("return-value") == null)
+            {
+                document.getElementById("res").setAttribute("return-value", chunk)
+            }
+            else
+            {
+                Value = document.getElementById("res").getAttribute("return-value") + chunk
+                document.getElementById("res").setAttribute("return-value", Value)
+            }
         });
     });
 
@@ -37,7 +47,8 @@ function getPodcasts()
 
 function getArtistName()
 {
-    chunk = document.getElementById("res").innerHTML
+    // chunk = document.getElementById("res").innerHTML
+    chunk = document.getElementById("res").getAttribute("return-value")
 
     var obj = JSON.parse(chunk);
 
@@ -47,11 +58,23 @@ function getArtistName()
 
     for (var i = 0; i < obj.results.length; i++)
     {
-        console.log(obj.results[i].artistName)
-
         ListElement = document.createElement("li")
+        ArtistElement = document.createElement("div")
+        CollectionElement = document.createElement("div")
+        ImageElement = document.createElement("img")
+        IconElement = getIcon()
 
-        ListElement.innerHTML = obj.results[i].artistName
+        ImageElement.src = obj.results[i].artworkUrl60
+        ArtistElement.innerHTML = obj.results[i].artistName
+        ArtistElement.classList.add("podcast-entry-artist")
+        CollectionElement.innerHTML = obj.results[i].collectionName
+        CollectionElement.classList.add("podcast-entry-collection")
+
+        ListElement.classList.add("podcast-entry")
+        ListElement.innerHTML = IconElement
+        ListElement.append(ImageElement)
+        ListElement.append(CollectionElement)
+        ListElement.append(ArtistElement)
 
         List.append(ListElement)
     }
@@ -69,7 +92,35 @@ function getCollectionName()
     }
 }
 
+function getArtWork()
+{
+    chunk = document.getElementById("res").innerHTML
+
+    var obj = JSON.parse(chunk);
+
+    for (var i = 0; i < obj.results.length; i++)
+    {
+        console.log(obj.results[i].artworkUrl30)
+        console.log(obj.results[i].artworkUrl60)
+        console.log(obj.results[i].artworkUrl100)
+    }
+}
+
 function clearContent()
 {
-    document.getElementById("res").innerHTML = ""
+    // document.getElementById("res").innerHTML = ""
+    document.getElementById("list").innerHTML = ""
+}
+
+function getIcon()
+{
+    var Icon =
+    `
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/>
+        </svg>
+    `
+
+    return Icon
 }
