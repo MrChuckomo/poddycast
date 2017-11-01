@@ -1,4 +1,6 @@
-function setFavorite(_Self)
+const fs = require('fs')
+
+function setFavorite(_Self, _FeedUrl)
 {
     _Self.innerHTML =
     `
@@ -7,4 +9,16 @@ function setFavorite(_Self)
     `
 
     _Self.classList.add("set-favorite")
+
+    // console.log(_FeedUrl);
+    // console.log(process.env['HOME']);
+
+    if (fs.existsSync(process.env['HOME'] + "/Desktop/data.json"))
+    {
+        fs.appendFileSync(process.env['HOME'] + "/Desktop/data.json", _FeedUrl + "\n")
+    }
+    else
+    {
+        fs.writeFileSync(process.env['HOME'] + "/Desktop/data.json", _FeedUrl)
+    }
 }
