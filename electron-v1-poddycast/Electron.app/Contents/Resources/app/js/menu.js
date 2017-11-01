@@ -3,6 +3,10 @@ function selectMenuItem(_Self)
     clearSelection()
 
     _Self.classList.add("selected")
+
+    var Header = document.getElementById("content-right").getElementsByTagName("h1")[0]
+
+    Header.innerHTML = _Self.innerHTML
 }
 
 function clearSelection()
