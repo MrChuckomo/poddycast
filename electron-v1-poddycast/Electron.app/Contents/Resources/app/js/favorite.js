@@ -1,7 +1,16 @@
 const fs = require('fs')
 
-function setFavorite(_Self, _FeedUrl)
+// function setFavorite(_Self, _FeedUrl)
+function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
 {
+    var Feed =
+    {
+        "artistName": _ArtistName,
+        "collectionName": _CollectioName,
+        "artworkUrl60": _Artwork60,
+        "feedUrl": _FeedUrl
+    }
+
     _Self.innerHTML =
     `
         <path d="M0 0h24v24H0z" fill="none"/>
@@ -10,15 +19,44 @@ function setFavorite(_Self, _FeedUrl)
 
     _Self.classList.add("set-favorite")
 
-    // console.log(_FeedUrl);
-    // console.log(process.env['HOME']);
+    var JsonContent = []
 
     if (fs.existsSync(process.env['HOME'] + "/Desktop/data.json"))
     {
-        fs.appendFileSync(process.env['HOME'] + "/Desktop/data.json", _FeedUrl + "\n")
+        JsonContent = JSON.parse(fs.readFileSync(process.env['HOME'] + "/Desktop/data.json", "utf-8"))
     }
-    else
+
+    var FeedExists = false;
+
+    for (var i = 0; i < JsonContent.length; i++)
     {
-        fs.writeFileSync(process.env['HOME'] + "/Desktop/data.json", _FeedUrl)
+        if (JsonContent[i].feedUrl == _FeedUrl)
+        {
+            FeedExists = true
+            break
+        }
+    }
+
+    if (!FeedExists)
+    {
+        JsonContent.push(Feed)
+    }
+
+    fs.writeFileSync(process.env['HOME'] + "/Desktop/data.json", JSON.stringify(JsonContent))
+}
+
+
+function showFavorites()
+{
+    if (fs.existsSync(process.env['HOME'] + "/Desktop/data.json"))
+    {
+        JsonContent = JSON.parse(fs.readFileSync(process.env['HOME'] + "/Desktop/data.json", "utf-8"))
+
+        clearContent()
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {            
+            List.append(getPodcastElement(JsonContent[i].artworkUrl60, JsonContent[i].artistName, JsonContent[i].collectionName))
+        }
     }
 }

@@ -1,5 +1,9 @@
 function search(_Self, _Event)
 {
+    // TODO: clear menu item selection
+    // TODO: set header to "Search"
+    // TODO: already subscribed podcast marked with full heart
+
     if (_Event.code == "Enter")
     {
         // console.log(_Self.value);
