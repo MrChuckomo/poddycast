@@ -15,7 +15,7 @@
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body onload="getPodcasts('ted')">
+    <body>
         <div id="content">
             <div id="content-left">
                 <div id="search">
@@ -23,8 +23,8 @@
                 </div>
                 <div id="menu">
                     <ul>
-                        <li class="selected" onclick="selectMenuItem(this); getResults()">Podcasts</li>
-                        <li onclick="selectMenuItem(this)">History</li>
+                        <li class="selected" onclick="selectMenuItem(this); clearContent()">Podcasts</li>
+                        <li onclick="selectMenuItem(this); clearContent()">History</li>
                         <li onclick="selectMenuItem(this); showFavorites()">Favorites</li>
                     </ul>
                 </div>

@@ -1,6 +1,8 @@
 const fs = require('fs')
 
-// function setFavorite(_Self, _FeedUrl)
+
+// TODO: allow to unsubscribe a podcast
+
 function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
 {
     var Feed =
@@ -21,41 +23,43 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
 
     var JsonContent = []
 
-    if (fs.existsSync(process.env['HOME'] + "/Desktop/data.json"))
+    if (fs.existsSync(getSaveFilePath()))
     {
-        JsonContent = JSON.parse(fs.readFileSync(process.env['HOME'] + "/Desktop/data.json", "utf-8"))
+        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
     }
 
-    var FeedExists = false;
+    // var FeedExists = false;
+    //
+    // for (var i = 0; i < JsonContent.length; i++)
+    // {
+    //     if (JsonContent[i].feedUrl == _FeedUrl)
+    //     {
+    //         FeedExists = true
+    //         break
+    //     }
+    // }
 
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        if (JsonContent[i].feedUrl == _FeedUrl)
-        {
-            FeedExists = true
-            break
-        }
-    }
-
-    if (!FeedExists)
+    if (!isAlreadySaved(_FeedUrl))
     {
         JsonContent.push(Feed)
     }
 
-    fs.writeFileSync(process.env['HOME'] + "/Desktop/data.json", JSON.stringify(JsonContent))
+    fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
 }
 
 
 function showFavorites()
 {
-    if (fs.existsSync(process.env['HOME'] + "/Desktop/data.json"))
+    if (fs.existsSync(getSaveFilePath()))
     {
-        JsonContent = JSON.parse(fs.readFileSync(process.env['HOME'] + "/Desktop/data.json", "utf-8"))
+        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         clearContent()
 
+        var List = document.getElementById("list")
+
         for (var i = 0; i < JsonContent.length; i++)
-        {            
+        {
             List.append(getPodcastElement(JsonContent[i].artworkUrl60, JsonContent[i].artistName, JsonContent[i].collectionName))
         }
     }

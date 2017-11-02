@@ -14,6 +14,11 @@
     margin-top: 1em;
 }
 
+/*#search input:focus
+{
+    border-bottom: 1px solid silver
+}*/
+
 #search input
 {
     font-size: 16px;
@@ -38,9 +43,10 @@
 #menu ul li
 {
     list-style: none;
-    padding-bottom: 0.5em;
-    padding-top: 0.5em;
+    padding-bottom: 0.8em;
+    padding-top: 0.8em;
     padding-left: 0.5em;
+    font-size: 16px;
 }
 
 #menu ul li:hover
