@@ -13,7 +13,7 @@ h1
 #content-right
 {
     position: fixed;
-    left: 200px;
+    left: 300px;
     right: 1.5em;
     overflow: auto;
     height: 100%;
@@ -62,6 +62,16 @@ h1
 #content-right-player svg:hover
 {
     opacity: 1;
+}
+
+
+#content-right-player-img
+{
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

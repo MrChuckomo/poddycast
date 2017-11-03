@@ -2,7 +2,7 @@
 #content-left
 {
     height: 100%;
-    width: 200px;
+    width: 300px;
     display: inline-block;
     position: fixed;
     overflow: auto;
@@ -12,12 +12,24 @@
 {
     margin-bottom: 2em;
     margin-top: 1em;
+    display: flex;
+    height: 40px;
+    padding-left: 0.5em;
+    /*border: 1px solid blue;*/
 }
 
-/*#search input:focus
+#search svg
 {
-    border-bottom: 1px solid silver
-}*/
+    opacity: 0.6;
+    height: 100%;
+    vertical-align: middle;
+    /*border: 1px solid red;*/
+}
+
+#search input:focus
+{
+    /*border-bottom: 1px solid silver*/
+}
 
 #search input
 {
@@ -27,6 +39,7 @@
     border: 0;
     background-color: inherit;
     outline: none;
+    /*border: 1px dotted silver;*/
 }
 
 #menu
@@ -47,11 +60,13 @@
     padding-top: 0.8em;
     padding-left: 0.5em;
     font-size: 16px;
+    /*border-left: 3px solid #333;*/
 }
 
 #menu ul li:hover
 {
     background-color: #E1F5FE;
+    /*border-left: 3px solid #039BE5;*/
     cursor: pointer;
 }
 
