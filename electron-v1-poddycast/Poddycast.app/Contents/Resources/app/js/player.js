@@ -15,9 +15,25 @@ const s_Play =
 
 function playNow(_Self)
 {
-    console.log(_Self.getElementsByTagName("img")[0].src);
+    var Player = document.getElementById("player")
+    var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
+    console.log(_Self);
+    console.log(Player);
+    console.log(PlayerSource);
+
+    PlayerSource.setAttribute("src", _Self.getAttribute("url"))
+    PlayerSource.setAttribute("type", _Self.getAttribute("type"))
+
+    console.log(PlayerSource);
+
+    Player.pause()
+    Player.load()
+    Player.play()
+
+    // console.log(_Self.getElementsByTagName("img")[0].src);
+
+    // document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
 }
 
 function playPause(_Self)

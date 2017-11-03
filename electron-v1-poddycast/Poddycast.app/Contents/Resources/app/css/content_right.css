@@ -39,6 +39,15 @@ h1
 /* PLAYER */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
+/* NOTE: dummy player for test */
+#player
+{
+    float: right;
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    margin-top: 1em;
+}
+
 #content-right-player
 {
     border-radius: 4px;

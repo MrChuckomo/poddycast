@@ -41,8 +41,11 @@ function readFeeds()
 
                     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
                     var EpisodeTitle = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+                    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+                    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
 
-                    saveEpisode(ChannelName, EpisodeTitle)
+                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
                 })
             });
         }
@@ -50,36 +53,33 @@ function readFeeds()
         {
             var req = http.request(JsonContent[i].feedUrl, function(res)
             {
-                // console.log('STATUS: ' + res.statusCode);
-                // console.log('HEADERS: ' + JSON.stringify(res.headers));
-
                 var Content = ""
 
                 res.setEncoding('utf8');
 
                 res.on('data', function (chunk)
                 {
-                    // console.log('BODY: ' + chunk);
                     Content += chunk
                 });
 
                 res.on("end", function()
                 {
-                    // console.log("end");
-
                     parser = new DOMParser();
                     xmlDoc = parser.parseFromString(Content,"text/xml");
                     // console.log(xmlDoc);
                     // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
                     // console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
+                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length"));
+                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type"));
+                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url"));
 
-                    var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                    var EpisodeTitle = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+                    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+                    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
 
-                    // console.log(ChannelName);
-                    // console.log(EpisodeTitle);
-
-                    saveEpisode(ChannelName, EpisodeTitle)
+                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
                 })
             });
         }
@@ -93,13 +93,15 @@ function readFeeds()
     }
 }
 
-function saveEpisode(_ChannelName, _EpisodeTitle)
+function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
 {
     var Feed =
     {
         "channelName": _ChannelName,
         "episodeTitle": _EpisodeTitle,
-        "fileUrl": "url to mp3"
+        "episodeUrl": _EpisodeUrl,
+        "episodeType": _EpisodeType,
+        "episodeLength": _EpisodeLength
     }
 
     var JsonContent = []

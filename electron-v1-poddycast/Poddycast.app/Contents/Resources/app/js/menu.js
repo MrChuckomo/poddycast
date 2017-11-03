@@ -24,6 +24,9 @@ function showNewEpisodes()
             var ListElement = getPodcastElement(getArtWorkFromChannelName(JsonContent[i].channelName), JsonContent[i].channelName, JsonContent[i].episodeTitle)
 
             ListElement.setAttribute("onclick", "playNow(this)")
+            ListElement.setAttribute("type", JsonContent[i].episodeType)
+            ListElement.setAttribute("url", JsonContent[i].episodeUrl)
+            ListElement.setAttribute("length", JsonContent[i].episodeLength)
 
             List.append(ListElement)
         }
