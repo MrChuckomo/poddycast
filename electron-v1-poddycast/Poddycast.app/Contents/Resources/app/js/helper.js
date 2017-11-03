@@ -6,6 +6,11 @@ function getSaveFilePath()
     return process.env['HOME'] + "/Desktop/poddycast-favorite_podcasts.json"
 }
 
+function getNewEpisodesSaveFilePath()
+{
+    return process.env['HOME'] + "/Desktop/poddycast-new_episodes.json"
+}
+
 function isAlreadySaved(_FeedUrl)
 {
     var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
@@ -14,6 +19,23 @@ function isAlreadySaved(_FeedUrl)
     for (var i = 0; i < JsonContent.length; i ++)
     {
         if (JsonContent[i].feedUrl == _FeedUrl)
+        {
+            FeedExists = true
+            break
+        }
+    }
+
+    return FeedExists
+}
+
+function isEpisodeAlreadySaved(_EpisodeTitle)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+    var FeedExists  = false;
+
+    for (var i = 0; i < JsonContent.length; i ++)
+    {
+        if (JsonContent[i].episodeTitle == _EpisodeTitle)
         {
             FeedExists = true
             break
@@ -77,14 +99,35 @@ function getPodcastElement(_Artwork, _ArtistName, _CollectioName, _IconElement)
     return ListElement
 }
 
+function getArtWorkFromChannelName(_ChannelName)
+{
+    var Artwork = undefined
+
+    if (fs.existsSync(getSaveFilePath()))
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].collectionName == _ChannelName)
+            {
+                Artwork = JsonContent[i].artworkUrl60
+                break
+            }
+        }
+    }
+
+    return Artwork
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU
 // ---------------------------------------------------------------------------------------------------------------------
 
 function clearMenuSelection()
 {
-    Menu = document.getElementById("menu")
-    ListItems = Menu.getElementsByTagName("li")
+    var Menu      = document.getElementById("menu")
+    var ListItems = Menu.getElementsByTagName("li")
 
     for (var i = 0; i < ListItems.length; i++)
     {

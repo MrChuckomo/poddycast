@@ -13,10 +13,11 @@
         <script type="text/javascript" src="./js/search.js"></script>
         <script type="text/javascript" src="./js/menu.js"></script>
         <script type="text/javascript" src="./js/player.js"></script>
+        <script type="text/javascript" src="./js/feed.js"></script>
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body>
+    <body onload="readFeeds(); showNewEpisodes()">
         <div id="content">
             <div id="content-left">
                 <div id="search">
@@ -28,7 +29,7 @@
                 </div>
                 <div id="menu">
                     <ul>
-                        <li class="selected" onclick="selectMenuItem(this); clearContent()">New Episodes</li>
+                        <li class="selected" onclick="selectMenuItem(this); showNewEpisodes()">New Episodes</li>
                         <li onclick="selectMenuItem(this); showFavorites()">Favorites</li>
                         <li onclick="selectMenuItem(this); clearContent()">History</li>
                     </ul>

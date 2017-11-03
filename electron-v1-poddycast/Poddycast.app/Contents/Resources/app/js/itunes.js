@@ -2,6 +2,8 @@
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
 
+
+var http = require('http');
 var https = require('https');
 
 function getPodcasts(_SearchTerm)

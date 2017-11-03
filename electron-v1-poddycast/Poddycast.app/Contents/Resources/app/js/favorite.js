@@ -28,6 +28,10 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
     {
         JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
     }
+    else
+    {
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    }
 
     if (!isAlreadySaved(_FeedUrl))
     {
@@ -42,7 +46,7 @@ function showFavorites()
 {
     if (fs.existsSync(getSaveFilePath()))
     {
-        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         clearContent()
 

@@ -2,6 +2,7 @@ function search(_Self, _Event)
 {
     if (_Event.code == "Enter")
     {
+        clearContent()
         clearMenuSelection()
         setHeader("Search")
 
