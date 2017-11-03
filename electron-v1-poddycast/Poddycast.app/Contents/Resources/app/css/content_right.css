@@ -3,12 +3,17 @@ h1
     /*background-color: #EEE;*/
     margin: 0;
     padding: 0.5em;
+    display: inline-block;
+    /*border: 1px solid red;*/
+    /*float: left;*/
 }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 #content-right
 {
     position: fixed;
-    left: 200px;
+    left: 300px;
     right: 1.5em;
     overflow: auto;
     height: 100%;
@@ -24,6 +29,52 @@ h1
     height: calc(100% - 5.5em);
     overflow: auto;
 }
+
+#content-right-header
+{
+    /*border: 1px solid green;*/
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+#content-right-player
+{
+    border-radius: 4px;
+    background-color: #FFF;
+    border: 1px solid #EEE;
+    text-align: center;
+    display: inline-block;
+    float: right;
+    padding: 0.5em;
+    margin-top: 0.5em;
+}
+
+#content-right-player svg
+{
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    opacity: 0.7;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+#content-right-player svg:hover
+{
+    opacity: 1;
+}
+
+
+#content-right-player-img
+{
+    width: 30px;
+    height: 30px;
+    opacity: 0.7;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 #list
 {
