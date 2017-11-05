@@ -40,13 +40,13 @@ h1
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 /* NOTE: dummy player for test */
-#player
+/*#player
 {
     float: right;
     border: 1px solid #EEE;
     border-radius: 4px;
     margin-top: 1em;
-}
+}*/
 
 #content-right-player
 {
@@ -75,6 +75,26 @@ h1
     opacity: 1;
 }
 
+#content-right-player-speed
+{
+    float: right;
+}
+
+#content-right-player-speed button
+{
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    padding: 0.8em;
+    margin-left: 0.5em;
+    outline: 0;
+    background-color: inherit;
+}
+
+#content-right-player-speed button:hover
+{
+    background-color: #EEE;
+    cursor: pointer;
+}
 
 #content-right-player-img
 {

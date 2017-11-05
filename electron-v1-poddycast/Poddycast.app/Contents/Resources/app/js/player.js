@@ -52,6 +52,23 @@ function playReply()
     document.getElementById("player").currentTime -= 30
 }
 
+function speedUp(_Self)
+{
+    var Player = document.getElementById("player")
+
+    switch (_Self.innerHTML)
+    {
+        case "1.0x": _Self.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
+        case "1.1x": _Self.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
+        case "1.2x": _Self.innerHTML = "1.3x"; Player.playbackRate = 1.3; Player.defaultPlaybackRate = 1.3 ; break;
+        case "1.3x": _Self.innerHTML = "1.5x"; Player.playbackRate = 1.5; Player.defaultPlaybackRate = 1.5 ; break;
+        case "1.5x": _Self.innerHTML = "1.7x"; Player.playbackRate = 1.7; Player.defaultPlaybackRate = 1.7 ; break;
+        case "1.7x": _Self.innerHTML = "2.0x"; Player.playbackRate = 2.0; Player.defaultPlaybackRate = 2.0 ; break;
+        case "2.0x": _Self.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
+        default: break;
+    }
+}
+
 function updateProgress()
 {
     var Player = document.getElementById("player")
