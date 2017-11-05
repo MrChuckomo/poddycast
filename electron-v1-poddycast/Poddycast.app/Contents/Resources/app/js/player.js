@@ -29,11 +29,12 @@ function playNow(_Self)
 
     Player.pause()
     Player.load()
-    Player.play()
+    // Player.play()
 
-    // console.log(_Self.getElementsByTagName("img")[0].src);
+    Player.addEventListener("timeupdate", updateProgress, false)
 
-    // document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
+    document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
+    togglePlayPauseButton(document.getElementById("play-pause"))
 }
 
 function playPause(_Self)
@@ -41,16 +42,62 @@ function playPause(_Self)
     togglePlayPauseButton(_Self)
 }
 
+function playForward()
+{
+    document.getElementById("player").currentTime += 30
+}
+
+function playReply()
+{
+    document.getElementById("player").currentTime -= 30
+}
+
+function updateProgress()
+{
+    var Player = document.getElementById("player")
+
+    // console.log(Player.currentTime);
+    // console.log(Player.duration);
+    // console.log(Player.ended);
+    // console.log(Player.playbackRate);
+
+    // Player.playbackRate = 1.5
+
+    if (Player.ended)
+    {
+        // TODO: remove from the playlist
+    }
+
+    var Value = 0;
+
+    if (Player.currentTime > 0)
+    {
+        Value = Math.floor((100 / Player.duration) * Player.currentTime);
+    }
+
+    console.log("Progress: " + Value);
+
+    var Progress = document.getElementById("content-right-player-progress-bar-progress")
+
+    Progress.style.width = Value + "%"
+}
+
 function togglePlayPauseButton(_Button)
 {
+    var Player = document.getElementById("player")
+
     if (_Button.getAttribute("mode") == "play")
     {
         _Button.innerHTML = s_Pause
         _Button.setAttribute("mode", "pause")
+
+        Player.play()
     }
     else
     {
         _Button.innerHTML = s_Play
         _Button.setAttribute("mode", "play")
+
+        Player.pause()
     }
 }
