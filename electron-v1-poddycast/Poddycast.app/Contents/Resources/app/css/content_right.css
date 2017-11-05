@@ -22,11 +22,11 @@ h1
 #content-right-body
 {
     background-color: #FFF;
-    padding: 0.5em;
+    /*padding: 0.5em;*/
     right: 1em;
     border: 1px solid #EEE;
     border-radius: 4px;
-    height: calc(100% - 5.5em);
+    height: calc(100% - 4.5em);
     overflow: auto;
 }
 
@@ -82,11 +82,12 @@ h1
 
 #content-right-player-speed button
 {
+    outline: 0;
     border: 1px solid #EEE;
     border-radius: 4px;
     padding: 0.8em;
     margin-left: 0.5em;
-    outline: 0;
+    margin-right: 0.5em;
     background-color: inherit;
 }
 
@@ -137,13 +138,15 @@ h1
 {
     list-style: none;
     /*padding: 0.5em;*/
-    border-radius: 4px;
-    background-color: #EEE;
-    margin: 0.6em;
+    /*border-radius: 4px;*/
+    background-color: inherit;
+    /*margin: 0.6em;*/
     display: block;
     /*overflow: auto;*/
     height: 3.8em;
+    padding: 0.5em;
     /*display: inline-block;*/
+    border-bottom: 1px solid #EEE;
 }
 
 .podcast-entry:hover
@@ -199,4 +202,12 @@ h1
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.delete-icon
+{
+    /*fill: #F44336;*/
+    /*opacity: 0.3;*/
 }

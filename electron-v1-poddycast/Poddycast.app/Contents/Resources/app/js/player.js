@@ -83,6 +83,7 @@ function updateProgress()
     if (Player.ended)
     {
         // TODO: remove from the playlist
+        // TODO: add to history
     }
 
     var Value = 0;

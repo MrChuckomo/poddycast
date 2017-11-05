@@ -11,6 +11,11 @@ function getNewEpisodesSaveFilePath()
     return process.env['HOME'] + "/Desktop/poddycast-new_episodes.json"
 }
 
+function getArchivedFilePath()
+{
+    return process.env['HOME'] + "/Desktop/poddycast-archived_episodes.json"
+}
+
 function isAlreadySaved(_FeedUrl)
 {
     var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
@@ -118,6 +123,59 @@ function getArtWorkFromChannelName(_ChannelName)
     }
 
     return Artwork
+}
+
+function deleteEntry(_Self)
+{
+    console.log(_Self);
+    console.log(_Self.parentElement);
+    console.log(_Self.parentElement.parentElement);
+
+    // NOTE: Remove optically
+
+    _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+
+    // NOTE: Remove from JSON file and overwrite the file
+
+    var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+    console.log(JsonContent.length);
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (_Self.parentElement.getAttribute("url") == JsonContent[i].episodeUrl)
+        {
+            var Feed =
+            {
+                "episodeUrl": JsonContent[i].episodeUrl,
+                "archivedType": "deleted"
+            }
+
+            var ArchiveJsonContent = []
+
+            // TODO: save delete file properly
+
+            ArchiveJsonContent.push(Feed)
+
+            if (!fs.existsSync(getArchivedFilePath()))
+            {
+                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+            }
+
+            var ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+
+            ArchiveJsonContent.push(Feed)
+
+            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+
+            JsonContent.splice(i, 1)
+            break
+        }
+    }
+
+    console.log(JsonContent.length);
+
+    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
