@@ -163,10 +163,6 @@ function getArtWorkFromChannelName(_ChannelName)
 
 function deleteEntry(_Self)
 {
-    console.log(_Self);
-    console.log(_Self.parentElement);
-    console.log(_Self.parentElement.parentElement);
-
     if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
         // NOTE: Remove optically
@@ -205,19 +201,6 @@ function deleteEntry(_Self)
 
                 fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
 
-                // ArchiveJsonContent.push(Feed)
-                //
-                // if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") == "")
-                // {
-                //     fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
-                // }
-                //
-                // var ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
-                //
-                // ArchiveJsonContent.push(Feed)
-                //
-                // fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
-
                 JsonContent.splice(i, 1)
                 break
             }
@@ -227,7 +210,6 @@ function deleteEntry(_Self)
 
         fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
     }
-
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

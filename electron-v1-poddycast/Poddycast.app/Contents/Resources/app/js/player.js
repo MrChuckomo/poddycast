@@ -27,14 +27,26 @@ function playNow(_Self)
 
     console.log(PlayerSource);
 
-    Player.pause()
+    // Player.pause()
+
+    togglePlayPauseButton(document.getElementById("play-pause"))
+
     Player.load()
     // Player.play()
+
+    Player.currentTime = getPlaybackPosition(_Self.getAttribute("url"))
+
+    // console.log(getPlaybackPosition(_Self.getAttribute("url")));
 
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
     togglePlayPauseButton(document.getElementById("play-pause"))
+
+    if (player.paused)
+    {
+        togglePlayPauseButton(document.getElementById("play-pause"))
+    }
 }
 
 function playPause(_Self)
@@ -71,13 +83,15 @@ function speedUp(_Self)
 
 function updateProgress()
 {
-    var Player = document.getElementById("player")
+    var Player       = document.getElementById("player")
+    var PlayerSource = Player.getElementsByTagName("source")[0]
+
+    savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
 
     // console.log(Player.currentTime);
     // console.log(Player.duration);
     // console.log(Player.ended);
     // console.log(Player.playbackRate);
-
     // Player.playbackRate = 1.5
 
     if (Player.ended)
@@ -100,6 +114,29 @@ function updateProgress()
     Progress.style.width = Value + "%"
 }
 
+function savePlaybackPosition(_Source, _CurrentTime)
+{
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].episodeUrl == _Source)
+            {
+                JsonContent[i].playbackPosition = _CurrentTime
+
+                // console.log(JsonContent[i].playbackPosition);
+                // console.log(_CurrentTime);
+
+                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+
+                break
+            }
+        }
+    }
+}
+
 function togglePlayPauseButton(_Button)
 {
     var Player = document.getElementById("player")
@@ -118,4 +155,26 @@ function togglePlayPauseButton(_Button)
 
         Player.pause()
     }
+}
+
+function getPlaybackPosition(_Source)
+{
+    var PlaybackPosition = 0
+
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].episodeUrl == _Source)
+            {
+                PlaybackPosition = JsonContent[i].playbackPosition
+
+                break
+            }
+        }
+    }
+
+    return PlaybackPosition
 }

@@ -101,7 +101,8 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         "episodeTitle": _EpisodeTitle,
         "episodeUrl": _EpisodeUrl,
         "episodeType": _EpisodeType,
-        "episodeLength": _EpisodeLength
+        "episodeLength": _EpisodeLength,
+        "playbackPosition": 0,
     }
 
     var JsonContent = []
