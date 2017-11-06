@@ -19,13 +19,12 @@ function selectMenuItem(_Self)
 
 function showNewEpisodes()
 {
-    if (fs.existsSync(getNewEpisodesSaveFilePath()))
+    clearContent()
+
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-        clearContent()
-
-        var List = document.getElementById("list")
+        var List        = document.getElementById("list")
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -35,6 +34,50 @@ function showNewEpisodes()
             ListElement.setAttribute("type", JsonContent[i].episodeType)
             ListElement.setAttribute("url", JsonContent[i].episodeUrl)
             ListElement.setAttribute("length", JsonContent[i].episodeLength)
+
+            List.append(ListElement)
+        }
+    }
+}
+
+function showFavorites()
+{
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        clearContent()
+
+        var List = document.getElementById("list")
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            var ListElement = getPodcastElement(JsonContent[i].artworkUrl60, JsonContent[i].artistName, JsonContent[i].collectionName)
+
+            ListElement.setAttribute("onclick", "playNow(this)")
+
+            List.append(ListElement)
+        }
+    }
+}
+
+function showHistory()
+{
+    clearContent()
+
+    if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+        var List        = document.getElementById("list")
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            var ListElement = getPodcastElement("", JsonContent[i].date, JsonContent[i].episodeUrl)
+
+            // ListElement.setAttribute("onclick", "playNow(this)")
+            // ListElement.setAttribute("type", JsonContent[i].episodeType)
+            // ListElement.setAttribute("url", JsonContent[i].episodeUrl)
+            // ListElement.setAttribute("length", JsonContent[i].episodeLength)
 
             List.append(ListElement)
         }

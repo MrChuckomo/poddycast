@@ -1,32 +1,64 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
+function getSaveDirPath()
+{
+    return process.env['HOME'] + "/Desktop/poddycast-data"
+}
+
 function getSaveFilePath()
 {
-    return process.env['HOME'] + "/Desktop/poddycast-favorite_podcasts.json"
+    return getSaveDirPath() + "/poddycast-favorite_podcasts.json"
 }
 
 function getNewEpisodesSaveFilePath()
 {
-    return process.env['HOME'] + "/Desktop/poddycast-new_episodes.json"
+    return getSaveDirPath() + "/poddycast-new_episodes.json"
 }
 
 function getArchivedFilePath()
 {
-    return process.env['HOME'] + "/Desktop/poddycast-archived_episodes.json"
+    return getSaveDirPath() + "/poddycast-archived_episodes.json"
+}
+
+function init()
+{
+    if (!fs.existsSync(getSaveDirPath()))
+    {
+        fs.mkdirSync(getSaveDirPath());
+    }
+
+    if (!fs.existsSync(getSaveFilePath()))
+    {
+        fs.openSync(getSaveFilePath(), 'w');
+    }
+
+    if (!fs.existsSync(getNewEpisodesSaveFilePath()))
+    {
+        fs.openSync(getNewEpisodesSaveFilePath(), 'w');
+    }
+
+    if (!fs.existsSync(getArchivedFilePath()))
+    {
+        fs.openSync(getArchivedFilePath(), 'w');
+    }
 }
 
 function isAlreadySaved(_FeedUrl)
 {
-    var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
     var FeedExists  = false;
 
-    for (var i = 0; i < JsonContent.length; i ++)
+    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        if (JsonContent[i].feedUrl == _FeedUrl)
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i ++)
         {
-            FeedExists = true
-            break
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                FeedExists = true
+                break
+            }
         }
     }
 
@@ -35,15 +67,19 @@ function isAlreadySaved(_FeedUrl)
 
 function isEpisodeAlreadySaved(_EpisodeTitle)
 {
-    var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
     var FeedExists  = false;
 
-    for (var i = 0; i < JsonContent.length; i ++)
+    if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
-        if (JsonContent[i].episodeTitle == _EpisodeTitle)
+        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i ++)
         {
-            FeedExists = true
-            break
+            if (JsonContent[i].episodeTitle == _EpisodeTitle)
+            {
+                FeedExists = true
+                break
+            }
         }
     }
 
@@ -131,51 +167,67 @@ function deleteEntry(_Self)
     console.log(_Self.parentElement);
     console.log(_Self.parentElement.parentElement);
 
-    // NOTE: Remove optically
-
-    _Self.parentElement.parentElement.removeChild(_Self.parentElement)
-
-    // NOTE: Remove from JSON file and overwrite the file
-
-    var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-    console.log(JsonContent.length);
-
-    for (var i = 0; i < JsonContent.length; i++)
+    if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
-        if (_Self.parentElement.getAttribute("url") == JsonContent[i].episodeUrl)
+        // NOTE: Remove optically
+
+        _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+
+        // NOTE: Remove from JSON file and overwrite the file
+
+        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        console.log(JsonContent.length);
+
+        for (var i = 0; i < JsonContent.length; i++)
         {
-            var Feed =
+            if (_Self.parentElement.getAttribute("url") == JsonContent[i].episodeUrl)
             {
-                "episodeUrl": JsonContent[i].episodeUrl,
-                "archivedType": "deleted"
-            }
+                var Feed =
+                {
+                    "episodeUrl": JsonContent[i].episodeUrl,
+                    "archivedType": "deleted",
+                    "date": new Date
+                }
 
-            var ArchiveJsonContent = []
+                var ArchiveJsonContent = []
 
-            // TODO: save delete file properly
+                if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
+                {
+                    ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+                }
+                else
+                {
+                    fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+                }
 
-            ArchiveJsonContent.push(Feed)
+                ArchiveJsonContent.push(Feed)
 
-            if (!fs.existsSync(getArchivedFilePath()))
-            {
                 fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+
+                // ArchiveJsonContent.push(Feed)
+                //
+                // if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") == "")
+                // {
+                //     fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+                // }
+                //
+                // var ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+                //
+                // ArchiveJsonContent.push(Feed)
+                //
+                // fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+
+                JsonContent.splice(i, 1)
+                break
             }
-
-            var ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
-
-            ArchiveJsonContent.push(Feed)
-
-            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
-
-            JsonContent.splice(i, 1)
-            break
         }
+
+        console.log(JsonContent.length);
+
+        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
     }
 
-    console.log(JsonContent.length);
-
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

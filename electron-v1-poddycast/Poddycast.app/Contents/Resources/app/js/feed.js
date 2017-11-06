@@ -9,88 +9,87 @@ function readFeeds()
     // TODO: find actual mp3 file
     // TODO: save a file for each podcast including all episodes
 
-    console.log("read feeds");
-
-    JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-    // console.log(fs.readFile("http://teenagersexbeichte.de/feed/tsbfeed/", "utf-8"));
-
-
-    for (var i = 0; i < JsonContent.length; i++)
+    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        // var req = http.request("http://teenagersexbeichte.de/feed/tsbfeed/", function(res)
+        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        // console.log(fs.readFile("http://teenagersexbeichte.de/feed/tsbfeed/", "utf-8"));
 
 
-
-        if (JsonContent[i].feedUrl.includes("https"))
+        for (var i = 0; i < JsonContent.length; i++)
         {
-            var req = https.request(JsonContent[i].feedUrl, function(res)
+            // var req = http.request("http://teenagersexbeichte.de/feed/tsbfeed/", function(res)
+
+            if (JsonContent[i].feedUrl.includes("https"))
             {
-                var Content = ""
-
-                res.setEncoding('utf8');
-
-                res.on('data', function (chunk)
+                var req = https.request(JsonContent[i].feedUrl, function(res)
                 {
-                    Content += chunk
+                    var Content = ""
+
+                    res.setEncoding('utf8');
+
+                    res.on('data', function (chunk)
+                    {
+                        Content += chunk
+                    });
+
+                    res.on("end", function()
+                    {
+                        parser = new DOMParser();
+                        xmlDoc = parser.parseFromString(Content,"text/xml");
+
+                        var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var EpisodeTitle = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+                    })
                 });
-
-                res.on("end", function()
-                {
-                    parser = new DOMParser();
-                    xmlDoc = parser.parseFromString(Content,"text/xml");
-
-                    var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                    var EpisodeTitle = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                })
-            });
-        }
-        else
-        {
-            var req = http.request(JsonContent[i].feedUrl, function(res)
+            }
+            else
             {
-                var Content = ""
-
-                res.setEncoding('utf8');
-
-                res.on('data', function (chunk)
+                var req = http.request(JsonContent[i].feedUrl, function(res)
                 {
-                    Content += chunk
+                    var Content = ""
+
+                    res.setEncoding('utf8');
+
+                    res.on('data', function (chunk)
+                    {
+                        Content += chunk
+                    });
+
+                    res.on("end", function()
+                    {
+                        parser = new DOMParser();
+                        xmlDoc = parser.parseFromString(Content,"text/xml");
+                        // console.log(xmlDoc);
+                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
+                        // console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
+                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length"));
+                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type"));
+                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url"));
+
+                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+                    })
                 });
+            }
 
-                res.on("end", function()
-                {
-                    parser = new DOMParser();
-                    xmlDoc = parser.parseFromString(Content,"text/xml");
-                    // console.log(xmlDoc);
-                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                    // console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length"));
-                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type"));
-                    // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url"));
-
-                    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                    var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                })
+            req.on('error', function(e)
+            {
+                console.log('problem with request: ' + e.message);
             });
+
+            req.end();
         }
-
-        req.on('error', function(e)
-        {
-            console.log('problem with request: ' + e.message);
-        });
-
-        req.end();
     }
 }
 
@@ -107,7 +106,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
 
     var JsonContent = []
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()))
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
         JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
     }

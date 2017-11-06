@@ -24,7 +24,7 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
 
     var JsonContent = []
 
-    if (fs.existsSync(getSaveFilePath()))
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
     }
@@ -39,26 +39,4 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
     }
 
     fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
-}
-
-
-function showFavorites()
-{
-    if (fs.existsSync(getSaveFilePath()))
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        clearContent()
-
-        var List = document.getElementById("list")
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            var ListElement = getPodcastElement(JsonContent[i].artworkUrl60, JsonContent[i].artistName, JsonContent[i].collectionName)
-
-            ListElement.setAttribute("onclick", "playNow(this)")
-
-            List.append(ListElement)
-        }
-    }
 }
