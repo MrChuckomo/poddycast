@@ -14,7 +14,7 @@ function selectMenuItem(_Self)
 
     _Self.classList.add("selected")
 
-    setHeader(_Self.innerHTML)
+    setHeader(_Self.getElementsByTagName("span")[0].innerHTML)
 }
 
 function showNewEpisodes()

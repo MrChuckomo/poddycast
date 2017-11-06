@@ -7,6 +7,7 @@ function readFeeds()
     // TODO: if new episodes add to the json file
     // TODO: json file can be used to diplay "New Episodes" menu item
     // TODO: find actual mp3 file
+    // TODO: save a file for each podcast including all episodes
 
     console.log("read feeds");
 

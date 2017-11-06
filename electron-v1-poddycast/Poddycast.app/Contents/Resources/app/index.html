@@ -29,15 +29,39 @@
                 </div>
                 <div id="menu">
                     <ul>
-                        <li class="selected" onclick="selectMenuItem(this); showNewEpisodes()">New Episodes</li>
-                        <li onclick="selectMenuItem(this); showFavorites()">Favorites</li>
-                        <li onclick="selectMenuItem(this); clearContent()">History</li>
+                        <li class="selected" onclick="selectMenuItem(this); showNewEpisodes()">
+                            <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/>
+                            </svg>
+                            <span>
+                                New Episodes
+                            </span>
+                        </li>
+                        <li onclick="selectMenuItem(this); showFavorites()">
+                            <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>
+                                Favorites
+                            </span>
+                        </li>
+                        <li onclick="selectMenuItem(this); clearContent()">
+                            <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+                            </svg>
+                            <span>
+                                History
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
             <div id="content-right">
                 <div id="content-right-header">
-                    <h1>Poddycast</h1>
+                    <h1>New Episodes</h1>
                     <audio id="player">
                         <source src="" type="audio/mpeg">
                         Your browser does not support the audio element.
