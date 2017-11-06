@@ -63,6 +63,23 @@
     /*border-left: 3px solid #333;*/
 }
 
+#menu ul li svg
+{
+    opacity: 0.6;
+    vertical-align: middle;
+    margin-right: 0.5em;
+}
+
+.svg-pink
+{
+    fill: #E91E63;
+}
+
+.svg-yellow
+{
+    fill: #EF6C00;
+}
+
 #menu ul li:hover
 {
     background-color: #E1F5FE;
