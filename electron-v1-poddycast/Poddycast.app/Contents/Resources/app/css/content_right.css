@@ -1,11 +1,8 @@
 h1
 {
-    /*background-color: #EEE;*/
     margin: 0;
     padding: 0.5em;
     display: inline-block;
-    /*border: 1px solid red;*/
-    /*float: left;*/
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -22,7 +19,6 @@ h1
 #content-right-body
 {
     background-color: #FFF;
-    /*padding: 0.5em;*/
     right: 1em;
     border: 1px solid #EEE;
     border-radius: 4px;
@@ -30,23 +26,10 @@ h1
     overflow: auto;
 }
 
-#content-right-header
-{
-    /*border: 1px solid green;*/
-}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* PLAYER */
 /* ------------------------------------------------------------------------------------------------------------------ */
-
-/* NOTE: dummy player for test */
-/*#player
-{
-    float: right;
-    border: 1px solid #EEE;
-    border-radius: 4px;
-    margin-top: 1em;
-}*/
 
 #content-right-player
 {
@@ -137,6 +120,8 @@ h1
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
+/* PODCAST ENTRY LIST */
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 #list
 {
@@ -158,7 +143,7 @@ h1
 
 .podcast-entry:hover
 {
-    background-color: #E2E2E2;
+    background-color: #EFEFEF;
     cursor: pointer;
 }
 
