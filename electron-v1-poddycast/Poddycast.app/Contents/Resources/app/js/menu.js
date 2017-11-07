@@ -74,7 +74,7 @@ function showHistory()
         {
             var ChannelName  = JsonContent[i].channelName
             var EpisodeTitle = JsonContent[i].episodeTitle
-            var Artwork      = getFromFavoritePodcastFile("artworkUrl60", "collectionName", ChannelName)
+            var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
             var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
 
             List.insertBefore(ListElement, List.childNodes[0])
