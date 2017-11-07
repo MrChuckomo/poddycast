@@ -136,17 +136,14 @@ h1
 
 .podcast-entry
 {
-    list-style: none;
-    /*padding: 0.5em;*/
-    /*border-radius: 4px;*/
     background-color: inherit;
-    /*margin: 0.6em;*/
-    display: block;
-    /*overflow: auto;*/
-    height: 3.8em;
-    padding: 0.5em;
-    /*display: inline-block;*/
     border-bottom: 1px solid #EEE;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 75px 1fr 3em;
+    grid-template-areas:
+        "image title icons"
+        "image subtitle icons";
 }
 
 .podcast-entry:hover
@@ -157,12 +154,10 @@ h1
 
 .podcast-entry svg
 {
-    float: right;
+    grid-area: icons;
+    align-self: center;
+    margin-left: 0.5em;
     opacity: 0.6;
-    height: 100%;
-    vertical-align: middle;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
 }
 
 .podcast-entry svg:hover, .set-favorite
@@ -173,32 +168,26 @@ h1
 
 .podcast-entry img
 {
+    grid-area: image;
     border-radius: 4px;
-    float: left;
-    margin-right: 0.5em;
+    margin: 0.5em;
 }
 
-.podcast-entry-body
+.podcast-entry-title
 {
-    vertical-align: middle;
-    /*display: block;*/
-    overflow: auto;
-    height: 100%;
-}
-
-.podcast-entry-collection
-{
-    margin-top: 0.7em;
+    grid-area: title;
+    align-self: flex-end;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.podcast-entry-artist
+.podcast-entry-subtitle
 {
+    grid-area: subtitle;
+    align-self: flex-start;
     font-size: 14px;
     color: #777;
-    /*float: left;*/
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
