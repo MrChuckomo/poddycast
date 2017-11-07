@@ -9,13 +9,15 @@ const s_HeartFilled =
 
 // TODO: allow to unsubscribe a podcast
 
-function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork60, _FeedUrl)
+function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl)
 {
     var Feed =
     {
         "artistName": _ArtistName,
         "collectionName": _CollectioName,
+        "artworkUrl30": _Artwork30,
         "artworkUrl60": _Artwork60,
+        "artworkUrl100": _Artwork100,
         "feedUrl": _FeedUrl
     }
 
