@@ -86,6 +86,50 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
     return FeedExists
 }
 
+function getFromFavoritePodcastFile(_DestinationTag, _ReferenceTag, _Value)
+{
+    var DestinationValue = null
+
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        var FavoritesJsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < FavoritesJsonContent.length; i++)
+        {
+            if (FavoritesJsonContent[i][_ReferenceTag] == _Value)
+            {
+                DestinationValue = FavoritesJsonContent[i][_DestinationTag]
+
+                break
+            }
+        }
+    }
+
+    return DestinationValue
+}
+
+function getFromNewEpisodesFile(_DestinationTag, _ReferenceTag, _Value)
+{
+    var DestinationValue = null
+
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    {
+        var NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < NewEpisodesJsonContent.length; i++)
+        {
+            if (NewEpisodesJsonContent[i][_ReferenceTag] == _Value)
+            {
+                DestinationValue = NewEpisodesJsonContent[i][_DestinationTag]
+
+                break
+            }
+        }
+    }
+
+    return DestinationValue
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
@@ -182,6 +226,8 @@ function deleteEntry(_Self)
             {
                 var Feed =
                 {
+                    "channelName": JsonContent[i].channelName,
+                    "episodeTitle": JsonContent[i].episodeTitle,
                     "episodeUrl": JsonContent[i].episodeUrl,
                     "archivedType": "deleted",
                     "date": new Date

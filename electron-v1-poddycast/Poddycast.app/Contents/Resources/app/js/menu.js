@@ -72,14 +72,12 @@ function showHistory()
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            var ListElement = getPodcastElement("", JsonContent[i].date, JsonContent[i].episodeUrl)
+            var ChannelName  = JsonContent[i].channelName
+            var EpisodeTitle = JsonContent[i].episodeTitle
+            var Artwork      = getFromFavoritePodcastFile("artworkUrl60", "collectionName", ChannelName)
+            var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
 
-            // ListElement.setAttribute("onclick", "playNow(this)")
-            // ListElement.setAttribute("type", JsonContent[i].episodeType)
-            // ListElement.setAttribute("url", JsonContent[i].episodeUrl)
-            // ListElement.setAttribute("length", JsonContent[i].episodeLength)
-
-            List.append(ListElement)
+            List.insertBefore(ListElement, List.childNodes[0])
         }
     }
 }
