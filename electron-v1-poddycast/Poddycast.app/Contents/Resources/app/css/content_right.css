@@ -1,11 +1,8 @@
 h1
 {
-    /*background-color: #EEE;*/
     margin: 0;
     padding: 0.5em;
     display: inline-block;
-    /*border: 1px solid red;*/
-    /*float: left;*/
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -22,7 +19,6 @@ h1
 #content-right-body
 {
     background-color: #FFF;
-    /*padding: 0.5em;*/
     right: 1em;
     border: 1px solid #EEE;
     border-radius: 4px;
@@ -30,23 +26,10 @@ h1
     overflow: auto;
 }
 
-#content-right-header
-{
-    /*border: 1px solid green;*/
-}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* PLAYER */
 /* ------------------------------------------------------------------------------------------------------------------ */
-
-/* NOTE: dummy player for test */
-/*#player
-{
-    float: right;
-    border: 1px solid #EEE;
-    border-radius: 4px;
-    margin-top: 1em;
-}*/
 
 #content-right-player
 {
@@ -54,10 +37,31 @@ h1
     background-color: #FFF;
     border: 1px solid #EEE;
     text-align: center;
-    display: inline-block;
+    /*display: inline-block;*/
     float: right;
-    padding: 0.5em;
+    /*padding: 0.5em;*/
     margin-top: 0.5em;
+    display: grid;
+    grid-template-rows: 1fr 0.2em;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-areas:
+        "image replay play forward speed"
+        "progress progress progress progress progress";
+}
+
+#replay-30-sec
+{
+    grid-area: replay;
+}
+
+#play-pause
+{
+    grid-area: play;
+}
+
+#forward-30-sec
+{
+    grid-area: forward;
 }
 
 #content-right-player svg
@@ -66,8 +70,7 @@ h1
     height: 32px;
     cursor: pointer;
     opacity: 0.7;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    margin: 0.5em;
 }
 
 #content-right-player svg:hover
@@ -75,47 +78,37 @@ h1
     opacity: 1;
 }
 
-#content-right-player-speed
+#content-right-player-img
 {
-    float: right;
+    grid-area: image;
+    width: 30px;
+    height: 30px;
+    margin: 0.5em;
+    border-radius: 4px;
 }
 
-#content-right-player-speed button
+#content-right-player-speed
 {
+    grid-area: speed;
     outline: 0;
     border: 1px solid #EEE;
     border-radius: 4px;
-    padding: 0.8em;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+    margin: 0.5em;
     background-color: inherit;
 }
 
-#content-right-player-speed button:hover
+#content-right-player-speed:hover
 {
     background-color: #EEE;
     cursor: pointer;
 }
 
-#content-right-player-img
-{
-    width: 30px;
-    height: 30px;
-    /*opacity: 0.7;*/
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    border-radius: 4px;
-}
 
 #content-right-player-progress-bar
 {
+    grid-area: progress;
     background-color: #E5E5E5;
-    height: 3px;
     border-radius: 4px;
-    margin-top: 0.5em;
-    margin-bottom: -0.5em;
-    margin-left: -0.5em;
-    margin-right: -0.5em;
 }
 
 #content-right-player-progress-bar-progress
@@ -127,6 +120,8 @@ h1
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
+/* PODCAST ENTRY LIST */
+/* ------------------------------------------------------------------------------------------------------------------ */
 
 #list
 {
@@ -136,33 +131,28 @@ h1
 
 .podcast-entry
 {
-    list-style: none;
-    /*padding: 0.5em;*/
-    /*border-radius: 4px;*/
     background-color: inherit;
-    /*margin: 0.6em;*/
-    display: block;
-    /*overflow: auto;*/
-    height: 3.8em;
-    padding: 0.5em;
-    /*display: inline-block;*/
     border-bottom: 1px solid #EEE;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 75px 1fr 3em;
+    grid-template-areas:
+        "image title icons"
+        "image subtitle icons";
 }
 
 .podcast-entry:hover
 {
-    background-color: #E2E2E2;
+    background-color: #EFEFEF;
     cursor: pointer;
 }
 
 .podcast-entry svg
 {
-    float: right;
+    grid-area: icons;
+    align-self: center;
+    margin-left: 0.5em;
     opacity: 0.6;
-    height: 100%;
-    vertical-align: middle;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
 }
 
 .podcast-entry svg:hover, .set-favorite
@@ -173,32 +163,26 @@ h1
 
 .podcast-entry img
 {
+    grid-area: image;
     border-radius: 4px;
-    float: left;
-    margin-right: 0.5em;
+    margin: 0.5em;
 }
 
-.podcast-entry-body
+.podcast-entry-title
 {
-    vertical-align: middle;
-    /*display: block;*/
-    overflow: auto;
-    height: 100%;
-}
-
-.podcast-entry-collection
-{
-    margin-top: 0.7em;
+    grid-area: title;
+    align-self: flex-end;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.podcast-entry-artist
+.podcast-entry-subtitle
 {
+    grid-area: subtitle;
+    align-self: flex-start;
     font-size: 14px;
     color: #777;
-    /*float: left;*/
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

@@ -86,6 +86,28 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
     return FeedExists
 }
 
+function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
+{
+    var DestinationValue = null
+
+    if (fs.existsSync(_File()) && fs.readFileSync(_File(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i][_ReferenceTag] == _Value)
+            {
+                DestinationValue = JsonContent[i][_DestinationTag]
+
+                break
+            }
+        }
+    }
+
+    return DestinationValue
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
@@ -107,25 +129,25 @@ function setHeader(_Title)
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastElement(_Artwork, _ArtistName, _CollectioName, _IconElement)
+function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
 {
-    var ListElement       = document.createElement("li")
-    var ArtistElement     = document.createElement("div")
-    var CollectionElement = document.createElement("div")
-    var EntryBodyElement  = document.createElement("div")
-    var ImageElement      = document.createElement("img")
+    var ListElement     = document.createElement("li")
+    var TitleElement    = document.createElement("div")
+    var SubtitleElement = document.createElement("div")
+    // var EntryBodyElement  = document.createElement("div")
+    var ImageElement    = document.createElement("img")
 
     ImageElement.src = _Artwork
 
-    ArtistElement.innerHTML = _ArtistName
-    ArtistElement.classList.add("podcast-entry-artist")
+    TitleElement.innerHTML = _Title
+    TitleElement.classList.add("podcast-entry-title")
 
-    CollectionElement.innerHTML = _CollectioName
-    CollectionElement.classList.add("podcast-entry-collection")
+    SubtitleElement.innerHTML = _Subtitle
+    SubtitleElement.classList.add("podcast-entry-subtitle")
 
-    EntryBodyElement.classList.add("podcast-entry-body")
-    EntryBodyElement.append(CollectionElement)
-    EntryBodyElement.append(ArtistElement)
+    // EntryBodyElement.classList.add("podcast-entry-body")
+    // EntryBodyElement.append(SubtitleElement)
+    // EntryBodyElement.append(TitleElement)
 
     ListElement.classList.add("podcast-entry")
 
@@ -135,7 +157,8 @@ function getPodcastElement(_Artwork, _ArtistName, _CollectioName, _IconElement)
     }
 
     ListElement.append(ImageElement)
-    ListElement.append(EntryBodyElement)
+    ListElement.append(TitleElement)
+    ListElement.append(SubtitleElement)
 
     return ListElement
 }
@@ -181,6 +204,8 @@ function deleteEntry(_Self)
             {
                 var Feed =
                 {
+                    "channelName": JsonContent[i].channelName,
+                    "episodeTitle": JsonContent[i].episodeTitle,
                     "episodeUrl": JsonContent[i].episodeUrl,
                     "archivedType": "deleted",
                     "date": new Date

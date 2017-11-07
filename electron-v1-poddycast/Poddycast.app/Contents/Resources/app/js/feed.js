@@ -95,31 +95,34 @@ function readFeeds()
 
 function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
 {
-    var Feed =
+    if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", _EpisodeUrl) == null)
     {
-        "channelName": _ChannelName,
-        "episodeTitle": _EpisodeTitle,
-        "episodeUrl": _EpisodeUrl,
-        "episodeType": _EpisodeType,
-        "episodeLength": _EpisodeLength,
-        "playbackPosition": 0,
-    }
+        var Feed =
+        {
+            "channelName": _ChannelName,
+            "episodeTitle": _EpisodeTitle,
+            "episodeUrl": _EpisodeUrl,
+            "episodeType": _EpisodeType,
+            "episodeLength": _EpisodeLength,
+            "playbackPosition": 0,
+        }
 
-    var JsonContent = []
+        var JsonContent = []
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-    {
-        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-    }
-    else
-    {
+        if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+        {
+            JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        }
+        else
+        {
+            fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+        }
+
+        if (!isEpisodeAlreadySaved(_EpisodeTitle))
+        {
+            JsonContent.push(Feed)
+        }
+
         fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
     }
-
-    if (!isEpisodeAlreadySaved(_EpisodeTitle))
-    {
-        JsonContent.push(Feed)
-    }
-
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
 }
