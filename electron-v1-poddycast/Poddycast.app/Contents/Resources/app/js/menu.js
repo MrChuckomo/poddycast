@@ -52,7 +52,14 @@ function showFavorites()
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            var ListElement = getPodcastElement(JsonContent[i].artworkUrl60, JsonContent[i].artistName, JsonContent[i].collectionName)
+            var Artwork = JsonContent[i].artworkUrl60
+
+            if (JsonContent[i].artworkUrl100 != undefined && JsonContent[i].artworkUrl100 != "undefined")
+            {
+                Artwork = JsonContent[i].artworkUrl100
+            }
+
+            var ListElement = getPodcastElement(Artwork, JsonContent[i].artistName, JsonContent[i].collectionName)
 
             ListElement.setAttribute("onclick", "playNow(this)")
 

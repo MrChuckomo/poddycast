@@ -71,7 +71,9 @@ function getResults()
             "feedUrl": obj.results[i].feedUrl,
             "artistName": obj.results[i].artistName,
             "collectionName": obj.results[i].collectionName,
+            "artworkUrl30": obj.results[i].artworkUrl30,
             "artworkUrl60": obj.results[i].artworkUrl60,
+            "artworkUrl100": obj.results[i].artworkUrl100,
         }
 
         var Icon = getIcon(PodcastInfos)

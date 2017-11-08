@@ -37,9 +37,7 @@ h1
     background-color: #FFF;
     border: 1px solid #EEE;
     text-align: center;
-    /*display: inline-block;*/
     float: right;
-    /*padding: 0.5em;*/
     margin-top: 0.5em;
     display: grid;
     grid-template-rows: 1fr 0.2em;
@@ -166,6 +164,8 @@ h1
     grid-area: image;
     border-radius: 4px;
     margin: 0.5em;
+    width: 60px;
+    height: 60px;
 }
 
 .podcast-entry-title
