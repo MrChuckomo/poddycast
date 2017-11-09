@@ -1,10 +1,4 @@
-const s_DeleteIcon =
-`
-<svg class="delete-icon" onclick="deleteEntry(this)" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
-</svg>
-`
+
 
 function selectMenuItem(_Self)
 {
@@ -28,7 +22,15 @@ function showNewEpisodes()
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            var ListElement = getPodcastElement(getArtWorkFromChannelName(JsonContent[i].channelName), JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+            var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", JsonContent[i].channelName)
+
+            if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName) != "undefined")
+            {
+                Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName)
+            }
+
+            // var ListElement = getPodcastElement(getArtWorkFromChannelName(JsonContent[i].channelName), JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+            var ListElement = getPodcastElement(Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
 
             ListElement.setAttribute("onclick", "playNow(this)")
             ListElement.setAttribute("type", JsonContent[i].episodeType)
@@ -59,9 +61,10 @@ function showFavorites()
                 Artwork = JsonContent[i].artworkUrl100
             }
 
-            var ListElement = getPodcastElement(Artwork, JsonContent[i].artistName, JsonContent[i].collectionName)
+            var ListElement = getPodcastElement(Artwork, JsonContent[i].artistName, JsonContent[i].collectionName, s_Favorite)
 
-            ListElement.setAttribute("onclick", "playNow(this)")
+            ListElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
+            // ListElement.setAttribute("onclick", "playNow(this)")
 
             List.append(ListElement)
         }
@@ -82,6 +85,12 @@ function showHistory()
             var ChannelName  = JsonContent[i].channelName
             var EpisodeTitle = JsonContent[i].episodeTitle
             var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+
+            if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+            {
+                Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+            }
+
             var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
 
             List.insertBefore(ListElement, List.childNodes[0])

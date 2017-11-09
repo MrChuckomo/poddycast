@@ -125,6 +125,37 @@ function setHeader(_Title)
     Header.innerHTML = _Title
 }
 
+function unsubscribe(_Self)
+{
+    // TODO: remove from New Episodes
+    // TODO: renove from History
+    // TODO: remove from Favorites
+
+    // console.log(_Self.parentElement);
+
+    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        // NOTE: Remove optically
+
+        _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+
+        // NOTE: Remove from JSON file and overwrite the file
+
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (_Self.parentElement.getAttribute("feedUrl") == JsonContent[i].feedUrl)
+            {
+                JsonContent.splice(i, 1)
+                break
+            }
+        }
+
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
@@ -156,7 +187,11 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
         ListElement.innerHTML = _IconElement
     }
 
-    ListElement.append(ImageElement)
+    if (_Artwork != null)
+    {
+        ListElement.append(ImageElement)
+    }
+
     ListElement.append(TitleElement)
     ListElement.append(SubtitleElement)
 
