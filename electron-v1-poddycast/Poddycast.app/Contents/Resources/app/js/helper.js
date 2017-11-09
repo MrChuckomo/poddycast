@@ -127,12 +127,6 @@ function setHeader(_Title)
 
 function unsubscribe(_Self)
 {
-    // TODO: remove from New Episodes
-    // TODO: renove from History
-    // TODO: remove from Favorites
-
-    // console.log(_Self.parentElement);
-
     if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         // NOTE: Remove optically
@@ -165,7 +159,6 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
     var ListElement     = document.createElement("li")
     var TitleElement    = document.createElement("div")
     var SubtitleElement = document.createElement("div")
-    // var EntryBodyElement  = document.createElement("div")
     var ImageElement    = document.createElement("img")
 
     ImageElement.src = _Artwork
@@ -175,10 +168,6 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
 
     SubtitleElement.innerHTML = _Subtitle
     SubtitleElement.classList.add("podcast-entry-subtitle")
-
-    // EntryBodyElement.classList.add("podcast-entry-body")
-    // EntryBodyElement.append(SubtitleElement)
-    // EntryBodyElement.append(TitleElement)
 
     ListElement.classList.add("podcast-entry")
 

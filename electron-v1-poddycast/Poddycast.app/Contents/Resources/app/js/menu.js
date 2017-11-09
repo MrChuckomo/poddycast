@@ -22,22 +22,24 @@ function showNewEpisodes()
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", JsonContent[i].channelName)
+            var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", JsonContent[i].channelName)
 
             if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName) != "undefined")
             {
                 Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName)
             }
 
-            // var ListElement = getPodcastElement(getArtWorkFromChannelName(JsonContent[i].channelName), JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
-            var ListElement = getPodcastElement(Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+            if (Artwork != null)
+            {
+                var ListElement = getPodcastElement(Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
 
-            ListElement.setAttribute("onclick", "playNow(this)")
-            ListElement.setAttribute("type", JsonContent[i].episodeType)
-            ListElement.setAttribute("url", JsonContent[i].episodeUrl)
-            ListElement.setAttribute("length", JsonContent[i].episodeLength)
+                ListElement.setAttribute("onclick", "playNow(this)")
+                ListElement.setAttribute("type", JsonContent[i].episodeType)
+                ListElement.setAttribute("url", JsonContent[i].episodeUrl)
+                ListElement.setAttribute("length", JsonContent[i].episodeLength)
 
-            List.append(ListElement)
+                List.append(ListElement)
+            }
         }
     }
 }
@@ -91,9 +93,12 @@ function showHistory()
                 Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
             }
 
-            var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
+            if (Artwork != null)
+            {
+                var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
 
-            List.insertBefore(ListElement, List.childNodes[0])
+                List.insertBefore(ListElement, List.childNodes[0])
+            }
         }
     }
 }
