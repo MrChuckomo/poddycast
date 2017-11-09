@@ -2,7 +2,7 @@
 
 function selectMenuItem(_Self)
 {
-    clearSearchField(document.getElementById("search").getElementsByTagName("input")[0])
+    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
 
     clearMenuSelection()
 

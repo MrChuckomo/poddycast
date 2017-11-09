@@ -1,9 +1,4 @@
 
-const fs = require('fs')
-
-
-// TODO: allow to unsubscribe a podcast
-
 function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl)
 {
     var Feed =

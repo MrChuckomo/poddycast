@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
@@ -21,6 +23,11 @@ function getArchivedFilePath()
     return getSaveDirPath() + "/poddycast-archived_episodes.json"
 }
 
+function getPlaylistFilePath()
+{
+    return getSaveDirPath() + "/poddycast-playlists.json"
+}
+
 function init()
 {
     if (!fs.existsSync(getSaveDirPath()))
@@ -41,6 +48,11 @@ function init()
     if (!fs.existsSync(getArchivedFilePath()))
     {
         fs.openSync(getArchivedFilePath(), 'w');
+    }
+
+    if (!fs.existsSync(getPlaylistFilePath()))
+    {
+        fs.openSync(getPlaylistFilePath(), 'w');
     }
 }
 
@@ -106,6 +118,11 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
     }
 
     return DestinationValue
+}
+
+function clearTextField(_InputField)
+{
+    _InputField.value = ""
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -185,27 +202,6 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
     ListElement.append(SubtitleElement)
 
     return ListElement
-}
-
-function getArtWorkFromChannelName(_ChannelName)
-{
-    var Artwork = undefined
-
-    if (fs.existsSync(getSaveFilePath()))
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].collectionName == _ChannelName)
-            {
-                Artwork = JsonContent[i].artworkUrl60
-                break
-            }
-        }
-    }
-
-    return Artwork
 }
 
 function deleteEntry(_Self)

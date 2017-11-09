@@ -12,13 +12,14 @@
         <script type="text/javascript" src="./js/favorite.js"></script>
         <script type="text/javascript" src="./js/itunes.js"></script>
         <script type="text/javascript" src="./js/search.js"></script>
+        <script type="text/javascript" src="./js/playlist.js"></script>
         <script type="text/javascript" src="./js/menu.js"></script>
         <script type="text/javascript" src="./js/player.js"></script>
         <script type="text/javascript" src="./js/feed.js"></script>
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
         <script>require('./menu.js')</script>
     </head>
-    <body onload="init(); readFeeds(); showNewEpisodes()">
+    <body onload="init(); loadPlaylists(); readFeeds(); showNewEpisodes()">
 
         <div id="content">
             <div id="content-left">
@@ -70,7 +71,8 @@
                         <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                         <path d="M0 0h24v24H0z" fill="none"/>
                     </svg>
-                    <button type="button" name="button">New List</button>
+                    <!-- <button type="button" name="button">New List</button> -->
+                    <input type="text" name="new_list" placeholder="New List" onkeyup="createPlaylist(this, event)">
                 </footer>
             </div>
             <div id="content-right">
@@ -118,5 +120,6 @@
                 </div>
             </div>
         </div>
+
     </body>
 </html>

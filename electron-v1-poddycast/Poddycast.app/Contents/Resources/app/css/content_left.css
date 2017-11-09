@@ -150,7 +150,7 @@ footer
     display: grid;
     grid-template-columns: 50px 1fr;
     grid-template-rows: 100%;
-    grid-template-areas: "icon button";
+    grid-template-areas: "icon input";
 }
 
 footer svg
@@ -160,17 +160,12 @@ footer svg
     justify-self: center;
 }
 
-footer button
+footer input
 {
-    grid-area: button;
+    grid-area: input;
     background: inherit;
     border: 0;
     outline: none;
     text-align: left;
     font-size: 16px;
-}
-
-footer button:hover
-{
-    cursor: pointer;
 }
