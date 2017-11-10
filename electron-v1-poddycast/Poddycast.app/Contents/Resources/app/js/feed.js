@@ -93,6 +93,13 @@ function readFeeds()
     }
 }
 
+function addToEpisodes(_Self)
+{
+    var ListElement = _Self.parentElement
+
+    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"))
+}
+
 function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
 {
     if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", _EpisodeUrl) == null)

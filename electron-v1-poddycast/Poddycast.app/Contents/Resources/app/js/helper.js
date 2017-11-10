@@ -369,6 +369,8 @@ function getAllEpisodesFromFeed(_Feed)
                     var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
 
                     ListElement.setAttribute("onclick", "playNow(this)")
+                    ListElement.setAttribute("channel", ChannelName)
+                    ListElement.setAttribute("title", EpisodeTitle)
                     ListElement.setAttribute("type", EpisodeType)
                     ListElement.setAttribute("url", EpisodeUrl)
                     ListElement.setAttribute("length", EpisodeLength)
@@ -386,6 +388,8 @@ function getAllEpisodesFromFeed(_Feed)
 
     req.end();
 }
+
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU
