@@ -66,7 +66,7 @@ function showFavorites()
             var ListElement = getPodcastElement(Artwork, JsonContent[i].artistName, JsonContent[i].collectionName, s_Favorite)
 
             ListElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
-            // ListElement.setAttribute("onclick", "playNow(this)")
+            ListElement.setAttribute("onclick", "showAllEpisodes(this)")
 
             List.append(ListElement)
         }

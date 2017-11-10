@@ -257,6 +257,136 @@ function deleteEntry(_Self)
     }
 }
 
+function showAllEpisodes(_Self)
+{
+    clearContent()
+
+    getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
+}
+
+function getAllEpisodesFromFeed(_Feed)
+{
+    if (_Feed.includes("https"))
+    {
+        var req = https.request(_Feed, function(res)
+        {
+            var Content = ""
+
+            res.setEncoding('utf8');
+
+            res.on('data', function (chunk)
+            {
+                Content += chunk
+            });
+
+            res.on("end", function()
+            {
+                parser = new DOMParser();
+                xmlDoc = parser.parseFromString(Content,"text/xml");
+
+                var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+
+                setHeader(ChannelName)
+
+                var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+
+                if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+                {
+                    Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+                }
+
+                var List = document.getElementById("list")
+
+                for (var i = 0; i < xmlDoc.getElementsByTagName("item").length; i++)
+                {
+                    var Item = xmlDoc.getElementsByTagName("item")[i]
+
+                    var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
+                    var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
+                    var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+
+                    var Time = new Date()
+
+                    Time.setMilliseconds(EpisodeLength)
+
+                    var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+
+                    ListElement.setAttribute("onclick", "playNow(this)")
+                    ListElement.setAttribute("type", EpisodeType)
+                    ListElement.setAttribute("url", EpisodeUrl)
+                    ListElement.setAttribute("length", EpisodeLength)
+
+                    List.append(ListElement)
+                }
+            })
+        });
+    }
+    else
+    {
+        var req = http.request(_Feed, function(res)
+        {
+            var Content = ""
+
+            res.setEncoding('utf8');
+
+            res.on('data', function (chunk)
+            {
+                Content += chunk
+            });
+
+            res.on("end", function()
+            {
+                parser = new DOMParser();
+                xmlDoc = parser.parseFromString(Content,"text/xml");
+
+                var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+
+                setHeader(ChannelName)
+
+                var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+
+                if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+                {
+                    Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+                }
+
+                var List = document.getElementById("list")
+
+                for (var i = 0; i < xmlDoc.getElementsByTagName("item").length; i++)
+                {
+                    var Item = xmlDoc.getElementsByTagName("item")[i]
+
+                    var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
+                    var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
+                    var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
+                    var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+
+                    var Time = new Date()
+
+                    Time.setMilliseconds(EpisodeLength)
+
+                    var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+
+                    ListElement.setAttribute("onclick", "playNow(this)")
+                    ListElement.setAttribute("type", EpisodeType)
+                    ListElement.setAttribute("url", EpisodeUrl)
+                    ListElement.setAttribute("length", EpisodeLength)
+
+                    List.append(ListElement)
+                }
+            })
+        });
+    }
+
+    req.on('error', function(e)
+    {
+        console.log('problem with request: ' + e.message);
+    });
+
+    req.end();
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU
 // ---------------------------------------------------------------------------------------------------------------------
