@@ -49,9 +49,11 @@ function playNow(_Self)
     }
 }
 
-function playPause(_Self)
+function playPause()
 {
-    togglePlayPauseButton(_Self)
+    document.getElementById("play-pause")
+
+    togglePlayPauseButton(document.getElementById("play-pause"))
 }
 
 function playForward()

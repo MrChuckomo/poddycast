@@ -1,14 +1,16 @@
 
 
-function selectMenuItem(_Self)
+function selectMenuItem(_MenuId)
 {
+    // var MenuItem = _Self
+    var MenuItem = document.getElementById(_MenuId)
     clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
 
     clearMenuSelection()
 
-    _Self.classList.add("selected")
+    MenuItem.classList.add("selected")
 
-    setHeader(_Self.getElementsByTagName("span")[0].innerHTML)
+    setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
 }
 
 function showNewEpisodes()

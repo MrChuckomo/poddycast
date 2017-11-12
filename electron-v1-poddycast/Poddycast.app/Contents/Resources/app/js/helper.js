@@ -125,6 +125,11 @@ function clearTextField(_InputField)
     _InputField.value = ""
 }
 
+function focusTextField(_InputField)
+{
+    document.getElementById(_InputField).focus()
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
