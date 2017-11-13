@@ -54,6 +54,8 @@ function showFavorites()
 
         clearContent()
 
+        JsonContent = sortByName(JsonContent)
+
         var List = document.getElementById("list")
 
         for (var i = 0; i < JsonContent.length; i++)
@@ -73,6 +75,34 @@ function showFavorites()
             List.append(ListElement)
         }
     }
+}
+
+function sortByName(_Json)
+{
+    var SortArray = []
+    var SortJson  = []
+
+    for (var i = 0; i < _Json.length; i++)
+    {
+        SortArray.push(_Json[i].collectionName)
+    }
+
+    SortArray.sort()
+
+    for (var i = 0; i < SortArray.length; i++)
+    {
+        for (var j = 0; j < _Json.length; j++)
+        {
+            if (_Json[j].collectionName == SortArray[i])
+            {
+                SortJson.push(_Json[j])
+
+                break
+            }
+        }
+    }
+
+    return SortJson
 }
 
 function showHistory()

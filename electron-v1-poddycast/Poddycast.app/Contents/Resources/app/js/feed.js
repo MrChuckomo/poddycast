@@ -228,8 +228,6 @@ function getAllEpisodesFromFeed(_Feed)
     req.end();
 }
 
-
-
 function addToEpisodes(_Self)
 {
     var ListElement = _Self.parentElement
