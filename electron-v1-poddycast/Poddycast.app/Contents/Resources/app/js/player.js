@@ -18,14 +18,34 @@ function playNow(_Self)
     var Player = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    console.log(_Self);
-    console.log(Player);
-    console.log(PlayerSource);
+    // console.log(_Self);
+    // console.log(Player);
+    // console.log(PlayerSource);
+
+    // Set old played episode to delete icon again
+
+    var FeedUrl = PlayerSource.getAttribute("src")
+    var AllListItems = document.getElementsByClassName("podcast-entry")
+
+    for (var i = 0; i < AllListItems.length; i++)
+    {
+        if (AllListItems[i].getAttribute("url") == FeedUrl)
+        {
+            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
+            break
+        }
+    }
+
+    // Set current episode icon to play
+
+    _Self.getElementsByTagName("svg")[0].innerHTML = s_Play
+
+    // Set the audio source
 
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
 
-    console.log(PlayerSource);
+    // console.log(PlayerSource);
 
     // Player.pause()
 
@@ -47,6 +67,8 @@ function playNow(_Self)
     {
         togglePlayPauseButton(document.getElementById("play-pause"))
     }
+
+
 }
 
 function playPause()
@@ -109,7 +131,7 @@ function updateProgress()
         Value = Math.floor((100 / Player.duration) * Player.currentTime);
     }
 
-    console.log("Progress: " + Value);
+    // console.log("Progress: " + Value);
 
     var Progress = document.getElementById("content-right-player-progress-bar-progress")
 

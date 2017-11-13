@@ -207,6 +207,16 @@ function getAllEpisodesFromFeed(_Feed)
 
                     var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
 
+                    if (isEpisodeAlreadySaved(EpisodeTitle))
+                    {
+                        ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+                    }
+
+                    if (isPlaying(EpisodeUrl))
+                    {
+                        ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+                    }
+
                     ListElement.setAttribute("onclick", "playNow(this)")
                     ListElement.setAttribute("channel", ChannelName)
                     ListElement.setAttribute("title", EpisodeTitle)
