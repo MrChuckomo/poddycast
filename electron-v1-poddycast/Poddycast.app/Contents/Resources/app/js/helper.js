@@ -5,7 +5,19 @@ const fs = require('fs')
 // ---------------------------------------------------------------------------------------------------------------------
 function getSaveDirPath()
 {
-    return process.env['HOME'] + "/Desktop/poddycast-data"
+    var Base = process.env['HOME']
+
+    switch (process.platform)
+    {
+        case "darwin": Base = process.env.HOME;        break;
+        case "linux" : Base = process.env.HOMEPATH;    break;
+        case "win32" : Base = process.env.USERPROFILE; break;
+        default:
+
+    }
+
+    // return Base + "/Desktop/poddycast-data"
+    return Base + "/poddycast-data"
 }
 
 function getSaveFilePath()
