@@ -195,3 +195,52 @@ h1
     /*fill: #F44336;*/
     /*opacity: 0.3;*/
 }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.settings
+{
+    background: #333;
+    color: #FFF;
+    padding: 0.5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 200px;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "name items button"
+        "playlists playlists playlists"
+}
+
+.settings-header
+{
+    grid-area: name;
+    padding: 0.5em;
+}
+
+.settings-count::before
+{
+    content: "# ";
+    color: #039BE5
+}
+
+.settings-count
+{
+    grid-area: items;
+    color: #FFF;
+    padding: 0.5em;
+}
+
+.settings-unsubscribe
+{
+    grid-area: button;
+    background: #777;
+    border-radius: 6px;
+    text-align: center;
+    padding: 0.5em;
+}
+
+.settings-unsubscribe:hover
+{
+    background: #666;
+    cursor: pointer;
+}

@@ -38,7 +38,16 @@ function playNow(_Self)
 
     // Set current episode icon to play
 
-    _Self.getElementsByTagName("svg")[0].innerHTML = s_Play
+    if (_Self.getElementsByTagName("svg").length == 0)
+    {
+        // TODO: show a svg if nothing is there (add, append etc.)
+        // _Self.innerHTML = s_PlayIcon
+    }
+    else
+    {
+        _Self.getElementsByTagName("svg")[0].innerHTML = s_Play
+    }
+
 
     // Set the audio source
 

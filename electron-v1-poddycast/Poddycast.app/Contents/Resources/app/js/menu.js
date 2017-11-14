@@ -19,8 +19,8 @@ function showNewEpisodes()
 
     if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-        var List        = document.getElementById("list")
+        var JsonContent  = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        var List         = document.getElementById("list")
 
         for (var i = 0; i < JsonContent.length; i++)
         {
