@@ -10,3 +10,12 @@ See all your **favorite Podcasts** in one place.
 And search through the **history** of podcasts you listened to.
 
 You can also create **playlist** to keep you Podcast collection nice and clean.
+
+## Install
+
+Download this repository and it will work on macOS.
+
+## Platform Support
+
+- macOS
+- Windows (comming soon)
