@@ -8,7 +8,13 @@ var https = require('https');
 
 function getPodcasts(_SearchTerm)
 {
-    _SearchTerm = _SearchTerm.replace(/ /g, "%20")
+    _SearchTerm = _SearchTerm.replace(/ /g, "+")
+    _SearchTerm = _SearchTerm.replace(/ä/g, "a")
+    _SearchTerm = _SearchTerm.replace(/ö/g, "o")
+    _SearchTerm = _SearchTerm.replace(/ü/g, "u")
+    _SearchTerm = _SearchTerm.replace(/Ä/g, "A")
+    _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
+    _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
     var options =
     {
@@ -59,6 +65,8 @@ function getResults()
 {
     chunk = document.getElementById("res").getAttribute("return-value")
 
+    console.log(chunk);
+
     var obj = JSON.parse(chunk);
 
     clearContent()
@@ -71,7 +79,9 @@ function getResults()
             "feedUrl": obj.results[i].feedUrl,
             "artistName": obj.results[i].artistName,
             "collectionName": obj.results[i].collectionName,
+            "artworkUrl30": obj.results[i].artworkUrl30,
             "artworkUrl60": obj.results[i].artworkUrl60,
+            "artworkUrl100": obj.results[i].artworkUrl100,
         }
 
         var Icon = getIcon(PodcastInfos)

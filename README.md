@@ -2,14 +2,11 @@
 
 A Podcast app made with Electron because I love Podcasts.
 
-Search for any Podcasts you like (using iTunes) and see if you already marked this Podcasts as favorite.
+![screenshot_1](img/poddycast.png)
 
-![screenshot_1](img/poddycast_search.png)
+Search for any Podcasts you like (using **iTunes**) and see if you already marked this Podcasts as favorite.
+Find all episodes in the **New Episodes** menu item.
+See all your **favorite Podcasts** in one place.
+And search through the **history** of podcasts you listened to.
 
-Find all episodes in the "New Episodes" menu item.
-
-![screenshot_1](img/poddycast_new_episodes.png)
-
-See all your favorite Podcasts in one place.
-
-![screenshot_1](img/poddycast_favorites.png)
+You can also create **playlist** to keep you Podcast collection nice and clean.

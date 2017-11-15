@@ -1,9 +1,23 @@
+const fs = require('fs')
+
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
 function getSaveDirPath()
 {
-    return process.env['HOME'] + "/Desktop/poddycast-data"
+    var Base = process.env['HOME']
+
+    switch (process.platform)
+    {
+        case "darwin": Base = process.env.HOME;        break;
+        case "linux" : Base = process.env.HOMEPATH;    break;
+        case "win32" : Base = process.env.USERPROFILE; break;
+        default:
+
+    }
+
+    // return Base + "/Desktop/poddycast-data"
+    return Base + "/poddycast-data"
 }
 
 function getSaveFilePath()
@@ -19,6 +33,11 @@ function getNewEpisodesSaveFilePath()
 function getArchivedFilePath()
 {
     return getSaveDirPath() + "/poddycast-archived_episodes.json"
+}
+
+function getPlaylistFilePath()
+{
+    return getSaveDirPath() + "/poddycast-playlists.json"
 }
 
 function init()
@@ -41,6 +60,11 @@ function init()
     if (!fs.existsSync(getArchivedFilePath()))
     {
         fs.openSync(getArchivedFilePath(), 'w');
+    }
+
+    if (!fs.existsSync(getPlaylistFilePath()))
+    {
+        fs.openSync(getPlaylistFilePath(), 'w');
     }
 }
 
@@ -108,6 +132,23 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
     return DestinationValue
 }
 
+function isPlaying(_FeedUrl)
+{
+    var PlayerSource = document.getElementsByTagName("source")[0]
+
+    return (PlayerSource.getAttribute("src") == _FeedUrl)
+}
+
+function clearTextField(_InputField)
+{
+    _InputField.value = ""
+}
+
+function focusTextField(_InputField)
+{
+    document.getElementById(_InputField).focus()
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
@@ -125,6 +166,31 @@ function setHeader(_Title)
     Header.innerHTML = _Title
 }
 
+function unsubscribe(_Self)
+{
+    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        // NOTE: Remove optically
+
+        _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+
+        // NOTE: Remove from JSON file and overwrite the file
+
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (_Self.parentElement.getAttribute("feedUrl") == JsonContent[i].feedUrl)
+            {
+                JsonContent.splice(i, 1)
+                break
+            }
+        }
+
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
@@ -134,7 +200,6 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
     var ListElement     = document.createElement("li")
     var TitleElement    = document.createElement("div")
     var SubtitleElement = document.createElement("div")
-    // var EntryBodyElement  = document.createElement("div")
     var ImageElement    = document.createElement("img")
 
     ImageElement.src = _Artwork
@@ -145,10 +210,6 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
     SubtitleElement.innerHTML = _Subtitle
     SubtitleElement.classList.add("podcast-entry-subtitle")
 
-    // EntryBodyElement.classList.add("podcast-entry-body")
-    // EntryBodyElement.append(SubtitleElement)
-    // EntryBodyElement.append(TitleElement)
-
     ListElement.classList.add("podcast-entry")
 
     if (_IconElement != undefined)
@@ -156,85 +217,83 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
         ListElement.innerHTML = _IconElement
     }
 
-    ListElement.append(ImageElement)
+    if (_Artwork != null)
+    {
+        ListElement.append(ImageElement)
+    }
+
     ListElement.append(TitleElement)
     ListElement.append(SubtitleElement)
 
     return ListElement
 }
 
-function getArtWorkFromChannelName(_ChannelName)
+function deleteEntryWithIcon(_Self)
 {
-    var Artwork = undefined
-
-    if (fs.existsSync(getSaveFilePath()))
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].collectionName == _ChannelName)
-            {
-                Artwork = JsonContent[i].artworkUrl60
-                break
-            }
-        }
-    }
-
-    return Artwork
+    deleteEntry(_Self.parentElement)
 }
 
-function deleteEntry(_Self)
+function deleteEntryWithAudioPlayer(_FeedUrl)
+{
+    // TODO: just catch list element if new episodes menu is open
+
+    var AllListElements = document.getElementById("list").getElementsByTagName("li")
+}
+
+function deleteEntry(_ListElement)
 {
     if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
         // NOTE: Remove optically
 
-        _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+        _ListElement.parentElement.removeChild(_ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-        console.log(JsonContent.length);
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (_Self.parentElement.getAttribute("url") == JsonContent[i].episodeUrl)
-            {
-                var Feed =
-                {
-                    "channelName": JsonContent[i].channelName,
-                    "episodeTitle": JsonContent[i].episodeTitle,
-                    "episodeUrl": JsonContent[i].episodeUrl,
-                    "archivedType": "deleted",
-                    "date": new Date
-                }
-
-                var ArchiveJsonContent = []
-
-                if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
-                {
-                    ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
-                }
-                else
-                {
-                    fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
-                }
-
-                ArchiveJsonContent.push(Feed)
-
-                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
-
-                JsonContent.splice(i, 1)
-                break
-            }
-        }
-
-        console.log(JsonContent.length);
-
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+        deleteFromFile(_ListElement.getAttribute("url"))
     }
+}
+
+function deleteFromFile(_FeedUrl)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (_FeedUrl == JsonContent[i].episodeUrl)
+        {
+            var Feed =
+            {
+                "channelName": JsonContent[i].channelName,
+                "episodeTitle": JsonContent[i].episodeTitle,
+                "episodeUrl": JsonContent[i].episodeUrl,
+                "archivedType": "deleted",
+                "date": new Date
+            }
+
+            var ArchiveJsonContent = []
+
+            if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
+            {
+                ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+            }
+            else
+            {
+                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+            }
+
+            ArchiveJsonContent.push(Feed)
+
+            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+
+            JsonContent.splice(i, 1)
+            break
+        }
+    }
+
+    console.log(JsonContent.length);
+
+    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

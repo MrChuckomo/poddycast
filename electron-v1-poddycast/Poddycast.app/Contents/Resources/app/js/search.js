@@ -16,11 +16,6 @@ function search(_Self, _Event)
     }
     else if (_Event.code == "Escape")
     {
-        clearSearchField(_Self)
+        clearTextField(_Self)
     }
-}
-
-function clearSearchField(_InputField)
-{
-    _InputField.value = ""
 }

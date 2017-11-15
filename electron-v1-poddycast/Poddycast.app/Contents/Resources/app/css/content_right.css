@@ -37,9 +37,7 @@ h1
     background-color: #FFF;
     border: 1px solid #EEE;
     text-align: center;
-    /*display: inline-block;*/
     float: right;
-    /*padding: 0.5em;*/
     margin-top: 0.5em;
     display: grid;
     grid-template-rows: 1fr 0.2em;
@@ -132,7 +130,7 @@ h1
 .podcast-entry
 {
     background-color: inherit;
-    border-bottom: 1px solid #EEE;
+    border-bottom: 1px solid #DDD;
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 75px 1fr 3em;
@@ -143,7 +141,7 @@ h1
 
 .podcast-entry:hover
 {
-    background-color: #EFEFEF;
+    background-color: #E0E0E0;
     cursor: pointer;
 }
 
@@ -166,6 +164,8 @@ h1
     grid-area: image;
     border-radius: 4px;
     margin: 0.5em;
+    width: 60px;
+    height: 60px;
 }
 
 .podcast-entry-title
@@ -194,4 +194,53 @@ h1
 {
     /*fill: #F44336;*/
     /*opacity: 0.3;*/
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.settings
+{
+    background: #333;
+    color: #FFF;
+    padding: 0.5em;
+    display: grid;
+    grid-template-columns: 1fr 1fr 200px;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "name items button"
+        "playlists playlists playlists"
+}
+
+.settings-header
+{
+    grid-area: name;
+    padding: 0.5em;
+}
+
+.settings-count::before
+{
+    content: "# ";
+    color: #039BE5
+}
+
+.settings-count
+{
+    grid-area: items;
+    color: #FFF;
+    padding: 0.5em;
+}
+
+.settings-unsubscribe
+{
+    grid-area: button;
+    background: #777;
+    border-radius: 6px;
+    text-align: center;
+    padding: 0.5em;
+}
+
+.settings-unsubscribe:hover
+{
+    background: #666;
+    cursor: pointer;
 }

@@ -18,14 +18,43 @@ function playNow(_Self)
     var Player = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    console.log(_Self);
-    console.log(Player);
-    console.log(PlayerSource);
+    // console.log(_Self);
+    // console.log(Player);
+    // console.log(PlayerSource);
+
+    // Set old played episode to delete icon again
+
+    var FeedUrl = PlayerSource.getAttribute("src")
+    var AllListItems = document.getElementsByClassName("podcast-entry")
+
+    for (var i = 0; i < AllListItems.length; i++)
+    {
+        if (AllListItems[i].getAttribute("url") == FeedUrl)
+        {
+            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
+            break
+        }
+    }
+
+    // Set current episode icon to play
+
+    if (_Self.getElementsByTagName("svg").length == 0)
+    {
+        // TODO: show a svg if nothing is there (add, append etc.)
+        // _Self.innerHTML = s_PlayIcon
+    }
+    else
+    {
+        _Self.getElementsByTagName("svg")[0].innerHTML = s_Play
+    }
+
+
+    // Set the audio source
 
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
 
-    console.log(PlayerSource);
+    // console.log(PlayerSource);
 
     // Player.pause()
 
@@ -47,11 +76,15 @@ function playNow(_Self)
     {
         togglePlayPauseButton(document.getElementById("play-pause"))
     }
+
+
 }
 
-function playPause(_Self)
+function playPause()
 {
-    togglePlayPauseButton(_Self)
+    document.getElementById("play-pause")
+
+    togglePlayPauseButton(document.getElementById("play-pause"))
 }
 
 function playForward()
@@ -96,8 +129,9 @@ function updateProgress()
 
     if (Player.ended)
     {
-        // TODO: remove from the playlist
-        // TODO: add to history
+        deleteFromFile(PlayerSource.getAttribute("src"))
+
+        // TODO: play next episode in line depending on the playlist
     }
 
     var Value = 0;
@@ -107,7 +141,7 @@ function updateProgress()
         Value = Math.floor((100 / Player.duration) * Player.currentTime);
     }
 
-    console.log("Progress: " + Value);
+    // console.log("Progress: " + Value);
 
     var Progress = document.getElementById("content-right-player-progress-bar-progress")
 

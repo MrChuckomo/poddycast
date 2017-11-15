@@ -38,8 +38,8 @@ function readFeeds()
                         parser = new DOMParser();
                         xmlDoc = parser.parseFromString(Content,"text/xml");
 
-                        var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeTitle = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
                         var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
                         var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
                         var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
@@ -91,6 +91,144 @@ function readFeeds()
             req.end();
         }
     }
+}
+
+function showAllEpisodes(_Self)
+{
+    clearContent()
+
+    getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
+}
+
+function getAllEpisodesFromFeed(_Feed)
+{
+    // TODO: hide add button after clicking it
+
+    appendSettingsSection()
+
+    if (_Feed.includes("https"))
+    {
+        var req = https.request(_Feed, function(res)
+        {
+            var Content = ""
+
+            res.setEncoding('utf8')
+
+            res.on("data", function (chunk) { Content += chunk })
+            res.on("end",  function ()      { processEpisodes(Content) })
+        });
+    }
+    else
+    {
+        var req = http.request(_Feed, function(res)
+        {
+            var Content = ""
+
+            res.setEncoding('utf8')
+
+            res.on("data", function (chunk) { Content += chunk })
+            res.on("end",  function ()      { processEpisodes(Content) })
+        });
+    }
+
+    req.on('error', function(e)
+    {
+        console.log('problem with request: ' + e.message);
+    });
+
+    req.end();
+}
+
+function appendSettingsSection()
+{
+    // NOTE: settings area in front of a podcast episode list
+
+    var RightContent = document.getElementById("list")
+
+    var SettingsDiv = document.createElement("div")
+    SettingsDiv.classList.add("settings")
+
+    var podcastName = document.createElement("div")
+    podcastName.classList.add("settings-header")
+
+    var EpisodeCount = document.createElement("div")
+    EpisodeCount.classList.add("settings-count")
+
+    var Unsubscribe = document.createElement("div")
+    Unsubscribe.innerHTML = "Unsubscribe"
+    Unsubscribe.classList.add("settings-unsubscribe")
+
+    SettingsDiv.append(podcastName)
+    SettingsDiv.append(EpisodeCount)
+    SettingsDiv.append(Unsubscribe)
+
+    RightContent.append(SettingsDiv)
+}
+
+
+function processEpisodes(_Content)
+{
+    parser = new DOMParser();
+    xmlDoc = parser.parseFromString(_Content,"text/xml");
+
+    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+
+    // NOTE: set settings information
+
+    // setHeader(ChannelName)
+    document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
+    document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
+
+    var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+
+    if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+    {
+        Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+    }
+
+    var List = document.getElementById("list")
+
+    for (var i = 0; i < xmlDoc.getElementsByTagName("item").length; i++)
+    {
+        var Item = xmlDoc.getElementsByTagName("item")[i]
+
+        var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
+        var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
+        var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
+        var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+
+        var Time = new Date()
+
+        Time.setMilliseconds(EpisodeLength)
+
+        var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+
+        if (isEpisodeAlreadySaved(EpisodeTitle))
+        {
+            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+        }
+
+        if (isPlaying(EpisodeUrl))
+        {
+            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+        }
+
+        ListElement.setAttribute("onclick", "playNow(this)")
+        ListElement.setAttribute("channel", ChannelName)
+        ListElement.setAttribute("title", EpisodeTitle)
+        ListElement.setAttribute("type", EpisodeType)
+        ListElement.setAttribute("url", EpisodeUrl)
+        ListElement.setAttribute("length", EpisodeLength)
+
+        List.append(ListElement)
+    }
+}
+
+function addToEpisodes(_Self)
+{
+    var ListElement = _Self.parentElement
+
+    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"))
 }
 
 function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
