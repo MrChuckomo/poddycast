@@ -129,8 +129,9 @@ function updateProgress()
 
     if (Player.ended)
     {
-        // TODO: remove from the playlist
-        // TODO: add to history
+        deleteFromFile(PlayerSource.getAttribute("src"))
+
+        // TODO: play next episode in line depending on the playlist
     }
 
     var Value = 0;
