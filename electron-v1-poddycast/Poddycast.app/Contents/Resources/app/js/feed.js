@@ -26,26 +26,10 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding('utf8');
+                    res.setEncoding("utf8");
 
-                    res.on('data', function (chunk)
-                    {
-                        Content += chunk
-                    });
-
-                    res.on("end", function()
-                    {
-                        parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(Content,"text/xml");
-
-                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                    })
+                    res.on("data", function (chunk) { Content += chunk })
+                    res.on("end",  function ()      { saveLatestEpisode(Content) })
                 });
             }
             else
@@ -54,43 +38,32 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding('utf8');
+                    res.setEncoding("utf8");
 
-                    res.on('data', function (chunk)
-                    {
-                        Content += chunk
-                    });
-
-                    res.on("end", function()
-                    {
-                        parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(Content,"text/xml");
-                        // console.log(xmlDoc);
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                        // console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length"));
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type"));
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url"));
-
-                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                    })
+                    res.on("data", function (chunk) { Content += chunk })
+                    res.on("end",  function ()      { saveLatestEpisode(Content) })
                 });
             }
 
-            req.on('error', function(e)
-            {
-                console.log('problem with request: ' + e.message);
-            });
+            req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
 
             req.end();
         }
     }
+}
+
+function saveLatestEpisode(_Content)
+{
+    parser = new DOMParser();
+    xmlDoc = parser.parseFromString(_Content,"text/xml");
+
+    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
 }
 
 function showAllEpisodes(_Self)
@@ -131,10 +104,7 @@ function getAllEpisodesFromFeed(_Feed)
         });
     }
 
-    req.on('error', function(e)
-    {
-        console.log('problem with request: ' + e.message);
-    });
+    req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
 
     req.end();
 }
@@ -179,9 +149,11 @@ function appendSettingsSection()
     }
 
     const ContextMenu = new Menu()
-    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
 
     MoreElement.addEventListener('click', (_Event) =>
     {
@@ -235,16 +207,16 @@ function processEpisodes(_Content)
 
         Time.setMilliseconds(EpisodeLength)
 
-        var ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+        var ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
-            ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
         }
 
         if (isPlaying(EpisodeUrl))
         {
-            ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
         }
 
         ListElement.setAttribute("onclick", "playNow(this)")

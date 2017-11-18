@@ -32,11 +32,11 @@ function showNewEpisodes()
 
             if (Artwork != null)
             {
-                var ListElement = getPodcastElement(Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
 
                 if (isPlaying(JsonContent[i].episodeUrl))
                 {
-                    ListElement = getPodcastElement(Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
+                    ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
                 }
 
                 ListElement.setAttribute("onclick", "playNow(this)")
@@ -71,7 +71,7 @@ function showFavorites()
                 Artwork = JsonContent[i].artworkUrl100
             }
 
-            var ListElement = getPodcastElement(Artwork, JsonContent[i].artistName, JsonContent[i].collectionName, s_Favorite)
+            var ListElement = getPodcastElement("podcast-favorites-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
 
             ListElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
             ListElement.setAttribute("onclick", "showAllEpisodes(this)")
@@ -131,7 +131,7 @@ function showHistory()
 
             if (Artwork != null)
             {
-                var ListElement  = getPodcastElement(Artwork, JsonContent[i].date, EpisodeTitle)
+                var ListElement  = getPodcastElement(null, Artwork, JsonContent[i].date, EpisodeTitle)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }

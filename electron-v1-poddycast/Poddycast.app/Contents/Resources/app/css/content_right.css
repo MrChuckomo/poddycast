@@ -127,6 +127,31 @@ h1
     padding: 0;
 }
 
+.podcast-favorites-entry
+{
+    background-color: inherit;
+    border-bottom: 1px solid #DDD;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 75px 1fr 3em;
+    grid-template-areas:
+        "image title icons";
+}
+
+.podcast-episode-entry
+{
+    background-color: inherit;
+    border-bottom: 1px solid #DDD;
+    padding: 0.5em;
+    padding-left: 1em;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 3em;
+    grid-template-areas:
+        "title icons"
+        "subtitle icons";
+}
+
 .podcast-entry
 {
     background-color: inherit;
@@ -139,13 +164,13 @@ h1
         "image subtitle icons";
 }
 
-.podcast-entry:hover
+.podcast-entry:hover, .podcast-episode-entry:hover, .podcast-favorites-entry:hover
 {
     background-color: #E0E0E0;
     cursor: pointer;
 }
 
-.podcast-entry svg
+.podcast-entry svg, .podcast-episode-entry svg, .podcast-favorites-entry svg
 {
     grid-area: icons;
     align-self: center;
@@ -153,13 +178,13 @@ h1
     opacity: 0.6;
 }
 
-.podcast-entry svg:hover, .set-favorite
+.podcast-entry svg:hover, .podcast-episode-entry svg:hover, .podcast-favorites-entry svg:hover, .set-favorite
 {
     fill: #E91E63;
     opacity: 0.7;
 }
 
-.podcast-entry img
+.podcast-entry img, .podcast-favorites-entry img
 {
     grid-area: image;
     border-radius: 4px;
@@ -171,10 +196,13 @@ h1
 .podcast-entry-title
 {
     grid-area: title;
-    align-self: flex-end;
+    /*align-self: flex-end;*/
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    padding-top: 0.5em;
+    font-weight: bold;
+    font-size: 16px;
 }
 
 .podcast-entry-subtitle
@@ -220,13 +248,17 @@ h1
 {
     grid-area: name;
     padding: 0.5em;
+    margin-left: 1em;
+    font-weight: bold;
+    font-size: 22px;
     align-self: center;
 }
 
 .settings-count::before
 {
-    content: "# ";
-    color: #039BE5
+    content: "All: ";
+    font-weight: bold;
+    font-size: 18px;
 }
 
 .settings-count
@@ -239,12 +271,12 @@ h1
 .settings-unsubscribe
 {
     grid-area: button;
-    background: #555;
+    background: #333;
     border-radius: 6px;
     text-align: center;
-    padding: 0.2em;
-    padding-top: 0.3em;
-    opacity: 0.7;
+    padding-top: 0.2em;
+    margin-right: 1em;
+    opacity: 0.8;
     align-self: center;
 }
 
