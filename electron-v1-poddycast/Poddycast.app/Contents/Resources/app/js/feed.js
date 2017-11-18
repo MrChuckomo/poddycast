@@ -154,13 +154,41 @@ function appendSettingsSection()
     var EpisodeCount = document.createElement("div")
     EpisodeCount.classList.add("settings-count")
 
-    var Unsubscribe = document.createElement("div")
-    Unsubscribe.innerHTML = "Unsubscribe"
-    Unsubscribe.classList.add("settings-unsubscribe")
+    var MoreElement = document.createElement("div")
+    MoreElement.innerHTML = s_MoreOptionIcon
+    MoreElement.classList.add("settings-unsubscribe")
+
+
+    const {remote} = require('electron')
+    const {Menu, MenuItem} = remote
+
+    const PlaylistMenu = new Menu()
+
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self) { console.log(self.label) }}))
+        }
+    }
+
+    const ContextMenu = new Menu()
+    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
+
+    MoreElement.addEventListener('click', (_Event) =>
+    {
+        console.log("listen");
+        _Event.preventDefault()
+        ContextMenu.popup(remote.getCurrentWindow())
+    }, false)
 
     SettingsDiv.append(podcastName)
     SettingsDiv.append(EpisodeCount)
-    SettingsDiv.append(Unsubscribe)
+    SettingsDiv.append(MoreElement)
 
     RightContent.append(SettingsDiv)
 }

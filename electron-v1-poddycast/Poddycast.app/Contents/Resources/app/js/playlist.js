@@ -45,7 +45,6 @@ function loadPlaylists()
 {
     var PlaylistList = document.getElementById("playlists").getElementsByTagName("ul")[0]
 
-
     if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
     {
         JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
