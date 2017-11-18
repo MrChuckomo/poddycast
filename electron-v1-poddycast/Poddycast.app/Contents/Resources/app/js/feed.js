@@ -148,6 +148,9 @@ function appendSettingsSection()
     var SettingsDiv = document.createElement("div")
     SettingsDiv.classList.add("settings")
 
+    var PodcastImage = document.createElement("img")
+    PodcastImage.classList.add("settings-image")
+
     var podcastName = document.createElement("div")
     podcastName.classList.add("settings-header")
 
@@ -158,6 +161,7 @@ function appendSettingsSection()
     MoreElement.innerHTML = s_MoreOptionIcon
     MoreElement.classList.add("settings-unsubscribe")
 
+    // NOTE: set context menu
 
     const {remote} = require('electron')
     const {Menu, MenuItem} = remote
@@ -181,11 +185,13 @@ function appendSettingsSection()
 
     MoreElement.addEventListener('click', (_Event) =>
     {
-        console.log("listen");
         _Event.preventDefault()
         ContextMenu.popup(remote.getCurrentWindow())
     }, false)
 
+    // NOTE: build layout
+
+    SettingsDiv.append(PodcastImage)
     SettingsDiv.append(podcastName)
     SettingsDiv.append(EpisodeCount)
     SettingsDiv.append(MoreElement)
@@ -199,20 +205,20 @@ function processEpisodes(_Content)
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(_Content,"text/xml");
 
-    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-
-    // NOTE: set settings information
-
-    // setHeader(ChannelName)
-    document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
-    document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
-
-    var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+    var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
 
     if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
     {
         Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
     }
+
+    // NOTE: set settings information
+
+    // setHeader(ChannelName)
+    document.getElementsByClassName("settings-image")[0].src = Artwork
+    document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
+    document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
 
     var List = document.getElementById("list")
 
@@ -229,16 +235,16 @@ function processEpisodes(_Content)
 
         Time.setMilliseconds(EpisodeLength)
 
-        var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+        var ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
-            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+            ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
         }
 
         if (isPlaying(EpisodeUrl))
         {
-            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+            ListElement = getPodcastElement(null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
         }
 
         ListElement.setAttribute("onclick", "playNow(this)")

@@ -200,21 +200,27 @@ h1
 
 .settings
 {
-    background: #333;
-    color: #FFF;
+    border-bottom: 1px solid #E0E0E0;
     padding: 0.5em;
     display: grid;
-    grid-template-columns: 1fr 1fr 50px;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 60px 1fr 1fr 50px;
+    grid-template-rows: 1fr;
     grid-template-areas:
-        "name items button"
-        "playlists playlists playlists"
+        "image name items button";
+}
+
+.settings-image
+{
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
 }
 
 .settings-header
 {
     grid-area: name;
     padding: 0.5em;
+    align-self: center;
 }
 
 .settings-count::before
@@ -226,8 +232,8 @@ h1
 .settings-count
 {
     grid-area: items;
-    color: #FFF;
     padding: 0.5em;
+    align-self: center;
 }
 
 .settings-unsubscribe
@@ -239,6 +245,7 @@ h1
     padding: 0.2em;
     padding-top: 0.3em;
     opacity: 0.7;
+    align-self: center;
 }
 
 .settings-unsubscribe svg
