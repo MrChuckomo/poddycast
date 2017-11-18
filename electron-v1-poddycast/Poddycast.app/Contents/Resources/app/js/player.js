@@ -31,7 +31,8 @@ function playNow(_Self)
     {
         if (AllListItems[i].getAttribute("url") == FeedUrl)
         {
-            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
+            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_MoreOption
+            // AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
             break
         }
     }
