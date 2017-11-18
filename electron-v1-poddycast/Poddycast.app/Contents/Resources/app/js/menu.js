@@ -32,7 +32,7 @@ function showNewEpisodes()
 
             if (Artwork != null)
             {
-                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
+                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
 
                 if (isPlaying(JsonContent[i].episodeUrl))
                 {
