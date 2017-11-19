@@ -4,6 +4,7 @@ function createPlaylist(_Self, _Event)
     if (_Event.code == "Enter")
     {
         var NewPlaylist = document.createElement("li")
+        NewPlaylist.setAttribute("onclick", "showPlaylistContent(this)")
         NewPlaylist.innerHTML = _Self.value
 
         var PlaylistList = document.getElementById("playlists").getElementsByTagName("ul")[0]
@@ -13,7 +14,8 @@ function createPlaylist(_Self, _Event)
 
         var Playlist =
         {
-            "playlistName": _Self.value
+            "playlistName": _Self.value,
+            "podcastList": []
         }
 
         _Self.innerHTML = s_HeartFilled
@@ -55,6 +57,7 @@ function loadPlaylists()
         {
 
             var PlaylistEntry = document.createElement("li")
+            PlaylistEntry.setAttribute("onclick", "showPlaylistContent(this)")
             PlaylistEntry.innerHTML = JsonContent[i].playlistName
 
             setContextMenu(PlaylistEntry)
@@ -72,20 +75,13 @@ function setContextMenu(_Object)
 
     ContextMenu.append(new MenuItem({label: 'Remove Playlist: ' + _Object.innerHTML, click(self)
     {
-        console.log(self.label)
-
         var PlaylistName = self.label.replace("Remove Playlist: ", "")
-
-        console.log(PlaylistName);
-
-        var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+        var JsonContent  = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
             if (PlaylistName == JsonContent[i].playlistName)
             {
-                console.log("found playlist");
-
                 JsonContent.splice(i, 1)
                 break
             }
@@ -106,4 +102,64 @@ function setContextMenu(_Object)
 function getPlaylist(_Name)
 {
     // TODO: load podcasts associated with this playlist
+}
+
+function showPlaylistContent(_Self)
+{
+    clearContent()
+    clearMenuSelection()
+    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    _Self.classList.add("selected")
+
+    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (_Self.innerHTML == JsonContent[i].playlistName)
+        {
+            if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+            {
+                var NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+                var List                   = document.getElementById("list")
+
+                for (var a = 0; a < NewEpisodesJsonContent.length; a++)
+                {
+                    var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", NewEpisodesJsonContent[a].channelName)
+
+                    if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName) != "undefined")
+                    {
+                        Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName)
+                    }
+
+                    if (Artwork != null)
+                    {
+                        var ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_DeleteIcon)
+
+                        if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
+                        {
+                            ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_PlayIcon)
+                        }
+
+                        ListElement.setAttribute("onclick", "playNow(this)")
+                        ListElement.setAttribute("type", NewEpisodesJsonContent[i].episodeType)
+                        ListElement.setAttribute("url", NewEpisodesJsonContent[i].episodeUrl)
+                        ListElement.setAttribute("length", NewEpisodesJsonContent[i].episodeLength)
+
+                        // NOTE: show just episodes of the playlist saved podcast
+
+                        for (var j = 0; j < JsonContent[i].podcastList.length; j++)
+                        {
+                            if (NewEpisodesJsonContent[a].channelName == JsonContent[i].podcastList[j])
+                            {
+                                List.append(ListElement)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+
+            break
+        }
+    }
 }

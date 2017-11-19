@@ -301,9 +301,15 @@ function clearMenuSelection()
 {
     var Menu      = document.getElementById("menu")
     var ListItems = Menu.getElementsByTagName("li")
+    var Playlists = document.getElementById("playlists").getElementsByTagName("li")
 
     for (var i = 0; i < ListItems.length; i++)
     {
         ListItems[i].classList.remove("selected")
+    }
+
+    for (var i = 0; i < Playlists.length; i++)
+    {
+        Playlists[i].classList.remove("selected")
     }
 }

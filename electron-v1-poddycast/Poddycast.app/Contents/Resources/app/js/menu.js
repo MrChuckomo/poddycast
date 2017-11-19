@@ -3,8 +3,8 @@ function selectMenuItem(_MenuId)
 {
     // var MenuItem = _Self
     var MenuItem = document.getElementById(_MenuId)
-    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
 
+    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
     clearMenuSelection()
 
     MenuItem.classList.add("selected")

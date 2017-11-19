@@ -133,33 +133,7 @@ function appendSettingsSection()
 
     // NOTE: set context menu
 
-    const {remote} = require('electron')
-    const {Menu, MenuItem} = remote
-
-    const PlaylistMenu = new Menu()
-
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
-    {
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self) { console.log(self.label) }}))
-        }
-    }
-
-    const ContextMenu = new Menu()
-    ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
-
-    MoreElement.addEventListener('click', (_Event) =>
-    {
-        _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow())
-    }, false)
+    setPodcastSettingsMenu(MoreElement)
 
     // NOTE: build layout
 
@@ -171,6 +145,61 @@ function appendSettingsSection()
     RightContent.append(SettingsDiv)
 }
 
+function setPodcastSettingsMenu(_Object)
+{
+    const {remote} = require('electron')
+    const {Menu, MenuItem} = remote
+
+    const PlaylistMenu = new Menu()
+
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self)
+            {
+                console.log(self.label)
+
+                var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+                for (var i = 0; i < JsonContent.length; i++)
+                {
+                    if (self.label == JsonContent[i].playlistName)
+                    {
+                        console.log(JsonContent[i]);
+                        console.log(document.getElementsByClassName("settings-header")[0].innerHTML);
+
+                        var PodcastList = JsonContent[i].podcastList
+
+                        // TODO: check if podcast is already in the list to avoid double entries
+
+                        PodcastList.push(document.getElementsByClassName("settings-header")[0].innerHTML)
+
+                        break
+                    }
+                }
+
+                fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+            }}))
+        }
+    }
+
+    const ContextMenu = new Menu()
+    ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
+
+    _Object.addEventListener('click', (_Event) =>
+    {
+        _Event.preventDefault()
+        ContextMenu.popup(remote.getCurrentWindow())
+    }, false)
+
+}
 
 function processEpisodes(_Content)
 {
