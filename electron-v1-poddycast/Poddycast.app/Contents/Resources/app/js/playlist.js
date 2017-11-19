@@ -109,6 +109,7 @@ function showPlaylistContent(_Self)
     clearContent()
     clearMenuSelection()
     clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    setHeader(_Self.innerHTML)
     _Self.classList.add("selected")
 
     var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
