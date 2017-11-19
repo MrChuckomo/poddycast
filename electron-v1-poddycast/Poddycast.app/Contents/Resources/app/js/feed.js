@@ -160,22 +160,18 @@ function setPodcastSettingsMenu(_Object)
         {
             PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self)
             {
-                console.log(self.label)
-
                 var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
                 for (var i = 0; i < JsonContent.length; i++)
                 {
                     if (self.label == JsonContent[i].playlistName)
                     {
-                        console.log(JsonContent[i]);
-                        console.log(document.getElementsByClassName("settings-header")[0].innerHTML);
-
                         var PodcastList = JsonContent[i].podcastList
+                        var PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
 
                         // TODO: check if podcast is already in the list to avoid double entries
 
-                        PodcastList.push(document.getElementsByClassName("settings-header")[0].innerHTML)
+                        PodcastList.push(PodcastName)
 
                         break
                     }
