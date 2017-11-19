@@ -91,7 +91,7 @@ function getResults()
             Icon = getFullIcon(PodcastInfos)
         }
 
-        List.append(getPodcastElement(obj.results[i].artworkUrl60, obj.results[i].artistName, obj.results[i].collectionName, Icon))
+        List.append(getPodcastElement(null, obj.results[i].artworkUrl60, obj.results[i].artistName, obj.results[i].collectionName, Icon))
     }
 }
 

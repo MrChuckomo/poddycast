@@ -32,6 +32,7 @@ function playNow(_Self)
         if (AllListItems[i].getAttribute("url") == FeedUrl)
         {
             AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
+            // AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
             break
         }
     }
@@ -76,8 +77,6 @@ function playNow(_Self)
     {
         togglePlayPauseButton(document.getElementById("play-pause"))
     }
-
-
 }
 
 function playPause()
@@ -119,7 +118,12 @@ function updateProgress()
     var Player       = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
+    // TODO: just save every 10 sec.
+
+    if (parseInt(Player.currentTime) % 10 == 0)
+    {
+        savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
+    }
 
     // console.log(Player.currentTime);
     // console.log(Player.duration);

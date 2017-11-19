@@ -26,26 +26,10 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding('utf8');
+                    res.setEncoding("utf8");
 
-                    res.on('data', function (chunk)
-                    {
-                        Content += chunk
-                    });
-
-                    res.on("end", function()
-                    {
-                        parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(Content,"text/xml");
-
-                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                    })
+                    res.on("data", function (chunk) { Content += chunk })
+                    res.on("end",  function ()      { saveLatestEpisode(Content) })
                 });
             }
             else
@@ -54,43 +38,32 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding('utf8');
+                    res.setEncoding("utf8");
 
-                    res.on('data', function (chunk)
-                    {
-                        Content += chunk
-                    });
-
-                    res.on("end", function()
-                    {
-                        parser = new DOMParser();
-                        xmlDoc = parser.parseFromString(Content,"text/xml");
-                        // console.log(xmlDoc);
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                        // console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue);
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length"));
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type"));
-                        // console.log(xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url"));
-
-                        var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                        var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                        var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                        var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-                        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
-                    })
+                    res.on("data", function (chunk) { Content += chunk })
+                    res.on("end",  function ()      { saveLatestEpisode(Content) })
                 });
             }
 
-            req.on('error', function(e)
-            {
-                console.log('problem with request: ' + e.message);
-            });
+            req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
 
             req.end();
         }
     }
+}
+
+function saveLatestEpisode(_Content)
+{
+    parser = new DOMParser();
+    xmlDoc = parser.parseFromString(_Content,"text/xml");
+
+    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
 }
 
 function showAllEpisodes(_Self)
@@ -131,10 +104,7 @@ function getAllEpisodesFromFeed(_Feed)
         });
     }
 
-    req.on('error', function(e)
-    {
-        console.log('problem with request: ' + e.message);
-    });
+    req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
 
     req.end();
 }
@@ -148,43 +118,108 @@ function appendSettingsSection()
     var SettingsDiv = document.createElement("div")
     SettingsDiv.classList.add("settings")
 
+    var PodcastImage = document.createElement("img")
+    PodcastImage.classList.add("settings-image")
+
     var podcastName = document.createElement("div")
     podcastName.classList.add("settings-header")
 
     var EpisodeCount = document.createElement("div")
     EpisodeCount.classList.add("settings-count")
 
-    var Unsubscribe = document.createElement("div")
-    Unsubscribe.innerHTML = "Unsubscribe"
-    Unsubscribe.classList.add("settings-unsubscribe")
+    var MoreElement = document.createElement("div")
+    MoreElement.innerHTML = s_MoreOptionIcon
+    MoreElement.classList.add("settings-unsubscribe")
 
+    // NOTE: set context menu
+
+    setPodcastSettingsMenu(MoreElement)
+
+    // NOTE: build layout
+
+    SettingsDiv.append(PodcastImage)
     SettingsDiv.append(podcastName)
     SettingsDiv.append(EpisodeCount)
-    SettingsDiv.append(Unsubscribe)
+    SettingsDiv.append(MoreElement)
 
     RightContent.append(SettingsDiv)
 }
 
+function setPodcastSettingsMenu(_Object)
+{
+    const {remote} = require('electron')
+    const {Menu, MenuItem} = remote
+
+    const PlaylistMenu = new Menu()
+
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self)
+            {
+                console.log(self.label)
+
+                var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+                for (var i = 0; i < JsonContent.length; i++)
+                {
+                    if (self.label == JsonContent[i].playlistName)
+                    {
+                        console.log(JsonContent[i]);
+                        console.log(document.getElementsByClassName("settings-header")[0].innerHTML);
+
+                        var PodcastList = JsonContent[i].podcastList
+
+                        // TODO: check if podcast is already in the list to avoid double entries
+
+                        PodcastList.push(document.getElementsByClassName("settings-header")[0].innerHTML)
+
+                        break
+                    }
+                }
+
+                fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+            }}))
+        }
+    }
+
+    const ContextMenu = new Menu()
+    ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
+
+    _Object.addEventListener('click', (_Event) =>
+    {
+        _Event.preventDefault()
+        ContextMenu.popup(remote.getCurrentWindow())
+    }, false)
+
+}
 
 function processEpisodes(_Content)
 {
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(_Content,"text/xml");
 
-    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-
-    // NOTE: set settings information
-
-    // setHeader(ChannelName)
-    document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
-    document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
-
-    var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+    var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+    var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
 
     if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
     {
         Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
     }
+
+    // NOTE: set settings information
+
+    // setHeader(ChannelName)
+    document.getElementsByClassName("settings-image")[0].src = Artwork
+    document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
+    document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
 
     var List = document.getElementById("list")
 
@@ -201,16 +236,16 @@ function processEpisodes(_Content)
 
         Time.setMilliseconds(EpisodeLength)
 
-        var ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+        var ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
-            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
         }
 
         if (isPlaying(EpisodeUrl))
         {
-            ListElement = getPodcastElement(Artwork, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
         }
 
         ListElement.setAttribute("onclick", "playNow(this)")

@@ -195,7 +195,7 @@ function unsubscribe(_Self)
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
+function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement)
 {
     var ListElement     = document.createElement("li")
     var TitleElement    = document.createElement("div")
@@ -212,18 +212,15 @@ function getPodcastElement(_Artwork, _Subtitle, _Title, _IconElement)
 
     ListElement.classList.add("podcast-entry")
 
-    if (_IconElement != undefined)
-    {
-        ListElement.innerHTML = _IconElement
-    }
-
-    if (_Artwork != null)
-    {
-        ListElement.append(ImageElement)
-    }
+    if (_Class       != null)      { ListElement.classList.remove("podcast-entry"); ListElement.classList.add(_Class) }
+    if (_IconElement != undefined) { ListElement.innerHTML = _IconElement }
+    if (_Artwork     != null)      { ListElement.append(ImageElement) }
 
     ListElement.append(TitleElement)
-    ListElement.append(SubtitleElement)
+
+    if (_Subtitle != null) { ListElement.append(SubtitleElement)}
+
+    // ListElement.append(SubtitleElement)
 
     return ListElement
 }
@@ -304,9 +301,15 @@ function clearMenuSelection()
 {
     var Menu      = document.getElementById("menu")
     var ListItems = Menu.getElementsByTagName("li")
+    var Playlists = document.getElementById("playlists").getElementsByTagName("li")
 
     for (var i = 0; i < ListItems.length; i++)
     {
         ListItems[i].classList.remove("selected")
+    }
+
+    for (var i = 0; i < Playlists.length; i++)
+    {
+        Playlists[i].classList.remove("selected")
     }
 }
