@@ -9,6 +9,8 @@ function createPlaylist(_Self, _Event)
         var PlaylistList = document.getElementById("playlists").getElementsByTagName("ul")[0]
         PlaylistList.append(NewPlaylist)
 
+        setContextMenu(NewPlaylist)
+
         var Playlist =
         {
             "playlistName": _Self.value
@@ -55,9 +57,50 @@ function loadPlaylists()
             var PlaylistEntry = document.createElement("li")
             PlaylistEntry.innerHTML = JsonContent[i].playlistName
 
+            setContextMenu(PlaylistEntry)
+
             PlaylistList.append(PlaylistEntry)
         }
     }
+}
+
+function setContextMenu(_Object)
+{
+    const {remote}         = require('electron')
+    const {Menu, MenuItem} = remote
+    const ContextMenu      = new Menu()
+
+    ContextMenu.append(new MenuItem({label: 'Remove Playlist: ' + _Object.innerHTML, click(self)
+    {
+        console.log(self.label)
+
+        var PlaylistName = self.label.replace("Remove Playlist: ", "")
+
+        console.log(PlaylistName);
+
+        var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (PlaylistName == JsonContent[i].playlistName)
+            {
+                console.log("found playlist");
+
+                JsonContent.splice(i, 1)
+                break
+            }
+        }
+
+        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+
+        location.reload()
+    }}))
+
+    _Object.addEventListener('contextmenu', (_Event) =>
+    {
+        _Event.preventDefault()
+        ContextMenu.popup(remote.getCurrentWindow())
+    }, false)
 }
 
 function getPlaylist(_Name)
