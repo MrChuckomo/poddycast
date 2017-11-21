@@ -2,8 +2,7 @@
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
 
-
-var http = require('http');
+var http  = require('http');
 var https = require('https');
 
 function getPodcasts(_SearchTerm)
@@ -21,21 +20,14 @@ function getPodcasts(_SearchTerm)
         host: 'itunes.apple.com',
         port: 443,
         path: '/search?term=' + _SearchTerm + '&media=podcast',
-        // path: '/search?term=freakshow&media=podcast',
         method: 'GET',
     };
 
     var req = https.request(options, function(res)
     {
-        // console.log('STATUS: ' + res.statusCode);
-        // console.log('HEADERS: ' + JSON.stringify(res.headers));
         res.setEncoding('utf8');
         res.on('data', function (chunk)
         {
-            // console.log('BODY: ' + chunk);
-
-            // document.getElementById("res").innerHTML += chunk
-
             if (document.getElementById("res").getAttribute("return-value") == null)
             {
                 document.getElementById("res").setAttribute("return-value", chunk)
@@ -47,16 +39,10 @@ function getPodcasts(_SearchTerm)
             }
         });
 
-        res.on("end", function()
-        {
-            getResults()
-        })
+        res.on("end", function() { getResults() })
     });
 
-    req.on('error', function(e)
-    {
-        console.log('problem with request: ' + e.message);
-    });
+    req.on('error', function(e) { console.log('problem with request: ' + e.message); });
 
     req.end();
 }
@@ -65,7 +51,7 @@ function getResults()
 {
     chunk = document.getElementById("res").getAttribute("return-value")
 
-    console.log(chunk);
+    // console.log(chunk);
 
     var obj = JSON.parse(chunk);
 
