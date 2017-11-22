@@ -15,12 +15,23 @@ function getPodcasts(_SearchTerm)
     _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
     _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
+    // TODO: detect proxy
+    // TODO: if proxy available use differnt options
+
+    // var options =
+    // {
+    //     host: 'proxy',
+    //     port: 8080,
+    //     path: 'http://itunes.apple.com/search?term=' + _SearchTerm + '&media=podcast',
+    //     method: 'GET'
+    // };
+
     var options =
     {
         host: 'itunes.apple.com',
         port: 443,
         path: '/search?term=' + _SearchTerm + '&media=podcast',
-        method: 'GET',
+        method: 'GET'
     };
 
     var req = https.request(options, function(res)
