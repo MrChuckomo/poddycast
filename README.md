@@ -1,4 +1,4 @@
-# Poddycast [BETA]
+# Poddycast [BETA] :construction:
 
 A Podcast app made with Electron because I love Podcasts.
 
@@ -17,5 +17,6 @@ Download this repository and it will work on macOS.
 
 ## Platform Support
 
-- macOS
-- Windows (comming soon)
+
+:white_check_mark: macOS  
+:white_check_mark: Windows (comming soon)
