@@ -15,7 +15,6 @@ function readFeeds()
 
         // console.log(fs.readFile("http://teenagersexbeichte.de/feed/tsbfeed/", "utf-8"));
 
-
         for (var i = 0; i < JsonContent.length; i++)
         {
             // var req = http.request("http://teenagersexbeichte.de/feed/tsbfeed/", function(res)
@@ -92,7 +91,20 @@ function getAllEpisodesFromFeed(_Feed)
             // res.setEncoding('utf8')
 
             res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()      { processEpisodes(Content.trim()) })
+            res.on("end",  function ()
+            {
+                if (Content.trim() == "" || Content.trim().includes("302 Found"))
+                {
+                    _Feed = _Feed.replace("https", "http")
+
+                    clearContent()
+                    getAllEpisodesFromFeed(_Feed)
+                }
+                else
+                {
+                    processEpisodes(Content.trim())
+                }
+            })
         });
     }
     else
@@ -104,7 +116,20 @@ function getAllEpisodesFromFeed(_Feed)
             // res.setEncoding('utf8')
 
             res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()      { processEpisodes(Content.trim()) })
+            res.on("end",  function ()
+            {
+                if (Content.trim() == "" || Content.trim().includes("302 Found"))
+                {
+                    _Feed = _Feed.replace("http", "https")
+
+                    clearContent()
+                    getAllEpisodesFromFeed(_Feed)
+                }
+                else
+                {
+                    processEpisodes(Content.trim())
+                }
+            })
         });
     }
 
@@ -216,6 +241,7 @@ function processEpisodes(_Content)
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(_Content, "text/xml");
 
+    // console.log(_Content);
     // console.log(xmlDoc);
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
