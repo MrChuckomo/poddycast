@@ -23,7 +23,7 @@ const template =
         [
             {
                 label: "Play/Pause",
-                accelerator: "Alt+Space",
+                accelerator: "Control+Space",
                 click() { playPause("play-pause") }
             },
             {type: 'separator'},

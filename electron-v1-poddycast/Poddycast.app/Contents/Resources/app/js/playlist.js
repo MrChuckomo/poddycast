@@ -109,6 +109,7 @@ function showPlaylistContent(_Self)
     clearContent()
     clearMenuSelection()
     clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    setHeader(_Self.innerHTML)
     _Self.classList.add("selected")
 
     var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
@@ -117,6 +118,10 @@ function showPlaylistContent(_Self)
     {
         if (_Self.innerHTML == JsonContent[i].playlistName)
         {
+
+            console.log(JsonContent[i].playlistName);
+            console.log(JsonContent[i].podcastList);
+
             if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
             {
                 var NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
@@ -141,9 +146,9 @@ function showPlaylistContent(_Self)
                         }
 
                         ListElement.setAttribute("onclick", "playNow(this)")
-                        ListElement.setAttribute("type", NewEpisodesJsonContent[i].episodeType)
-                        ListElement.setAttribute("url", NewEpisodesJsonContent[i].episodeUrl)
-                        ListElement.setAttribute("length", NewEpisodesJsonContent[i].episodeLength)
+                        ListElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
+                        ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
+                        ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
 
                         // NOTE: show just episodes of the playlist saved podcast
 

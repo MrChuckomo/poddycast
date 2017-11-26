@@ -11,7 +11,7 @@ function readFeeds()
 
     if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         // console.log(fs.readFile("http://teenagersexbeichte.de/feed/tsbfeed/", "utf-8"));
 
@@ -77,7 +77,9 @@ function getAllEpisodesFromFeed(_Feed)
 {
     // TODO: hide add button after clicking it
 
-    appendSettingsSection()
+    var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
+
+    appendSettingsSection(PodcastName)
 
     if (_Feed.includes("https"))
     {
@@ -109,7 +111,7 @@ function getAllEpisodesFromFeed(_Feed)
     req.end();
 }
 
-function appendSettingsSection()
+function appendSettingsSection(_PodcastName)
 {
     // NOTE: settings area in front of a podcast episode list
 
@@ -133,7 +135,7 @@ function appendSettingsSection()
 
     // NOTE: set context menu
 
-    setPodcastSettingsMenu(MoreElement)
+    setPodcastSettingsMenu(MoreElement, _PodcastName)
 
     // NOTE: build layout
 
@@ -145,7 +147,7 @@ function appendSettingsSection()
     RightContent.append(SettingsDiv)
 }
 
-function setPodcastSettingsMenu(_Object)
+function setPodcastSettingsMenu(_Object, _PodcastName)
 {
     const {remote} = require('electron')
     const {Menu, MenuItem} = remote
@@ -154,28 +156,34 @@ function setPodcastSettingsMenu(_Object)
 
     if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
     {
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, click(self)
-            {
-                console.log(self.label)
+            var IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName)
 
+            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, type: "checkbox", checked: IsInPlaylist, click(self)
+            {
                 var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
                 for (var i = 0; i < JsonContent.length; i++)
                 {
                     if (self.label == JsonContent[i].playlistName)
                     {
-                        console.log(JsonContent[i]);
-                        console.log(document.getElementsByClassName("settings-header")[0].innerHTML);
-
                         var PodcastList = JsonContent[i].podcastList
+                        var PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
 
-                        // TODO: check if podcast is already in the list to avoid double entries
-
-                        PodcastList.push(document.getElementsByClassName("settings-header")[0].innerHTML)
+                        if (isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName))
+                        {
+                            for (var j = PodcastList.length - 1; j >= 0 ; j--)
+                            {
+                                if(PodcastList[j] == PodcastName) { PodcastList.splice(j, 1) }
+                            }
+                        }
+                        else
+                        {
+                            PodcastList.push(PodcastName)
+                        }
 
                         break
                     }

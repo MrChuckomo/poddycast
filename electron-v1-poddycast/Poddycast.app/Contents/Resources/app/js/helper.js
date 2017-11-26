@@ -110,6 +110,29 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
     return FeedExists
 }
 
+function isAlreadyInPlaylist(_ListName, _PodcastName)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+    var Result      = false
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (JsonContent[i].playlistName == _ListName)
+        {
+            for (var j = 0; j < JsonContent[i].podcastList.length; j++)
+            {
+                if (JsonContent[i].podcastList[j] == _PodcastName)
+                {
+                    Result = true
+                    break
+                }
+            }
+        }
+    }
+
+    return Result
+}
+
 function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
 {
     var DestinationValue = null
@@ -168,6 +191,8 @@ function setHeader(_Title)
 
 function unsubscribe(_Self)
 {
+    // TODO: support also context menu unsubscribe (there is no reference to the svg heart icon)
+
     if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         // NOTE: Remove optically
