@@ -118,9 +118,8 @@ function showPlaylistContent(_Self)
     {
         if (_Self.innerHTML == JsonContent[i].playlistName)
         {
-
-            console.log(JsonContent[i].playlistName);
-            console.log(JsonContent[i].podcastList);
+            // console.log(JsonContent[i].playlistName);
+            // console.log(JsonContent[i].podcastList);
 
             if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
             {

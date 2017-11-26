@@ -26,10 +26,10 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding("utf8");
+                    // res.setEncoding("utf8");
 
                     res.on("data", function (chunk) { Content += chunk })
-                    res.on("end",  function ()      { saveLatestEpisode(Content) })
+                    res.on("end",  function ()      { saveLatestEpisode(Content.trim()) })
                 });
             }
             else
@@ -38,10 +38,10 @@ function readFeeds()
                 {
                     var Content = ""
 
-                    res.setEncoding("utf8");
+                    // res.setEncoding("utf8");
 
                     res.on("data", function (chunk) { Content += chunk })
-                    res.on("end",  function ()      { saveLatestEpisode(Content) })
+                    res.on("end",  function ()      { saveLatestEpisode(Content.trim()) })
                 });
             }
 
@@ -56,6 +56,8 @@ function saveLatestEpisode(_Content)
 {
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(_Content,"text/xml");
+
+    // console.log(xmlDoc);
 
     var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
     var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
@@ -87,10 +89,10 @@ function getAllEpisodesFromFeed(_Feed)
         {
             var Content = ""
 
-            res.setEncoding('utf8')
+            // res.setEncoding('utf8')
 
             res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()      { processEpisodes(Content) })
+            res.on("end",  function ()      { processEpisodes(Content.trim()) })
         });
     }
     else
@@ -99,10 +101,10 @@ function getAllEpisodesFromFeed(_Feed)
         {
             var Content = ""
 
-            res.setEncoding('utf8')
+            // res.setEncoding('utf8')
 
             res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()      { processEpisodes(Content) })
+            res.on("end",  function ()      { processEpisodes(Content.trim()) })
         });
     }
 
@@ -212,7 +214,9 @@ function setPodcastSettingsMenu(_Object, _PodcastName)
 function processEpisodes(_Content)
 {
     parser = new DOMParser();
-    xmlDoc = parser.parseFromString(_Content,"text/xml");
+    xmlDoc = parser.parseFromString(_Content, "text/xml");
+
+    // console.log(xmlDoc);
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
     var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
