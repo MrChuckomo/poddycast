@@ -27,8 +27,9 @@ Download this repository and it will work on macOS.
 
 ## Platform Support
 
-:white_check_mark: macOS  
-:white_check_mark: Windows (comming soon)
+- [x] macOS  
+- [ ] Windows (comming soon)
+- [ ] Linux (comming soon)
 
 ## Contact
 
