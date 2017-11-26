@@ -172,6 +172,20 @@ function focusTextField(_InputField)
     document.getElementById(_InputField).focus()
 }
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+// LEFT COLUMN
+// ---------------------------------------------------------------------------------------------------------------------
+function setItemCounts()
+{
+    var NewEpisodesCount       = document.getElementById("menu-episodes").getElementsByClassName("menu-count")[0]
+    NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8")).length
+
+    var FavoritesCount       = document.getElementById("menu-favorites").getElementsByClassName("menu-count")[0]
+    FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8")).length
+}
+
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------

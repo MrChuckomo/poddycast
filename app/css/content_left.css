@@ -66,14 +66,27 @@
     margin-bottom: 0.5em;
     font-size: 16px;
     border-radius: 6px;
-    /*border-left: 3px solid #333;*/
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 30px 1fr 30px;
+}
+
+
+#menu ul li span
+{
+    align-self: center;
 }
 
 #menu ul li svg
 {
     opacity: 0.6;
-    vertical-align: middle;
-    margin-right: 0.5em;
+    align-self: center;
+}
+
+.menu-count
+{
+    align-self: center;
+    opacity: 0.4;
 }
 
 .pink
