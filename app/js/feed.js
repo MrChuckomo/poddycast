@@ -19,6 +19,12 @@ function readFeeds()
         {
             // var req = http.request("http://teenagersexbeichte.de/feed/tsbfeed/", function(res)
 
+            // var options =
+            // {
+            //     method: 'GET',
+            //     path: JsonContent[i].feedUrl
+            // };
+
             if (JsonContent[i].feedUrl.includes("https"))
             {
                 var req = https.request(JsonContent[i].feedUrl, function(res)
@@ -81,6 +87,12 @@ function getAllEpisodesFromFeed(_Feed)
     var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName)
+
+    // var options =
+    // {
+    //     method: 'GET',
+    //     path: _Feed
+    // };
 
     if (_Feed.includes("https"))
     {
