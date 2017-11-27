@@ -211,7 +211,9 @@ function unsubscribe(_Self)
     {
         // NOTE: Remove optically
 
-        _Self.parentElement.parentElement.removeChild(_Self.parentElement)
+        var ListElement = _Self.parentElement.parentElement;
+
+        ListElement.parentElement.removeChild(ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
@@ -219,7 +221,7 @@ function unsubscribe(_Self)
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            if (_Self.parentElement.getAttribute("feedUrl") == JsonContent[i].feedUrl)
+            if (ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl") == JsonContent[i].feedUrl)
             {
                 JsonContent.splice(i, 1)
                 break
@@ -234,12 +236,29 @@ function unsubscribe(_Self)
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement)
+function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _HeaderLayout)
 {
     var ListElement     = document.createElement("li")
+    var HeaderElement   = document.createElement("div")
+    var ActionsElement  = document.createElement("div")
+    var BodyElement     = document.createElement("div")
+
     var TitleElement    = document.createElement("div")
     var SubtitleElement = document.createElement("div")
     var ImageElement    = document.createElement("img")
+
+
+    if (_HeaderLayout == null)
+    {
+        HeaderElement.classList.add("podcast-entry-header")
+    }
+    else
+    {
+        HeaderElement.classList.add(_HeaderLayout)
+    }
+
+    ActionsElement.classList.add("podcast-entry-actions")
+    BodyElement.classList.add("podcast-entry-body")
 
     ImageElement.src = _Artwork
 
@@ -252,12 +271,18 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement)
     ListElement.classList.add("podcast-entry")
 
     if (_Class       != null)      { ListElement.classList.remove("podcast-entry"); ListElement.classList.add(_Class) }
-    if (_IconElement != undefined) { ListElement.innerHTML = _IconElement }
-    if (_Artwork     != null)      { ListElement.append(ImageElement) }
+    if (_IconElement != undefined) { ActionsElement.innerHTML = _IconElement }
+    if (_Artwork     != null)      { HeaderElement.append(ImageElement) }
 
-    ListElement.append(TitleElement)
+    if (_Subtitle != null) { HeaderElement.append(SubtitleElement)}
 
-    if (_Subtitle != null) { ListElement.append(SubtitleElement)}
+    // ListElement.append(TitleElement)
+
+    HeaderElement.append(TitleElement)
+
+    ListElement.append(HeaderElement)
+    ListElement.append(ActionsElement)
+    ListElement.append(BodyElement)
 
     // ListElement.append(SubtitleElement)
 
@@ -266,7 +291,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement)
 
 function deleteEntryWithIcon(_Self)
 {
-    deleteEntry(_Self.parentElement)
+    deleteEntry(_Self.parentElement.parentElement)
 }
 
 function deleteEntryWithAudioPlayer(_FeedUrl)
@@ -286,7 +311,7 @@ function deleteEntry(_ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
-        deleteFromFile(_ListElement.getAttribute("url"))
+        deleteFromFile(_ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("url"))
 
         setItemCounts()
     }

@@ -33,16 +33,20 @@ function showNewEpisodes()
             if (Artwork != null)
             {
                 var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+                // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
 
-                if (isPlaying(JsonContent[i].episodeUrl))
-                {
-                    ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
-                }
+                // if (isPlaying(JsonContent[i].episodeUrl))
+                // {
+                //     ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
+                // }
 
-                ListElement.setAttribute("onclick", "playNow(this)")
-                ListElement.setAttribute("type", JsonContent[i].episodeType)
-                ListElement.setAttribute("url", JsonContent[i].episodeUrl)
-                ListElement.setAttribute("length", JsonContent[i].episodeLength)
+                var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
+
+                HeaderElement.setAttribute("onclick", "playNow(this)")
+                HeaderElement.setAttribute("type", JsonContent[i].episodeType)
+                HeaderElement.setAttribute("url", JsonContent[i].episodeUrl)
+                HeaderElement.setAttribute("length", JsonContent[i].episodeLength)
+                HeaderElement.setAttribute("artworkUrl", Artwork)
 
                 List.append(ListElement)
             }
@@ -71,10 +75,12 @@ function showFavorites()
                 Artwork = JsonContent[i].artworkUrl100
             }
 
-            var ListElement = getPodcastElement("podcast-favorites-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
+            var ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
 
-            ListElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
-            ListElement.setAttribute("onclick", "showAllEpisodes(this)")
+            var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
+
+            HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
+            HeaderElement.setAttribute("onclick", "showAllEpisodes(this)")
 
             List.append(ListElement)
         }

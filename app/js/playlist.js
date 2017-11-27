@@ -144,10 +144,13 @@ function showPlaylistContent(_Self)
                             ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_PlayIcon)
                         }
 
-                        ListElement.setAttribute("onclick", "playNow(this)")
-                        ListElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
-                        ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
-                        ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
+                        var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
+
+                        HeaderElement.setAttribute("onclick", "playNow(this)")
+                        HeaderElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
+                        HeaderElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
+                        HeaderElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
+                        HeaderElement.setAttribute("artworkUrl", Artwork) 
 
                         // NOTE: show just episodes of the playlist saved podcast
 

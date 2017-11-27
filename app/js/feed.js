@@ -70,7 +70,12 @@ function saveLatestEpisode(_Content)
     var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
     var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
 
-    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+    // NOTE: save latest if not already in History
+
+    if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+    {
+        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+    }
 }
 
 function showAllEpisodes(_Self)
@@ -286,24 +291,27 @@ function processEpisodes(_Content)
 
         Time.setMilliseconds(EpisodeLength)
 
-        var ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon)
+        var ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
-            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle)
+            ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, null, "podcast-episode-header")
         }
 
         if (isPlaying(EpisodeUrl))
         {
-            ListElement = getPodcastElement("podcast-episode-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon)
+            ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
         }
 
-        ListElement.setAttribute("onclick", "playNow(this)")
-        ListElement.setAttribute("channel", ChannelName)
-        ListElement.setAttribute("title", EpisodeTitle)
-        ListElement.setAttribute("type", EpisodeType)
-        ListElement.setAttribute("url", EpisodeUrl)
-        ListElement.setAttribute("length", EpisodeLength)
+        var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
+
+        HeaderElement.setAttribute("onclick", "playNow(this)")
+        HeaderElement.setAttribute("channel", ChannelName)
+        HeaderElement.setAttribute("title", EpisodeTitle)
+        HeaderElement.setAttribute("type", EpisodeType)
+        HeaderElement.setAttribute("url", EpisodeUrl)
+        HeaderElement.setAttribute("length", EpisodeLength)
+        HeaderElement.setAttribute("artworkUrl", Artwork)
 
         List.append(ListElement)
     }
@@ -311,43 +319,42 @@ function processEpisodes(_Content)
 
 function addToEpisodes(_Self)
 {
-    var ListElement = _Self.parentElement
+    var ListElement = _Self.parentElement.parentElement.getElementsByClassName("podcast-episode-header")[0]
 
     saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"))
+
+    _Self.innerHTML = ""
 }
 
 function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
 {
-    if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", _EpisodeUrl) == null)
+    var Feed =
     {
-        var Feed =
-        {
-            "channelName": _ChannelName,
-            "episodeTitle": _EpisodeTitle,
-            "episodeUrl": _EpisodeUrl,
-            "episodeType": _EpisodeType,
-            "episodeLength": _EpisodeLength,
-            "playbackPosition": 0,
-        }
-
-        var JsonContent = []
-
-        if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-        {
-            JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-        }
-        else
-        {
-            fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
-        }
-
-        if (!isEpisodeAlreadySaved(_EpisodeTitle))
-        {
-            JsonContent.push(Feed)
-        }
-
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
-
-        setItemCounts()
+        "channelName": _ChannelName,
+        "episodeTitle": _EpisodeTitle,
+        "episodeUrl": _EpisodeUrl,
+        "episodeType": _EpisodeType,
+        "episodeLength": _EpisodeLength,
+        "playbackPosition": 0,
     }
+
+    var JsonContent = []
+
+    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+    }
+    else
+    {
+        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    }
+
+    if (!isEpisodeAlreadySaved(_EpisodeTitle))
+    {
+        JsonContent.push(Feed)
+    }
+
+    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+
+    setItemCounts()
 }

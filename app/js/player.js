@@ -70,7 +70,7 @@ function playNow(_Self)
 
     Player.addEventListener("timeupdate", updateProgress, false)
 
-    document.getElementById("content-right-player-img").src = _Self.getElementsByTagName("img")[0].src
+    document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
     togglePlayPauseButton(document.getElementById("play-pause"))
 
     if (player.paused)
