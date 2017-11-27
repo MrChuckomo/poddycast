@@ -347,5 +347,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         }
 
         fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+
+        setItemCounts()
     }
 }

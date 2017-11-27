@@ -287,6 +287,8 @@ function deleteEntry(_ListElement)
         // NOTE: Remove from JSON file and overwrite the file
 
         deleteFromFile(_ListElement.getAttribute("url"))
+
+        setItemCounts()
     }
 }
 
