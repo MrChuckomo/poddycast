@@ -22,13 +22,14 @@ You can also create **playlist** to keep you Podcast collection nice and clean.
 
 ## Install
 
-Download this repository and it will work on macOS.
+Download this repository and it will work on macOS and Windows.  
+[Beta Release v0.1.0](https://github.com/MrChuckomo/poddycast/releases)
 
 
 ## Platform Support
 
 - [x] macOS  
-- [ ] Windows (comming soon)
+- [x] Windows
 - [ ] Linux (comming soon)
 
 ## Contact
