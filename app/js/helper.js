@@ -172,6 +172,10 @@ function focusTextField(_InputField)
     document.getElementById(_InputField).focus()
 }
 
+function getPrettyTime(_Time)
+{
+    return ((_Time < 10) ? "0" + _Time : _Time)
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // LEFT COLUMN

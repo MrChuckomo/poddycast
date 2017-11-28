@@ -62,7 +62,7 @@ function playNow(_Self)
 function selectItem(_Self)
 {
     clearListSelection()
-    
+
     _Self.parentElement.classList.add("select-episode")
 }
 
@@ -105,18 +105,12 @@ function updateProgress()
     var Player       = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    // TODO: just save every 10 sec.
+    // NOTE: just save every 10 sec.
 
     if (parseInt(Player.currentTime) % 10 == 0)
     {
         savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
     }
-
-    // console.log(Player.currentTime);
-    // console.log(Player.duration);
-    // console.log(Player.ended);
-    // console.log(Player.playbackRate);
-    // Player.playbackRate = 1.5
 
     if (Player.ended)
     {
@@ -125,18 +119,61 @@ function updateProgress()
         // TODO: play next episode in line depending on the playlist
     }
 
+    // NOTE: Update progress bar
+
     var Value = 0;
 
     if (Player.currentTime > 0)
     {
-        Value = Math.floor((100 / Player.duration) * Player.currentTime);
+        Value = Math.floor((100 / Player.duration) * Player.currentTime)
     }
-
-    // console.log("Progress: " + Value);
 
     var Progress = document.getElementById("content-right-player-progress-bar-progress")
 
     Progress.style.width = Value + "%"
+
+    // NOTE: Update player time in extended layout
+
+    // setDuration()
+    setPlaybackTime(Player.currentTime, "content-right-player-time")
+    setPlaybackTime(Player.duration, "content-right-player-duration")
+}
+
+// function setDuration()
+// {
+//     var Player = document.getElementById("player")
+//     var Time   = document.getElementById("content-right-player-duration")
+//
+//     var TimeInSeconds = Math.floor(Player.duration)
+//     var Hours = Math.floor(TimeInSeconds / 3600)
+//
+//     TimeInSeconds = TimeInSeconds - (Hours * 3600)
+//
+//     var Minutes = Math.floor(TimeInSeconds / 60)
+//     var Seconds = Math.floor(TimeInSeconds - (Minutes * 60))
+//
+//     if (!isNaN(Minutes))
+//     {
+//         Time.innerHTML = getPrettyTime(Hours) + ":" + getPrettyTime(Minutes) + ":" + getPrettyTime(Seconds)
+//     }
+// }
+
+function setPlaybackTime(_Time, _ElementName)
+{
+    var TimeElement   = document.getElementById(_ElementName)
+    var TimeInSeconds = Math.floor(_Time)
+
+    var Hours = Math.floor(TimeInSeconds / 3600)
+
+    TimeInSeconds = TimeInSeconds - (Hours * 3600)
+
+    var Minutes = Math.floor(TimeInSeconds / 60)
+    var Seconds = Math.floor(TimeInSeconds - (Minutes * 60))
+
+    if (!isNaN(Minutes))
+    {
+        TimeElement.innerHTML = getPrettyTime(Hours) + ":" + getPrettyTime(Minutes) + ":" + getPrettyTime(Seconds)
+    }
 }
 
 function savePlaybackPosition(_Source, _CurrentTime)
