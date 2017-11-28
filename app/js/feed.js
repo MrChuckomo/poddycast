@@ -300,7 +300,8 @@ function processEpisodes(_Content)
 
         if (isPlaying(EpisodeUrl))
         {
-            ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
+            // ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
+            ListElement.classList.add("select-episode")
         }
 
         var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]

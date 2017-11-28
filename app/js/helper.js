@@ -196,6 +196,16 @@ function clearContent()
     document.getElementById("list").innerHTML = ""
 }
 
+function clearListSelection()
+{
+    var ListItems = document.getElementById("list").getElementsByTagName("li")
+
+    for (var i = 0; i < ListItems.length; i++)
+    {
+        ListItems[i].classList.remove("select-episode")
+    }
+}
+
 function setHeader(_Title)
 {
     var Header = document.getElementById("content-right").getElementsByTagName("h1")[0]
@@ -353,8 +363,6 @@ function deleteFromFile(_FeedUrl)
             break
         }
     }
-
-    console.log(JsonContent.length);
 
     fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
 }

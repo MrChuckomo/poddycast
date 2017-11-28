@@ -127,6 +127,8 @@ h1
     padding: 0;
 }
 
+
+
 /*.podcast-favorites-entry
 {
     background-color: inherit;
@@ -249,6 +251,37 @@ h1
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Select the currently playing episode */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.select-episode
+{
+    background: #039BE5;
+}
+
+.select-episode:hover
+{
+    background: #0288D1;
+}
+
+.select-episode div
+{
+    color: #FFF;
+}
+
+.select-episode svg
+{
+    fill: #FFF;
+    opacity: 0.8;
+}
+
+.select-episode svg:hover
+{
+    fill: #FFF;
+    opacity: 1;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

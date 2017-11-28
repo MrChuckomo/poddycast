@@ -141,7 +141,7 @@ function showPlaylistContent(_Self)
 
                         if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
                         {
-                            ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_PlayIcon)
+                            ListElement.classList.add("select-episode")
                         }
 
                         var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
@@ -150,7 +150,7 @@ function showPlaylistContent(_Self)
                         HeaderElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
                         HeaderElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
                         HeaderElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
-                        HeaderElement.setAttribute("artworkUrl", Artwork) 
+                        HeaderElement.setAttribute("artworkUrl", Artwork)
 
                         // NOTE: show just episodes of the playlist saved podcast
 

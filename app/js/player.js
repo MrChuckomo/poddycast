@@ -18,11 +18,7 @@ function playNow(_Self)
     var Player = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
-    // console.log(_Self);
-    // console.log(Player);
-    // console.log(PlayerSource);
-
-    // Set old played episode to delete icon again
+    // NOTE: Set old played episode to delete icon again
 
     var FeedUrl = PlayerSource.getAttribute("src")
     var AllListItems = document.getElementsByClassName("podcast-entry")
@@ -37,37 +33,21 @@ function playNow(_Self)
         }
     }
 
-    // Set current episode icon to play
+    // NOTE: Set current episode to play
 
-    if (_Self.getElementsByTagName("svg").length == 0)
-    {
-        // TODO: show a svg if nothing is there (add, append etc.)
-        // _Self.innerHTML = s_PlayIcon
-    }
-    else
-    {
-        _Self.getElementsByTagName("svg")[0].innerHTML = s_Play
-    }
+    selectItem(_Self)
 
-
-    // Set the audio source
+    // NOTE: Set the audio source
 
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
-
-    // console.log(PlayerSource);
 
     // Player.pause()
 
     togglePlayPauseButton(document.getElementById("play-pause"))
 
     Player.load()
-    // Player.play()
-
     Player.currentTime = getPlaybackPosition(_Self.getAttribute("url"))
-
-    // console.log(getPlaybackPosition(_Self.getAttribute("url")));
-
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
@@ -77,6 +57,13 @@ function playNow(_Self)
     {
         togglePlayPauseButton(document.getElementById("play-pause"))
     }
+}
+
+function selectItem(_Self)
+{
+    clearListSelection()
+    
+    _Self.parentElement.classList.add("select-episode")
 }
 
 function playPause()

@@ -35,10 +35,11 @@ function showNewEpisodes()
                 var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
 
-                // if (isPlaying(JsonContent[i].episodeUrl))
-                // {
+                if (isPlaying(JsonContent[i].episodeUrl))
+                {
                 //     ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
-                // }
+                    ListElement.classList.add("select-episode")
+                }
 
                 var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
 
