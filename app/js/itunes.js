@@ -15,56 +15,12 @@ function getPodcasts(_SearchTerm)
     _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
     _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
-    // TODO: detect proxy
-    // TODO: if proxy available use differnt options
-
-    // var options =
-    // {
-    //     host: 'proxy',
-    //     port: 8080,
-    //     path: 'http://itunes.apple.com/search?term=' + _SearchTerm + '&media=podcast',
-    //     method: 'GET'
-    // };
-
-    var options =
-    {
-        host: 'itunes.apple.com',
-        port: 443,
-        path: '/search?term=' + _SearchTerm + '&media=podcast',
-        method: 'GET'
-    };
-
-    var req = https.request(options, function(res)
-    {
-        res.setEncoding('utf8');
-        res.on('data', function (chunk)
-        {
-            if (document.getElementById("res").getAttribute("return-value") == null)
-            {
-                document.getElementById("res").setAttribute("return-value", chunk)
-            }
-            else
-            {
-                Value = document.getElementById("res").getAttribute("return-value") + chunk
-                document.getElementById("res").setAttribute("return-value", Value)
-            }
-        });
-
-        res.on("end", function() { getResults() })
-    });
-
-    req.on('error', function(e) { console.log('problem with request: ' + e.message); });
-
-    req.end();
+    makeRequest(getITunesOptions(_SearchTerm), getITunesProxyOptions(_SearchTerm), getResults)
 }
 
-function getResults()
+function getResults(_Data)
 {
-    chunk = document.getElementById("res").getAttribute("return-value")
-
-    // console.log(chunk);
-
-    var obj = JSON.parse(chunk);
+    var obj = JSON.parse(_Data);
 
     clearContent()
 
