@@ -231,6 +231,8 @@ function unsubscribe(_Self)
 
         // NOTE: Remove from JSON file and overwrite the file
 
+        // TODO: Remove also Episodes from New Episodes Menu
+
         var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)

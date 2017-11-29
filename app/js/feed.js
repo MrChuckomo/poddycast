@@ -1,80 +1,54 @@
 
 function readFeeds()
 {
-    // TODO: read all Feeds
-    // TODO: distinguish between http and https
-    // TODO: compare existing episodes with new
-    // TODO: if new episodes add to the json file
-    // TODO: json file can be used to diplay "New Episodes" menu item
-    // TODO: find actual mp3 file
-    // TODO: save a file for each podcast including all episodes
+    // TODO: Save a file for each podcast including all episodes
 
     if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
-        // console.log(fs.readFile("http://teenagersexbeichte.de/feed/tsbfeed/", "utf-8"));
-
         for (var i = 0; i < JsonContent.length; i++)
         {
-            // var req = http.request("http://teenagersexbeichte.de/feed/tsbfeed/", function(res)
-
-            // var options =
-            // {
-            //     method: 'GET',
-            //     path: JsonContent[i].feedUrl
-            // };
-
-            if (JsonContent[i].feedUrl.includes("https"))
-            {
-                var req = https.request(JsonContent[i].feedUrl, function(res)
-                {
-                    var Content = ""
-
-                    // res.setEncoding("utf8");
-
-                    res.on("data", function (chunk) { Content += chunk })
-                    res.on("end",  function ()      { saveLatestEpisode(Content.trim()) })
-                });
-            }
-            else
-            {
-                var req = http.request(JsonContent[i].feedUrl, function(res)
-                {
-                    var Content = ""
-
-                    // res.setEncoding("utf8");
-
-                    res.on("data", function (chunk) { Content += chunk })
-                    res.on("end",  function ()      { saveLatestEpisode(Content.trim()) })
-                });
-            }
-
-            req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
-
-            req.end();
+            makeFeedRequest(JsonContent[i].feedUrl, saveLatestEpisode)
         }
     }
 }
 
-function saveLatestEpisode(_Content)
+function saveLatestEpisode(_Content, _eRequest, _Options)
 {
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(_Content,"text/xml");
-
-    // console.log(xmlDoc);
-
-    var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-    var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-    var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-    var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-    var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-    // NOTE: save latest if not already in History
-
-    if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+    if (isContent302NotFound(_Content))
     {
-        saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+        makeFeedRequest(getChangedFeed(_Options, eRequest), saveLatestEpisode)
+    }
+    else
+    {
+        if (_Content.includes("<html>"))
+        {
+            // TODO: Check strange result content
+
+            console.log(_Options);
+            console.log(_Content);
+        }
+        else
+        {
+            // NOTE: Parse a real feed and just access the last element
+
+            Parser = new DOMParser();
+            xmlDoc = Parser.parseFromString(_Content,"text/xml");
+
+            var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+            var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+            var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+            var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+            var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+            // NOTE: save latest episode if not already in History
+
+            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+            {
+                saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+            }
+        }
     }
 }
 
@@ -87,73 +61,49 @@ function showAllEpisodes(_Self)
 
 function getAllEpisodesFromFeed(_Feed)
 {
-    // TODO: hide add button after clicking it
-
     var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName)
+    makeFeedRequest(_Feed, checkContent)
+}
 
-    // var options =
-    // {
-    //     method: 'GET',
-    //     path: _Feed
-    // };
-
-    if (_Feed.includes("https"))
+function checkContent(_Content, _eRequest, _Options)
+{
+    if (isContent302NotFound(_Content))
     {
-        var req = https.request(_Feed, function(res)
-        {
-            var Content = ""
-
-            // res.setEncoding('utf8')
-
-            res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()
-            {
-                if (Content.trim() == "" || Content.trim().includes("302 Found"))
-                {
-                    _Feed = _Feed.replace("https", "http")
-
-                    clearContent()
-                    getAllEpisodesFromFeed(_Feed)
-                }
-                else
-                {
-                    processEpisodes(Content.trim())
-                }
-            })
-        });
+        clearContent()
+        getAllEpisodesFromFeed(getChangedFeed(_Options, _eRequest))
     }
     else
     {
-        var req = http.request(_Feed, function(res)
-        {
-            var Content = ""
+        processEpisodes(_Content)
+    }
+}
 
-            // res.setEncoding('utf8')
+// ---------------------------------------------------------------------------------------------------------------------
+// NOTE: Helper to clear corrupt feeds
 
-            res.on("data", function (chunk) { Content += chunk })
-            res.on("end",  function ()
-            {
-                if (Content.trim() == "" || Content.trim().includes("302 Found"))
-                {
-                    _Feed = _Feed.replace("http", "https")
+function isContent302NotFound(_Content)
+{
+    return (_Content == "" || _Content.includes("302 Found"))
+}
 
-                    clearContent()
-                    getAllEpisodesFromFeed(_Feed)
-                }
-                else
-                {
-                    processEpisodes(Content.trim())
-                }
-            })
-        });
+function getChangedFeed(_Feed, _eRequest)
+{
+    // TODO: Check if _Options is a simple string or a JSON object
+    // TODO: Change the JSON object might not so easy
+
+    switch (_eRequest)
+    {
+        case eRequest.https: _Feed = _Feed.replace("https", "http"); break;
+        case eRequest.http:  _Feed = _Feed.replace("http", "https"); break;
+        default: break;
     }
 
-    req.on('error', function(_Event) { console.log('problem with request: ' + _Event.message) })
-
-    req.end();
+    return _Feed
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 function appendSettingsSection(_PodcastName)
 {
