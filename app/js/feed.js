@@ -90,9 +90,6 @@ function isContent302NotFound(_Content)
 
 function getChangedFeed(_Feed, _eRequest)
 {
-    // TODO: Check if _Options is a simple string or a JSON object
-    // TODO: Change the JSON object might not so easy
-
     if (_Feed instanceof Object)
     {
         switch (_eRequest)
@@ -254,7 +251,10 @@ function processEpisodes(_Content)
 
         Time.setMilliseconds(EpisodeLength)
 
+
+
         var ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
+
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
@@ -265,6 +265,13 @@ function processEpisodes(_Content)
         {
             // ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
             ListElement.classList.add("select-episode")
+        }
+
+        // NOTE: Set a episode item to "Done if it is in the History file"
+
+        if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) != null)
+        {
+            setPodcastElementToDone(ListElement)
         }
 
         var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]

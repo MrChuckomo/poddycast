@@ -283,6 +283,7 @@ h1
     white-space: nowrap;
     overflow: hidden;
     padding-top: 0.5em;
+    padding-bottom: 0.5em;
     font-weight: bold;
     font-size: 16px;
 }
@@ -296,6 +297,20 @@ h1
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.done::after
+{
+    content: "Done";
+    font-size: 11px;
+    background: #039BE5;
+    color: #FFF;
+    padding: 0.3em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    vertical-align: middle;
+    border-radius: 3px;
+    margin-left: 1em;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

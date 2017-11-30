@@ -73,9 +73,17 @@ function setContextMenu(_Object)
     const {Menu, MenuItem} = remote
     const ContextMenu      = new Menu()
 
+    ContextMenu.append(new MenuItem({label: 'Rename', click(self)
+    {
+        var PlaylistName = _Object.innerHTML
+
+        console.log(self);
+        console.log(PlaylistName);
+    }}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: 'Remove Playlist: ' + _Object.innerHTML, click(self)
     {
-        var PlaylistName = self.label.replace("Remove Playlist: ", "")
+        var PlaylistName = _Object.innerHTML
         var JsonContent  = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)

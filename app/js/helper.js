@@ -305,6 +305,11 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _H
     return ListElement
 }
 
+function setPodcastElementToDone(_ListElement)
+{
+    _ListElement.getElementsByClassName("podcast-entry-title")[0].classList.add("done")
+}
+
 function deleteEntryWithIcon(_Self)
 {
     deleteEntry(_Self.parentElement.parentElement)
