@@ -51,7 +51,7 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
             {
                 console.log('Use fallback options: ' + _FallbackOptions);
 
-                makeRequest(_FallbackOptions, null, _Callback)
+                makeRequest(_FallbackOptions, null, _Callback, _eRequest)
             }
         });
 
@@ -61,13 +61,27 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
 
 function makeFeedRequest(_Feed, _Callback)
 {
-    if (_Feed.includes("https"))
+    if (_Feed instanceof Object)
     {
-        makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.https)
+        if (_Feed.path.includes("https"))
+        {
+            makeRequest(_Feed, null, _Callback, eRequest.https)
+        }
+        else
+        {
+            makeRequest(_Feed, null, _Callback, eRequest.http)
+        }
     }
     else
     {
-        makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.http)
+        if (_Feed.includes("https"))
+        {
+            makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.https)
+        }
+        else
+        {
+            makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.http)
+        }
     }
 }
 

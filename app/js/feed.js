@@ -18,7 +18,7 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 {
     if (isContent302NotFound(_Content))
     {
-        makeFeedRequest(getChangedFeed(_Options, eRequest), saveLatestEpisode)
+        makeFeedRequest(getChangedFeed(_Options, _eRequest), saveLatestEpisode)
     }
     else
     {
@@ -93,12 +93,25 @@ function getChangedFeed(_Feed, _eRequest)
     // TODO: Check if _Options is a simple string or a JSON object
     // TODO: Change the JSON object might not so easy
 
-    switch (_eRequest)
+    if (_Feed instanceof Object)
     {
-        case eRequest.https: _Feed = _Feed.replace("https", "http"); break;
-        case eRequest.http:  _Feed = _Feed.replace("http", "https"); break;
-        default: break;
+        switch (_eRequest)
+        {
+            case eRequest.https: _Feed.path = _Feed.path.replace("https", "http"); break;
+            case eRequest.http:  _Feed.path = _Feed.path.replace("http", "https"); break;
+            default: break;
+        }
     }
+    else
+    {
+        switch (_eRequest)
+        {
+            case eRequest.https: _Feed = _Feed.replace("https", "http"); break;
+            case eRequest.http:  _Feed = _Feed.replace("http", "https"); break;
+            default: break;
+        }
+    }
+
 
     return _Feed
 }
