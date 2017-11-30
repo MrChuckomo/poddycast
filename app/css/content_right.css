@@ -41,30 +41,13 @@ h1
     margin-top: 0.5em;
     display: grid;
     grid-template-rows: 1fr 0.2em;
-    grid-template-columns: 20% 20% 20% 20% 20% 0px 0px;
+    grid-template-columns: 20% 20% 20% 20% 20% 0 0;
     grid-template-areas:
         "image replay play forward speed time duration"
         "progress progress progress progress progress progress progress";
 }
 
-@media screen and (min-width: 1200px)
-{
-    #content-right-player
-    {
-        border-radius: 4px;
-        background-color: #FFF;
-        border: 1px solid #EEE;
-        text-align: center;
-        float: right;
-        margin-top: 0.5em;
-        display: grid;
-        grid-template-rows: 1fr 0.2em;
-        grid-template-columns: 1fr 80px 1fr 1fr 1fr 80px 1fr;
-        grid-template-areas:
-            "image time replay play forward duration speed"
-            "progress progress progress progress progress progress progress";
-    }
-}
+
 
 #replay-30-sec
 {
@@ -114,22 +97,47 @@ h1
     background-color: inherit;
 }
 
-#content-right-player-time
+#content-right-player-time, #content-right-player-duration
 {
-    grid-area: time;
-    align-self: center;
-    opacity: 0.5;
-    font-size: 14px;
-    margin-left: 0.1em;
+    display: none;
 }
 
-#content-right-player-duration
+@media screen and (min-width: 1100px)
 {
-    grid-area: duration;
-    align-self: center;
-    opacity: 0.5;
-    font-size: 14px;
-    margin-left: 0.1em;
+    #content-right-player
+    {
+        border-radius: 4px;
+        background-color: #FFF;
+        border: 1px solid #EEE;
+        text-align: center;
+        float: right;
+        margin-top: 0.5em;
+        display: grid;
+        grid-template-rows: 1fr 0.2em;
+        grid-template-columns: 1fr 80px 1fr 1fr 1fr 80px 1fr;
+        grid-template-areas:
+            "image time replay play forward duration speed"
+            "progress progress progress progress progress progress progress";
+    }
+
+    #content-right-player-time, #content-right-player-duration
+    {
+        align-self: center;
+        opacity: 0.5;
+        font-size: 14px;
+        margin-left: 0.1em;
+        display: block;
+    }
+
+    #content-right-player-time
+    {
+        grid-area: time;
+    }
+
+    #content-right-player-duration
+    {
+        grid-area: duration;
+    }
 }
 
 #content-right-player-speed:hover
