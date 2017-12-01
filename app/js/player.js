@@ -44,18 +44,18 @@ function playNow(_Self)
 
     // Player.pause()
 
-    togglePlayPauseButton(document.getElementById("play-pause"))
+    togglePlayPauseButton()
 
     Player.load()
     Player.currentTime = getPlaybackPosition(_Self.getAttribute("url"))
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
-    togglePlayPauseButton(document.getElementById("play-pause"))
+    togglePlayPauseButton()
 
     if (player.paused)
     {
-        togglePlayPauseButton(document.getElementById("play-pause"))
+        togglePlayPauseButton()
     }
 }
 
@@ -70,7 +70,7 @@ function playPause()
 {
     document.getElementById("play-pause")
 
-    togglePlayPauseButton(document.getElementById("play-pause"))
+    togglePlayPauseButton()
 }
 
 function playForward()
@@ -117,6 +117,35 @@ function updateProgress()
         deleteFromFile(PlayerSource.getAttribute("src"))
 
         // TODO: play next episode in line depending on the playlist
+
+        var AllListItems      = document.getElementsByClassName("podcast-entry")
+        var SelectedListItems = document.getElementsByClassName("select-episode")
+
+        if (SelectedListItems.length == 1)
+        {
+            for (var i = 0; i < AllListItems.length; i++)
+            {
+                var Classes = AllListItems[i].getAttribute("class")
+
+                if (Classes.includes("select-episode") && i < (AllListItems.length - 1))
+                {
+                    playNow(AllListItems[i + 1].getElementsByClassName("podcast-entry-header")[0])
+
+                    break
+                }
+                else if (i == (AllListItems.length - 1))
+                {
+                    AllListItems[i].classList.remove("select-episode")
+                    pausePlayer()
+                }
+            }
+        }
+        else
+        {
+            pausePlayer()
+        }
+        
+        setItemCounts()
     }
 
     // NOTE: Update progress bar
@@ -174,24 +203,41 @@ function savePlaybackPosition(_Source, _CurrentTime)
     }
 }
 
-function togglePlayPauseButton(_Button)
+function togglePlayPauseButton()
 {
     var Player = document.getElementById("player")
+    var Button = document.getElementById("play-pause")
 
-    if (_Button.getAttribute("mode") == "play")
+    if (Button.getAttribute("mode") == "play")
     {
-        _Button.innerHTML = s_Pause
-        _Button.setAttribute("mode", "pause")
-
-        Player.play()
+        playPlayer()
     }
     else
     {
-        _Button.innerHTML = s_Play
-        _Button.setAttribute("mode", "play")
-
-        Player.pause()
+        pausePlayer()
     }
+}
+
+function playPlayer()
+{
+    var Button = document.getElementById("play-pause")
+    var Player = document.getElementById("player")
+
+    Button.innerHTML = s_Pause
+    Button.setAttribute("mode", "pause")
+
+    Player.play()
+}
+
+function pausePlayer()
+{
+    var Button = document.getElementById("play-pause")
+    var Player = document.getElementById("player")
+
+    Button.innerHTML = s_Play
+    Button.setAttribute("mode", "play")
+
+    Player.pause()
 }
 
 function getPlaybackPosition(_Source)
