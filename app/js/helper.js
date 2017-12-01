@@ -172,6 +172,49 @@ function focusTextField(_InputField)
     document.getElementById(_InputField).focus()
 }
 
+function getFullTime(_TimeInSeconds)
+{
+    var FullTime = {}
+
+    var Hours = Math.floor(_TimeInSeconds / 3600)
+
+    _TimeInSeconds = _TimeInSeconds - (Hours * 3600)
+
+    var Minutes = Math.floor(_TimeInSeconds / 60)
+    var Seconds = Math.floor(_TimeInSeconds - (Minutes * 60))
+
+    FullTime.hours = Hours
+    FullTime.minutes = Minutes
+    FullTime.seconds = Seconds
+
+    return FullTime
+}
+
+function parseFeedEpisodeDuration(_Duration)
+{
+    var Time = {}
+
+    if (_Duration.length == 2)
+    {
+        var Time    = getFullTime(_Duration[0] * 60)
+        var Hours   = Time.hours.toString()
+        var Minutes = Time.minutes.toString()
+    }
+    else
+    {
+        var Hours   = _Duration[0]
+        var Minutes = _Duration[1]
+    }
+
+    Hours   = Hours.replace(/^0/, "")
+    Minutes = Minutes.replace(/^0/, "")
+
+    Time.hours = Hours
+    Time.minutes = Minutes
+
+    return Time
+}
+
 function getPrettyTime(_Time)
 {
     return ((_Time < 10) ? "0" + _Time : _Time)

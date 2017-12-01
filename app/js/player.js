@@ -134,45 +134,20 @@ function updateProgress()
 
     // NOTE: Update player time in extended layout
 
-    // setDuration()
+    getFullTime(Player.duration)
+
     setPlaybackTime(Player.currentTime, "content-right-player-time")
     setPlaybackTime(Player.duration, "content-right-player-duration")
 }
 
-// function setDuration()
-// {
-//     var Player = document.getElementById("player")
-//     var Time   = document.getElementById("content-right-player-duration")
-//
-//     var TimeInSeconds = Math.floor(Player.duration)
-//     var Hours = Math.floor(TimeInSeconds / 3600)
-//
-//     TimeInSeconds = TimeInSeconds - (Hours * 3600)
-//
-//     var Minutes = Math.floor(TimeInSeconds / 60)
-//     var Seconds = Math.floor(TimeInSeconds - (Minutes * 60))
-//
-//     if (!isNaN(Minutes))
-//     {
-//         Time.innerHTML = getPrettyTime(Hours) + ":" + getPrettyTime(Minutes) + ":" + getPrettyTime(Seconds)
-//     }
-// }
-
 function setPlaybackTime(_Time, _ElementName)
 {
-    var TimeElement   = document.getElementById(_ElementName)
-    var TimeInSeconds = Math.floor(_Time)
+    var TimeElement = document.getElementById(_ElementName)
+    var FullTime    = getFullTime(Math.floor(_Time))
 
-    var Hours = Math.floor(TimeInSeconds / 3600)
-
-    TimeInSeconds = TimeInSeconds - (Hours * 3600)
-
-    var Minutes = Math.floor(TimeInSeconds / 60)
-    var Seconds = Math.floor(TimeInSeconds - (Minutes * 60))
-
-    if (!isNaN(Minutes))
+    if (!isNaN(FullTime.minutes))
     {
-        TimeElement.innerHTML = getPrettyTime(Hours) + ":" + getPrettyTime(Minutes) + ":" + getPrettyTime(Seconds)
+        TimeElement.innerHTML = getPrettyTime(FullTime.hours) + ":" + getPrettyTime(FullTime.minutes) + ":" + getPrettyTime(FullTime.seconds)
     }
 }
 

@@ -64,7 +64,9 @@ function getAllEpisodesFromFeed(_Feed)
     var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName)
+
     makeFeedRequest(_Feed, checkContent)
+    // makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
 }
 
 function checkContent(_Content, _eRequest, _Options)
@@ -247,18 +249,23 @@ function processEpisodes(_Content)
         var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
         var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
 
-        var Time = new Date()
+        if (Item.getElementsByTagName("duration").length > 0)
+        {
+            var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName("duration")[0].innerHTML.split(":"))
 
-        Time.setMilliseconds(EpisodeLength)
+            if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
+            else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
+        }
+        else
+        {
+            var Duration = ""
+        }
 
-
-
-        var ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
-
+        var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
 
         if (isEpisodeAlreadySaved(EpisodeTitle))
         {
-            ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, null, "podcast-episode-header")
+            ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, "podcast-episode-header")
         }
 
         if (isPlaying(EpisodeUrl))
