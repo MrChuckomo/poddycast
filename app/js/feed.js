@@ -10,6 +10,7 @@ function readFeeds()
         for (var i = 0; i < JsonContent.length; i++)
         {
             makeFeedRequest(JsonContent[i].feedUrl, saveLatestEpisode)
+            // makeFeedRequest(getFeedProxyOptions(JsonContent[i].feedUrl), saveLatestEpisode)
         }
     }
 }

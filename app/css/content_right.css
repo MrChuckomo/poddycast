@@ -11,21 +11,44 @@ h1
 {
     position: fixed;
     left: 300px;
-    right: 1.5em;
+    right: 0em;
     overflow: auto;
-    height: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 70px 1fr 60px;
+    grid-template-columns: 100%;
+    grid-template-areas:
+        "right-header"
+        "list"
+        "audio-player"
+}
+
+#content-right-header
+{
+    grid-area: right-header;
+    background: #FFF;
+    padding: 0;
+    margin: 0;
+}
+
+#content-right-header h1
+{
+    padding-left: 0;
+    margin-left: 1em;
 }
 
 #content-right-body
 {
-    background-color: #FFF;
-    right: 1em;
-    border: 1px solid #EEE;
-    border-radius: 4px;
-    height: calc(100% - 4.5em);
+    grid-area: list;
+    background: #FFF;
+    /*height: calc(100% - 4.5em);*/
     overflow: auto;
 }
 
+#content-right-footer
+{
+    grid-area: audio-player;
+}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* NOTE: Player */
@@ -33,44 +56,43 @@ h1
 
 #content-right-player
 {
-    border-radius: 4px;
     background-color: #FFF;
-    border: 1px solid #EEE;
     text-align: center;
-    float: right;
-    margin-top: 0.5em;
+    height: 58px;
     display: grid;
-    grid-template-rows: 1fr 0.2em;
+    grid-template-rows: 0.2em 1fr;
     grid-template-columns: 20% 20% 20% 20% 20% 0 0;
     grid-template-areas:
-        "image replay play forward speed time duration"
-        "progress progress progress progress progress progress progress";
+        "progress progress progress progress progress progress progress"
+        "image replay play forward speed time duration";
 }
-
-
 
 #replay-30-sec
 {
     grid-area: replay;
+    align-self: center;
+    justify-self: center;
 }
 
 #play-pause
 {
     grid-area: play;
+    align-self: center;
+    justify-self: center;
 }
 
 #forward-30-sec
 {
     grid-area: forward;
+    align-self: center;
+    justify-self: center;
 }
 
 #content-right-player svg
 {
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    opacity: 0.7;
-    margin: 0.5em;
+    width: 36px;
+    height: 36px;
+    opacity: 0.65;
 }
 
 #content-right-player svg:hover
@@ -81,20 +103,31 @@ h1
 #content-right-player-img
 {
     grid-area: image;
-    width: 30px;
-    height: 30px;
-    margin: 0.5em;
+    align-self: center;
+    justify-self: left;
+    margin-left: 2em;
+    width: 36px;
+    height: 36px;
     border-radius: 4px;
 }
 
 #content-right-player-speed
 {
     grid-area: speed;
+    align-self: center;
+    justify-self: center;
     outline: 0;
+    font-size: 12px;
+    height: 35px;
+    width: 70px;
     border: 1px solid #EEE;
     border-radius: 4px;
-    margin: 0.5em;
     background-color: inherit;
+}
+
+#content-right-player-speed:hover
+{
+    background-color: #EEE;
 }
 
 #content-right-player-time, #content-right-player-duration
@@ -102,26 +135,38 @@ h1
     display: none;
 }
 
-@media screen and (min-width: 1100px)
+#content-right-player-progress-bar
+{
+    grid-area: progress;
+    background-color: #CCC;
+}
+
+#content-right-player-progress-bar-progress
+{
+    background-color: #039BE5;
+    height: 3px;
+    width: 0%;
+}
+
+@media screen and (min-width: 900px)
 {
     #content-right-player
     {
-        border-radius: 4px;
         background-color: #FFF;
-        border: 1px solid #EEE;
         text-align: center;
-        float: right;
-        margin-top: 0.5em;
+        height: 58px;
         display: grid;
-        grid-template-rows: 1fr 0.2em;
-        grid-template-columns: 1fr 80px 1fr 1fr 1fr 80px 1fr;
+        grid-template-rows: 0.2em 1fr;
+        grid-template-columns: 1fr 1fr 100px 50px 100px 1fr 1fr;
         grid-template-areas:
-            "image time replay play forward duration speed"
-            "progress progress progress progress progress progress progress";
+            "progress progress progress progress progress progress progress"
+            "image time replay play forward duration speed";
     }
 
     #content-right-player-time, #content-right-player-duration
     {
+        align-self: center;
+        justify-self: center;
         align-self: center;
         opacity: 0.5;
         font-size: 14px;
@@ -140,28 +185,6 @@ h1
     }
 }
 
-#content-right-player-speed:hover
-{
-    background-color: #EEE;
-    cursor: pointer;
-}
-
-
-#content-right-player-progress-bar
-{
-    grid-area: progress;
-    background-color: #E5E5E5;
-    border-radius: 4px;
-}
-
-#content-right-player-progress-bar-progress
-{
-    background-color: #039BE5;
-    height: 3px;
-    width: 0%;
-    border-radius: 4px;
-}
-
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* NOTE: Podcast entry list */
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -172,39 +195,13 @@ h1
     padding: 0;
 }
 
-
-
-/*.podcast-favorites-entry
-{
-    background-color: inherit;
-    border-bottom: 1px solid #DDD;
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 75px 1fr 3em;
-    grid-template-areas:
-        "image title icons";
-}*/
-
-/*.podcast-episode-entry
-{
-    background-color: inherit;
-    border-bottom: 1px solid #DDD;
-    padding: 0.5em;
-    padding-left: 1em;
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr 3em;
-    grid-template-areas:
-        "header actions";
-}*/
-
 .podcast-entry
 {
     background-color: inherit;
     border-bottom: 1px solid #DDD;
     display: grid;
     grid-template-rows: 1fr none;
-    grid-template-columns: 1fr 3em;
+    grid-template-columns: 1fr 4em;
     grid-template-areas:
         "header actions"
         "body body";
@@ -214,7 +211,7 @@ h1
 {
     grid-area: header;
     display: grid;
-    grid-template-columns: 75px 1fr;
+    grid-template-columns: 115px 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
         "image title"
@@ -248,8 +245,7 @@ h1
 
 .podcast-entry:hover, .podcast-episode-entry:hover, .podcast-favorites-entry:hover
 {
-    background-color: #E0E0E0;
-    cursor: pointer;
+    background-color: #ECEFF1;
 }
 
 .podcast-entry svg, .podcast-episode-entry svg, .podcast-favorites-entry svg
@@ -271,6 +267,7 @@ h1
     grid-area: image;
     border-radius: 4px;
     margin: 0.5em;
+    margin-left: 2em;
     width: 60px;
     height: 60px;
 }
@@ -416,5 +413,4 @@ h1
 .settings-unsubscribe:hover
 {
     opacity: 1;
-    cursor: pointer;
 }
