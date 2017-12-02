@@ -371,7 +371,7 @@ function deleteEntry(_ListElement)
     {
         // NOTE: Remove optically
 
-        _ListElement.parentElement.removeChild(_ListElement)
+        deleteFromListView(_ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
@@ -379,6 +379,11 @@ function deleteEntry(_ListElement)
 
         setItemCounts()
     }
+}
+
+function deleteFromListView(_ListElement)
+{
+    _ListElement.parentElement.removeChild(_ListElement)
 }
 
 function deleteFromFile(_FeedUrl)

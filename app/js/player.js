@@ -114,38 +114,9 @@ function updateProgress()
 
     if (Player.ended)
     {
+        // TODO: No need to delete it if it's played from the podcast detail view
         deleteFromFile(PlayerSource.getAttribute("src"))
-
-        // TODO: play next episode in line depending on the playlist
-
-        var AllListItems      = document.getElementsByClassName("podcast-entry")
-        var SelectedListItems = document.getElementsByClassName("select-episode")
-
-        if (SelectedListItems.length == 1)
-        {
-            for (var i = 0; i < AllListItems.length; i++)
-            {
-                var Classes = AllListItems[i].getAttribute("class")
-
-                if (Classes.includes("select-episode") && i < (AllListItems.length - 1))
-                {
-                    playNow(AllListItems[i + 1].getElementsByClassName("podcast-entry-header")[0])
-
-                    break
-                }
-                else if (i == (AllListItems.length - 1))
-                {
-                    AllListItems[i].classList.remove("select-episode")
-                    pausePlayer()
-                }
-            }
-        }
-        else
-        {
-            pausePlayer()
-        }
-        
-        setItemCounts()
+        nextEpisode()
     }
 
     // NOTE: Update progress bar
@@ -167,6 +138,46 @@ function updateProgress()
 
     setPlaybackTime(Player.currentTime, "content-right-player-time")
     setPlaybackTime(Player.duration, "content-right-player-duration")
+}
+
+function nextEpisode()
+{
+    var AllListItems      = document.getElementsByClassName("podcast-entry")
+    var SelectedListItems = document.getElementsByClassName("select-episode")
+
+    if (SelectedListItems.length == 1)
+    {
+        for (var i = 0; i < AllListItems.length; i++)
+        {
+            var Classes = AllListItems[i].getAttribute("class")
+
+            if (Classes.includes("select-episode") && i < (AllListItems.length - 1))
+            {
+                playNow(AllListItems[i + 1].getElementsByClassName("podcast-entry-header")[0])
+
+                // TODO: No need to delete it if it's played from the podcast detail view
+                deleteFromListView(AllListItems[i])
+
+                break
+            }
+            else if (i == (AllListItems.length - 1))
+            {
+                // NOTE: Currently playling episode is the last item in the list
+
+                // TODO: No need to delete it if it's played from the podcast detail view
+                deleteFromListView(AllListItems[i])
+                pausePlayer()
+            }
+        }
+    }
+    else
+    {
+        // NOTE: Current list is not the one which contains the currently playing episode
+
+        pausePlayer()
+    }
+
+    setItemCounts()
 }
 
 function setPlaybackTime(_Time, _ElementName)

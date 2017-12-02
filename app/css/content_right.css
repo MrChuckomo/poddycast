@@ -127,6 +127,11 @@ h1
 
 #content-right-player-speed:hover
 {
+    border-color: #CCC;
+}
+
+#content-right-player-speed:active
+{
     background-color: #EEE;
 }
 
