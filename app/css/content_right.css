@@ -1,0 +1,421 @@
+h1
+{
+    margin: 0;
+    padding: 0.5em;
+    display: inline-block;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+#content-right
+{
+    position: fixed;
+    left: 300px;
+    right: 0em;
+    overflow: auto;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 70px 1fr 60px;
+    grid-template-columns: 100%;
+    grid-template-areas:
+        "right-header"
+        "list"
+        "audio-player"
+}
+
+#content-right-header
+{
+    grid-area: right-header;
+    background: #FFF;
+    padding: 0;
+    margin: 0;
+}
+
+#content-right-header h1
+{
+    padding-left: 0;
+    margin-left: 1em;
+}
+
+#content-right-body
+{
+    grid-area: list;
+    background: #FFF;
+    /*height: calc(100% - 4.5em);*/
+    overflow: auto;
+}
+
+#content-right-footer
+{
+    grid-area: audio-player;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Player */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+#content-right-player
+{
+    background-color: #FFF;
+    text-align: center;
+    height: 58px;
+    display: grid;
+    grid-template-rows: 0.2em 1fr;
+    grid-template-columns: 20% 20% 20% 20% 20% 0 0;
+    grid-template-areas:
+        "progress progress progress progress progress progress progress"
+        "image replay play forward speed time duration";
+}
+
+#replay-30-sec
+{
+    grid-area: replay;
+    align-self: center;
+    justify-self: center;
+}
+
+#play-pause
+{
+    grid-area: play;
+    align-self: center;
+    justify-self: center;
+}
+
+#forward-30-sec
+{
+    grid-area: forward;
+    align-self: center;
+    justify-self: center;
+}
+
+#content-right-player svg
+{
+    width: 36px;
+    height: 36px;
+    opacity: 0.65;
+}
+
+#content-right-player svg:hover
+{
+    opacity: 1;
+}
+
+#content-right-player-img
+{
+    grid-area: image;
+    align-self: center;
+    justify-self: left;
+    margin-left: 2em;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+}
+
+#content-right-player-speed
+{
+    grid-area: speed;
+    align-self: center;
+    justify-self: center;
+    outline: 0;
+    font-size: 12px;
+    height: 35px;
+    width: 70px;
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    background-color: inherit;
+}
+
+#content-right-player-speed:hover
+{
+    border-color: #CCC;
+}
+
+#content-right-player-speed:active
+{
+    background-color: #EEE;
+}
+
+#content-right-player-time, #content-right-player-duration
+{
+    display: none;
+}
+
+#content-right-player-progress-bar
+{
+    grid-area: progress;
+    background-color: #CCC;
+}
+
+#content-right-player-progress-bar-progress
+{
+    background-color: #039BE5;
+    height: 3px;
+    width: 0%;
+}
+
+@media screen and (min-width: 900px)
+{
+    #content-right-player
+    {
+        background-color: #FFF;
+        text-align: center;
+        height: 58px;
+        display: grid;
+        grid-template-rows: 0.2em 1fr;
+        grid-template-columns: 1fr 1fr 100px 50px 100px 1fr 1fr;
+        grid-template-areas:
+            "progress progress progress progress progress progress progress"
+            "image time replay play forward duration speed";
+    }
+
+    #content-right-player-time, #content-right-player-duration
+    {
+        align-self: center;
+        justify-self: center;
+        align-self: center;
+        opacity: 0.5;
+        font-size: 14px;
+        margin-left: 0.1em;
+        display: block;
+    }
+
+    #content-right-player-time
+    {
+        grid-area: time;
+    }
+
+    #content-right-player-duration
+    {
+        grid-area: duration;
+    }
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Podcast entry list */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+#list
+{
+    margin: 0;
+    padding: 0;
+}
+
+.podcast-entry
+{
+    background-color: inherit;
+    border-bottom: 1px solid #DDD;
+    display: grid;
+    grid-template-rows: 1fr none;
+    grid-template-columns: 1fr 4em;
+    grid-template-areas:
+        "header actions"
+        "body body";
+}
+
+.podcast-entry-header
+{
+    grid-area: header;
+    display: grid;
+    grid-template-columns: 115px 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "image title"
+        "image subtitle";
+}
+
+.podcast-episode-header
+{
+    grid-area: header;
+    background-color: inherit;
+    padding: 0.5em;
+    padding-left: 1em;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "title"
+        "subtitle";
+}
+
+.podcast-entry-actions
+{
+    grid-area: actions;
+    align-self: center;
+}
+
+.podcast-entry-body
+{
+    grid-area: body;
+}
+
+.podcast-entry:hover, .podcast-episode-entry:hover, .podcast-favorites-entry:hover
+{
+    background-color: #ECEFF1;
+}
+
+.podcast-entry svg, .podcast-episode-entry svg, .podcast-favorites-entry svg
+{
+    grid-area: icons;
+    align-self: center;
+    margin-left: 0.5em;
+    opacity: 0.6;
+}
+
+.podcast-entry svg:hover, .podcast-episode-entry svg:hover, .podcast-favorites-entry svg:hover, .set-favorite
+{
+    fill: #E91E63;
+    opacity: 0.7;
+}
+
+.podcast-entry img, .podcast-favorites-entry img
+{
+    grid-area: image;
+    border-radius: 4px;
+    margin: 0.5em;
+    margin-left: 2em;
+    width: 60px;
+    height: 60px;
+}
+
+.podcast-entry-title
+{
+    grid-area: title;
+    /*align-self: flex-end;*/
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.podcast-entry-subtitle
+{
+    grid-area: subtitle;
+    align-self: flex-start;
+    font-size: 14px;
+    color: #777;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.done::after
+{
+    content: "Done";
+    font-size: 11px;
+    background: #039BE5;
+    color: #FFF;
+    padding: 0.3em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    vertical-align: middle;
+    border-radius: 3px;
+    margin-left: 1em;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Select the currently playing episode */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.select-episode
+{
+    background: #039BE5;
+}
+
+.select-episode:hover
+{
+    background: #0288D1;
+}
+
+.select-episode div
+{
+    color: #FFF;
+}
+
+.select-episode svg
+{
+    fill: #FFF;
+    opacity: 0.8;
+}
+
+.select-episode svg:hover
+{
+    fill: #FFF;
+    opacity: 1;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.delete-icon
+{
+    /*fill: #F44336;*/
+    /*opacity: 0.3;*/
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.settings
+{
+    border-bottom: 1px solid #E0E0E0;
+    padding: 0.5em;
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr 50px;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+        "image name items button";
+}
+
+.settings-image
+{
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+}
+
+.settings-header
+{
+    grid-area: name;
+    padding: 0.5em;
+    margin-left: 1em;
+    font-weight: bold;
+    font-size: 22px;
+    align-self: center;
+}
+
+.settings-count::before
+{
+    content: "All: ";
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.settings-count
+{
+    grid-area: items;
+    padding: 0.5em;
+    align-self: center;
+}
+
+.settings-unsubscribe
+{
+    grid-area: button;
+    background: #333;
+    border-radius: 6px;
+    text-align: center;
+    padding-top: 0.2em;
+    margin-right: 1em;
+    opacity: 0.8;
+    align-self: center;
+}
+
+.settings-unsubscribe svg
+{
+    fill: #FFF;
+}
+
+.settings-unsubscribe:hover
+{
+    opacity: 1;
+}
