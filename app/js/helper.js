@@ -289,6 +289,8 @@ function unsubscribe(_Self)
 
         fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
     }
+
+    setItemCounts()
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
