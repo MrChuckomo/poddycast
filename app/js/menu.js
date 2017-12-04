@@ -78,8 +78,12 @@ function showFavorites()
 
             var ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
 
+            ListElement.setAttribute("draggable", true)
+            ListElement.addEventListener('dragstart', handleDragStart, false);
+
             var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
 
+            HeaderElement.getElementsByTagName("img")[0].setAttribute("draggable", false)
             HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
             HeaderElement.setAttribute("onclick", "showAllEpisodes(this)")
 

@@ -6,6 +6,10 @@ function createPlaylist(_Self, _Event)
         var NewPlaylist = document.createElement("li")
         NewPlaylist.setAttribute("onclick", "showPlaylistContent(this)")
         NewPlaylist.innerHTML = _Self.value
+        NewPlaylist.addEventListener('dragenter', handleDragEnter, false);
+        NewPlaylist.addEventListener('dragover', handleDragOver, false);
+        NewPlaylist.addEventListener('dragleave', handleDragLeave, false);
+        NewPlaylist.addEventListener('drop', handleDrop, false);
 
         var PlaylistList = document.getElementById("playlists").getElementsByTagName("ul")[0]
         PlaylistList.append(NewPlaylist)
@@ -59,6 +63,10 @@ function loadPlaylists()
             var PlaylistEntry = document.createElement("li")
             PlaylistEntry.setAttribute("onclick", "showPlaylistContent(this)")
             PlaylistEntry.innerHTML = JsonContent[i].playlistName
+            PlaylistEntry.addEventListener('dragenter', handleDragEnter, false);
+            PlaylistEntry.addEventListener('dragover', handleDragOver, false);
+            PlaylistEntry.addEventListener('dragleave', handleDragLeave, false);
+            PlaylistEntry.addEventListener('drop', handleDrop, false);
 
             setContextMenu(PlaylistEntry)
 

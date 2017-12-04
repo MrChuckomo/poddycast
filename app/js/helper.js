@@ -448,3 +448,26 @@ function clearMenuSelection()
         Playlists[i].classList.remove("selected")
     }
 }
+
+
+function dragToPlaylist(_PlaylistName, _PodcastName)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (JsonContent[i].playlistName == _PlaylistName)
+        {
+            var PodcastList = JsonContent[i].podcastList
+
+            if (!isAlreadyInPlaylist(_PlaylistName, _PodcastName))
+            {
+                PodcastList.push(_PodcastName)
+            }
+
+            break
+        }
+    }
+
+    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+}
