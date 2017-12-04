@@ -14,7 +14,7 @@ function getPodcasts(_SearchTerm)
     _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
     makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https)
-    // makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.https)
+    // makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
 }
 
 function getResults(_Data)

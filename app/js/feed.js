@@ -67,7 +67,15 @@ function getAllEpisodesFromFeed(_Feed)
     appendSettingsSection(PodcastName)
 
     makeFeedRequest(_Feed, checkContent)
-    // makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
+
+    // if (_Feed instanceof Object)
+    // {
+    //     makeFeedRequest(_Feed, checkContent)
+    // }
+    // else
+    // {
+    //     makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
+    // }
 }
 
 function checkContent(_Content, _eRequest, _Options)
@@ -95,12 +103,10 @@ function getChangedFeed(_Feed, _eRequest)
 {
     if (_Feed instanceof Object)
     {
-        switch (_eRequest)
-        {
-            case eRequest.https: _Feed.path = _Feed.path.replace("https", "http"); break;
-            case eRequest.http:  _Feed.path = _Feed.path.replace("http", "https"); break;
-            default: break;
-        }
+        var Path = _Feed.path.toString()
+
+        if      (Path.includes("http" )) { _Feed.path.replace("http", "https") }
+        else if (Path.includes("https")) { _Feed.path.replace("https", "http") }
     }
     else
     {

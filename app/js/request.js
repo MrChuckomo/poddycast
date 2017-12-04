@@ -63,14 +63,7 @@ function makeFeedRequest(_Feed, _Callback)
 {
     if (_Feed instanceof Object)
     {
-        if (_Feed.path.includes("https"))
-        {
-            makeRequest(_Feed, null, _Callback, eRequest.https)
-        }
-        else
-        {
-            makeRequest(_Feed, null, _Callback, eRequest.http)
-        }
+        makeRequest(_Feed, null, _Callback, eRequest.http)
     }
     else
     {
