@@ -7,14 +7,22 @@ const template =
         submenu:
         [
             {role: 'reload'},
-            {role: 'forcereload'},
-            {role: 'toggledevtools'},
+            // {role: 'forcereload'},
             {type: 'separator'},
             {role: 'resetzoom'},
             {role: 'zoomin'},
             {role: 'zoomout'},
             {type: 'separator'},
-            {role: 'togglefullscreen'}
+            {
+                label: 'Dark Mode',
+                type: "checkbox",
+                accelerator: "CommandOrControl+Alt+L",
+                // checked: false,
+                click() { darkMode() }
+            },
+            {role: 'togglefullscreen'},
+            {type: 'separator'},
+            {role: 'toggledevtools'}
         ]
     },
     {

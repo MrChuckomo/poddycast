@@ -120,8 +120,8 @@ h1
 {
 	content: attr(data-tooltip);
     position: absolute;
-	color: #FFF;
-	background: #333;
+	color: #333;
+	background: #FFF;
 	padding-top: 0.6em;
 	padding-bottom: 0.6em;
     opacity: 0;
@@ -252,7 +252,7 @@ h1
     grid-area: header;
     background-color: inherit;
     padding: 0.5em;
-    padding-left: 1em;
+    padding-left: 2em;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
@@ -329,7 +329,8 @@ h1
 {
     content: "Done";
     font-size: 11px;
-    background: #039BE5;
+    /*background: #039BE5;*/
+    background: #4CAF50;
     color: #FFF;
     padding: 0.3em;
     padding-left: 0.8em;
@@ -384,8 +385,10 @@ h1
 {
     border-bottom: 1px solid #E0E0E0;
     padding: 0.5em;
+    padding-left: 2em;
+    padding-right: 2em;
     display: grid;
-    grid-template-columns: 60px 1fr 1fr 50px;
+    grid-template-columns: 60px 1fr 1fr 35px;
     grid-template-rows: 1fr;
     grid-template-areas:
         "image name items button";
@@ -429,7 +432,7 @@ h1
     border-radius: 6px;
     text-align: center;
     padding-top: 0.2em;
-    margin-right: 1em;
+    /*margin-right: 1em;*/
     opacity: 0.8;
     align-self: center;
 }
