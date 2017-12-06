@@ -142,7 +142,8 @@ function showHistory()
 
             if (Artwork != null)
             {
-                var ListElement  = getPodcastElement(null, Artwork, JsonContent[i].date, EpisodeTitle)
+                var DateTime    = new Date(JsonContent[i].date)
+                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }
