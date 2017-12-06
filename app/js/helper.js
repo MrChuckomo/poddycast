@@ -260,53 +260,54 @@ function setHeader(_Title)
     Header.innerHTML = _Title
 }
 
-function unsubscribe(_Self)
+function unsubscribeListElement(_Self)
 {
-    // TODO: support also context menu unsubscribe (there is no reference to the svg heart icon)
+    var ListElement = _Self.parentElement.parentElement;
+    var PodcastName = ListElement.getElementsByClassName("podcast-entry-header")[0].getElementsByClassName("podcast-entry-title")[0].innerHTML
+    var FeedUrl     = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl")
 
-    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    // NOTE: Remove optically
+
+    ListElement.parentElement.removeChild(ListElement)
+
+    // NOTE: Remove from files
+
+    removeFromFile(getNewEpisodesSaveFilePath, "channelName", PodcastName, false)
+    removeFromFile(getSaveFilePath, "feedUrl", FeedUrl, true)
+
+    setItemCounts()
+}
+
+function unsubscribeContextMenu(_PodcastName, _FeedUrl)
+{
+    // NOTE: Support context menu unsubscribe
+
+    removeFromFile(getNewEpisodesSaveFilePath, "channelName", _PodcastName, false)
+    removeFromFile(getSaveFilePath, "feedUrl", _FeedUrl, true)
+
+    selectMenuItem("menu-favorites")
+    showFavorites()
+    setItemCounts()
+}
+
+function removeFromFile(_File, _ContentReference, _Value, _Break)
+{
+    if (fs.readFileSync(_File(), "utf-8") != "")
     {
-        // NOTE: Remove optically
-
-        var ListElement = _Self.parentElement.parentElement;
-
-        ListElement.parentElement.removeChild(ListElement)
-
-        // NOTE: Remove also Episodes from "New Episodes" menu / file
-
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
 
         for (var i = JsonContent.length - 1; i >= 0 ; i--)
         {
-            var PodcastName = ListElement.getElementsByClassName("podcast-entry-header")[0].getElementsByClassName("podcast-entry-title")[0].innerHTML
-
-            if (PodcastName == JsonContent[i].channelName)
+            if (_Value == JsonContent[i][_ContentReference])
             {
                 JsonContent.splice(i, 1)
+
+                if (_Break) { break }
             }
         }
 
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
-
-        // NOTE: Remove from JSON file and overwrite the file
-
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            var FeedUrl = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl")
-
-            if (FeedUrl == JsonContent[i].feedUrl)
-            {
-                JsonContent.splice(i, 1)
-                break
-            }
-        }
-
-        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(_File(), JSON.stringify(JsonContent))
     }
-
-    setItemCounts()
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
