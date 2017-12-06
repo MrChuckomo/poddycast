@@ -272,15 +272,31 @@ function unsubscribe(_Self)
 
         ListElement.parentElement.removeChild(ListElement)
 
-        // NOTE: Remove from JSON file and overwrite the file
+        // NOTE: Remove also Episodes from "New Episodes" menu / file
 
-        // TODO: Remove also Episodes from New Episodes Menu
+        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+        for (var i = JsonContent.length - 1; i >= 0 ; i--)
+        {
+            var PodcastName = ListElement.getElementsByClassName("podcast-entry-header")[0].getElementsByClassName("podcast-entry-title")[0].innerHTML
+
+            if (PodcastName == JsonContent[i].channelName)
+            {
+                JsonContent.splice(i, 1)
+            }
+        }
+
+        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+
+        // NOTE: Remove from JSON file and overwrite the file
 
         var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            if (ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl") == JsonContent[i].feedUrl)
+            var FeedUrl = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl")
+
+            if (FeedUrl == JsonContent[i].feedUrl)
             {
                 JsonContent.splice(i, 1)
                 break
