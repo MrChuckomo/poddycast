@@ -78,8 +78,12 @@ function showFavorites()
 
             var ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
 
+            ListElement.setAttribute("draggable", true)
+            ListElement.addEventListener('dragstart', handleDragStart, false);
+
             var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
 
+            HeaderElement.getElementsByTagName("img")[0].setAttribute("draggable", false)
             HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
             HeaderElement.setAttribute("onclick", "showAllEpisodes(this)")
 
@@ -138,7 +142,8 @@ function showHistory()
 
             if (Artwork != null)
             {
-                var ListElement  = getPodcastElement(null, Artwork, JsonContent[i].date, EpisodeTitle)
+                var DateTime    = new Date(JsonContent[i].date)
+                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }

@@ -260,34 +260,53 @@ function setHeader(_Title)
     Header.innerHTML = _Title
 }
 
-function unsubscribe(_Self)
+function unsubscribeListElement(_Self)
 {
-    // TODO: support also context menu unsubscribe (there is no reference to the svg heart icon)
+    var ListElement = _Self.parentElement.parentElement;
+    var PodcastName = ListElement.getElementsByClassName("podcast-entry-header")[0].getElementsByClassName("podcast-entry-title")[0].innerHTML
+    var FeedUrl     = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl")
 
-    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    // NOTE: Remove optically
+
+    ListElement.parentElement.removeChild(ListElement)
+
+    // NOTE: Remove from files
+
+    removeFromFile(getNewEpisodesSaveFilePath, "channelName", PodcastName, false)
+    removeFromFile(getSaveFilePath, "feedUrl", FeedUrl, true)
+
+    setItemCounts()
+}
+
+function unsubscribeContextMenu(_PodcastName, _FeedUrl)
+{
+    // NOTE: Support context menu unsubscribe
+
+    removeFromFile(getNewEpisodesSaveFilePath, "channelName", _PodcastName, false)
+    removeFromFile(getSaveFilePath, "feedUrl", _FeedUrl, true)
+
+    selectMenuItem("menu-favorites")
+    showFavorites()
+    setItemCounts()
+}
+
+function removeFromFile(_File, _ContentReference, _Value, _Break)
+{
+    if (fs.readFileSync(_File(), "utf-8") != "")
     {
-        // NOTE: Remove optically
+        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
 
-        var ListElement = _Self.parentElement.parentElement;
-
-        ListElement.parentElement.removeChild(ListElement)
-
-        // NOTE: Remove from JSON file and overwrite the file
-
-        // TODO: Remove also Episodes from New Episodes Menu
-
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
+        for (var i = JsonContent.length - 1; i >= 0 ; i--)
         {
-            if (ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl") == JsonContent[i].feedUrl)
+            if (_Value == JsonContent[i][_ContentReference])
             {
                 JsonContent.splice(i, 1)
-                break
+
+                if (_Break) { break }
             }
         }
 
-        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(_File(), JSON.stringify(JsonContent))
     }
 }
 
@@ -445,4 +464,27 @@ function clearMenuSelection()
     {
         Playlists[i].classList.remove("selected")
     }
+}
+
+
+function dragToPlaylist(_PlaylistName, _PodcastName)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (JsonContent[i].playlistName == _PlaylistName)
+        {
+            var PodcastList = JsonContent[i].podcastList
+
+            if (!isAlreadyInPlaylist(_PlaylistName, _PodcastName))
+            {
+                PodcastList.push(_PodcastName)
+            }
+
+            break
+        }
+    }
+
+    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
 }

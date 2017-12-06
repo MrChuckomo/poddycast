@@ -31,4 +31,6 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
     }
 
     fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    
+    setItemCounts()
 }

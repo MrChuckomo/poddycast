@@ -1,0 +1,126 @@
+body
+{
+    background: #222;
+    color: #DDD;
+}
+
+#content-right-header, #content-right-body, #content-right-footer, #content-right-player
+{
+    background: #333;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Left */
+
+#search
+{
+    background: #333;
+    border-color: #000;
+}
+
+#search svg
+{
+    fill: #FFF;
+}
+
+.selected
+{
+    background-color: #111;
+}
+
+#menu ul li svg
+{
+    opacity: 0.8;
+}
+
+#menu-history svg
+{
+    fill: #FFF;
+}
+
+#playlists h3
+{
+    border-color: #000;
+}
+
+footer
+{
+    border-color: #000;
+}
+
+footer svg
+{
+    fill: #FFF;
+    opacity: 0.6;
+}
+
+input
+{
+    color: #FFF;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Right */
+
+.podcast-entry, .settings
+{
+    border-color: #222;
+}
+
+.settings-unsubscribe
+{
+    background: #111;
+}
+
+.podcast-entry-actions svg
+{
+    fill: #FFF;
+}
+
+.podcast-entry:hover
+{
+    background: #222;
+}
+
+.select-episode:hover
+{
+    background: #0288D1;
+}
+
+#content-right-player svg
+{
+    fill: #FFF;
+}
+
+svg.set-favorite
+{
+    fill: #E91E63;
+    opacity: 0.7;
+}
+
+#content-right-player-progress-bar
+{
+    background: #222;
+}
+
+#content-right-player-speed
+{
+    border-color: #222;
+    color: #FFF;
+}
+
+#content-right-player-speed:hover
+{
+    border-color: #000;
+}
+
+#content-right-player-speed:active
+{
+    background: #111;
+}
+
+[data-tooltip]:after
+{
+    background: #333;
+    color: #FFF;
+}

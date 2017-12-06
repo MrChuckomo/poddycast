@@ -64,10 +64,18 @@ function getAllEpisodesFromFeed(_Feed)
 {
     var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
 
-    appendSettingsSection(PodcastName)
+    appendSettingsSection(PodcastName, _Feed)
 
     makeFeedRequest(_Feed, checkContent)
-    // makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
+
+    // if (_Feed instanceof Object)
+    // {
+    //     makeFeedRequest(_Feed, checkContent)
+    // }
+    // else
+    // {
+    //     makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
+    // }
 }
 
 function checkContent(_Content, _eRequest, _Options)
@@ -95,12 +103,10 @@ function getChangedFeed(_Feed, _eRequest)
 {
     if (_Feed instanceof Object)
     {
-        switch (_eRequest)
-        {
-            case eRequest.https: _Feed.path = _Feed.path.replace("https", "http"); break;
-            case eRequest.http:  _Feed.path = _Feed.path.replace("http", "https"); break;
-            default: break;
-        }
+        var Path = _Feed.path.toString()
+
+        if      (Path.includes("http" )) { _Feed.path.replace("http", "https") }
+        else if (Path.includes("https")) { _Feed.path.replace("https", "http") }
     }
     else
     {
@@ -118,7 +124,7 @@ function getChangedFeed(_Feed, _eRequest)
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function appendSettingsSection(_PodcastName)
+function appendSettingsSection(_PodcastName, _Feed)
 {
     // NOTE: settings area in front of a podcast episode list
 
@@ -142,7 +148,7 @@ function appendSettingsSection(_PodcastName)
 
     // NOTE: set context menu
 
-    setPodcastSettingsMenu(MoreElement, _PodcastName)
+    setPodcastSettingsMenu(MoreElement, _PodcastName, _Feed)
 
     // NOTE: build layout
 
@@ -154,7 +160,7 @@ function appendSettingsSection(_PodcastName)
     RightContent.append(SettingsDiv)
 }
 
-function setPodcastSettingsMenu(_Object, _PodcastName)
+function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 {
     const {remote} = require('electron')
     const {Menu, MenuItem} = remote
@@ -206,7 +212,10 @@ function setPodcastSettingsMenu(_Object, _PodcastName)
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click() { console.log('unsubscribe') }}))
+    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click()
+    {
+        if (_PodcastName != null) { unsubscribeContextMenu(_PodcastName, _Feed) }
+    }}))
 
     _Object.addEventListener('click', (_Event) =>
     {
@@ -220,9 +229,6 @@ function processEpisodes(_Content)
 {
     parser = new DOMParser();
     xmlDoc = parser.parseFromString(_Content, "text/xml");
-
-    // console.log(_Content);
-    // console.log(xmlDoc);
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
     var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
