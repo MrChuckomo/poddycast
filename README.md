@@ -11,6 +11,8 @@ And search through the **history** of podcasts you listened to.
 
 You can also create **playlist** to keep you Podcast collection nice and clean.
 
+![gif_1 subscribe](img/poddycast_v0.2.0.gif)
+
 <!--
 ### Subscribe to Podcasts
 
@@ -24,7 +26,7 @@ You can also create **playlist** to keep you Podcast collection nice and clean.
 ## Install
 
 Download this repository and it will work on macOS and Windows.  
-[Beta Release v0.1.0](https://github.com/MrChuckomo/poddycast/releases)
+[Beta Release v0.2.0](https://github.com/MrChuckomo/poddycast/releases)
 
 
 ## Platform Support
