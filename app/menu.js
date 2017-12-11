@@ -6,6 +6,10 @@ const template =
         label: 'View',
         submenu:
         [
+            {role: 'cut'},
+            {role: 'copy'},
+            {role: 'paste'},
+            {type: 'separator'},
             {role: 'reload'},
             // {role: 'forcereload'},
             {type: 'separator'},
