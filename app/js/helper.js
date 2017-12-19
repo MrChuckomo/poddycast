@@ -20,6 +20,21 @@ function getSaveDirPath()
     return Base + "/poddycast-data"
 }
 
+function isWindows()
+{
+    return process.platform == "win32"
+}
+
+function isDarwin()
+{
+    return process.platform == "darwin"
+}
+
+function isLinux()
+{
+    return process.platform == "linux"
+}
+
 function getSaveFilePath()
 {
     return getSaveDirPath() + "/poddycast-favorite_podcasts.json"
@@ -209,7 +224,7 @@ function parseFeedEpisodeDuration(_Duration)
     Hours   = Hours.replace(/^0/, "")
     Minutes = Minutes.replace(/^0/, "")
 
-    Time.hours = Hours
+    Time.hours = ((Hours == "") ? "0" : Hours)
     Time.minutes = Minutes
 
     return Time

@@ -105,8 +105,8 @@ function getChangedFeed(_Feed, _eRequest)
     {
         var Path = _Feed.path.toString()
 
-        if      (Path.includes("http" )) { _Feed.path.replace("http", "https") }
-        else if (Path.includes("https")) { _Feed.path.replace("https", "http") }
+        if      (Path.includes("http" )) { _Feed.path = Path.replace("http", "https") }
+        else if (Path.includes("https")) { _Feed.path = Path.replace("https", "http") }
     }
     else
     {

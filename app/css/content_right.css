@@ -14,6 +14,7 @@ h1
     right: 0em;
     overflow: auto;
     height: 100vh;
+    border-left: 1px solid #E7E7E7;
     display: grid;
     grid-template-rows: 70px 1fr 60px;
     grid-template-columns: 100%;
@@ -274,7 +275,7 @@ h1
 
 .podcast-entry:hover, .podcast-episode-entry:hover, .podcast-favorites-entry:hover
 {
-    background-color: #ECEFF1;
+    background-color: #F2F2F2;
 }
 
 .podcast-entry svg, .podcast-episode-entry svg, .podcast-favorites-entry svg
