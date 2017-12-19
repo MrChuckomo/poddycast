@@ -87,6 +87,11 @@ input
     background: #0288D1;
 }
 
+#content-right
+{
+    border-left: 1px solid #111;
+}
+
 #content-right-player svg
 {
     fill: #FFF;

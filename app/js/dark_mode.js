@@ -2,10 +2,14 @@ function darkMode()
 {
     const {app} = require('electron').remote
 
-    // NOTE: Currently the "Dark Mode" menu item is located at position 6 in the first menu "View".
-    // NOTE: This can change in the future, be aware.
+    var ViewMenuItem = app.getApplicationMenu().items[1].submenu
 
-    var DarkModeMenu = app.getApplicationMenu().items[1].submenu.items[6]
+    if(isWindows())
+    {
+        ViewMenuItem = app.getApplicationMenu().items[0].submenu
+    }
+
+    var DarkModeMenu = getDarkModeMenuItem(ViewMenuItem)
 
     var Stylesheet = document.createElement("link")
     Stylesheet.setAttribute("rel", "stylesheet")
@@ -30,4 +34,23 @@ function darkMode()
             }
         }
     }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+function getDarkModeMenuItem(_ParentMenu)
+{
+    // NOTE: Find the "Dark Mode" menu item in the given parent menu
+
+    var MenuItem = null
+
+    for (var i = 0; i < _ParentMenu.items.length; i++)
+    {
+        if (_ParentMenu.items[i].label == "Dark Mode" && _ParentMenu.items[i].type == "checkbox")
+        {
+            MenuItem = _ParentMenu.items[i]
+        }
+    }
+
+    return MenuItem
 }

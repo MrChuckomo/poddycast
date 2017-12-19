@@ -20,6 +20,21 @@ function getSaveDirPath()
     return Base + "/poddycast-data"
 }
 
+function isWindows()
+{
+    return process.platform == "win32"
+}
+
+function isDarwin()
+{
+    return process.platform == "darwin"
+}
+
+function isLinux()
+{
+    return process.platform == "linux"
+}
+
 function getSaveFilePath()
 {
     return getSaveDirPath() + "/poddycast-favorite_podcasts.json"
