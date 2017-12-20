@@ -5,6 +5,7 @@ function selectMenuItem(_MenuId)
     var MenuItem = document.getElementById(_MenuId)
 
     clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    clearPlaylists()
     clearMenuSelection()
 
     MenuItem.classList.add("selected")

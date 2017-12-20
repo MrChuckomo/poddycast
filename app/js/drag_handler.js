@@ -35,7 +35,7 @@ function handleDrop(_Event)
     var Parser       = new DOMParser();
     var XmlDoc       = Parser.parseFromString(_Event.dataTransfer.getData('text/html'), "text/xml");
     var PodcastName  = XmlDoc.getElementsByClassName("podcast-entry-title")[0].innerHTML
-    var PlaylistName = this.innerHTML
+    var PlaylistName = this.getElementsByTagName("input")[0].value
 
     dragToPlaylist(PlaylistName, PodcastName)
 }
