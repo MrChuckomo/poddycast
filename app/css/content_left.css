@@ -146,6 +146,11 @@
     color: #FFF;
 }
 
+#playlists ul li.over input
+{
+   color: #FFF;
+}
+
 #playlists ul li input
 {
     outline: none;
