@@ -170,7 +170,8 @@
 #playlists ul li input:enabled
 {
     outline: 1px solid #039BE5;
-    background: #fefefe;
+    background: #FEFEFE;
+    color: #000;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
