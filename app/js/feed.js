@@ -274,54 +274,59 @@ function processEpisodes(_Content)
     {
         var Item = xmlDoc.getElementsByTagName("item")[i]
 
-        var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
-        var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
-        var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
-        var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+        // NOTE: Just enter if the current item contains an enclosure tag
 
-        if (Item.getElementsByTagName("duration").length > 0)
+        if (Item.getElementsByTagName("enclosure").length > 0)
         {
-            var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName("duration")[0].innerHTML.split(":"))
+            var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
+            var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
+            var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
+            var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
 
-            if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
-            else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
+            if (Item.getElementsByTagName("duration").length > 0)
+            {
+                var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName("duration")[0].innerHTML.split(":"))
+
+                if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
+                else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
+            }
+            else
+            {
+                var Duration = ""
+            }
+
+            var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
+
+            if (isEpisodeAlreadySaved(EpisodeTitle))
+            {
+                ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, "podcast-episode-header")
+            }
+
+            if (isPlaying(EpisodeUrl))
+            {
+                // ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
+                ListElement.classList.add("select-episode")
+            }
+
+            // NOTE: Set a episode item to "Done if it is in the History file"
+
+            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) != null)
+            {
+                setPodcastElementToDone(ListElement)
+            }
+
+            var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
+
+            HeaderElement.setAttribute("onclick", "playNow(this)")
+            HeaderElement.setAttribute("channel", ChannelName)
+            HeaderElement.setAttribute("title", EpisodeTitle)
+            HeaderElement.setAttribute("type", EpisodeType)
+            HeaderElement.setAttribute("url", EpisodeUrl)
+            HeaderElement.setAttribute("length", EpisodeLength)
+            HeaderElement.setAttribute("artworkUrl", Artwork)
+
+            List.append(ListElement)
         }
-        else
-        {
-            var Duration = ""
-        }
-
-        var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
-
-        if (isEpisodeAlreadySaved(EpisodeTitle))
-        {
-            ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, "podcast-episode-header")
-        }
-
-        if (isPlaying(EpisodeUrl))
-        {
-            // ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
-            ListElement.classList.add("select-episode")
-        }
-
-        // NOTE: Set a episode item to "Done if it is in the History file"
-
-        if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) != null)
-        {
-            setPodcastElementToDone(ListElement)
-        }
-
-        var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
-
-        HeaderElement.setAttribute("onclick", "playNow(this)")
-        HeaderElement.setAttribute("channel", ChannelName)
-        HeaderElement.setAttribute("title", EpisodeTitle)
-        HeaderElement.setAttribute("type", EpisodeType)
-        HeaderElement.setAttribute("url", EpisodeUrl)
-        HeaderElement.setAttribute("length", EpisodeLength)
-        HeaderElement.setAttribute("artworkUrl", Artwork)
-
-        List.append(ListElement)
     }
 }
 
