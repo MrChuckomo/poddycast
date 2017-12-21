@@ -57,6 +57,11 @@ function getPlaylistFilePath()
     return getSaveDirPath() + "/poddycast-playlists.json"
 }
 
+function getSettingsFilePath()
+{
+    return getSaveDirPath() + "/poddycast-podcast_settings.json"
+}
+
 function init()
 {
     if (!fs.existsSync(getSaveDirPath()))
@@ -82,6 +87,11 @@ function init()
     if (!fs.existsSync(getPlaylistFilePath()))
     {
         fs.openSync(getPlaylistFilePath(), 'w');
+    }
+
+    if (!fs.existsSync(getSettingsFilePath()))
+    {
+        fs.openSync(getSettingsFilePath(), 'w');
     }
 }
 
@@ -235,4 +245,103 @@ function parseFeedEpisodeDuration(_Duration)
 function getPrettyTime(_Time)
 {
     return ((_Time < 10) ? "0" + _Time : _Time)
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// SETTINGS
+// ---------------------------------------------------------------------------------------------------------------------
+
+function addToSettings(_PodcastName, _FeedUrl)
+{
+    if (fs.existsSync(getSettingsFilePath()))
+    {
+        var SettingsObject =
+        {
+            "podcastName": _PodcastName,
+            "feedUrl": _FeedUrl,
+            "addToInbox": true,
+        }
+
+        var JsonContent = []
+
+        if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+        {
+            JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+        }
+        else
+        {
+            fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+        }
+
+        if (!isInSettings(_FeedUrl))
+        {
+            JsonContent.push(SettingsObject)
+        }
+
+        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
+function getSettings(_FeedUrl)
+{
+    var ToInbox = true
+
+    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                ToInbox = JsonContent[i].addToInbox
+
+                break
+            }
+        }
+    }
+
+    return ToInbox
+}
+
+function isInSettings(_FeedUrl)
+{
+    var Result = false
+
+    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                Result = true
+
+                break
+            }
+        }
+    }
+
+    return Result
+}
+
+function changeSettings(_FeedUrl, _ToInbox)
+{
+    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                JsonContent[i].addToInbox = _ToInbox
+
+                break
+            }
+        }
+
+        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+    }
 }

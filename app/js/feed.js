@@ -17,37 +17,49 @@ function readFeeds()
 
 function saveLatestEpisode(_Content, _eRequest, _Options)
 {
-    if (isContent302NotFound(_Content))
-    {
-        makeFeedRequest(getChangedFeed(_Options, _eRequest), saveLatestEpisode)
-    }
-    else
-    {
-        if (_Content.includes("<html>"))
-        {
-            // TODO: Check strange result content
+    var FeedUrl = _Options
 
-            console.log(_Options);
-            console.log(_Content);
+    if (_Options instanceof Object)
+    {
+        FeedUrl = _Options.path
+    }
+
+    // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
+
+    if (getSettings(FeedUrl))
+    {
+        if (isContent302NotFound(_Content))
+        {
+            makeFeedRequest(getChangedFeed(_Options, _eRequest), saveLatestEpisode)
         }
         else
         {
-            // NOTE: Parse a real feed and just access the last element
-
-            Parser = new DOMParser();
-            xmlDoc = Parser.parseFromString(_Content,"text/xml");
-
-            var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-            var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-            var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-            var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-            var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
-
-            // NOTE: save latest episode if not already in History
-
-            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+            if (_Content.includes("<html>"))
             {
-                saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+                // TODO: Check strange result content
+
+                console.log(_Options);
+                console.log(_Content);
+            }
+            else
+            {
+                // NOTE: Parse a real feed and just access the last element
+
+                Parser = new DOMParser();
+                xmlDoc = Parser.parseFromString(_Content,"text/xml");
+
+                var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
+                var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
+                var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+
+                // NOTE: save latest episode if not already in History
+
+                if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+                {
+                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+                }
             }
         }
     }
@@ -210,7 +222,18 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     const ContextMenu = new Menu()
     ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: true }))
+    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: getSettings(_Feed), click(self)
+    {
+        if (isInSettings(_Feed))
+        {
+            changeSettings(_Feed, self.checked)
+        }
+        else
+        {
+            addToSettings(_PodcastName, _Feed)
+            changeSettings(_Feed, self.checked)
+        }
+    }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: 'Unsubscribe', click()
     {
