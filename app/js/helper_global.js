@@ -221,7 +221,13 @@ function parseFeedEpisodeDuration(_Duration)
 {
     var Time = {}
 
-    if (_Duration.length == 2)
+    if (_Duration.length == 1)
+    {
+        var Time    = getFullTime(_Duration[0] * 60)
+        var Hours   = "0"
+        var Minutes = Time.hours.toString()
+    }
+    else if (_Duration.length == 2)
     {
         var Time    = getFullTime(_Duration[0] * 60)
         var Hours   = Time.hours.toString()

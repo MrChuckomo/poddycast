@@ -38,8 +38,8 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
             {
                 // TODO: Check strange result content
 
-                console.log(_Options);
-                console.log(_Content);
+                // console.log(_Options);
+                // console.log(_Content);
             }
             else
             {
