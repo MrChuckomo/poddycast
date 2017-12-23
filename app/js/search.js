@@ -26,24 +26,53 @@ function search(_Self, _Event)
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+
 function getPodcastsFromFeed(_SearchTerm)
 {
     // http://feeds.feedburner.com/ICO-Radio
-    console.log("from feed: " + _SearchTerm);
 
-    makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
+    if (_SearchTerm.includes("https"))
+    {
+        makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
+    }
+    else
+    {
+        makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
+    }
 }
 
 function getFeedResults(_Data)
 {
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(_Data, "text/xml");
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(_Data, "text/xml");
 
-    console.log(xmlDoc);
-    console.log(xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].innerHTML);
-    console.log(xmlDoc.getElementsByTagName("image")[0].getAttribute("href"));
-    console.log(xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data);
-    console.log(document.getElementById("search-input").value);
+    var AllImageTags = xmlDoc.getElementsByTagName("image")
+    var Image = null
+
+    if (AllImageTags.length > 0)
+    {
+        if(AllImageTags[0].nodeName == "itunes:image")
+        {
+            Image = AllImageTags[0].getAttribute("href")
+        }
+        else if (AllImageTags[0].nodeName == "image")
+        {
+            Image = AllImageTags[0].getElementsByTagName("url")[0].innerHTML
+        }
+    }
+
+    var AllAuthorTags = xmlDoc.getElementsByTagName("author")
+    var Author = null
+
+    if (AllAuthorTags.length > 0)
+    {
+        Author = AllAuthorTags[0].innerHTML
+    }
+    else
+    {
+        Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
+    }
 
     clearContent()
 
@@ -51,11 +80,11 @@ function getFeedResults(_Data)
 
     var PodcastInfos = {
         "feedUrl": document.getElementById("search-input").value,
-        "artistName": xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data,
+        "artistName": Author,
         "collectionName": xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].innerHTML,
-        "artworkUrl30": xmlDoc.getElementsByTagName("image")[0].getAttribute("href"),
-        "artworkUrl60": xmlDoc.getElementsByTagName("image")[0].getAttribute("href"),
-        "artworkUrl100": xmlDoc.getElementsByTagName("image")[0].getAttribute("href"),
+        "artworkUrl30": Image,
+        "artworkUrl60": Image,
+        "artworkUrl100": Image,
     }
 
     var Icon = getIcon(PodcastInfos)

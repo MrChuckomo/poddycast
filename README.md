@@ -11,7 +11,9 @@ And search through the **history** of podcasts you listened to.
 
 You can also create **playlist** to keep you Podcast collection nice and clean.
 
-![gif_1 subscribe](img/poddycast_v0.2.0.gif)
+![gif_1](img/poddycast_v0.2.0.gif)
+
+![gif_2](img/poddycast-rename_playlists.gif)
 
 <!--
 ### Subscribe to Podcasts

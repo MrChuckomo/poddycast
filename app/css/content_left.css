@@ -136,14 +136,42 @@
 
 #playlists ul li
 {
-    padding: 0.5em;
-    padding-left: 1.2em;
+    /* padding: 0.5em; */
+    padding-left: 0.6em;
 }
 
 #playlists ul li.over
 {
     background: #039BE5;
     color: #FFF;
+}
+
+#playlists ul li.over input
+{
+   color: #FFF;
+}
+
+#playlists ul li input
+{
+    outline: none;
+    background: inherit;
+    border: none;
+    font-size: 14px;
+    line-height: 0.5em;
+    padding: 0.5em;
+    width: calc(100% - 3em);
+}
+
+#playlists ul li input:disabled
+{
+    user-select: none;
+}
+
+#playlists ul li input:enabled
+{
+    outline: 1px solid #039BE5;
+    background: #FEFEFE;
+    color: #000;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

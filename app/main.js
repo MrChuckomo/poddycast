@@ -12,7 +12,7 @@ function createWindow()
         minWidth: 1000,
         height: 600,
         minHeight: 600,
-        icon: "./Resources/app/img/App_Icon_PoddyCast-Desktop.png"
+        icon: "./Resources/app/img/poddycast-app_icon.png"
     })
 
     win.loadURL(url.format
