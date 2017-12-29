@@ -62,10 +62,22 @@ h1
     height: 58px;
     display: grid;
     grid-template-rows: 0.2em 1fr;
-    grid-template-columns: 20% 20% 20% 20% 20% 0 0;
+    grid-template-columns: 20% 20% 20% 20% 20% 0 0 0;
     grid-template-areas:
-        "progress progress progress progress progress progress progress"
-        "image replay play forward speed time duration";
+        "progress progress progress progress progress progress progress progress"
+        "image replay play forward speed time duration playback-title";
+}
+
+#content-right-player-title
+{
+    grid-area: playback-title;
+    align-self: center;
+    text-align: left;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #999;
 }
 
 #replay-30-sec
@@ -140,7 +152,8 @@ h1
 {
     grid-area: speed;
     align-self: center;
-    justify-self: center;
+    justify-self: right;
+    margin-right: 2em;
     outline: 0;
     font-size: 12px;
     height: 35px;
@@ -187,10 +200,10 @@ h1
         height: 58px;
         display: grid;
         grid-template-rows: 0.2em 1fr;
-        grid-template-columns: 1fr 1fr 100px 50px 100px 1fr 1fr;
+        grid-template-columns: 100px 2fr 100px 100px 50px 100px 100px 2fr;
         grid-template-areas:
-            "progress progress progress progress progress progress progress"
-            "image time replay play forward duration speed";
+            "progress progress progress progress progress progress progress progress"
+            "image playback-title time replay play forward duration speed";
     }
 
     #content-right-player-time, #content-right-player-duration

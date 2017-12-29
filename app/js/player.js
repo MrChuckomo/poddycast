@@ -51,7 +51,8 @@ function playNow(_Self)
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
-    document.getElementById("content-right-player").setAttribute("data-tooltip", _Self.getElementsByClassName("podcast-entry-title")[0].innerHTML)
+    document.getElementById("content-right-player-title").innerHTML = _Self.getElementsByClassName("podcast-entry-title")[0].innerHTML
+    // document.getElementById("content-right-player").setAttribute("data-tooltip", _Self.getElementsByClassName("podcast-entry-title")[0].innerHTML)
     togglePlayPauseButton()
 
     if (player.paused)
