@@ -142,6 +142,19 @@ function updateProgress()
     setPlaybackTime(Player.duration, "content-right-player-duration")
 }
 
+function seekProgress(_Self, _Event)
+{
+    // NOTE: Click position / div element whole width
+
+    var Player = document.getElementById("player")
+    var PlayerSource = Player.getElementsByTagName("source")[0]
+    var percent = _Event.offsetX / _Self.offsetWidth;
+
+    Player.currentTime = percent * Player.duration;
+
+    savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
+}
+
 function nextEpisode()
 {
     var AllListItems      = document.getElementsByClassName("podcast-entry")
