@@ -130,7 +130,12 @@ function showHistory()
         var JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
         var List        = document.getElementById("list")
 
-        for (var i = 0; i < JsonContent.length; i++)
+        // NOTE: Show just the last 100 entries in History
+        // TODO: The can be loaded after user interaction
+
+        var Count = ((JsonContent.length <= 100) ? JsonContent.length : 100)
+
+        for (var i = 0; i < Count; i++)
         {
             var ChannelName  = JsonContent[i].channelName
             var EpisodeTitle = JsonContent[i].episodeTitle
