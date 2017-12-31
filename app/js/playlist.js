@@ -189,6 +189,8 @@ function showPlaylistContent(_Self)
                 var NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
                 var List                   = document.getElementById("list")
 
+                setGridLayout(List, false)
+
                 for (var a = 0; a < NewEpisodesJsonContent.length; a++)
                 {
                     var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", NewEpisodesJsonContent[a].channelName)

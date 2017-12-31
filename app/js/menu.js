@@ -22,6 +22,8 @@ function showNewEpisodes()
         var JsonContent  = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
         var List         = document.getElementById("list")
 
+        setGridLayout(List, false)
+
         for (var i = 0; i < JsonContent.length; i++)
         {
             var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", JsonContent[i].channelName)
@@ -68,6 +70,8 @@ function showFavorites()
 
         var List = document.getElementById("list")
 
+        setGridLayout(List, true)
+
         for (var i = 0; i < JsonContent.length; i++)
         {
             var Artwork = JsonContent[i].artworkUrl60
@@ -92,6 +96,51 @@ function showFavorites()
         }
     }
 }
+
+
+
+function showHistory()
+{
+    clearContent()
+
+    if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+        var List        = document.getElementById("list")
+
+        setGridLayout(List, false)
+
+        // NOTE: Show just the last 100 entries in History
+        // TODO: The can be loaded after user interaction
+
+        var Count = ((JsonContent.length <= 100) ? JsonContent.length : 100)
+
+        for (var i = 0; i < Count; i++)
+        {
+            var ChannelName  = JsonContent[i].channelName
+            var EpisodeTitle = JsonContent[i].episodeTitle
+            var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+
+            if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+            {
+                Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+            }
+
+            if (Artwork != null)
+            {
+                var DateTime    = new Date(JsonContent[i].date)
+                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
+
+                List.insertBefore(ListElement, List.childNodes[0])
+            }
+        }
+    }
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Helper
+// ---------------------------------------------------------------------------------------------------------------------
 
 function sortByName(_Json)
 {
@@ -119,40 +168,4 @@ function sortByName(_Json)
     }
 
     return SortJson
-}
-
-function showHistory()
-{
-    clearContent()
-
-    if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
-        var List        = document.getElementById("list")
-
-        // NOTE: Show just the last 100 entries in History
-        // TODO: The can be loaded after user interaction
-
-        var Count = ((JsonContent.length <= 100) ? JsonContent.length : 100)
-
-        for (var i = 0; i < Count; i++)
-        {
-            var ChannelName  = JsonContent[i].channelName
-            var EpisodeTitle = JsonContent[i].episodeTitle
-            var Artwork      = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
-
-            if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
-            {
-                Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
-            }
-
-            if (Artwork != null)
-            {
-                var DateTime    = new Date(JsonContent[i].date)
-                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
-
-                List.insertBefore(ListElement, List.childNodes[0])
-            }
-        }
-    }
 }

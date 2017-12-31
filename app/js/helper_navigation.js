@@ -66,6 +66,21 @@ function setPlaylistName(_Self)
     }
 }
 
+function setGridLayout(_List, _Enable)
+{
+    if (_Enable)
+    {
+        _List.style.display = "grid"
+        _List.style.gridTemplateColumns = "1fr 1fr 1fr"
+    }
+    else
+    {
+        _List.style.display = null
+        _List.style.gridTemplateColumns = null
+    }
+}
+
+
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU & PLAYLISTS
 // ---------------------------------------------------------------------------------------------------------------------
