@@ -67,6 +67,8 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
 function showAllEpisodes(_Self)
 {
+    setGridLayout(document.getElementById("list"), false)
+
     clearContent()
 
     getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
