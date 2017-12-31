@@ -224,7 +224,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     const ContextMenu = new Menu()
     ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Add to New Episodes', type: 'checkbox', checked: getSettings(_Feed), click(self)
+    ContextMenu.append(new MenuItem({label: 'Push to New Episodes', type: 'checkbox', checked: getSettings(_Feed), click(self)
     {
         if (isInSettings(_Feed))
         {
