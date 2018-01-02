@@ -60,11 +60,11 @@ function showNewEpisodes()
 
 function showFavorites()
 {
+    clearContent()
+
     if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        clearContent()
 
         JsonContent = sortByName(JsonContent)
 
@@ -97,8 +97,6 @@ function showFavorites()
     }
 }
 
-
-
 function showHistory()
 {
     clearContent()
@@ -115,7 +113,7 @@ function showHistory()
 
         var Count = ((JsonContent.length <= 100) ? JsonContent.length : 100)
 
-        for (var i = 0; i < Count; i++)
+        for (var i = JsonContent.length - Count; i < JsonContent.length; i++)
         {
             var ChannelName  = JsonContent[i].channelName
             var EpisodeTitle = JsonContent[i].episodeTitle
@@ -137,6 +135,33 @@ function showHistory()
     }
 }
 
+function showStatistics()
+{
+    clearContent()
+
+    var JsonContent = null
+    var List = document.getElementById("list")
+
+    setGridLayout(List, false)
+
+
+    JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+    List.append(getPodcastElement("podcast-entry", null, "New Episodes", JsonContent.length, null))
+
+    JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+    List.append(getPodcastElement("podcast-entry", null, "Favorite Podcasts", JsonContent.length, null))
+
+    JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
+
+    List.append(getPodcastElement("podcast-entry", null, "History Items", JsonContent.length, null))
+    List.append(getPodcastElement("podcast-entry", null, "Last Podcast", JsonContent[JsonContent.length - 1].channelName, null))
+
+    JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    List.append(getPodcastElement("podcast-entry", null, "Playlists", JsonContent.length, null))
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Helper

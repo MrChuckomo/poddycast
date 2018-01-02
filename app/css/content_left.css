@@ -103,6 +103,16 @@
     fill: #039BE5;
 }
 
+.purple
+{
+    fill: #9C27B0;
+}
+
+.teal
+{
+    fill: #009688;
+}
+
 .selected
 {
     background-color: #E0E0E0;
