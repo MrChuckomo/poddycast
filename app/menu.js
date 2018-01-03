@@ -3,13 +3,18 @@ const {app, Menu} = require('electron').remote
 const template =
 [
     {
-        label: 'View',
+        label: 'Edit',
         submenu:
         [
             {role: 'cut'},
             {role: 'copy'},
-            {role: 'paste'},
-            {type: 'separator'},
+            {role: 'paste'}
+        ]
+    },
+    {
+        label: 'View',
+        submenu:
+        [
             {role: 'reload'},
             // {role: 'forcereload'},
             {type: 'separator'},
@@ -24,9 +29,7 @@ const template =
                 // checked: false,
                 click() { darkMode() }
             },
-            {role: 'togglefullscreen'},
-            {type: 'separator'},
-            {role: 'toggledevtools'}
+            {role: 'togglefullscreen'}
         ]
     },
     {
@@ -82,6 +85,19 @@ const template =
                 accelerator: "CommandOrControl+N",
                 click() { focusTextField("new_list-input") }
             }
+        ]
+    },
+    {
+        label: "Settings",
+        submenu:
+        [
+            {
+                label: "Proxy Mode",
+                type: "checkbox",
+                accelerator: "CommandOrControl+Alt+P"
+            },
+            {type: 'separator'},
+            {role: 'toggledevtools'}
         ]
     }
 ]

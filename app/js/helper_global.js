@@ -257,6 +257,26 @@ function getPrettyTime(_Time)
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
+function isProxySet()
+{
+    var ProxySettings = false;
+    const {app} = require('electron').remote
+
+    var MenuItems = app.getApplicationMenu().items
+
+    for (var i = MenuItems.length - 1; i >= 0 ; i --)
+    {
+        if (MenuItems[i].label == "Settings")
+        {
+            // NOTE: Item 0 is "Use Proxy" for now
+
+            ProxySettings = MenuItems[i].submenu.items[0].checked
+        }
+    }
+
+    return ProxySettings
+}
+
 function addToSettings(_PodcastName, _FeedUrl)
 {
     if (fs.existsSync(getSettingsFilePath()))
