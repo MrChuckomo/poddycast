@@ -3,6 +3,10 @@ h1
     margin: 0;
     padding: 0.5em;
     display: inline-block;
+    width: calc(100% - 2em);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
