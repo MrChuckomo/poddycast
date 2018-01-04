@@ -129,7 +129,7 @@ function setContextMenu(_Object)
     _Object.addEventListener('contextmenu', (_Event) =>
     {
         _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow())
+        ContextMenu.popup(remote.getCurrentWindow(), { async:true })
     }, false)
 }
 

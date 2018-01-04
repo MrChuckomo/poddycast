@@ -256,7 +256,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     _Object.addEventListener('click', (_Event) =>
     {
         _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow())
+        ContextMenu.popup(remote.getCurrentWindow(), { async:true })
     }, false)
 
 }
