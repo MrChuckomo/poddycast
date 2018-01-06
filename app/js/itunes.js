@@ -31,6 +31,8 @@ function getResults(_Data)
 
     var List = document.getElementById("list")
 
+    setGridLayout(List, false)
+
     for (var i = 0; i < obj.results.length; i++)
     {
         var PodcastInfos = {

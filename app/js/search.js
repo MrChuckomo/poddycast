@@ -85,6 +85,8 @@ function getFeedResults(_Data)
 
     var List = document.getElementById("list")
 
+    setGridLayout(List, false)
+
     var PodcastInfos = {
         "feedUrl": document.getElementById("search-input").value,
         "artistName": Author,
