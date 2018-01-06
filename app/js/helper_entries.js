@@ -133,6 +133,34 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _H
     return ListElement
 }
 
+function getStatisticsElement(_Class, _Title, _Value)
+{
+    var ListElement = document.createElement("li")
+    var Title = document.createElement("div")
+    var Value = document.createElement("div")
+
+    Title.innerHTML = _Title
+    Title.classList.add("statistics-entry-title")
+
+    if (_Value != null)
+    {
+        Value.innerHTML = _Value
+        Value.classList.add("statistics-entry-value")
+    }
+
+    // ListElement.classList.add("statistics-entry")
+
+    ListElement.classList.add(_Class)
+    ListElement.append(Title)
+
+    if (_Value != null)
+    {
+        ListElement.append(Value)
+    }
+
+    return ListElement
+}
+
 function setPodcastElementToDone(_ListElement)
 {
     _ListElement.getElementsByClassName("podcast-entry-title")[0].classList.add("done")

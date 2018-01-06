@@ -32,13 +32,20 @@ function getPodcastsFromFeed(_SearchTerm)
 {
     // http://feeds.feedburner.com/ICO-Radio
 
-    if (_SearchTerm.includes("https"))
+    if (isProxySet())
     {
-        makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
+        makeRequest(getFeedProxyOptions(_SearchTerm), null, getFeedResults, eRequest.http)
     }
     else
     {
-        makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
+        if (_SearchTerm.includes("https"))
+        {
+            makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
+        }
+        else
+        {
+            makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
+        }
     }
 }
 

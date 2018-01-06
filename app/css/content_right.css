@@ -3,6 +3,10 @@ h1
     margin: 0;
     padding: 0.5em;
     display: inline-block;
+    width: calc(100% - 2em);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -59,6 +63,42 @@ h1
 {
     margin: 0;
     padding: 0;
+}
+
+.statistics-header
+{
+    padding: 0.5em;
+    padding-left: 1.5em;
+    padding-right: 2em;
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: #F2F2F2;
+}
+
+.statistics-entry
+{
+    background-color: inherit;
+    /* border-bottom: 1px solid #DDD; */
+    padding: 0.5em;
+    padding-left: 2em;
+    padding-right: 2em;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "stats-title stats-value";
+}
+
+.statistics-entry-title
+{
+    grid-area: stats-title;
+}
+
+.statistics-entry-value
+{
+    grid-area: stats-value;
 }
 
 .podcast-entry

@@ -2,11 +2,11 @@ function darkMode()
 {
     const {app} = require('electron').remote
 
-    var ViewMenuItem = app.getApplicationMenu().items[1].submenu
+    var ViewMenuItem = app.getApplicationMenu().items[2].submenu
 
     if(isWindows())
     {
-        ViewMenuItem = app.getApplicationMenu().items[0].submenu
+        ViewMenuItem = app.getApplicationMenu().items[1].submenu
     }
 
     var DarkModeMenu = getDarkModeMenuItem(ViewMenuItem)

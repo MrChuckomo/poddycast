@@ -13,8 +13,14 @@ function getPodcasts(_SearchTerm)
     _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
     _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
-    makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https)
-    // makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
+    if (isProxySet())
+    {
+        makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
+    }
+    else
+    {
+        makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https)
+    }
 }
 
 function getResults(_Data)

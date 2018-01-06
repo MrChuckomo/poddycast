@@ -9,8 +9,14 @@ function readFeeds()
 
         for (var i = 0; i < JsonContent.length; i++)
         {
-            makeFeedRequest(JsonContent[i].feedUrl, saveLatestEpisode)
-            // makeFeedRequest(getFeedProxyOptions(JsonContent[i].feedUrl), saveLatestEpisode)
+            if (isProxySet())
+            {
+                makeFeedRequest(getFeedProxyOptions(JsonContent[i].feedUrl), saveLatestEpisode)
+            }
+            else
+            {
+                makeFeedRequest(JsonContent[i].feedUrl, saveLatestEpisode)
+            }
         }
     }
 }
@@ -80,16 +86,21 @@ function getAllEpisodesFromFeed(_Feed)
 
     appendSettingsSection(PodcastName, _Feed)
 
-    makeFeedRequest(_Feed, checkContent)
-
-    // if (_Feed instanceof Object)
-    // {
-    //     makeFeedRequest(_Feed, checkContent)
-    // }
-    // else
-    // {
-    //     makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
-    // }
+    if (isProxySet())
+    {
+        if (_Feed instanceof Object)
+        {
+            makeFeedRequest(_Feed, checkContent)
+        }
+        else
+        {
+            makeFeedRequest(getFeedProxyOptions(_Feed), checkContent)
+        }
+    }
+    else
+    {
+        makeFeedRequest(_Feed, checkContent)
+    }
 }
 
 function checkContent(_Content, _eRequest, _Options)
@@ -245,7 +256,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     _Object.addEventListener('click', (_Event) =>
     {
         _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow())
+        ContextMenu.popup(remote.getCurrentWindow(), { async:true })
     }, false)
 
 }
