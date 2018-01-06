@@ -29,8 +29,8 @@ You can also create **playlists** to keep your Podcast collection nice and clean
 
 ## Install
 
-Download the latest release from the release page: 
-[Beta Release v0.3.0](https://github.com/MrChuckomo/poddycast/releases)
+Download the latest release from the release page:
+[Beta Release v0.4.0](https://github.com/MrChuckomo/poddycast/releases)
 
 
 ## Platform Support
