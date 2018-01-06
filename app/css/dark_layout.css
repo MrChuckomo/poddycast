@@ -67,6 +67,11 @@ input
     border-color: #222;
 }
 
+.statistics-header
+{
+    background: #222;
+}
+
 .settings-unsubscribe
 {
     background: #111;

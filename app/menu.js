@@ -79,6 +79,11 @@ const template =
                 accelerator: "CommandOrControl+3",
                 click() { selectMenuItem("menu-history"); showHistory() }
             },
+            {
+                label: "Statistics",
+                accelerator: "CommandOrControl+4",
+                click() { selectMenuItem("menu-statistics"); showStatistics() }
+            },
             {type: 'separator'},
             {
                 label: "New List",

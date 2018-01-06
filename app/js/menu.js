@@ -144,23 +144,28 @@ function showStatistics()
 
     setGridLayout(List, false)
 
-
-    JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-    List.append(getPodcastElement("podcast-entry", null, "New Episodes", JsonContent.length, null))
+    List.append(getStatisticsElement("statistics-header", "Podcasts", null))
 
     JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
-    List.append(getPodcastElement("podcast-entry", null, "Favorite Podcasts", JsonContent.length, null))
+    List.append(getStatisticsElement("statistics-entry", "Favorite Podcasts",  JsonContent.length))
 
     JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
 
-    List.append(getPodcastElement("podcast-entry", null, "History Items", JsonContent.length, null))
-    List.append(getPodcastElement("podcast-entry", null, "Last Podcast", JsonContent[JsonContent.length - 1].channelName, null))
+    List.append(getStatisticsElement("statistics-entry", "Last Podcast",  JsonContent[JsonContent.length - 1].channelName))
+
+    List.append(getStatisticsElement("statistics-header", "Episodes", null))
+    List.append(getStatisticsElement("statistics-entry", "History Items",  JsonContent.length))
+
+    JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+
+    List.append(getStatisticsElement("statistics-entry", "New Episodes",  JsonContent.length))
+
+    List.append(getStatisticsElement("statistics-header", "Playlists", null))
 
     JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
-    List.append(getPodcastElement("podcast-entry", null, "Playlists", JsonContent.length, null))
+    List.append(getStatisticsElement("statistics-entry", "Playlists",  JsonContent.length))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
