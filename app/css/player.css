@@ -138,7 +138,9 @@
 
 #content-right-player-progress-bar-progress
 {
-    background-color: #039BE5;
+    /* background-color: #039BE5; */
+    /* background-color: #2979FF; */
+    background-color: #448AFF;
     height: 3px;
     width: 0%;
 }
