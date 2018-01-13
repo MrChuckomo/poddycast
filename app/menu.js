@@ -38,8 +38,18 @@ const template =
         [
             {
                 label: "Play/Pause",
-                accelerator: "Control+Space",
-                click() { playPause("play-pause") }
+                accelerator: "Space",
+                click()
+                {
+                    // NOTE: if focus is not in any input field (search, playlist)
+                    if (document.activeElement.type == undefined)
+                    {
+                        // console.log(document.activeElement);
+                        // console.log(document.activeElement.type);
+                        // console.log(Object.prototype.toString.call(document.activeElement));
+                        playPause("play-pause")
+                    }
+                }
             },
             {type: 'separator'},
             {

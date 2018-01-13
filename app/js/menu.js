@@ -4,7 +4,12 @@ function selectMenuItem(_MenuId)
     // var MenuItem = _Self
     var MenuItem = document.getElementById(_MenuId)
 
-    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    clearTextField(document.getElementById("search-input"))
+    clearTextField(document.getElementById("new_list-input"))
+
+    loseFocusTextField("search-input")
+    loseFocusTextField("new_list-input")
+    
     clearPlaylists()
     clearMenuSelection()
 

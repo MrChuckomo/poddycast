@@ -167,7 +167,8 @@ function showPlaylistContent(_Self)
 
     clearContent()
     clearMenuSelection()
-    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    clearTextField(document.getElementById("search-input"))
+    clearTextField(document.getElementById("new_list-input"))
 
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header

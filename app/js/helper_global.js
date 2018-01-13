@@ -199,6 +199,11 @@ function focusTextField(_InputField)
     document.getElementById(_InputField).focus()
 }
 
+function loseFocusTextField(_InputField)
+{
+    document.getElementById(_InputField).blur()
+}
+
 function getFullTime(_TimeInSeconds)
 {
     var FullTime = {}
