@@ -38,12 +38,12 @@ body
     fill: #FFF;
 }
 
-#playlists h3
+#playlist-header h3
 {
     border-color: #000;
 }
 
-footer
+footer, #content-right-player
 {
     border-color: #000;
 }

@@ -5,8 +5,9 @@
 #content-right-player
 {
     background-color: #FFF;
+    border-top: 1px solid #CCC;
     text-align: center;
-    height: 58px;
+    height: 60px;
     display: grid;
     grid-template-rows: 0.2em 1fr;
     grid-template-columns: 20% 20% 20% 20% 20% 0 0 0;
@@ -18,9 +19,10 @@
 #content-right-player-title
 {
     grid-area: playback-title;
-    align-self: center;
-    text-align: left;
+    align-self: flex-end;
+    text-align: center;
     font-size: 14px;
+    margin-bottom: 0.2em;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -64,10 +66,10 @@
 {
     grid-area: image;
     align-self: center;
-    justify-self: left;
+    /* justify-self: center; */
     margin-left: 2em;
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
     border-radius: 4px;
 }
 
@@ -104,7 +106,7 @@
     outline: 0;
     font-size: 12px;
     height: 35px;
-    width: 70px;
+    width: 60px;
     border: 1px solid #EEE;
     border-radius: 4px;
     background-color: inherit;
@@ -128,7 +130,11 @@
 #content-right-player-progress-bar
 {
     grid-area: progress;
+    align-self: baseline;
     background-color: #CCC;
+    height: 0.5em;
+    border-radius: 2px;
+    margin-top: 0.3em;
 }
 
 /* #content-right-player-progress-bar:hover #content-right-player-progress-bar-progress, #content-right-player-progress-bar:hover
@@ -141,7 +147,8 @@
     /* background-color: #039BE5; */
     /* background-color: #2979FF; */
     background-color: #448AFF;
-    height: 3px;
+    height: 0.5em;
+    border-radius: 2px;
     width: 0%;
 }
 
@@ -153,12 +160,24 @@
         text-align: center;
         height: 58px;
         display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 100px;
+        grid-template-areas:
+            "image replay play forward playback-title playback-title playback-title speed"
+            "image replay play forward time progress duration speed";
+    }
+    /* #content-right-player
+    {
+        background-color: #FFF;
+        text-align: center;
+        height: 58px;
+        display: grid;
         grid-template-rows: 0.2em 1fr;
         grid-template-columns: 100px 2fr 100px 100px 50px 100px 100px 2fr;
         grid-template-areas:
             "progress progress progress progress progress progress progress progress"
             "image playback-title time replay play forward duration speed";
-    }
+    } */
 
     #content-right-player-time, #content-right-player-duration
     {
@@ -174,10 +193,20 @@
     #content-right-player-time
     {
         grid-area: time;
+        align-self: baseline;
+        justify-self: right;
+        font-size: 12px;
+        padding: 0.2em;
+        padding-right: 0.5em;
     }
 
     #content-right-player-duration
     {
         grid-area: duration;
+        align-self: baseline;
+        justify-self: left;
+        font-size: 12px;
+        padding: 0.2em;
+        padding-left: 0.5em;
     }
 }
