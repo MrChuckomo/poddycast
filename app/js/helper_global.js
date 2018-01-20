@@ -95,6 +95,11 @@ function init()
     }
 }
 
+function fileExistsAndIsNotEmpty(_File)
+{
+    return (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
+}
+
 function isAlreadySaved(_FeedUrl)
 {
     var FeedExists  = false;

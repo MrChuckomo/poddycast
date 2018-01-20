@@ -2,7 +2,7 @@
 function handleDragStart(_Event)
 {
     _Event.dataTransfer.setData('text/html', this.innerHTML);
-    // _Event.dataTransfer.setDragImage(this.getElementsByTagName("img")[0], 0, 0);
+    // _Event.dataTransfer.setDragImage(this.getElementsByTagName("img")[0], 0, 0);    
     _Event.dataTransfer.setDragImage(this.getElementsByTagName("img")[0], -20, -20);
 
     this.classList.remove('over');
