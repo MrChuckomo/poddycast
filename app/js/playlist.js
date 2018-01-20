@@ -102,9 +102,10 @@ function setContextMenu(_Object)
 
     // NOTE: Access input field inside the playlist item to get the name.
 
-    ContextMenu.append(new MenuItem({label: 'Rename', click(self) { enableRename(_Object) }}))
+    ContextMenu.append(new MenuItem({label: 'Edit', click(self) { enableRename(_Object) }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Remove Playlist', click(self)
+    ContextMenu.append(new MenuItem({label: 'Rename', click(self) { enableRename(_Object) }}))
+    ContextMenu.append(new MenuItem({label: 'Delete', click(self)
     {
         var PlaylistName = _Object.getElementsByTagName("input")[0].value
         var JsonContent  = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
@@ -167,7 +168,8 @@ function showPlaylistContent(_Self)
 
     clearContent()
     clearMenuSelection()
-    clearTextField(document.getElementById("search").getElementsByTagName("input")[0])
+    clearTextField(document.getElementById("search-input"))
+    clearTextField(document.getElementById("new_list-input"))
 
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header

@@ -6,10 +6,26 @@
 function setItemCounts()
 {
     var NewEpisodesCount       = document.getElementById("menu-episodes").getElementsByClassName("menu-count")[0]
-    NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8")).length
+
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    {
+        NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8")).length
+    }
+    else
+    {
+        NewEpisodesCount.innerHTML = 0
+    }
 
     var FavoritesCount       = document.getElementById("menu-favorites").getElementsByClassName("menu-count")[0]
-    FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8")).length
+
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8")).length
+    }
+    else
+    {
+        FavoritesCount.innerHTML = 0
+    }
 }
 
 function clearPlaylists()
@@ -70,13 +86,15 @@ function setGridLayout(_List, _Enable)
 {
     if (_Enable)
     {
-        _List.style.display = "grid"
-        _List.style.gridTemplateColumns = "1fr 1fr 1fr"
+        _List.classList.add("grid-layout")
+        // _List.style.display = "grid"
+        // _List.style.gridTemplateColumns = "1fr 1fr 1fr"
     }
     else
     {
-        _List.style.display = null
-        _List.style.gridTemplateColumns = null
+        _List.classList.remove("grid-layout")
+        // _List.style.display = null
+        // _List.style.gridTemplateColumns = null
     }
 }
 

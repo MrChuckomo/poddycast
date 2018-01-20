@@ -218,17 +218,131 @@ h1
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Grid layout for list */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.grid-layout
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+@media screen and (min-width: 1200px)
+{
+    .grid-layout
+    {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 1400px)
+{
+    .grid-layout
+    {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 1600px)
+{
+    .grid-layout
+    {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 1800px)
+{
+    .grid-layout
+    {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 2000px)
+{
+    .grid-layout
+    {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+}
+
+.grid-layout .podcast-entry
+{
+    display: grid;
+    grid-template-columns: 1fr 0px;
+    border-bottom: none;
+}
+
+.grid-layout .podcast-entry .podcast-entry-header
+{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+    grid-template-areas:
+        "pimage"
+        "ptitle";
+}
+
+.grid-layout .podcast-entry .podcast-entry-header img
+{
+    grid-area: pimage;
+    width: 90px;
+    height: 90px;
+    margin: 0;
+    padding: 0;
+    align-self: center;
+    justify-self: center;
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+.grid-layout .podcast-entry .podcast-entry-title
+{
+    grid-area: ptitle;
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+}
+
+.grid-layout .podcast-entry .podcast-entry-actions
+{
+    display: none;
+}
+
+.grid-layout .podcast-entry:hover
+{
+    background-color: inherit;
+}
+
+.grid-layout .podcast-entry .podcast-entry-header img:hover
+{
+    box-shadow: 0px 2px 8px 0px rgba(0,0,0,0.75);
+}
+
+.grid-layout .podcast-entry .podcast-entry-header img:active
+{
+    box-shadow: none;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
 /* NOTE: Select the currently playing episode */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 .select-episode
 {
-    background: #039BE5;
+    /* background: #039BE5; */
+    background: #448AFF;
 }
 
 .select-episode:hover
 {
-    background: #0288D1;
+    /* background: #0288D1; */
+    background: #2979FF;
 }
 
 .select-episode div

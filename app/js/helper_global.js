@@ -95,6 +95,11 @@ function init()
     }
 }
 
+function fileExistsAndIsNotEmpty(_File)
+{
+    return (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
+}
+
 function isAlreadySaved(_FeedUrl)
 {
     var FeedExists  = false;
@@ -197,6 +202,11 @@ function clearTextField(_InputField)
 function focusTextField(_InputField)
 {
     document.getElementById(_InputField).focus()
+}
+
+function loseFocusTextField(_InputField)
+{
+    document.getElementById(_InputField).blur()
 }
 
 function getFullTime(_TimeInSeconds)
