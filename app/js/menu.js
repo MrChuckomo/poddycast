@@ -210,35 +210,3 @@ function showStatistics()
         List.append(getStatisticsElement("statistics-entry", "Playlists",  0))
     }
 }
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Helper
-// ---------------------------------------------------------------------------------------------------------------------
-
-function sortByName(_Json)
-{
-    var SortArray = []
-    var SortJson  = []
-
-    for (var i = 0; i < _Json.length; i++)
-    {
-        SortArray.push(_Json[i].collectionName)
-    }
-
-    SortArray.sort()
-
-    for (var i = 0; i < SortArray.length; i++)
-    {
-        for (var j = 0; j < _Json.length; j++)
-        {
-            if (_Json[j].collectionName == SortArray[i])
-            {
-                SortJson.push(_Json[j])
-
-                break
-            }
-        }
-    }
-
-    return SortJson
-}
