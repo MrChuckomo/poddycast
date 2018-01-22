@@ -62,6 +62,27 @@ input
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* Right */
 
+.playlist-edit-input
+{
+    background: #444;
+    border-color: #000;
+}
+
+.edit-header button
+{
+    background: #222;
+}
+
+.uncheck svg
+{
+    fill: #666;
+}
+
+.check svg
+{
+    fill: #448AFF;
+}
+
 .podcast-entry, .settings
 {
     border-color: #222;
@@ -82,7 +103,7 @@ input
     fill: #FFF;
 }
 
-.podcast-entry:hover
+.podcast-entry:hover, .podcast-edit-entry:hover
 {
     background: #222;
 }
