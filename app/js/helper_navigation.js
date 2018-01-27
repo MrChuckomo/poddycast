@@ -121,6 +121,48 @@ function setGridLayout(_List, _Enable)
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// RIGHT COLUMN
+// ---------------------------------------------------------------------------------------------------------------------
+
+function setHeaderViewAction(_Mode)
+{
+    switch (_Mode)
+    {
+        case "list":
+            document.getElementById("content-right-header-actions").innerHTML = s_ListView
+            document.getElementById("content-right-header-actions").getElementsByTagName("svg")[0].setAttribute("onclick", "toggleList('list')")
+            break;
+
+        case "grid":
+            document.getElementById("content-right-header-actions").innerHTML = s_GridView
+            document.getElementById("content-right-header-actions").getElementsByTagName("svg")[0].setAttribute("onclick", "toggleList('grid')")
+            break;
+
+        default: document.getElementById("content-right-header-actions").innerHTML = ""; break;
+    }
+}
+
+function toggleList(_View)
+{
+    switch (_View)
+    {
+        case "list":
+            var List = document.getElementById("list")
+            setGridLayout(List, false)
+            setHeaderViewAction("grid")
+            break;
+
+        case "grid":
+            var List = document.getElementById("list")
+            setGridLayout(List, true)
+            setHeaderViewAction("list")
+            break;
+
+        default: break;
+
+    }
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU & PLAYLISTS

@@ -119,7 +119,7 @@ input
     border-left: 1px solid #111;
 }
 
-#content-right-player svg
+#content-right-player svg, #content-right-header-actions svg
 {
     fill: #FFF;
 }
@@ -135,18 +135,18 @@ svg.set-favorite
     background: #222;
 }
 
-#content-right-player-speed
+#content-right-player-speed, #content-right-header-actions svg
 {
     border-color: #222;
     color: #FFF;
 }
 
-#content-right-player-speed:hover
+#content-right-player-speed:hover, #content-right-header-actions svg:hover
 {
     border-color: #000;
 }
 
-#content-right-player-speed:active
+#content-right-player-speed:active, #content-right-header-actions svg:active
 {
     background: #111;
 }

@@ -237,6 +237,7 @@ function showEditPage(_Self)
 
     setGridLayout(List, false)
     clearContent()
+    setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
     clearTextField(document.getElementById("new_list-input"))
@@ -277,6 +278,7 @@ function showPlaylistContent(_Self)
     var PlaylistName = _Self.getElementsByTagName("input")[0].value
 
     clearContent()
+    setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
     clearTextField(document.getElementById("new_list-input"))

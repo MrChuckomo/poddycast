@@ -34,12 +34,41 @@ h1
     background: #FFF;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 85px;
 }
 
 #content-right-header h1
 {
     padding-left: 0;
     margin-left: 1em;
+}
+
+#content-right-header-actions
+{
+    opacity: 0.6;
+    align-self: center;
+}
+
+#content-right-header-actions svg
+{
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    padding: 0.2em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    height: 30px;
+    width: 30px;
+}
+
+#content-right-header-actions svg:hover
+{
+    border-color: #CCC;
+}
+
+#content-right-header-actions svg:active
+{
+    background-color: #EEE;
 }
 
 #content-right-body
