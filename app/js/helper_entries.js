@@ -80,7 +80,7 @@ function removeFromFile(_File, _ContentReference, _Value, _Break)
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _HeaderLayout)
+function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _TailElement, _HeaderLayout)
 {
     var ListElement     = document.createElement("li")
     var HeaderElement   = document.createElement("div")
@@ -90,7 +90,9 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _H
     var TitleElement    = document.createElement("div")
     var SubtitleElement = document.createElement("div")
     var ImageElement    = document.createElement("img")
+    var TailElement     = document.createElement("div")
 
+console.log(_TailElement);
 
     if (_HeaderLayout == null)
     {
@@ -112,6 +114,9 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _H
     SubtitleElement.innerHTML = _Subtitle
     SubtitleElement.classList.add("podcast-entry-subtitle")
 
+    TailElement.innerHTML = (_TailElement == undefined) ? "" : _TailElement
+    TailElement.classList.add("podcast-entry-tail")
+
     ListElement.classList.add("podcast-entry")
 
     if (_Class       != null)      { ListElement.classList.remove("podcast-entry"); ListElement.classList.add(_Class) }
@@ -123,6 +128,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _H
     // ListElement.append(TitleElement)
 
     HeaderElement.append(TitleElement)
+    HeaderElement.append(TailElement)
 
     ListElement.append(HeaderElement)
     ListElement.append(ActionsElement)

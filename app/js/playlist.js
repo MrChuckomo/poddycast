@@ -316,7 +316,7 @@ function showPlaylistContent(_Self)
 
                     if (Artwork != null)
                     {
-                        var ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_DeleteIcon)
+                        var ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_DeleteIcon, NewEpisodesJsonContent[a].duration)
 
                         if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
                         {

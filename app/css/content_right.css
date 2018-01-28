@@ -146,11 +146,11 @@ h1
 {
     grid-area: header;
     display: grid;
-    grid-template-columns: 115px 1fr;
+    grid-template-columns: 115px 1fr 70px;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-        "image title"
-        "image subtitle";
+        "image title tail"
+        "image subtitle tail";
 }
 
 .podcast-episode-header
@@ -229,6 +229,15 @@ h1
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.podcast-entry-tail
+{
+    grid-area: tail;
+    opacity: 0.4;
+    font-size: 12px;
+    align-self: center;
+    justify-self: center;
 }
 
 .done::after
