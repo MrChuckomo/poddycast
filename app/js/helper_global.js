@@ -1,5 +1,6 @@
 
 const fs = require('fs')
+const os = require('os')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
@@ -7,19 +8,7 @@ const fs = require('fs')
 
 function getSaveDirPath()
 {
-    var Base = process.env['HOME']
-
-    switch (process.platform)
-    {
-        case "darwin": Base = process.env.HOME;        break;
-        case "linux" : Base = process.env.HOMEPATH;    break;
-        case "win32" : Base = process.env.USERPROFILE; break;
-        default:
-
-    }
-
-    // return Base + "/Desktop/poddycast-data"
-    return Base + "/poddycast-data"
+    return os.homedir() + "/poddycast-data"
 }
 
 function isWindows()
