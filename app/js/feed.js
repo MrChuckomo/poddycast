@@ -76,6 +76,7 @@ function showAllEpisodes(_Self)
     setGridLayout(document.getElementById("list"), false)
 
     clearContent()
+    setHeaderViewAction()
 
     getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
 }
