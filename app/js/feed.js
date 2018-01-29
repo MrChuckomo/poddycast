@@ -60,11 +60,23 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
                 var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
                 var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
 
+                if (xmlDoc.getElementsByTagName("duration").length > 0)
+                {
+                    var Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName("duration")[0].innerHTML.split(":"))
+
+                    if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
+                    else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
+                }
+                else
+                {
+                    var Duration = ""
+                }
+
                 // NOTE: save latest episode if not already in History
 
                 if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
                 {
-                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength)
+                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, Duration)
                 }
             }
         }
@@ -76,6 +88,7 @@ function showAllEpisodes(_Self)
     setGridLayout(document.getElementById("list"), false)
 
     clearContent()
+    setHeaderViewAction()
 
     getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
 }
@@ -308,11 +321,11 @@ function processEpisodes(_Content)
                 var Duration = ""
             }
 
-            var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, "podcast-episode-header")
+            var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, null, "podcast-episode-header")
 
             if (isEpisodeAlreadySaved(EpisodeTitle))
             {
-                ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, "podcast-episode-header")
+                ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, null, "podcast-episode-header")
             }
 
             if (isPlaying(EpisodeUrl))
@@ -336,6 +349,7 @@ function processEpisodes(_Content)
             HeaderElement.setAttribute("type", EpisodeType)
             HeaderElement.setAttribute("url", EpisodeUrl)
             HeaderElement.setAttribute("length", EpisodeLength)
+            HeaderElement.setAttribute("duration", Duration)
             HeaderElement.setAttribute("artworkUrl", Artwork)
 
             List.append(ListElement)
@@ -347,12 +361,12 @@ function addToEpisodes(_Self)
 {
     var ListElement = _Self.parentElement.parentElement.getElementsByClassName("podcast-episode-header")[0]
 
-    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"))
+    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"), ListElement.getAttribute("duration"))
 
     _Self.innerHTML = ""
 }
 
-function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength)
+function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength, _Duration)
 {
     var Feed =
     {
@@ -361,6 +375,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         "episodeUrl": _EpisodeUrl,
         "episodeType": _EpisodeType,
         "episodeLength": _EpisodeLength,
+        "duration": _Duration,
         "playbackPosition": 0,
     }
 
