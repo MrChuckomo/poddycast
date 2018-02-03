@@ -21,6 +21,7 @@ function selectMenuItem(_MenuId)
 function showNewEpisodes()
 {
     clearContent()
+    setHeaderViewAction()
 
     if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
     {
@@ -40,7 +41,7 @@ function showNewEpisodes()
 
             if (Artwork != null)
             {
-                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon)
+                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
 
                 if (isPlaying(JsonContent[i].episodeUrl))
@@ -66,6 +67,7 @@ function showNewEpisodes()
 function showFavorites()
 {
     clearContent()
+    setHeaderViewAction("list")
 
     if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
@@ -105,6 +107,7 @@ function showFavorites()
 function showHistory()
 {
     clearContent()
+    setHeaderViewAction()
 
     if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
     {
@@ -143,6 +146,7 @@ function showHistory()
 function showStatistics()
 {
     clearContent()
+    setHeaderViewAction()
 
     var JsonContent = null
     var List = document.getElementById("list")
@@ -209,36 +213,4 @@ function showStatistics()
     {
         List.append(getStatisticsElement("statistics-entry", "Playlists",  0))
     }
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Helper
-// ---------------------------------------------------------------------------------------------------------------------
-
-function sortByName(_Json)
-{
-    var SortArray = []
-    var SortJson  = []
-
-    for (var i = 0; i < _Json.length; i++)
-    {
-        SortArray.push(_Json[i].collectionName)
-    }
-
-    SortArray.sort()
-
-    for (var i = 0; i < SortArray.length; i++)
-    {
-        for (var j = 0; j < _Json.length; j++)
-        {
-            if (_Json[j].collectionName == SortArray[i])
-            {
-                SortJson.push(_Json[j])
-
-                break
-            }
-        }
-    }
-
-    return SortJson
 }

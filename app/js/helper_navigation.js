@@ -50,35 +50,58 @@ function clearRenameFocus(_Self)
         _Self.value = HeaderName
     }
 
-    setPlaylistName(_Self)
+    renamePlaylistInline(_Self)
 }
 
-function setPlaylistName(_Self)
+function renamePlaylistInline(_Self)
 {
     if (_Self.value != null && _Self.value != "")
     {
         var HeaderName = document.getElementById("content-right-header").getElementsByTagName("h1")[0].innerHTML
         var NewName = _Self.value
 
-        if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+        setPlaylistName(HeaderName, NewName)
+        showPlaylistContent(_Self.parentElement)
+
+        _Self.disabled = true
+    }
+}
+
+function renamePlaylistInEdit(_Self)
+{
+    if (_Self.value != null && _Self.value != "")
+    {
+        var SelectionName = document.getElementById("playlists").getElementsByClassName("selected")[0].getElementsByTagName("input")[0].value
+        var NewName = _Self.value
+
+        setPlaylistName(SelectionName, NewName)
+        document.getElementById("playlists").getElementsByClassName("selected")[0].getElementsByTagName("input")[0].value = NewName
+
+        console.log(_Self.parentElement.getElementsByTagName("button")[0].getAttribute("onclick"));
+
+        _Self.parentElement.getElementsByTagName("button")[0].setAttribute("onclick", "deletePlaylist('" + NewName + "')")
+
+        console.log(_Self.parentElement.getElementsByTagName("button")[0].getAttribute("onclick"));
+    }
+}
+
+function setPlaylistName(_OldName, _NewName)
+{
+    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
         {
-            JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-
-            for (var i = 0; i < JsonContent.length; i++)
+            if (JsonContent[i].playlistName == _OldName)
             {
-                if (JsonContent[i].playlistName == HeaderName)
-                {
-                    JsonContent[i].playlistName = NewName
+                JsonContent[i].playlistName = _NewName
 
-                    break
-                }
+                break
             }
-
-            fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
-
-            showPlaylistContent(_Self.parentElement)
-            _Self.disabled = true
         }
+
+        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
     }
 }
 
@@ -98,6 +121,48 @@ function setGridLayout(_List, _Enable)
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// RIGHT COLUMN
+// ---------------------------------------------------------------------------------------------------------------------
+
+function setHeaderViewAction(_Mode)
+{
+    switch (_Mode)
+    {
+        case "list":
+            document.getElementById("content-right-header-actions").innerHTML = s_ListView
+            document.getElementById("content-right-header-actions").getElementsByTagName("svg")[0].setAttribute("onclick", "toggleList('list')")
+            break;
+
+        case "grid":
+            document.getElementById("content-right-header-actions").innerHTML = s_GridView
+            document.getElementById("content-right-header-actions").getElementsByTagName("svg")[0].setAttribute("onclick", "toggleList('grid')")
+            break;
+
+        default: document.getElementById("content-right-header-actions").innerHTML = ""; break;
+    }
+}
+
+function toggleList(_View)
+{
+    switch (_View)
+    {
+        case "list":
+            var List = document.getElementById("list")
+            setGridLayout(List, false)
+            setHeaderViewAction("grid")
+            break;
+
+        case "grid":
+            var List = document.getElementById("list")
+            setGridLayout(List, true)
+            setHeaderViewAction("list")
+            break;
+
+        default: break;
+
+    }
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // MENU & PLAYLISTS
@@ -123,6 +188,11 @@ function clearMenuSelection()
 
 function dragToPlaylist(_PlaylistName, _PodcastName)
 {
+    addToPlaylist(_PlaylistName, _PodcastName)
+}
+
+function addToPlaylist(_PlaylistName, _PodcastName)
+{
     var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
     for (var i = 0; i < JsonContent.length; i++)
@@ -141,4 +211,50 @@ function dragToPlaylist(_PlaylistName, _PodcastName)
     }
 
     fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+}
+
+function removeFromPlaylist(_PlaylistName, _PodcastName)
+{
+    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (JsonContent[i].playlistName == _PlaylistName)
+        {
+            var PodcastList = JsonContent[i].podcastList
+
+            if (isAlreadyInPlaylist(_PlaylistName, _PodcastName))
+            {
+                for (var j = PodcastList.length - 1; j >= 0 ; j--)
+                {
+                    if(PodcastList[j] == _PodcastName) { PodcastList.splice(j, 1) }
+                }
+            }
+
+            break
+        }
+    }
+
+    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+}
+
+function deletePlaylist(_PlaylistName)
+{
+    var JsonContent  = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+
+    for (var i = 0; i < JsonContent.length; i++)
+    {
+        if (_PlaylistName == JsonContent[i].playlistName)
+        {
+            JsonContent.splice(i, 1)
+            break
+        }
+    }
+
+    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+
+    // TODO: clean remove
+    // TODO: do not simply reload the whole app
+
+    location.reload()
 }

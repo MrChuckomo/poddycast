@@ -34,12 +34,41 @@ h1
     background: #FFF;
     padding: 0;
     margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 85px;
 }
 
 #content-right-header h1
 {
     padding-left: 0;
     margin-left: 1em;
+}
+
+#content-right-header-actions
+{
+    opacity: 0.6;
+    align-self: center;
+}
+
+#content-right-header-actions svg
+{
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    padding: 0.2em;
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+    height: 30px;
+    width: 30px;
+}
+
+#content-right-header-actions svg:hover
+{
+    border-color: #CCC;
+}
+
+#content-right-header-actions svg:active
+{
+    background-color: #EEE;
 }
 
 #content-right-body
@@ -117,11 +146,11 @@ h1
 {
     grid-area: header;
     display: grid;
-    grid-template-columns: 115px 1fr;
+    grid-template-columns: 115px 1fr 70px;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-        "image title"
-        "image subtitle";
+        "image title tail"
+        "image subtitle tail";
 }
 
 .podcast-episode-header
@@ -200,6 +229,15 @@ h1
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+}
+
+.podcast-entry-tail
+{
+    grid-area: tail;
+    opacity: 0.4;
+    font-size: 12px;
+    align-self: center;
+    justify-self: center;
 }
 
 .done::after
@@ -436,4 +474,93 @@ h1
 .settings-unsubscribe:hover
 {
     opacity: 1;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Playlist Edit */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+.edit-header
+{
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 1fr 100px;
+}
+
+.edit-header button
+{
+    height: 45px;
+    color: #FFF;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: #333;
+    align-self: center;
+    margin-right: 2em;
+    outline: none;
+    font-size: 14px;
+}
+
+.edit-header button:hover
+{
+    color: #FFF;
+    background: #E53935;
+    border-color: #E53935;
+}
+
+.podcast-edit-entry
+{
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 20px 20px 1fr;
+    padding: 2em;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+}
+
+.podcast-edit-entry:hover
+{
+    background: #F2F2F2;
+}
+
+.podcast-edit-entry span
+{
+    align-self: center;
+}
+
+.podcast-edit-entry svg
+{
+    align-self: center;
+    justify-self: center;
+}
+
+.uncheck svg
+{
+    fill: #DDD;
+}
+
+.check svg
+{
+    fill: #448AFF;
+}
+
+/* .podcast-edit-entry img
+{
+    border-radius: 4px;
+    align-self: center;
+    justify-self: center;
+    width: 20px;
+    height: 20px;
+} */
+
+.playlist-edit-input
+{
+    width: calc(100% - 6em);
+    margin: 1em;
+    margin-left: 2em;
+    margin-right: 2em;
+    outline: none;
+    border-radius: 4px;
+    border: 1px solid #DDD;
+    font-size: 16px;
+    padding: 0.8em;
 }
