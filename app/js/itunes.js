@@ -13,6 +13,8 @@ function getPodcasts(_SearchTerm)
     _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
     _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
 
+    _SearchTerm = encodeURIComponent(_SearchTerm)
+
     if (isProxySet())
     {
         makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
