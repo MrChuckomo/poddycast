@@ -25,6 +25,10 @@ A Podcast app made with Electron because I love Podcasts.
 
 ![gif_2](img/poddycast-rename_playlists.gif)
 
+### Edit Playlist
+
+![gif_3](img/poddycast_edit_playlist.png)
+
 <!--
 ### Subscribe to Podcasts
 
