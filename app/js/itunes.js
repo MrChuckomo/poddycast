@@ -5,14 +5,6 @@
 
 function getPodcasts(_SearchTerm)
 {
-    _SearchTerm = _SearchTerm.replace(/ /g, "+")
-    _SearchTerm = _SearchTerm.replace(/ä/g, "a")
-    _SearchTerm = _SearchTerm.replace(/ö/g, "o")
-    _SearchTerm = _SearchTerm.replace(/ü/g, "u")
-    _SearchTerm = _SearchTerm.replace(/Ä/g, "A")
-    _SearchTerm = _SearchTerm.replace(/Ö/g, "O")
-    _SearchTerm = _SearchTerm.replace(/Ü/g, "U")
-
     _SearchTerm = encodeURIComponent(_SearchTerm)
 
     if (isProxySet())
