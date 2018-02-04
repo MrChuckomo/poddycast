@@ -92,8 +92,6 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     var ImageElement    = document.createElement("img")
     var TailElement     = document.createElement("div")
 
-console.log(_TailElement);
-
     if (_HeaderLayout == null)
     {
         HeaderElement.classList.add("podcast-entry-header")
