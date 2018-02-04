@@ -3,6 +3,7 @@ function search(_Self, _Event)
     if (_Event.code == "Enter")
     {
         clearContent()
+        setHeaderViewAction()
         clearMenuSelection()
         setHeader("Search")
 
