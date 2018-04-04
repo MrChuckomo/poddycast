@@ -3,16 +3,16 @@ const {app, Menu} = require('electron').remote
 const template =
 [
     {
-        label: 'Edit',
+        label: i18n.__('Edit'),
         submenu:
         [
-            {role: 'cut'},
-            {role: 'copy'},
-            {role: 'paste'}
+            {role: 'cut', label: i18n.__('Cut')},
+            {role: 'copy', label: i18n.__('Copy')},
+            {role: 'paste', label: i18n.__('Paste')}
         ]
     },
     {
-        label: 'View',
+        label: i18n.__('View'),
         submenu:
         [
             {role: 'reload'},
@@ -33,7 +33,7 @@ const template =
         ]
     },
     {
-        label: "Player",
+        label: i18n.__('Player'),
         submenu:
         [
             {
@@ -65,7 +65,7 @@ const template =
         ]
     },
     {
-        label: "Go to",
+        label: i18n.__('Go To'),
         submenu:
         [
             {
@@ -103,7 +103,7 @@ const template =
         ]
     },
     {
-        label: "Settings",
+        label: i18n.__('Settings'),
         submenu:
         [
             {
