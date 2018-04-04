@@ -47,7 +47,7 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 
 - [x] macOS  
 - [x] Windows
-- [ ] Linux (comming soon)
+- [x] Linux
 
 ## Contact
 
