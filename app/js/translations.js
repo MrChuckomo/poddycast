@@ -1,31 +1,19 @@
-window.localization = window.localization || {},
-function(n) {
-    localization.translate = {
+function translate(){
 
-      menu: function() {
-        $('#welcome-menu').text(i18n.__('Welcome'));
-        $('#whoweare-menu').text(i18n.__('Who we are'));
-        $('#whatwedo-menu').text(i18n.__('What we do'));
-        $('#getintouch-menu').text(i18n.__('Get in touch'));
+  changeByClass("new-episodes", i18n.__('New Episodes'));
+  changeByClass("favorites", i18n.__('Favorites'));
+  changeByClass("history", i18n.__('History'));
+  changeByClass("playlists", i18n.__('Playlists'));
+  document.getElementsByName('search')[0].placeholder=i18n.__('Search');
+  document.getElementsByName('new_list')[0].placeholder=i18n.__('New List');
+  document.getElementById("content-right-player-title").innerHTML=i18n.__('No episode selected');
+}
 
-      },
+function changeByClass(className, value){
+  var els = document.getElementsByClassName(className);
 
-      welcome: function() {
-        $('.new-episodes').text(i18n.__('New Episodes'));
-        $('.favorites').text(i18n.__('Favorites'));
-        $('.history').text(i18n.__('History'));
-        $('.statistics').text(i18n.__('Statistics'));
-        $('#search-input').attr('placeholder',i18n.__('Search'));
-      },
-
-      init: function() {
-        this.welcome();
-        this.menu();
-      }
-    };
-
-    n(function() {
-        localization.translate.init();
-    })
-
-}(jQuery);
+  Array.prototype.forEach.call(els, function(el) {
+      // Do stuff here
+        el.innerHTML= value;
+  });
+}

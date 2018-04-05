@@ -24,13 +24,13 @@
         <script type="text/javascript" src="./js/feed.js"></script>
         <script type="text/javascript" src="./js/dark_mode.js"></script>
         <script>window.i18n = new(require('./translations/i18n'));</script>
+          <script type="text/javascript" src="./js/translations.js"></script>
         <script>
             require('./menu.js')
-				    require('./js/translations')
         </script>
         <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
     </head>
-    <body onload="init(); loadPlaylists(); readFeeds(); showNewEpisodes(); setItemCounts()">
+    <body onload="init(); loadPlaylists(); readFeeds(); showNewEpisodes(); setItemCounts(); translate()">
 
         <div id="content">
             <div id="content-left">
@@ -48,7 +48,7 @@
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/>
                             </svg>
-                            <span class="new-episodes">New Episodesss</span>
+                            <span class="new-episodes">New Episodes</span>
                             <div class="menu-count">0</div>
                         </li>
                         <li id="menu-favorites" onclick="selectMenuItem('menu-favorites'); showFavorites()">
@@ -80,7 +80,7 @@
                     </ul>
                 </div>
                 <div id="playlist-header">
-                    <h3>Playlists</h3>
+                    <h3 class="playlists">Playlists</h3>
                 </div>
                 <div id="playlists">
                     <ul>
@@ -97,7 +97,7 @@
             </div>
             <div id="content-right">
                 <div id="content-right-header">
-                    <h1>New Episodes</h1>
+                    <h1 class="new-episodes">New Episodes</h1>
                     <div id="content-right-header-actions"></div>
                 </div>
                 <div id="content-right-body">

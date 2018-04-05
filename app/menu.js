@@ -15,21 +15,21 @@ const template =
         label: i18n.__('View'),
         submenu:
         [
-            {role: 'reload'},
+            {role: 'reload', label: i18n.__('Reload')},
             // {role: 'forcereload'},
             {type: 'separator'},
-            {role: 'resetzoom'},
-            {role: 'zoomin'},
-            {role: 'zoomout'},
+            {role: 'resetzoom', label: i18n.__('Reset Zoom')},
+            {role: 'zoomin', label: i18n.__('Zoom In')},
+            {role: 'zoomout', label: i18n.__('Zoom Out')},
             {type: 'separator'},
             {
-                label: 'Dark Mode',
+                label: i18n.__('Dark Mode'),
                 type: "checkbox",
                 accelerator: "CommandOrControl+Alt+L",
                 // checked: false,
                 click() { darkMode() }
             },
-            {role: 'togglefullscreen'}
+            {role: 'togglefullscreen', label: i18n.__('Toggle Full Screen')}
         ]
     },
     {
@@ -37,7 +37,7 @@ const template =
         submenu:
         [
             {
-                label: "Play/Pause",
+                label: i18n.__('Play/Pause'),
                 accelerator: "Space",
                 click()
                 {
@@ -53,12 +53,12 @@ const template =
             },
             {type: 'separator'},
             {
-                label: "30sec Reply",
+                label: i18n.__('30sec Reply'),
                 accelerator: "Left",
                 click() { playReply() }
             },
             {
-                label: "30sec Forward",
+                label: i18n.__("30sec Forward"),
                 accelerator: "Right",
                 click() { playForward() }
             }
@@ -69,34 +69,34 @@ const template =
         submenu:
         [
             {
-                label: "Search",
+                label: i18n.__("Search"),
                 accelerator: "CommandOrControl+F",
                 click() { focusTextField("search-input") }
             },
             {type: 'separator'},
             {
-                label: "New Episodes",
+                label: i18n.__("New Episodes"),
                 accelerator: "CommandOrControl+1",
                 click() { selectMenuItem("menu-episodes"); showNewEpisodes() }
             },
             {
-                label: "Favorites",
+                label: i18n.__("Favorites"),
                 accelerator: "CommandOrControl+2",
                 click() { selectMenuItem("menu-favorites"); showFavorites() }
             },
             {
-                label: "History",
+                label: i18n.__("History"),
                 accelerator: "CommandOrControl+3",
                 click() { selectMenuItem("menu-history"); showHistory() }
             },
             {
-                label: "Statistics",
+                label: i18n.__("Statistics"),
                 accelerator: "CommandOrControl+4",
                 click() { selectMenuItem("menu-statistics"); showStatistics() }
             },
             {type: 'separator'},
             {
-                label: "New List",
+                label: i18n.__("New List"),
                 accelerator: "CommandOrControl+N",
                 click() { focusTextField("new_list-input") }
             }
@@ -107,7 +107,7 @@ const template =
         submenu:
         [
             {
-                label: "Proxy Mode",
+                label: i18n.__("Proxy Mode"),
                 type: "checkbox",
                 accelerator: "CommandOrControl+Alt+P"
             },
