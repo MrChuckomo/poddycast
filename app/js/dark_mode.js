@@ -1,15 +1,10 @@
+const {app} = require('electron').remote
+
+// ---------------------------------------------------------------------------------------------------------------------
+
 function darkMode()
 {
-    const {app} = require('electron').remote
-
-    var ViewMenuItem = app.getApplicationMenu().items[2].submenu
-
-    if(isWindows())
-    {
-        ViewMenuItem = app.getApplicationMenu().items[1].submenu
-    }
-
-    var DarkModeMenu = getDarkModeMenuItem(ViewMenuItem)
+    var DarkModeMenu = getDarkModeMenuItem()
 
     var Stylesheet = document.createElement("link")
     Stylesheet.setAttribute("rel", "stylesheet")
@@ -40,15 +35,28 @@ function darkMode()
 
 function getDarkModeMenuItem(_ParentMenu)
 {
-    // NOTE: Find the "Dark Mode" menu item in the given parent menu
+    // NOTE: Go through all menu items
+    // NOTE: Find the "Dark Mode" menu item
 
     var MenuItem = null
 
-    for (var i = 0; i < _ParentMenu.items.length; i++)
+    for (var i = 0; i < app.getApplicationMenu().items.length; i++)
     {
-        if (_ParentMenu.items[i].label == "Dark Mode" && _ParentMenu.items[i].type == "checkbox")
+        appMenuItem = app.getApplicationMenu().items[i]
+
+        for (var j = 0; j < appMenuItem.submenu.items.length; j++)
         {
-            MenuItem = _ParentMenu.items[i]
+            if (appMenuItem.submenu.items[j].label == "Dark Mode" && appMenuItem.submenu.items[j].type == "checkbox")
+            {
+                MenuItem = appMenuItem.submenu.items[j]
+
+                break
+            }
+        }
+
+        if (MenuItem != null)
+        {
+            break
         }
     }
 
