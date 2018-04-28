@@ -1,4 +1,3 @@
-
 var eLayout =
 {
     row: 'list-item-row-layout',
@@ -92,9 +91,19 @@ function getTextButtonPart(_Text)
 
 function getIconButtonPart(_Icon)
 {
-    var IconButtonElement = document.createElement("svg")
+    var IconButtonElement = document.createElement("div")
 
-    IconButtonElement.innerHTML = _Text
+    // fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"
+
+    // IconButtonElement.setAttribute('fill', '#000000')
+    // IconButtonElement.setAttribute('height', '24')
+    // IconButtonElement.setAttribute('viewBox', '0 0 24 24')
+    // IconButtonElement.setAttribute('width', '24')
+    // IconButtonElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+
+    IconButtonElement.innerHTML = _Icon
+    IconButtonElement.classList.add('list-item-icon')
+
 
     return IconButtonElement
 }

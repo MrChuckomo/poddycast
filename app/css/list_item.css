@@ -24,6 +24,18 @@
     height: 60px;
 }
 
+.list-item-icon
+{
+    opacity: 0.5;
+    align-self: center;
+    text-align: center;
+}
+
+.list-item-icon:hover
+{
+    opacity: 0.7;
+}
+
 .list-item-flag
 {
     border-radius: 4px;

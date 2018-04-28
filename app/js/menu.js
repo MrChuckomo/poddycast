@@ -44,6 +44,16 @@ function showNewEpisodes()
                 var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
 
+
+                // Duration = (JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration
+                // var ListElement = buildListItem(new cListElement([getImagePart(Artwork), getBoldTextPart(JsonContent[i].episodeTitle), getSubTextPart(JsonContent[i].channelName), getSubTextPart(Duration), getIconButtonPart(s_DeleteIcon)], '5em 3fr 2fr 1fr 5em'), eLayout.row)
+                // ListElement.setAttribute("onclick", "playNow(this)")
+                // ListElement.setAttribute("type", JsonContent[i].episodeType)
+                // ListElement.setAttribute("url", JsonContent[i].episodeUrl)
+                // ListElement.setAttribute("length", JsonContent[i].episodeLength)
+                // ListElement.setAttribute("artworkUrl", Artwork)
+
+
                 if (isPlaying(JsonContent[i].episodeUrl))
                 {
                 //     ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
@@ -89,6 +99,7 @@ function showFavorites()
             }
 
             var ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
+            // var ListElement
 
             ListElement.setAttribute("draggable", true)
             ListElement.addEventListener('dragstart', handleDragStart, false);
