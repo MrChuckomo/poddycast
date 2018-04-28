@@ -135,7 +135,7 @@ function showHistory()
             if (Artwork != null)
             {
                 var DateTime    = new Date(JsonContent[i].date)
-                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
+                var ListElement = buildListItem(new cListElement([getImagePart(Artwork), getBoldTextPart(EpisodeTitle), getSubTextPart(DateTime.toLocaleString())], '5em 3fr 1fr'), eLayout.row)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }
