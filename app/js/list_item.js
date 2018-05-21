@@ -28,6 +28,11 @@ function buildListItem(_JsonObject, _Layout)
     return Container
 }
 
+function getListItemPart(_Container, _Position)
+{   
+    return _Container.children[_Position]
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 function getImagePart(_Artwork)

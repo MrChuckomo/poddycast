@@ -62,11 +62,18 @@ function showNewEpisodes()
 
                 var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
 
-                HeaderElement.setAttribute("onclick", "playNow(this)")
-                HeaderElement.setAttribute("type", JsonContent[i].episodeType)
-                HeaderElement.setAttribute("url", JsonContent[i].episodeUrl)
-                HeaderElement.setAttribute("length", JsonContent[i].episodeLength)
-                HeaderElement.setAttribute("artworkUrl", Artwork)
+                // getListItemPart(ListElement, 1).addEventListener('click', playNow, 'bubble')
+                getListItemPart(ListElement, 1).setAttribute("onclick", "playNow(this)")
+                getListItemPart(ListElement, 1).setAttribute("type", JsonContent[i].episodeType)
+                getListItemPart(ListElement, 1).setAttribute("url", JsonContent[i].episodeUrl)
+                getListItemPart(ListElement, 1).setAttribute("length", JsonContent[i].episodeLength)
+                getListItemPart(ListElement, 1).setAttribute("artworkUrl", Artwork)
+
+                // HeaderElement.setAttribute("onclick", "playNow(this)")
+                // HeaderElement.setAttribute("type", JsonContent[i].episodeType)
+                // HeaderElement.setAttribute("url", JsonContent[i].episodeUrl)
+                // HeaderElement.setAttribute("length", JsonContent[i].episodeLength)
+                // HeaderElement.setAttribute("artworkUrl", Artwork)
 
                 List.append(ListElement)
             }
@@ -146,7 +153,15 @@ function showHistory()
             if (Artwork != null)
             {
                 var DateTime    = new Date(JsonContent[i].date)
-                var ListElement = buildListItem(new cListElement([getImagePart(Artwork), getBoldTextPart(EpisodeTitle), getSubTextPart(DateTime.toLocaleString())], '5em 3fr 1fr'), eLayout.row)
+                var ListElement = buildListItem(new cListElement
+                (
+                    [
+                        getImagePart(Artwork),
+                        getBoldTextPart(EpisodeTitle),
+                        getSubTextPart(DateTime.toLocaleString())
+                    ], 
+                    '5em 3fr 1fr'
+                ), eLayout.row)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }
