@@ -18,7 +18,6 @@ function darkMode()
     {
         var Links = document.getElementsByTagName("head")[0].getElementsByTagName("link")
 
-
         for (var i = 0; i < Links.length; i++)
         {
             if (Links[i].getAttribute("href").includes("dark_layout"))
@@ -46,7 +45,7 @@ function getDarkModeMenuItem(_ParentMenu)
 
         for (var j = 0; j < appMenuItem.submenu.items.length; j++)
         {
-            if (appMenuItem.submenu.items[j].label == "Dark Mode" && appMenuItem.submenu.items[j].type == "checkbox")
+            if (appMenuItem.submenu.items[j].label == i18n.__('Dark Mode') && appMenuItem.submenu.items[j].type == "checkbox")
             {
                 MenuItem = appMenuItem.submenu.items[j]
 
@@ -59,6 +58,9 @@ function getDarkModeMenuItem(_ParentMenu)
             break
         }
     }
+
+    console.log(MenuItem);
+    
 
     return MenuItem
 }
