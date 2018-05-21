@@ -41,7 +41,20 @@ function showNewEpisodes()
 
             if (Artwork != null)
             {
-                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
+                // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
+                
+                var ListElement = buildListItem(new cListElement
+                (
+                    [
+                        getImagePart(Artwork),
+                        getBoldTextPart(JsonContent[i].episodeTitle),
+                        getSubTextPart((JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration),
+                        getTextPart(JsonContent[i].channelName),
+                        getIconButtonPart(s_DeleteIcon)
+                    ],
+                    "5em 1fr 6em 1fr 5em"
+                ), eLayout.row)
+
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
 
 

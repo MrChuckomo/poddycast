@@ -109,6 +109,5 @@ function getIconButtonPart(_Icon)
     IconButtonElement.innerHTML = _Icon
     IconButtonElement.classList.add('list-item-icon')
 
-
     return IconButtonElement
 }
