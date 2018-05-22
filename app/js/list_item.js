@@ -74,12 +74,13 @@ function getSubTextPart(_Text)
     return TextElement
 }
 
-function getFlagPart(_Text, _Color)
+function getFlagPart(_Text, _Color, _BackgroundColor)
 {
     var FlagElement = document.createElement("div")
 
     FlagElement.innerHTML = _Text
-    FlagElement.style.backgroundColor = _Color
+    FlagElement.style.color = _Color
+    FlagElement.style.backgroundColor = _BackgroundColor
     FlagElement.classList.add("list-item-flag")
 
     return FlagElement

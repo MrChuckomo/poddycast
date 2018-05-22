@@ -321,11 +321,37 @@ function processEpisodes(_Content)
                 var Duration = ""
             }
 
-            var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, null, "podcast-episode-header")
+            // var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, null, "podcast-episode-header")
+
+            var ListElement = buildListItem(new cListElement
+            (
+                [
+                    getBoldTextPart(EpisodeTitle),
+                    getSubTextPart(Duration),
+                    getFlagPart('Done', 'white', '#4CAF50'),
+                    getIconButtonPart(s_AddEpisodeIcon)
+                ],
+                "2fr 1fr 5em 5em"
+            ), eLayout.row)
 
             if (isEpisodeAlreadySaved(EpisodeTitle))
             {
-                ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, null, "podcast-episode-header")
+                // ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, null, "podcast-episode-header")
+
+                // ListElement = buildListItem(new cListElement
+                // (
+                //     [
+                //         getBoldTextPart(EpisodeTitle),
+                //         getSubTextPart((Duration == undefined) ? "" : Duration),
+                //         getIconButtonPart(""),
+                //         getIconButtonPart("")
+                //     ],
+                //     "2fr 1fr 5em 5em"
+                // ), eLayout.row)
+
+                // console.log(ListElement.children[3]);
+
+                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
 
             if (isPlaying(EpisodeUrl))
@@ -336,21 +362,33 @@ function processEpisodes(_Content)
 
             // NOTE: Set a episode item to "Done if it is in the History file"
 
-            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) != null)
+            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
             {
-                setPodcastElementToDone(ListElement)
+                // setPodcastElementToDone(ListElement)
+                // ListElement = buildListItem(new cListElement
+                // (
+                //     [
+                //         getBoldTextPart(EpisodeTitle),
+                //         getSubTextPart((Duration == undefined) ? "" : Duration),
+                //         getFlagPart('Done', 'white', '#4CAF50'),
+                //         getIconButtonPart(s_AddEpisodeIcon)
+                //     ],
+                //     "2fr 1fr 5em 5em"
+                // ), eLayout.row)
+
+                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[2])
             }
 
-            var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
+            // var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
 
-            HeaderElement.setAttribute("onclick", "playNow(this)")
-            HeaderElement.setAttribute("channel", ChannelName)
-            HeaderElement.setAttribute("title", EpisodeTitle)
-            HeaderElement.setAttribute("type", EpisodeType)
-            HeaderElement.setAttribute("url", EpisodeUrl)
-            HeaderElement.setAttribute("length", EpisodeLength)
-            HeaderElement.setAttribute("duration", Duration)
-            HeaderElement.setAttribute("artworkUrl", Artwork)
+            // HeaderElement.setAttribute("onclick", "playNow(this)")
+            // HeaderElement.setAttribute("channel", ChannelName)
+            // HeaderElement.setAttribute("title", EpisodeTitle)
+            // HeaderElement.setAttribute("type", EpisodeType)
+            // HeaderElement.setAttribute("url", EpisodeUrl)
+            // HeaderElement.setAttribute("length", EpisodeLength)
+            // HeaderElement.setAttribute("duration", Duration)
+            // HeaderElement.setAttribute("artworkUrl", Artwork)
 
             List.append(ListElement)
         }
