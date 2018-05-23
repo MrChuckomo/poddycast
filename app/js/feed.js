@@ -379,6 +379,15 @@ function processEpisodes(_Content)
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[2])
             }
 
+            ListElement.setAttribute("onclick", "playNow(this)")
+            ListElement.setAttribute("channel", ChannelName)
+            ListElement.setAttribute("title", EpisodeTitle)
+            ListElement.setAttribute("type", EpisodeType)
+            ListElement.setAttribute("url", EpisodeUrl)
+            ListElement.setAttribute("length", EpisodeLength)
+            ListElement.setAttribute("duration", Duration)
+            ListElement.setAttribute("artworkUrl", Artwork)
+
             // var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
 
             // HeaderElement.setAttribute("onclick", "playNow(this)")
