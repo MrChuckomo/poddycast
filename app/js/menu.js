@@ -41,8 +41,33 @@ function showNewEpisodes()
 
             if (Artwork != null)
             {
-                var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
+                // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
+                
+                var ListElement = buildListItem(new cListElement
+                (
+                    [
+                        getImagePart(Artwork),
+                        getBoldTextPart(JsonContent[i].episodeTitle),
+                        getSubTextPart((JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration),
+                        getTextPart(JsonContent[i].channelName),
+                        getIconButtonPart(s_DeleteIcon)
+                    ],
+                    "5em 1fr 6em 1fr 5em"
+                ), eLayout.row)
+
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)
+
+
+                // Duration = (JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration
+                // var ListElement = buildListItem(new cListElement([getImagePart(Artwork), getBoldTextPart(JsonContent[i].episodeTitle), getSubTextPart(JsonContent[i].channelName), getSubTextPart(Duration), getIconButtonPart(s_DeleteIcon)], '5em 3fr 2fr 1fr 5em'), eLayout.row)
+                ListElement.setAttribute("onclick", "playNow(this)")
+                ListElement.setAttribute("channel", JsonContent[i].channelName)
+                ListElement.setAttribute("title", JsonContent[i].episodeTitle)
+                ListElement.setAttribute("type", JsonContent[i].episodeType)
+                ListElement.setAttribute("url", JsonContent[i].episodeUrl)
+                ListElement.setAttribute("length", JsonContent[i].episodeLength)
+                ListElement.setAttribute("artworkUrl", Artwork)
+
 
                 if (isPlaying(JsonContent[i].episodeUrl))
                 {
@@ -52,11 +77,18 @@ function showNewEpisodes()
 
                 var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
 
-                HeaderElement.setAttribute("onclick", "playNow(this)")
-                HeaderElement.setAttribute("type", JsonContent[i].episodeType)
-                HeaderElement.setAttribute("url", JsonContent[i].episodeUrl)
-                HeaderElement.setAttribute("length", JsonContent[i].episodeLength)
-                HeaderElement.setAttribute("artworkUrl", Artwork)
+                // getListItemPart(ListElement, 1).addEventListener('click', playNow, 'bubble')
+                // getListItemPart(ListElement, 1).setAttribute("onclick", "playNow(this)")
+                // getListItemPart(ListElement, 1).setAttribute("type", JsonContent[i].episodeType)
+                // getListItemPart(ListElement, 1).setAttribute("url", JsonContent[i].episodeUrl)
+                // getListItemPart(ListElement, 1).setAttribute("length", JsonContent[i].episodeLength)
+                // getListItemPart(ListElement, 1).setAttribute("artworkUrl", Artwork)
+
+                // HeaderElement.setAttribute("onclick", "playNow(this)")
+                // HeaderElement.setAttribute("type", JsonContent[i].episodeType)
+                // HeaderElement.setAttribute("url", JsonContent[i].episodeUrl)
+                // HeaderElement.setAttribute("length", JsonContent[i].episodeLength)
+                // HeaderElement.setAttribute("artworkUrl", Artwork)
 
                 List.append(ListElement)
             }
@@ -89,6 +121,7 @@ function showFavorites()
             }
 
             var ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite)
+            // var ListElement
 
             ListElement.setAttribute("draggable", true)
             ListElement.addEventListener('dragstart', handleDragStart, false);
@@ -135,7 +168,15 @@ function showHistory()
             if (Artwork != null)
             {
                 var DateTime    = new Date(JsonContent[i].date)
-                var ListElement = getPodcastElement(null, Artwork, DateTime.toLocaleString(), EpisodeTitle)
+                var ListElement = buildListItem(new cListElement
+                (
+                    [
+                        getImagePart(Artwork),
+                        getBoldTextPart(EpisodeTitle),
+                        getSubTextPart(DateTime.toLocaleString())
+                    ], 
+                    '5em 3fr 1fr'
+                ), eLayout.row)
 
                 List.insertBefore(ListElement, List.childNodes[0])
             }

@@ -316,20 +316,30 @@ function showPlaylistContent(_Self)
 
                     if (Artwork != null)
                     {
-                        var ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_DeleteIcon, NewEpisodesJsonContent[a].duration)
+                        var ListElement = buildListItem(new cListElement
+                            (
+                            [
+                                getImagePart(Artwork),
+                                getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
+                                getSubTextPart((NewEpisodesJsonContent[a].duration == undefined) ? "" : NewEpisodesJsonContent[a].duration),
+                                getTextPart(NewEpisodesJsonContent[a].channelName),
+                                getIconButtonPart(s_DeleteIcon)
+                            ],
+                            "5em 1fr 6em 1fr 5em"
+                        ), eLayout.row)
 
                         if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
                         {
                             ListElement.classList.add("select-episode")
                         }
 
-                        var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
-
-                        HeaderElement.setAttribute("onclick", "playNow(this)")
-                        HeaderElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
-                        HeaderElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
-                        HeaderElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
-                        HeaderElement.setAttribute("artworkUrl", Artwork)
+                        ListElement.setAttribute("onclick", "playNow(this)")
+                        ListElement.setAttribute("channel", NewEpisodesJsonContent[a].channelName)
+                        ListElement.setAttribute("title", NewEpisodesJsonContent[a].episodeTitle)
+                        ListElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
+                        ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
+                        ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
+                        ListElement.setAttribute("artworkUrl", Artwork)
 
                         // NOTE: show just episodes of the playlist saved podcast
 

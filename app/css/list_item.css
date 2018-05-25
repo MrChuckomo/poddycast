@@ -1,0 +1,78 @@
+.list-item-box-layout
+{
+
+}
+
+.list-item-row-layout
+{
+    display: grid;
+    grid-template-rows: 1fr;
+    font-size: 14px;
+    height: 2.7em;
+    border-bottom: 1px solid #EEE;
+    padding: 0.5em;
+    padding-left: 2em;
+}
+
+.list-item-row-layout:hover
+{
+    background-color: #F2F2F2;
+}
+
+.select-episode:hover
+{
+    background: #2979FF;
+}
+
+.list-item-row-layout img
+{
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+}
+
+.list-item-icon
+{
+    opacity: 0.5;
+    align-self: center;
+    text-align: center;
+}
+
+.list-item-icon:hover
+{
+    opacity: 0.7;
+}
+
+.list-item-flag
+{
+    border-radius: 4px;
+    text-align: center;
+    width: 80%;
+    padding: 0.2em;
+    align-self: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.list-item-text,
+.list-item-bold-text,
+.list-item-sub-text
+{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    align-self: center;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+}
+
+.list-item-bold-text
+{
+    font-weight: bold;
+}
+
+.list-item-sub-text
+{
+    opacity: 0.4;
+}

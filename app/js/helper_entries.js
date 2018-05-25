@@ -125,6 +125,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
 
     // ListElement.append(TitleElement)
 
+    // HeaderElement.append(getBoldTextPart(_Title))
     HeaderElement.append(TitleElement)
     HeaderElement.append(TailElement)
 
@@ -134,6 +135,17 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
 
     // ListElement.append(SubtitleElement)
 
+    // return buildListItem(new cListElement
+    // (
+    //     [
+    //         getImagePart(_Artwork),
+    //         getBoldTextPart(_Title),
+    //         getSubTextPart((_TailElement == undefined) ? "" : _TailElement),
+    //         getTextPart(_Subtitle),
+    //         getIconButtonPart(_IconElement)
+    //     ], 
+    //     "5em 1fr 6em 1fr 5em"
+    // ), eLayout.row)
     return ListElement
 }
 
@@ -192,7 +204,8 @@ function deleteEntry(_ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
-        deleteFromFile(_ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("url"))
+        // deleteFromFile(_ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("url"))
+        deleteFromFile(_ListElement.getAttribute("url"))
 
         setItemCounts()
     }
