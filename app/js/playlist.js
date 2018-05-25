@@ -316,8 +316,6 @@ function showPlaylistContent(_Self)
 
                     if (Artwork != null)
                     {
-                        // var ListElement = getPodcastElement(null, Artwork, NewEpisodesJsonContent[a].channelName, NewEpisodesJsonContent[a].episodeTitle, s_DeleteIcon, NewEpisodesJsonContent[a].duration)
-
                         var ListElement = buildListItem(new cListElement
                             (
                             [
@@ -342,15 +340,6 @@ function showPlaylistContent(_Self)
                         ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
                         ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
                         ListElement.setAttribute("artworkUrl", Artwork)
-
-
-                        // var HeaderElement = ListElement.getElementsByClassName("podcast-entry-header")[0]
-
-                        // HeaderElement.setAttribute("onclick", "playNow(this)")
-                        // HeaderElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
-                        // HeaderElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
-                        // HeaderElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
-                        // HeaderElement.setAttribute("artworkUrl", Artwork)
 
                         // NOTE: show just episodes of the playlist saved podcast
 

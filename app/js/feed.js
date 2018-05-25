@@ -321,8 +321,6 @@ function processEpisodes(_Content)
                 var Duration = ""
             }
 
-            // var ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, s_AddEpisodeIcon, null, "podcast-episode-header")
-
             var ListElement = buildListItem(new cListElement
             (
                 [
@@ -336,27 +334,11 @@ function processEpisodes(_Content)
 
             if (isEpisodeAlreadySaved(EpisodeTitle))
             {
-                // ListElement = getPodcastElement("podcast-entry", null, Duration, EpisodeTitle, null, null, "podcast-episode-header")
-
-                // ListElement = buildListItem(new cListElement
-                // (
-                //     [
-                //         getBoldTextPart(EpisodeTitle),
-                //         getSubTextPart((Duration == undefined) ? "" : Duration),
-                //         getIconButtonPart(""),
-                //         getIconButtonPart("")
-                //     ],
-                //     "2fr 1fr 5em 5em"
-                // ), eLayout.row)
-
-                // console.log(ListElement.children[3]);
-
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
 
             if (isPlaying(EpisodeUrl))
             {
-                // ListElement = getPodcastElement("podcast-entry", null, Time.getHours() + "h " + Time.getMinutes() + "min", EpisodeTitle, s_PlayIcon, "podcast-episode-header")
                 ListElement.classList.add("select-episode")
             }
 
@@ -364,18 +346,6 @@ function processEpisodes(_Content)
 
             if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
             {
-                // setPodcastElementToDone(ListElement)
-                // ListElement = buildListItem(new cListElement
-                // (
-                //     [
-                //         getBoldTextPart(EpisodeTitle),
-                //         getSubTextPart((Duration == undefined) ? "" : Duration),
-                //         getFlagPart('Done', 'white', '#4CAF50'),
-                //         getIconButtonPart(s_AddEpisodeIcon)
-                //     ],
-                //     "2fr 1fr 5em 5em"
-                // ), eLayout.row)
-
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[2])
             }
 
@@ -388,17 +358,6 @@ function processEpisodes(_Content)
             ListElement.setAttribute("duration", Duration)
             ListElement.setAttribute("artworkUrl", Artwork)
 
-            // var HeaderElement = ListElement.getElementsByClassName("podcast-episode-header")[0]
-
-            // HeaderElement.setAttribute("onclick", "playNow(this)")
-            // HeaderElement.setAttribute("channel", ChannelName)
-            // HeaderElement.setAttribute("title", EpisodeTitle)
-            // HeaderElement.setAttribute("type", EpisodeType)
-            // HeaderElement.setAttribute("url", EpisodeUrl)
-            // HeaderElement.setAttribute("length", EpisodeLength)
-            // HeaderElement.setAttribute("duration", Duration)
-            // HeaderElement.setAttribute("artworkUrl", Artwork)
-
             List.append(ListElement)
         }
     }
@@ -406,7 +365,7 @@ function processEpisodes(_Content)
 
 function addToEpisodes(_Self)
 {
-    var ListElement = _Self.parentElement.parentElement.getElementsByClassName("podcast-episode-header")[0]
+    var ListElement = _Self.parentElement.parentElement
 
     saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"), ListElement.getAttribute("duration"))
 

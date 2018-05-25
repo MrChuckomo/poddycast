@@ -204,7 +204,8 @@ function deleteEntry(_ListElement)
 
         // NOTE: Remove from JSON file and overwrite the file
 
-        deleteFromFile(_ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("url"))
+        // deleteFromFile(_ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("url"))
+        deleteFromFile(_ListElement.getAttribute("url"))
 
         setItemCounts()
     }
