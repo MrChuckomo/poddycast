@@ -308,10 +308,12 @@ function processEpisodes(_Content)
             var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
             var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
             var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+            var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue            
+            var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
-            if (Item.getElementsByTagName("duration").length > 0)
+            if ((Item.getElementsByTagName(DurationKey).length > 0))
             {
-                var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName("duration")[0].innerHTML.split(":"))
+                var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
 
                 if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
                 else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
@@ -325,16 +327,17 @@ function processEpisodes(_Content)
             (
                 [
                     getBoldTextPart(EpisodeTitle),
+                    getSubTextPart(new Date(PubDate).toLocaleString()),
                     getSubTextPart(Duration),
                     getFlagPart('Done', 'white', '#4CAF50'),
                     getIconButtonPart(s_AddEpisodeIcon)
                 ],
-                "2fr 1fr 5em 5em"
+                "3fr 1fr 1fr 5em 5em"
             ), eLayout.row)
 
             if (isEpisodeAlreadySaved(EpisodeTitle))
             {
-                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
+                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[4])
             }
 
             if (isPlaying(EpisodeUrl))
@@ -342,11 +345,11 @@ function processEpisodes(_Content)
                 ListElement.classList.add("select-episode")
             }
 
-            // NOTE: Set a episode item to "Done if it is in the History file"
+            // NOTE: Set a episode item to "Done" if it is in the History file
 
             if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
             {
-                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[2])
+                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
 
             ListElement.setAttribute("onclick", "playNow(this)")
