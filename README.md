@@ -4,6 +4,16 @@ A Podcast app made with Electron because I love Podcasts.
 
 ![screenshot_1](img/poddycastapp.png)
 
+## Install
+
+Download the latest release from the [release page](https://github.com/MrChuckomo/poddycast/releases).
+
+## Platform Support
+
+- [x] macOS  
+- [x] Windows
+- [x] Linux
+
 ## Feature
 
 - Uses the **iTunes API** to search for Podcasts
@@ -16,40 +26,27 @@ A Podcast app made with Electron because I love Podcasts.
 - Speedy playback
 - Keyboard shortcuts for audio player actions
 - Proxy mode for company environments
+- Internatialization
 
-## Demo
+## Tutorial
 
-![gif_1](img/poddycast_v0.2.0.gif)
+### Subscribe
 
-### Rename Playlists
+![gif_1](img/tutorial-01-subscribe.gif)
 
-![gif_2](img/poddycast-rename_playlists.gif)
+### Episodes
 
-### Edit Playlist
+![gif_2](img/tutorial-02-episodes.gif)
 
-![gif_3](img/poddycast_edit_playlist.png)
+### Playlist
 
-<!--
-### Subscribe to Podcasts
+![gif_3](img/tutorial-03-playlists.gif)
 
-![gif_1 subscribe](img/poddycast-subscribe_to_podcast.gif)
+### Dark Mode
 
-### Create a playlist
+![gif_4](img/tutorial-04-darkmode.gif)
 
-![gif_1 playlists](img/poddycast-handle_playlists.gif)
--->
-
-## Install
-
-Download the latest release from the [release page](https://github.com/MrChuckomo/poddycast/releases).
-
-## Platform Support
-
-- [x] macOS  
-- [x] Windows
-- [x] Linux
 
 ## Contact
-
 
 :bird: [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
