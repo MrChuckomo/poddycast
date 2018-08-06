@@ -59,10 +59,11 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
                 var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
                 var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
                 var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+                var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
-                if (xmlDoc.getElementsByTagName("duration").length > 0)
+                if (xmlDoc.getElementsByTagName(DurationKey).length > 0)
                 {
-                    var Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName("duration")[0].innerHTML.split(":"))
+                    var Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
 
                     if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
                     else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
