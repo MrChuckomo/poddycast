@@ -206,17 +206,25 @@ function nextEpisode()
             {
                 playNow(AllListItems[i + 1])
 
-                // TODO: No need to delete it if it's played from the podcast detail view
-                deleteFromListView(AllListItems[i])
+                // NOTE: No need to delete it if it's played from the podcast detail view
+
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites'))
+                {
+                    deleteFromListView(AllListItems[i])
+                }
 
                 break
             }
             else if (i == (AllListItems.length - 1))
             {
                 // NOTE: Currently playling episode is the last item in the list
+                // NOTE: No need to delete it if it's played from the podcast detail view
 
-                // TODO: No need to delete it if it's played from the podcast detail view
-                deleteFromListView(AllListItems[i])
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites')) 
+                {
+                    deleteFromListView(AllListItems[i])
+                }
+
                 pausePlayer()
             }
         }
