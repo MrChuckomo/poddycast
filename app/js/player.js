@@ -62,14 +62,26 @@ function playNow(_Self)
     }
 }
 
+
+/*
+Select a new list item. The current selection is cleared in any case.
+After that set the 'select-episode' class to the list item.
+
+Args:
+    _Self (li): List item to select
+*/
 function selectItem(_Self)
 {
     clearListSelection()
 
-    // _Self.parentElement.classList.add("select-episode")
     _Self.classList.add("select-episode")
 }
 
+
+/*
+Pause or continue the playback.
+Function can be called to toggle between play and pause.
+*/
 function playPause()
 {
     document.getElementById("play-pause")
@@ -77,16 +89,32 @@ function playPause()
     togglePlayPauseButton()
 }
 
+
+/*
+Access the player and skip foward by 30 sec.
+*/
 function playForward()
 {
     document.getElementById("player").currentTime += 30
 }
 
+
+/*
+Access the player and skip backward by 30 sec.
+*/
 function playReply()
 {
     document.getElementById("player").currentTime -= 30
 }
 
+
+/*
+Speedup the plackback by clicking the playback speed button.
+The steps to increase the playback is predefined in this function.
+
+Args:
+    _Self (button): The speed up button itself
+*/
 function speedUp(_Self)
 {
     var Player = document.getElementById("player")
@@ -157,9 +185,15 @@ function seekProgress(_Self, _Event)
     savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
 }
 
+
+/*
+Automatically start the next episode after the player progress ended.
+Start the next episode and then delete the current item from the list.
+If the current view is not the one where current episode is playing the playback is paused.
+*/ 
 function nextEpisode()
 {
-    var AllListItems      = document.getElementsByClassName("podcast-entry")
+    var AllListItems      = document.getElementsByClassName("list-item-row-layout")
     var SelectedListItems = document.getElementsByClassName("select-episode")
 
     if (SelectedListItems.length == 1)
@@ -170,19 +204,27 @@ function nextEpisode()
 
             if (Classes.includes("select-episode") && i < (AllListItems.length - 1))
             {
-                playNow(AllListItems[i + 1].getElementsByClassName("podcast-entry-header")[0])
+                playNow(AllListItems[i + 1])
 
-                // TODO: No need to delete it if it's played from the podcast detail view
-                deleteFromListView(AllListItems[i])
+                // NOTE: No need to delete it if it's played from the podcast detail view
+
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites'))
+                {
+                    deleteFromListView(AllListItems[i])
+                }
 
                 break
             }
             else if (i == (AllListItems.length - 1))
             {
                 // NOTE: Currently playling episode is the last item in the list
+                // NOTE: No need to delete it if it's played from the podcast detail view
 
-                // TODO: No need to delete it if it's played from the podcast detail view
-                deleteFromListView(AllListItems[i])
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites')) 
+                {
+                    deleteFromListView(AllListItems[i])
+                }
+
                 pausePlayer()
             }
         }
