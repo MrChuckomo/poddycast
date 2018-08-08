@@ -247,9 +247,9 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     }
 
     const ContextMenu = new Menu()
-    ContextMenu.append(new MenuItem({label: 'Add to playlist', submenu: PlaylistMenu}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Push to New Episodes', type: 'checkbox', checked: getSettings(_Feed), click(self)
+    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: getSettings(_Feed), click(self)
     {
         if (isInSettings(_Feed))
         {
@@ -262,7 +262,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
         }
     }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Unsubscribe', click()
+    ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click()
     {
         if (_PodcastName != null) { unsubscribeContextMenu(_PodcastName, _Feed) }
     }}))
