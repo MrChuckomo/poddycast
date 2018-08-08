@@ -20,17 +20,18 @@
 	"Close": "Close",
 	"Quit": "Quit",
 	"New Episodes": "New Episodes",
-	"Playlists":"Playlists",
+	"Playlists": "Playlists",
 	"No episode selected": "No episode selected",
 	"New List": "New List",
 	"Reload": "Reload",
-	"Reset Zoom":"Reset Zoom",
+	"Reset Zoom": "Reset Zoom",
 	"Zoom In": "Zoom In",
 	"Zoom Out": "Zoom Out",
 	"Dark Mode": "Dark Mode",
 	"Toggle Full Screen": "Toggle Full Screen",
 	"Play/Pause": "Play/Pause",
 	"30sec Reply": "30sec Reply",
-	"30sec Forward":"30sec Forward",
-	"Proxy Mode":"Proxy Mode"
+	"30sec Forward": "30sec Forward",
+	"Proxy Mode": "Proxy Mode",
+	"Unsubscribe": "Unsubscribe"
 }
