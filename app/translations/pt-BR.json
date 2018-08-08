@@ -32,5 +32,13 @@
 	"Play/Pause": "Play/Pause",
 	"30sec Reply": "Voltar 30 seg",
 	"30sec Forward":"Avançar 30 segundos",
-	"Proxy Mode":"Modo Proxy"
+	"Proxy Mode":"Modo Proxy",
+	"Unsubscribe": "Unsubscribe",
+	"Rename": "Rename",
+	"Add to playlist": "Add to playlist",
+	"Push to New Episodes": "Push to New Episodes",
+	"History Items": "History Items",
+	"Favorite Podcasts": "Favorite Podcasts",
+	"Last Podcast": "Last Podcast",
+	"Episodes": "Episodes"
 }

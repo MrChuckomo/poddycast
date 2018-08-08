@@ -202,56 +202,56 @@ function showStatistics()
     {
         JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
-        List.append(getStatisticsElement("statistics-entry", "Favorite Podcasts",  JsonContent.length))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"),  JsonContent.length))
     }
     else
     {
-        List.append(getStatisticsElement("statistics-entry", "Favorite Podcasts", 0))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"), 0))
     }
 
     if (fileExistsAndIsNotEmpty(getArchivedFilePath()))
     {
         JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"))
 
-        List.append(getStatisticsElement("statistics-entry", "Last Podcast",  JsonContent[JsonContent.length - 1].channelName))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Last Podcast"),  JsonContent[JsonContent.length - 1].channelName))
     }
     else
     {
-        List.append(getStatisticsElement("statistics-entry", "Last Podcast",  "None"))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Last Podcast"),  "None"))
     }
 
-    List.append(getStatisticsElement("statistics-header", "Episodes", null))
+    List.append(getStatisticsElement("statistics-header", i18n.__("Episodes"), null))
 
     if (fileExistsAndIsNotEmpty(getArchivedFilePath()))
     {
-        List.append(getStatisticsElement("statistics-entry", "History Items",  JsonContent.length))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  JsonContent.length))
     }
     else
     {
-        List.append(getStatisticsElement("statistics-entry", "History Items",  0))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  0))
     }
 
     if (fileExistsAndIsNotEmpty(getNewEpisodesSaveFilePath()))
     {
         JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
 
-        List.append(getStatisticsElement("statistics-entry", "New Episodes",  JsonContent.length))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  JsonContent.length))
     }
     else
     {
-        List.append(getStatisticsElement("statistics-entry", "New Episodes",  0))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  0))
     }
 
-    List.append(getStatisticsElement("statistics-header", "Playlists", null))
+    List.append(getStatisticsElement("statistics-header", i18n.__("Playlists"), null))
 
     if (fileExistsAndIsNotEmpty(getPlaylistFilePath()))
     {
         JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
-        List.append(getStatisticsElement("statistics-entry", "Playlists",  JsonContent.length))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  JsonContent.length))
     }
     else
     {
-        List.append(getStatisticsElement("statistics-entry", "Playlists",  0))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  0))
     }
 }

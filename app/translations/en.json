@@ -33,5 +33,12 @@
 	"30sec Reply": "30sec Reply",
 	"30sec Forward": "30sec Forward",
 	"Proxy Mode": "Proxy Mode",
-	"Unsubscribe": "Unsubscribe"
+	"Unsubscribe": "Unsubscribe",
+	"Rename": "Rename",
+	"Add to playlist": "Add to playlist",
+	"Push to New Episodes": "Push to New Episodes",
+	"History Items": "History Items",
+	"Favorite Podcasts": "Favorite Podcasts",
+	"Last Podcast": "Last Podcast",
+	"Episodes": "Episodes"
 }

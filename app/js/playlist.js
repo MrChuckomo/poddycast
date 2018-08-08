@@ -102,10 +102,10 @@ function setContextMenu(_Object)
 
     // NOTE: Access input field inside the playlist item to get the name.
 
-    ContextMenu.append(new MenuItem({label: 'Edit', click(self) { showEditPage(_Object) }}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Edit'), click(self) { showEditPage(_Object) }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: 'Rename', click(self) { enableRename(_Object) }}))
-    ContextMenu.append(new MenuItem({label: 'Delete', click(self) { deletePlaylist(_Object.getElementsByTagName("input")[0].value) }}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Rename'), click(self) { enableRename(_Object) }}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Delete'), click(self) { deletePlaylist(_Object.getElementsByTagName("input")[0].value) }}))
 
     _Object.addEventListener('contextmenu', (_Event) =>
     {
@@ -251,7 +251,7 @@ function showEditPage(_Self)
     NameInput.setAttribute("onkeyup", "renamePlaylist(this, event)")
 
     var DeleteButton = document.createElement("button")
-    DeleteButton.innerHTML = "Delete"
+    DeleteButton.innerHTML = i18n.__("Delete")
     DeleteButton.setAttribute("onclick", "deletePlaylist('" + PlaylistName + "')")
 
     var HeaderSection = document.createElement("div")
