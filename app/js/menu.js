@@ -1,3 +1,7 @@
+var ContentHelper = require('./js/helper')
+
+var helper = new ContentHelper()
+
 
 function selectMenuItem(_MenuId)
 {
@@ -20,7 +24,7 @@ function selectMenuItem(_MenuId)
 
 function showNewEpisodes()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
@@ -98,7 +102,7 @@ function showNewEpisodes()
 
 function showFavorites()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction("list")
 
     if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
@@ -139,7 +143,7 @@ function showFavorites()
 
 function showHistory()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
@@ -186,7 +190,7 @@ function showHistory()
 
 function showStatistics()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     var JsonContent = null

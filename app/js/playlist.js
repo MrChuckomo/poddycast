@@ -1,3 +1,6 @@
+var ContentHelper = require('./js/helper')
+
+var helper = new ContentHelper()
 
 function getInputEntry(_Name)
 {
@@ -236,7 +239,7 @@ function showEditPage(_Self)
     var List         = document.getElementById("list")
 
     setGridLayout(List, false)
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
@@ -277,7 +280,7 @@ function showPlaylistContent(_Self)
 {
     var PlaylistName = _Self.getElementsByTagName("input")[0].value
 
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))

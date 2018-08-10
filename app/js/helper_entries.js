@@ -3,12 +3,6 @@
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
 
-function clearContent()
-{
-    // document.getElementById("res").innerHTML = ""
-    document.getElementById("list").innerHTML = ""
-}
-
 function clearListSelection()
 {
     var ListItems = document.getElementById("list").getElementsByTagName("li")

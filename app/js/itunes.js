@@ -1,3 +1,6 @@
+var ContentHelper = require('./js/helper')
+
+var helper = new ContentHelper()
 
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
@@ -21,7 +24,7 @@ function getResults(_Data)
 {
     var obj = JSON.parse(_Data);
 
-    clearContent()
+    helper.clearContent()
 
     var List = document.getElementById("list")
 

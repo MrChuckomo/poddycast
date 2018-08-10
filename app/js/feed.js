@@ -1,3 +1,6 @@
+var ContentHelper = require('./js/helper')
+
+var helper = new ContentHelper()
 
 function readFeeds()
 {
@@ -88,7 +91,7 @@ function showAllEpisodes(_Self)
 {
     setGridLayout(document.getElementById("list"), false)
 
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
@@ -121,7 +124,7 @@ function checkContent(_Content, _eRequest, _Options)
 {
     if (isContent302NotFound(_Content))
     {
-        clearContent()
+        helper.clearContent()
         getAllEpisodesFromFeed(getChangedFeed(_Options, _eRequest))
     }
     else
