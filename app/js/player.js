@@ -1,3 +1,7 @@
+var CCOntentHelper = require('./js/helper')
+
+var helper = new CCOntentHelper()
+
 
 const s_Pause =
 `
@@ -64,23 +68,23 @@ function playNow(_Self)
 
 
 /*
-Select a new list item. The current selection is cleared in any case.
-After that set the 'select-episode' class to the list item.
+    Select a new list item. The current selection is cleared in any case.
+    After that set the 'select-episode' class to the list item.
 
-Args:
-    _Self (li): List item to select
+    Args:
+        _Self (li): List item to select
 */
 function selectItem(_Self)
 {
-    clearListSelection()
+    helper.clearListSelection()
 
     _Self.classList.add("select-episode")
 }
 
 
 /*
-Pause or continue the playback.
-Function can be called to toggle between play and pause.
+    Pause or continue the playback.
+    Function can be called to toggle between play and pause.
 */
 function playPause()
 {
@@ -91,7 +95,7 @@ function playPause()
 
 
 /*
-Access the player and skip foward by 30 sec.
+    Access the player and skip foward by 30 sec.
 */
 function playForward()
 {
@@ -100,7 +104,7 @@ function playForward()
 
 
 /*
-Access the player and skip backward by 30 sec.
+    Access the player and skip backward by 30 sec.
 */
 function playReply()
 {
@@ -109,11 +113,11 @@ function playReply()
 
 
 /*
-Speedup the plackback by clicking the playback speed button.
-The steps to increase the playback is predefined in this function.
+    Speedup the plackback by clicking the playback speed button.
+    The steps to increase the playback is predefined in this function.
 
-Args:
-    _Self (button): The speed up button itself
+    Args:
+        _Self (button): The speed up button itself
 */
 function speedUp(_Self)
 {
@@ -187,9 +191,9 @@ function seekProgress(_Self, _Event)
 
 
 /*
-Automatically start the next episode after the player progress ended.
-Start the next episode and then delete the current item from the list.
-If the current view is not the one where current episode is playing the playback is paused.
+    Automatically start the next episode after the player progress ended.
+    Start the next episode and then delete the current item from the list.
+    If the current view is not the one where current episode is playing the playback is paused.
 */ 
 function nextEpisode()
 {

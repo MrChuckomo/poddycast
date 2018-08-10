@@ -3,22 +3,6 @@
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
 
-function clearListSelection()
-{
-    var ListItems = document.getElementById("list").getElementsByTagName("li")
-
-    for (var i = 0; i < ListItems.length; i++)
-    {
-        ListItems[i].classList.remove("select-episode")
-    }
-}
-
-function setHeader(_Title)
-{
-    var Header = document.getElementById("content-right").getElementsByTagName("h1")[0]
-
-    Header.innerHTML = _Title
-}
 
 function unsubscribeListElement(_Self)
 {

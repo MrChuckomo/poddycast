@@ -1,6 +1,6 @@
-var ContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper')
 
-var helper = new ContentHelper()
+var helper = new CContentHelper()
 
 
 function search(_Self, _Event)
@@ -10,10 +10,7 @@ function search(_Self, _Event)
         helper.clearContent()
         setHeaderViewAction()
         clearMenuSelection()
-        setHeader("Search")
-
-        // console.log(_Self.value);
-        // console.log(_Event.code);
+        helper.setHeader(i18n.__("Search"))
 
         document.getElementById("res").setAttribute("return-value", "")
 

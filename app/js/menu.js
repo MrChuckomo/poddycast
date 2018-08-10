@@ -1,6 +1,6 @@
-var ContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper')
 
-var helper = new ContentHelper()
+var helper = new CContentHelper()
 
 
 function selectMenuItem(_MenuId)
@@ -19,7 +19,7 @@ function selectMenuItem(_MenuId)
 
     MenuItem.classList.add("selected")
 
-    setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
+    helper.setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
 }
 
 function showNewEpisodes()

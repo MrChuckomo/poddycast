@@ -1,6 +1,6 @@
-var ContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper')
 
-var helper = new ContentHelper()
+var helper = new CContentHelper()
 
 function getInputEntry(_Name)
 {
@@ -244,7 +244,7 @@ function showEditPage(_Self)
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
     clearTextField(document.getElementById("new_list-input"))
-    setHeader("Edit Playlist")
+    helper.setHeader("Edit Playlist")
 
     _Self.classList.add("selected")
 
@@ -289,8 +289,7 @@ function showPlaylistContent(_Self)
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header
 
-    // setHeader(_Self.innerHTML)
-    setHeader(PlaylistName)
+    helper.setHeader(PlaylistName)
 
     _Self.classList.add("selected")
 

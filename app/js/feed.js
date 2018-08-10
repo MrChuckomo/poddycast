@@ -1,6 +1,6 @@
-var ContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper')
 
-var helper = new ContentHelper()
+var helper = new CContentHelper()
 
 function readFeeds()
 {
@@ -293,7 +293,6 @@ function processEpisodes(_Content)
 
     // NOTE: set settings information
 
-    // setHeader(ChannelName)
     document.getElementsByClassName("settings-image")[0].src = Artwork
     document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
     document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
