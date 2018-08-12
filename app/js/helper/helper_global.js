@@ -1,4 +1,3 @@
-
 const fs = require('fs')
 const os = require('os')
 
@@ -238,11 +237,6 @@ function parseFeedEpisodeDuration(_Duration)
     Time.minutes = Minutes
 
     return Time
-}
-
-function getPrettyTime(_Time)
-{
-    return ((_Time < 10) ? "0" + _Time : _Time)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

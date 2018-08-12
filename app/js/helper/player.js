@@ -6,6 +6,11 @@ function CPlayer ()
 
         return (PlayerSource.getAttribute("src") == _FeedUrl)
     }
+
+    this.getPrettyTime = function (_Time) 
+    {
+        return ((_Time < 10) ? "0" + _Time : _Time)
+    }
 }
 
 

@@ -1,6 +1,8 @@
 var CCOntentHelper = require('./js/helper/content')
+var CPlayer = require('./js/helper/player')
 
 var helper = new CCOntentHelper()
+var player = new CPlayer()
 
 
 const s_Pause =
@@ -250,7 +252,7 @@ function setPlaybackTime(_Time, _ElementName)
 
     if (!isNaN(FullTime.minutes))
     {
-        TimeElement.innerHTML = getPrettyTime(FullTime.hours) + ":" + getPrettyTime(FullTime.minutes) + ":" + getPrettyTime(FullTime.seconds)
+        TimeElement.innerHTML = player.getPrettyTime(FullTime.hours) + ":" + player.getPrettyTime(FullTime.minutes) + ":" + player.getPrettyTime(FullTime.seconds)
     }
 }
 

@@ -160,7 +160,6 @@ function toggleList(_View)
             break;
 
         default: break;
-
     }
 }
 

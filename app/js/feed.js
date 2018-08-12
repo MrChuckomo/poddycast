@@ -1,5 +1,5 @@
 var CContentHelper = require('./js/helper/content')
-var CPlayer = require('./js/helper/player')
+var CPlayer        = require('./js/helper/player')
 
 var helper = new CContentHelper()
 var player = new CPlayer()
