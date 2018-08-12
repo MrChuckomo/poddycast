@@ -1,6 +1,8 @@
-var CContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper/content')
+var CPlayer = require('./js/helper/player')
 
 var helper = new CContentHelper()
+var player = new CPlayer()
 
 function getInputEntry(_Name)
 {
@@ -330,7 +332,7 @@ function showPlaylistContent(_Self)
                             "5em 1fr 6em 1fr 5em"
                         ), eLayout.row)
 
-                        if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
+                        if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl))
                         {
                             ListElement.classList.add("select-episode")
                         }

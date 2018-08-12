@@ -1,4 +1,4 @@
-var CCOntentHelper = require('./js/helper')
+var CCOntentHelper = require('./js/helper/content')
 
 var helper = new CCOntentHelper()
 

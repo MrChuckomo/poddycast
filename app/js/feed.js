@@ -1,6 +1,9 @@
-var CContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper/content')
+var CPlayer = require('./js/helper/player')
 
 var helper = new CContentHelper()
+var player = new CPlayer()
+
 
 function readFeeds()
 {
@@ -343,7 +346,7 @@ function processEpisodes(_Content)
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[4])
             }
 
-            if (isPlaying(EpisodeUrl))
+            if (player.isPlaying(EpisodeUrl))
             {
                 ListElement.classList.add("select-episode")
             }

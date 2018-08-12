@@ -176,13 +176,6 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
     return DestinationValue
 }
 
-function isPlaying(_FeedUrl)
-{
-    var PlayerSource = document.getElementsByTagName("source")[0]
-
-    return (PlayerSource.getAttribute("src") == _FeedUrl)
-}
-
 function clearTextField(_InputField)
 {
     _InputField.value = ""

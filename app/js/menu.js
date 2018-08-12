@@ -1,6 +1,8 @@
-var CContentHelper = require('./js/helper')
+var CContentHelper = require('./js/helper/content')
+var CPlayer = require('./js/helper/player')
 
 var helper = new CContentHelper()
+var player = new CPlayer()
 
 
 function selectMenuItem(_MenuId)
@@ -73,7 +75,7 @@ function showNewEpisodes()
                 ListElement.setAttribute("artworkUrl", Artwork)
 
 
-                if (isPlaying(JsonContent[i].episodeUrl))
+                if (player.isPlaying(JsonContent[i].episodeUrl))
                 {
                 //     ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
                     ListElement.classList.add("select-episode")
