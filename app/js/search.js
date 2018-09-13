@@ -1,14 +1,16 @@
+var CContentHelper = require('./js/helper/content')
+
+var helper = new CContentHelper()
+
+
 function search(_Self, _Event)
 {
     if (_Event.code == "Enter")
     {
-        clearContent()
+        helper.clearContent()
         setHeaderViewAction()
         clearMenuSelection()
-        setHeader("Search")
-
-        // console.log(_Self.value);
-        // console.log(_Event.code);
+        helper.setHeader(i18n.__("Search"))
 
         document.getElementById("res").setAttribute("return-value", "")
 
@@ -82,7 +84,7 @@ function getFeedResults(_Data)
         Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
     }
 
-    clearContent()
+    helper.clearContent()
 
     var List = document.getElementById("list")
 

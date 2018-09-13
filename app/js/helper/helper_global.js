@@ -1,4 +1,3 @@
-
 const fs = require('fs')
 const os = require('os')
 
@@ -176,13 +175,6 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
     return DestinationValue
 }
 
-function isPlaying(_FeedUrl)
-{
-    var PlayerSource = document.getElementsByTagName("source")[0]
-
-    return (PlayerSource.getAttribute("src") == _FeedUrl)
-}
-
 function clearTextField(_InputField)
 {
     _InputField.value = ""
@@ -245,11 +237,6 @@ function parseFeedEpisodeDuration(_Duration)
     Time.minutes = Minutes
 
     return Time
-}
-
-function getPrettyTime(_Time)
-{
-    return ((_Time < 10) ? "0" + _Time : _Time)
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

@@ -1,3 +1,9 @@
+var CContentHelper = require('./js/helper/content')
+var CPlayer        = require('./js/helper/player')
+
+var helper = new CContentHelper()
+var player = new CPlayer()
+
 
 function readFeeds()
 {
@@ -88,7 +94,7 @@ function showAllEpisodes(_Self)
 {
     setGridLayout(document.getElementById("list"), false)
 
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     getAllEpisodesFromFeed(_Self.getAttribute("feedurl"))
@@ -121,7 +127,7 @@ function checkContent(_Content, _eRequest, _Options)
 {
     if (isContent302NotFound(_Content))
     {
-        clearContent()
+        helper.clearContent()
         getAllEpisodesFromFeed(getChangedFeed(_Options, _eRequest))
     }
     else
@@ -290,7 +296,6 @@ function processEpisodes(_Content)
 
     // NOTE: set settings information
 
-    // setHeader(ChannelName)
     document.getElementsByClassName("settings-image")[0].src = Artwork
     document.getElementsByClassName("settings-header")[0].innerHTML = ChannelName
     document.getElementsByClassName("settings-count")[0].innerHTML  = xmlDoc.getElementsByTagName("item").length
@@ -341,7 +346,7 @@ function processEpisodes(_Content)
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[4])
             }
 
-            if (isPlaying(EpisodeUrl))
+            if (player.isPlaying(EpisodeUrl))
             {
                 ListElement.classList.add("select-episode")
             }

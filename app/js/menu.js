@@ -1,3 +1,9 @@
+var CContentHelper = require('./js/helper/content')
+var CPlayer        = require('./js/helper/player')
+
+var helper = new CContentHelper()
+var player = new CPlayer()
+
 
 function selectMenuItem(_MenuId)
 {
@@ -15,12 +21,12 @@ function selectMenuItem(_MenuId)
 
     MenuItem.classList.add("selected")
 
-    setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
+    helper.setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
 }
 
 function showNewEpisodes()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
@@ -69,7 +75,7 @@ function showNewEpisodes()
                 ListElement.setAttribute("artworkUrl", Artwork)
 
 
-                if (isPlaying(JsonContent[i].episodeUrl))
+                if (player.isPlaying(JsonContent[i].episodeUrl))
                 {
                 //     ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_PlayIcon)
                     ListElement.classList.add("select-episode")
@@ -98,7 +104,7 @@ function showNewEpisodes()
 
 function showFavorites()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction("list")
 
     if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
@@ -139,7 +145,7 @@ function showFavorites()
 
 function showHistory()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), "utf-8") != "")
@@ -186,7 +192,7 @@ function showHistory()
 
 function showStatistics()
 {
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
 
     var JsonContent = null

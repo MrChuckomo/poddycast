@@ -1,3 +1,8 @@
+var CContentHelper = require('./js/helper/content')
+var CPlayer        = require('./js/helper/player')
+
+var helper = new CContentHelper()
+var player = new CPlayer()
 
 function getInputEntry(_Name)
 {
@@ -236,12 +241,12 @@ function showEditPage(_Self)
     var List         = document.getElementById("list")
 
     setGridLayout(List, false)
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
     clearTextField(document.getElementById("new_list-input"))
-    setHeader("Edit Playlist")
+    helper.setHeader("Edit Playlist")
 
     _Self.classList.add("selected")
 
@@ -277,7 +282,7 @@ function showPlaylistContent(_Self)
 {
     var PlaylistName = _Self.getElementsByTagName("input")[0].value
 
-    clearContent()
+    helper.clearContent()
     setHeaderViewAction()
     clearMenuSelection()
     clearTextField(document.getElementById("search-input"))
@@ -286,8 +291,7 @@ function showPlaylistContent(_Self)
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header
 
-    // setHeader(_Self.innerHTML)
-    setHeader(PlaylistName)
+    helper.setHeader(PlaylistName)
 
     _Self.classList.add("selected")
 
@@ -328,7 +332,7 @@ function showPlaylistContent(_Self)
                             "5em 1fr 6em 1fr 5em"
                         ), eLayout.row)
 
-                        if (isPlaying(NewEpisodesJsonContent[a].episodeUrl))
+                        if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl))
                         {
                             ListElement.classList.add("select-episode")
                         }

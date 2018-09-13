@@ -1,3 +1,6 @@
+var CContentHelper = require('./js/helper/content')
+
+var helper = new CContentHelper()
 
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
@@ -21,7 +24,7 @@ function getResults(_Data)
 {
     var obj = JSON.parse(_Data);
 
-    clearContent()
+    helper.clearContent()
 
     var List = document.getElementById("list")
 
@@ -45,7 +48,16 @@ function getResults(_Data)
             Icon = getFullIcon(PodcastInfos)
         }
 
-        List.append(getPodcastElement(null, obj.results[i].artworkUrl60, obj.results[i].artistName, obj.results[i].collectionName, Icon))
+        List.append(buildListItem(new cListElement
+        (
+            [
+                getImagePart(obj.results[i].artworkUrl60),
+                getBoldTextPart(obj.results[i].collectionName),
+                getSubTextPart(obj.results[i].artistName),
+                getIconButtonPart(Icon)
+            ],
+            "5em 1fr 1fr 5em"
+        ), eLayout.row))
     }
 }
 
