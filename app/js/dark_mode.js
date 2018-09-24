@@ -12,10 +12,14 @@ function darkMode()
 
     if (DarkModeMenu.checked)
     {
+        setPreference('darkmode', true)
+
         document.getElementsByTagName("head")[0].append(Stylesheet)
     }
     else
     {
+        setPreference('darkmode', false)
+
         var Links = document.getElementsByTagName("head")[0].getElementsByTagName("link")
 
         for (var i = 0; i < Links.length; i++)
