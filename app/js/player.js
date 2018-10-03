@@ -133,7 +133,22 @@ function speedUp(_Self)
         case "1.3x": _Self.innerHTML = "1.5x"; Player.playbackRate = 1.5; Player.defaultPlaybackRate = 1.5 ; break;
         case "1.5x": _Self.innerHTML = "1.7x"; Player.playbackRate = 1.7; Player.defaultPlaybackRate = 1.7 ; break;
         case "1.7x": _Self.innerHTML = "2.0x"; Player.playbackRate = 2.0; Player.defaultPlaybackRate = 2.0 ; break;
-        case "2.0x": _Self.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
+        case "2.0x": _Self.innerHTML = "2.1x"; Player.playbackRate = 2.1; Player.defaultPlaybackRate = 2.1 ; break;
+        case "2.1x": _Self.innerHTML = "2.2x"; Player.playbackRate = 2.2; Player.defaultPlaybackRate = 2.2 ; break;
+        case "2.2x": _Self.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
+        case "2.3x": _Self.innerHTML = "2.4x"; Player.playbackRate = 2.4; Player.defaultPlaybackRate = 2.4 ; break;
+        case "2.4x": _Self.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
+        case "2.5x": _Self.innerHTML = "2.6x"; Player.playbackRate = 2.6; Player.defaultPlaybackRate = 2.6 ; break;
+        case "2.6x": _Self.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
+        case "2.7x": _Self.innerHTML = "2.8x"; Player.playbackRate = 2.8; Player.defaultPlaybackRate = 2.8 ; break;
+        case "2.8x": _Self.innerHTML = "2.9x"; Player.playbackRate = 2.9; Player.defaultPlaybackRate = 2.9 ; break;
+        case "2.9x": _Self.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
+        case "3.0x": _Self.innerHTML = "3.1x"; Player.playbackRate = 3.1; Player.defaultPlaybackRate = 3.1 ; break;
+        case "3.1x": _Self.innerHTML = "3.2x"; Player.playbackRate = 3.2; Player.defaultPlaybackRate = 3.2 ; break;
+        case "3.2x": _Self.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
+        case "3.3x": _Self.innerHTML = "3.4x"; Player.playbackRate = 3.4; Player.defaultPlaybackRate = 3.4 ; break;
+        case "3.4x": _Self.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
+        case "3.5x": _Self.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
         default: break;
     }
 }
@@ -196,7 +211,7 @@ function seekProgress(_Self, _Event)
     Automatically start the next episode after the player progress ended.
     Start the next episode and then delete the current item from the list.
     If the current view is not the one where current episode is playing the playback is paused.
-*/ 
+*/
 function nextEpisode()
 {
     var AllListItems      = document.getElementsByClassName("list-item-row-layout")
@@ -226,7 +241,7 @@ function nextEpisode()
                 // NOTE: Currently playling episode is the last item in the list
                 // NOTE: No need to delete it if it's played from the podcast detail view
 
-                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites')) 
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites'))
                 {
                     deleteFromListView(AllListItems[i])
                 }
