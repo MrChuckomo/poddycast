@@ -1,5 +1,19 @@
 {
-    "main"    : "main.js",
-    "name"    : "Poddycast",
-    "version" : "0.6.1"
+    "main": "main.js",
+    "name": "Poddycast",
+    "version": "0.6.1",
+    "scripts": {
+        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all",
+        "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux",
+        "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas",
+        "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin",
+        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32",
+        "start": "electron ."
+    },
+    "dependencies": {
+        "electron": "^3.0.2"
+    },
+    "devDependencies": {
+        "electron-packager": "^12.1.2"
+    }
 }
