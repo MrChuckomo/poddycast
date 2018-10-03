@@ -50,6 +50,11 @@ function getSettingsFilePath()
     return getSaveDirPath() + "/poddycast-podcast_settings.json"
 }
 
+function getPreferencesFilePath()
+{
+    return getSaveDirPath() + "/poddycast-app_preferences.json"
+}
+
 function init()
 {
     if (!fs.existsSync(getSaveDirPath()))
@@ -81,6 +86,17 @@ function init()
     {
         fs.openSync(getSettingsFilePath(), 'w');
     }
+    
+    if (!fs.existsSync(getPreferencesFilePath()))
+    {
+        fs.openSync(getPreferencesFilePath(), 'w');
+
+        setPreference('darkmode', false)
+        setPreference('proxymode', false)
+        setPreference('playspeed', 1.0)
+    }
+
+    darkMode()
 }
 
 function fileExistsAndIsNotEmpty(_File)
@@ -243,20 +259,46 @@ function parseFeedEpisodeDuration(_Duration)
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function isProxySet()
+function setProxyMode()
 {
-    var ProxySettings = false;
-    const {app} = require('electron').remote
+    const { app } = require('electron').remote
 
     var MenuItems = app.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0 ; i --)
+    for (var i = MenuItems.length - 1; i >= 0; i--)
     {
-        if (MenuItems[i].label == "Settings")
+        if (MenuItems[i].label == i18n.__('Settings'))
         {
             // NOTE: Item 0 is "Use Proxy" for now
 
             ProxySettings = MenuItems[i].submenu.items[0].checked
+
+            if (ProxySettings)
+            {
+                setPreference('proxymode', true)
+            }
+            else
+            {
+                setPreference('proxymode', false)
+            }
+        }
+    }
+}
+
+function isProxySet()
+{
+    var ProxySettings = false;
+    const { app } = require('electron').remote
+
+    var MenuItems = app.getApplicationMenu().items
+
+    for (var i = MenuItems.length - 1; i >= 0; i --)
+    {
+        if (MenuItems[i].label == i18n.__('Settings'))
+        {
+            // NOTE: Item 0 is "Use Proxy" for now
+
+            ProxySettings = MenuItems[i].submenu.items[0].checked            
         }
     }
 
@@ -355,5 +397,40 @@ function changeSettings(_FeedUrl, _ToInbox)
         }
 
         fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// PREFERENCES
+// ---------------------------------------------------------------------------------------------------------------------
+
+function setPreference(_Key, _Value)
+{
+    if (fs.existsSync(getPreferencesFilePath()))
+    {
+        if (fs.readFileSync(getPreferencesFilePath(), "utf-8") == "")
+        {
+            var JsonContent = {}
+        }
+        else
+        {
+            var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
+        }
+
+        JsonContent[_Key] = _Value
+
+        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
+
+function getPreference(_Key)
+{
+    if (fs.existsSync(getPreferencesFilePath()) && fs.readFileSync(getPreferencesFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
+
+        return JsonContent[_Key]
     }
 }

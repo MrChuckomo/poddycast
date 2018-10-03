@@ -26,7 +26,7 @@ const template =
                 label: i18n.__('Dark Mode'),
                 type: "checkbox",
                 accelerator: "CommandOrControl+Alt+L",
-                // checked: false,
+                checked: getPreference('darkmode'),
                 click() { darkMode() }
             },
             {role: 'togglefullscreen', label: i18n.__('Toggle Full Screen')}
@@ -109,7 +109,9 @@ const template =
             {
                 label: i18n.__("Proxy Mode"),
                 type: "checkbox",
-                accelerator: "CommandOrControl+Alt+P"
+                checked: getPreference('proxymode'),
+                accelerator: "CommandOrControl+Alt+P",
+                click() { setProxyMode() }
             },
             {type: 'separator'},
             {role: 'toggledevtools'}
