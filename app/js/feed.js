@@ -62,9 +62,9 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
                 var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
                 var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length")
-                var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type")
-                var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url")
+                var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length") : ''
+                var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type") : ''
+                var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url") : ''
                 var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
                 if (xmlDoc.getElementsByTagName(DurationKey).length > 0)
@@ -292,6 +292,19 @@ function processEpisodes(_Content)
     if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
     {
         Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+    } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0] !== undefined) {
+        Artwork = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0].getAttribute("url")
+    } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0] !== undefined) {
+        Artwork = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0].getAttribute("href")
+    } else {
+        // Find any element with 'href' or 'url' attribute containing an image (podcast thumbnail)
+        for (var i = 0; i < xmlDoc.getElementsByTagName("channel").length; i++) {
+            if (xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").length !== 0) {
+                Artwork = xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").getAttribute('href')
+            } else if (xmlDoc.getElementsByTagName("channel")[i].querySelector("*[url*='.jpeg'], *[url*='.jpg'], *[url*='.png']").length !== 0) {
+                Artwork = xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").getAttribute('url')
+            }
+        }
     }
 
     // NOTE: set settings information
@@ -314,7 +327,7 @@ function processEpisodes(_Content)
             var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
             var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
             var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
-            var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue            
+            var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue
             var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
             if ((Item.getElementsByTagName(DurationKey).length > 0))

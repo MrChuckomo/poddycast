@@ -45,10 +45,9 @@ function showNewEpisodes()
                 Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", JsonContent[i].channelName)
             }
 
-            if (Artwork != null)
+            if (/*Artwork != null*/ true) // Allow to show episodes without thumbnail
             {
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
-                
                 var ListElement = buildListItem(new cListElement
                 (
                     [
@@ -180,7 +179,7 @@ function showHistory()
                         getImagePart(Artwork),
                         getBoldTextPart(EpisodeTitle),
                         getSubTextPart(DateTime.toLocaleString())
-                    ], 
+                    ],
                     '5em 3fr 1fr'
                 ), eLayout.row)
 
