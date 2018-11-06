@@ -86,12 +86,13 @@ function init()
     {
         fs.openSync(getSettingsFilePath(), 'w');
     }
-    
+
     if (!fs.existsSync(getPreferencesFilePath()))
     {
         fs.openSync(getPreferencesFilePath(), 'w');
 
         setPreference('darkmode', false)
+        setPreference('minimize', false)
         setPreference('proxymode', false)
         setPreference('playspeed', 1.0)
     }
@@ -298,7 +299,7 @@ function isProxySet()
         {
             // NOTE: Item 0 is "Use Proxy" for now
 
-            ProxySettings = MenuItems[i].submenu.items[0].checked            
+            ProxySettings = MenuItems[i].submenu.items[0].checked
         }
     }
 
@@ -400,6 +401,31 @@ function changeSettings(_FeedUrl, _ToInbox)
     }
 }
 
+function setMinimize()
+{
+    const { app } = require('electron').remote
+
+    var MenuItems = app.getApplicationMenu().items
+
+    for (var i = MenuItems.length - 1; i >= 0; i--)
+    {
+        if (MenuItems[i].label == i18n.__('Settings'))
+        {
+            // NOTE: Item 0 is "Use Proxy" for now
+
+            MinimizeSettings = MenuItems[i].submenu.items[1].checked
+
+            if (MinimizeSettings)
+            {
+                setPreference('minimize', true)
+            }
+            else
+            {
+                setPreference('minimize', false)
+            }
+        }
+    }
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // PREFERENCES
@@ -434,3 +460,5 @@ function getPreference(_Key)
         return JsonContent[_Key]
     }
 }
+
+module.exports = getPreference
