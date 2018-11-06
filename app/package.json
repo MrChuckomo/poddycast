@@ -3,11 +3,11 @@
     "name": "Poddycast",
     "version": "0.6.1",
     "scripts": {
-        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all",
-        "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux",
-        "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas",
-        "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin",
-        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32",
+        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
+        "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
+        "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
+        "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
+        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
         "start": "electron ."
     },
     "dependencies": {
