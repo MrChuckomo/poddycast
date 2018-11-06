@@ -16,7 +16,7 @@
 	"History": "History",
 	"Statistics": "Statistics",
 	"Window": "Window",
-	"Minimize": "Minimize",
+	"Minimize": "Minimize to systray (requires restart)",
 	"Close": "Close",
 	"Quit": "Quit",
 	"New Episodes": "New Episodes",
