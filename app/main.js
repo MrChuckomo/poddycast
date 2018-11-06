@@ -101,6 +101,11 @@ function createWindow()
     {
         app.quit()
     })
+
+    win.on('closed', () =>
+    {
+        app.quit()
+    })
 }
 
 app.on('ready', createWindow)
