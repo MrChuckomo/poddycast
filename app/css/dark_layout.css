@@ -148,12 +148,17 @@ svg.set-favorite
 
 .content-right-player-speed-btn:hover,
 #content-right-header-actions svg:hover {
-    border-color: #000;
+    border-color: #111;
 }
 
 .content-right-player-speed-btn:active,
 #content-right-header-actions svg:active {
     background: #111;
+}
+
+.content-right-player-speed-btn:hover button,
+.content-right-player-speed-btn:active button {
+    color: #fff;
 }
 
 [data-tooltip]:after

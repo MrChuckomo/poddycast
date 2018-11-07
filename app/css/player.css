@@ -112,12 +112,22 @@
     background-color: inherit;
 }
 
+.content-right-player-speed-btn button {
+    color: #757575;
+    transition: color .25s ease-in-out;
+}
+
 .content-right-player-speed-btn button,
 .content-right-player-speed-btn:hover button,
 .content-right-player-speed-btn:active button {
     outline: 0;
     border: 0;
     background-color: inherit;
+}
+
+.content-right-player-speed-btn:hover button,
+.content-right-player-speed-btn:active button {
+    color: #000;
 }
 
 .content-right-player-speed-btn:hover {
