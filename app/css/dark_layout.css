@@ -33,7 +33,8 @@ body
     opacity: 0.8;
 }
 
-#menu-history svg
+#menu-history svg,
+#menu-refresh svg
 {
     fill: #FFF;
 }
