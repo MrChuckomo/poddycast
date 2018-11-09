@@ -9,6 +9,9 @@ function readFeeds()
 {
     // TODO: Save a file for each podcast including all episodes
 
+    // Add animation to notify the user about fetching new episodes
+    document.querySelector('#menu-refresh svg').classList.add('is-refreshing')
+
     if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
@@ -18,10 +21,18 @@ function readFeeds()
             if (isProxySet())
             {
                 makeFeedRequest(getFeedProxyOptions(JsonContent[i].feedUrl), saveLatestEpisode)
+
+                // Remove animation to notify the user about fetching new episodes.
+                // Let the animation take at least 2 seconds. Otherwise user may not notice it.
+                setTimeout(() => {document.querySelector('#menu-refresh svg').classList.remove('is-refreshing')}, 2000)
             }
             else
             {
                 makeFeedRequest(JsonContent[i].feedUrl, saveLatestEpisode)
+
+                // Remove animation to notify the user about fetching new episodes.
+                // Let the animation take at least 2 seconds. Otherwise user may not notice it.
+                setTimeout(() => {document.querySelector('#menu-refresh svg').classList.remove('is-refreshing')}, 2000)
             }
         }
     }
