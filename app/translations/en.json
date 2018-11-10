@@ -16,7 +16,7 @@
 	"History": "History",
 	"Statistics": "Statistics",
 	"Window": "Window",
-	"Minimize": "Minimize",
+	"Minimize": "Minimize to systray (requires restart)",
 	"Close": "Close",
 	"Quit": "Quit",
 	"New Episodes": "New Episodes",
@@ -40,5 +40,6 @@
 	"History Items": "History Items",
 	"Favorite Podcasts": "Favorite Podcasts",
 	"Last Podcast": "Last Podcast",
-	"Episodes": "Episodes"
+	"Episodes": "Episodes",
+	"Refresh Feeds": "Refresh Feeds"
 }

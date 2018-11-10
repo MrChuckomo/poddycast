@@ -16,7 +16,7 @@
 	"History": "Verlauf",
 	"Statistics": "Statistik",
 	"Window": "Fenster",
-	"Minimize": "Minimieren",
+	"Minimize": "Auf Systray minimieren (Neustart erforderlich)",
 	"Close": "Schließen",
 	"Quit": "Beenden",
 	"New Episodes": "Neue Episoden",
@@ -40,5 +40,6 @@
 	"History Items": "Einträge im Verlauf",
 	"Favorite Podcasts": "Abonnierte Podcasts",
 	"Last Podcast": "Letzter Podcast",
-	"Episodes": "Episoden"
+	"Episodes": "Episoden",
+	"Refresh": "Feeds Aktualisieren"
 }

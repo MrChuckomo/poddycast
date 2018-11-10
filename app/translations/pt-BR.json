@@ -16,7 +16,7 @@
 	"History": "Hístorico",
 	"Statistics": "Estátisticas",
 	"Window": "Encontre podcast",
-	"Minimize": "Minimizar",
+	"Minimize": "Minimizar para systray (requer reinicialização)",
 	"Close": "Fechar",
 	"Quit": "Sair",
 	"New Episodes": "Novos Epísodios",
@@ -40,5 +40,6 @@
 	"History Items": "History Items",
 	"Favorite Podcasts": "Favorite Podcasts",
 	"Last Podcast": "Last Podcast",
-	"Episodes": "Episodes"
+	"Episodes": "Episodes",
+	"Refresh": "Atualizar Feeds"
 }

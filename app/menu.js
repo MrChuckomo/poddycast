@@ -1,4 +1,4 @@
-const {app, Menu} = require('electron').remote
+const { app, Menu } = require('electron').remote
 
 const template =
 [
@@ -112,6 +112,12 @@ const template =
                 checked: getPreference('proxymode'),
                 accelerator: "CommandOrControl+Alt+P",
                 click() { setProxyMode() }
+            },{
+                label: i18n.__("Minimize to systray (requires restart)"),
+                type: "checkbox",
+                checked: getPreference('minimize'),
+                accelerator: "CommandOrControl+Alt+M",
+                click() { setMinimize() }
             },
             {type: 'separator'},
             {role: 'toggledevtools'}
