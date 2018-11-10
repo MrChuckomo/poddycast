@@ -119,6 +119,18 @@
     background-color: #E0E0E0;
 }
 
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(-359deg);
+    }
+}
+
+.is-refreshing {
+    animation: rotation 1.5s infinite linear;
+}
+
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 #playlist-header
