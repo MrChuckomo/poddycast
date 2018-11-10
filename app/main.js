@@ -15,6 +15,10 @@ let appIcon = null
 let trayIcon = null
 let win
 
+// Request lock to allow only one instance
+// of the app running at the time.
+const gotTheLock = app.requestSingleInstanceLock()
+
 // Load proper icon for specific platform
 if (process.platform === 'darwin') {
     trayIcon = path.join(__dirname, './img/poddycast-app_icon.png')
@@ -108,4 +112,19 @@ function createWindow()
     })
 }
 
-app.on('ready', createWindow)
+// Check if this is first instance of the app running.
+// If not, block it. If yes, allow it.
+if (!gotTheLock) {
+    app.quit()
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window.
+        if (win) {
+            if (win.isMinimized()) win.restore()
+                win.focus()
+        }
+    })
+
+    // Create win, load the rest of the app, etc...
+    app.on('ready', createWindow)
+}
