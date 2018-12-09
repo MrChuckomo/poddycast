@@ -113,7 +113,7 @@ const template =
                 accelerator: "CommandOrControl+Alt+P",
                 click() { setProxyMode() }
             },{
-                label: i18n.__("Minimize to systray (requires restart)"),
+                label: i18n.__("Minimize"),
                 type: "checkbox",
                 checked: getPreference('minimize'),
                 accelerator: "CommandOrControl+Alt+M",
