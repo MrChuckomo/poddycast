@@ -14,7 +14,7 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 - [x] Windows
 - [x] Linux
 
-## Feature
+## Features
 
 - Uses the **iTunes API** to search for Podcasts
 - Find all episodes in the **New Episodes** menu item
