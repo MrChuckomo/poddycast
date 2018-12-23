@@ -101,8 +101,7 @@
     display: flex;
     grid-area: speed;
     align-self: center;
-    justify-self: right;
-    margin-right: 2em;
+    justify-self: center;
     outline: 0;
     font-size: 12px;
     height: 35px;
@@ -110,6 +109,11 @@
     border: 1px solid #EEE;
     border-radius: 4px;
     background-color: inherit;
+}
+
+button#content-right-player-speed-indicator {
+    width: 3.3em;
+    padding: 0;
 }
 
 .content-right-player-speed-btn button {
