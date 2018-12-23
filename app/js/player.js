@@ -115,19 +115,17 @@ function playReply()
 
 
 /*
-    Speedup the plackback by clicking the playback speed button.
+    Speedup the plackback by clicking the playback speed-up button.
     The steps to increase the playback is predefined in this function.
 
     Args:
         _Self (button): The speed up button itself
 */
-function speedUp(_Self)
-{
+function speedUp(_Self) {
     var Player = document.getElementById("player")
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
-    switch (rate.innerHTML)
-    {
+    switch (rate.innerHTML) {
         case "1.0x": rate.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
         case "1.1x": rate.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
         case "1.2x": rate.innerHTML = "1.3x"; Player.playbackRate = 1.3; Player.defaultPlaybackRate = 1.3 ; break;
@@ -151,13 +149,19 @@ function speedUp(_Self)
     }
 }
 
-function speedDown(_Self)
-{
+
+/*
+    Speeddown the plackback by clicking the playback speed-down button.
+    The steps to increase the playback is predefined in this function.
+
+    Args:
+        _Self (button): The speed up button itself
+*/
+function speedDown(_Self) {
     var Player = document.getElementById("player")
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
-    switch (rate.innerHTML)
-    {
+    switch (rate.innerHTML) {
         case "4.0x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
         case "3.7x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
         case "3.5x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
