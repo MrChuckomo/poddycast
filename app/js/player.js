@@ -137,23 +137,15 @@ function speedUp(_Self)
         case "2.0x": rate.innerHTML = "2.1x"; Player.playbackRate = 2.1; Player.defaultPlaybackRate = 2.1 ; break;
         case "2.1x": rate.innerHTML = "2.2x"; Player.playbackRate = 2.2; Player.defaultPlaybackRate = 2.2 ; break;
         case "2.2x": rate.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
-        case "2.3x": rate.innerHTML = "2.4x"; Player.playbackRate = 2.4; Player.defaultPlaybackRate = 2.4 ; break;
-        case "2.4x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
-        case "2.5x": rate.innerHTML = "2.6x"; Player.playbackRate = 2.6; Player.defaultPlaybackRate = 2.6 ; break;
-        case "2.6x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
-        case "2.7x": rate.innerHTML = "2.8x"; Player.playbackRate = 2.8; Player.defaultPlaybackRate = 2.8 ; break;
-        case "2.8x": rate.innerHTML = "2.9x"; Player.playbackRate = 2.9; Player.defaultPlaybackRate = 2.9 ; break;
-        case "2.9x": rate.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
+        case "2.3x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
+        case "2.5x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
+        case "2.7x": rate.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
         case "3.0x": rate.innerHTML = "3.1x"; Player.playbackRate = 3.1; Player.defaultPlaybackRate = 3.1 ; break;
         case "3.1x": rate.innerHTML = "3.2x"; Player.playbackRate = 3.2; Player.defaultPlaybackRate = 3.2 ; break;
         case "3.2x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
-        case "3.3x": rate.innerHTML = "3.4x"; Player.playbackRate = 3.4; Player.defaultPlaybackRate = 3.4 ; break;
-        case "3.4x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
-        case "3.5x": rate.innerHTML = "3.6x"; Player.playbackRate = 3.6; Player.defaultPlaybackRate = 3.6 ; break;
-        case "3.6x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
-        case "3.7x": rate.innerHTML = "3.8x"; Player.playbackRate = 3.8; Player.defaultPlaybackRate = 3.8 ; break;
-        case "3.8x": rate.innerHTML = "3.9x"; Player.playbackRate = 3.9; Player.defaultPlaybackRate = 3.9 ; break;
-        case "3.9x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
+        case "3.3x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
+        case "3.5x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
+        case "3.7x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
         case "4.0x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
         default: break;
     }
@@ -166,23 +158,15 @@ function speedDown(_Self)
 
     switch (rate.innerHTML)
     {
-        case "4.0x": rate.innerHTML = "3.9x"; Player.playbackRate = 3.9; Player.defaultPlaybackRate = 3.9 ; break;
-        case "3.9x": rate.innerHTML = "3.8x"; Player.playbackRate = 3.8; Player.defaultPlaybackRate = 3.8 ; break;
-        case "3.8x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
-        case "3.7x": rate.innerHTML = "3.6x"; Player.playbackRate = 3.6; Player.defaultPlaybackRate = 3.6 ; break;
-        case "3.6x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
-        case "3.5x": rate.innerHTML = "3.4x"; Player.playbackRate = 3.4; Player.defaultPlaybackRate = 3.4 ; break;
-        case "3.4x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
+        case "4.0x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
+        case "3.7x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
+        case "3.5x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
         case "3.3x": rate.innerHTML = "3.2x"; Player.playbackRate = 3.2; Player.defaultPlaybackRate = 3.2 ; break;
         case "3.2x": rate.innerHTML = "3.1x"; Player.playbackRate = 3.1; Player.defaultPlaybackRate = 3.1 ; break;
         case "3.1x": rate.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
-        case "3.0x": rate.innerHTML = "2.9x"; Player.playbackRate = 2.9; Player.defaultPlaybackRate = 2.9 ; break;
-        case "2.9x": rate.innerHTML = "2.8x"; Player.playbackRate = 2.8; Player.defaultPlaybackRate = 2.8 ; break;
-        case "2.8x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
-        case "2.7x": rate.innerHTML = "2.6x"; Player.playbackRate = 2.6; Player.defaultPlaybackRate = 2.6 ; break;
-        case "2.6x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
-        case "2.5x": rate.innerHTML = "2.4x"; Player.playbackRate = 2.4; Player.defaultPlaybackRate = 2.4 ; break;
-        case "2.4x": rate.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
+        case "3.0x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
+        case "2.7x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
+        case "2.5x": rate.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
         case "2.3x": rate.innerHTML = "2.2x"; Player.playbackRate = 2.2; Player.defaultPlaybackRate = 2.2 ; break;
         case "2.2x": rate.innerHTML = "2.1x"; Player.playbackRate = 2.1; Player.defaultPlaybackRate = 2.1 ; break;
         case "2.1x": rate.innerHTML = "2.0x"; Player.playbackRate = 2.0; Player.defaultPlaybackRate = 2.0 ; break;
