@@ -327,9 +327,10 @@ function showPlaylistContent(_Self)
                                 getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
                                 getSubTextPart((NewEpisodesJsonContent[a].duration == undefined) ? "" : NewEpisodesJsonContent[a].duration),
                                 getTextPart(NewEpisodesJsonContent[a].channelName),
+                                getDescriptionPart(s_InfoIcon, NewEpisodesJsonContent[a].EpisodeDescription),
                                 getIconButtonPart(s_DeleteIcon)
                             ],
-                            "5em 1fr 6em 1fr 5em"
+                            "5em 1fr 6em 1fr 5em 5em"
                         ), eLayout.row)
 
                         if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl))

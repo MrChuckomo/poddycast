@@ -29,7 +29,7 @@ function buildListItem(_JsonObject, _Layout)
 }
 
 function getListItemPart(_Container, _Position)
-{   
+{
     return _Container.children[_Position]
 }
 
@@ -60,6 +60,18 @@ function getTextPart(_Text)
 
     TextElement.innerHTML = _Text
     TextElement.classList.add("list-item-text")
+
+    return TextElement
+}
+
+function getDescriptionPart(_Icon, _Text)
+{
+    var TextElement = document.createElement("div")
+
+    TextElement.innerHTML = _Icon
+    TextElement.title = _Text
+    TextElement.classList.add("list-item-description")
+    TextElement.classList.add('list-item-icon')
 
     return TextElement
 }

@@ -57,6 +57,7 @@
 
 .list-item-text,
 .list-item-bold-text,
+.list-item-description,
 .list-item-sub-text
 {
     text-overflow: ellipsis;

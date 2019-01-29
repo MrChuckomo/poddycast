@@ -55,9 +55,10 @@ function showNewEpisodes()
                         getBoldTextPart(JsonContent[i].episodeTitle),
                         getSubTextPart((JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration),
                         getTextPart(JsonContent[i].channelName),
+                        getDescriptionPart(s_InfoIcon, JsonContent[i].episodeDescription),
                         getIconButtonPart(s_DeleteIcon)
                     ],
-                    "5em 1fr 6em 1fr 5em"
+                    "5em 1fr 6em 1fr 5em 5em"
                 ), eLayout.row)
 
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_MoreOptionIcon)

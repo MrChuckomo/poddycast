@@ -76,7 +76,9 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
                 var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length") : ''
                 var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type") : ''
                 var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url") : ''
+                var EpisodeDescription = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0].textContent : xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('description')[0].textContent
                 var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
+
 
                 if (xmlDoc.getElementsByTagName(DurationKey).length > 0)
                 {
@@ -94,7 +96,7 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
                 if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
                 {
-                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, Duration)
+                    saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, Duration)
                 }
             }
         }
@@ -338,6 +340,7 @@ function processEpisodes(_Content)
             var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
             var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
             var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+            var EpisodeDescription = Item.getElementsByTagName('itunes:subtitle')[0] !== undefined ? Item.getElementsByTagName('itunes:subtitle')[0].textContent : Item.getElementsByTagName('description')[0].textContent
             var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue
             var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
@@ -360,14 +363,15 @@ function processEpisodes(_Content)
                     getSubTextPart(new Date(PubDate).toLocaleString()),
                     getSubTextPart(Duration),
                     getFlagPart('Done', 'white', '#4CAF50'),
+                    getDescriptionPart(s_InfoIcon, EpisodeDescription),
                     getIconButtonPart(s_AddEpisodeIcon)
                 ],
-                "3fr 1fr 1fr 5em 5em"
+                "3fr 1fr 1fr 5em 5em 5em"
             ), eLayout.row)
 
             if (isEpisodeAlreadySaved(EpisodeTitle))
             {
-                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[4])
+                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
             }
 
             if (player.isPlaying(EpisodeUrl))
@@ -389,6 +393,7 @@ function processEpisodes(_Content)
             ListElement.setAttribute("url", EpisodeUrl)
             ListElement.setAttribute("length", EpisodeLength)
             ListElement.setAttribute("duration", Duration)
+            ListElement.setAttribute("description", EpisodeDescription)
             ListElement.setAttribute("artworkUrl", Artwork)
 
             List.append(ListElement)
@@ -400,12 +405,12 @@ function addToEpisodes(_Self)
 {
     var ListElement = _Self.parentElement.parentElement
 
-    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"), ListElement.getAttribute("duration"))
+    saveEpisode(ListElement.getAttribute("channel"), ListElement.getAttribute("title"), ListElement.getAttribute("url"), ListElement.getAttribute("type"), ListElement.getAttribute("length"), ListElement.getAttribute("description"), ListElement.getAttribute("duration"))
 
     _Self.innerHTML = ""
 }
 
-function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength, _Duration)
+function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _EpisodeLength, _EpisodeDescription, _Duration)
 {
     var Feed =
     {
@@ -414,6 +419,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         "episodeUrl": _EpisodeUrl,
         "episodeType": _EpisodeType,
         "episodeLength": _EpisodeLength,
+        "episodeDescription": _EpisodeDescription,
         "duration": _Duration,
         "playbackPosition": 0,
     }
