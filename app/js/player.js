@@ -1,3 +1,5 @@
+const { BrowserWindow } = require('electron').remote
+
 var CCOntentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 
@@ -189,6 +191,7 @@ function updateProgress()
 {
     var Player       = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
+    const mainAppWindow = BrowserWindow.getFocusedWindow()
 
     // NOTE: just save every 10 sec.
 
@@ -223,6 +226,9 @@ function updateProgress()
 
     setPlaybackTime(Player.currentTime, "content-right-player-time")
     setPlaybackTime(Player.duration, "content-right-player-duration")
+
+    // Update progress bar in taskbar
+    mainAppWindow.setProgressBar(Value / 100)
 }
 
 function seekProgress(_Self, _Event)
