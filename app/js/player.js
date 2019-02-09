@@ -68,6 +68,10 @@ function playNow(_Self)
     {
         togglePlayPauseButton()
     }
+
+    const mainAppWindow = BrowserWindow.getAllWindows()[0]
+
+    mainAppWindow.setTitle(_Self.getAttribute("title"))
 }
 
 
@@ -191,7 +195,7 @@ function updateProgress()
 {
     var Player       = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
-    const mainAppWindow = BrowserWindow.getFocusedWindow()
+    const mainAppWindow = BrowserWindow.getAllWindows()[0]
 
     // NOTE: just save every 10 sec.
 
