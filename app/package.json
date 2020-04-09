@@ -11,9 +11,9 @@
         "start": "electron ."
     },
     "dependencies": {
-        "electron": "^4.0.1"
+        "electron": "^8.2.1"
     },
     "devDependencies": {
-        "electron-packager": "^13.0.1"
+        "electron-packager": "^14.2.1"
     }
 }
