@@ -34,7 +34,10 @@ function createWindow()
         minWidth: 1000,
         height: 600,
         minHeight: 600,
-        icon: trayIcon
+        icon: trayIcon,
+        webPreferences: {
+            nodeIntegration: true
+        }
     })
 
     win.loadURL(url.format
@@ -72,8 +75,8 @@ function createWindow()
     // Create RightClick context menu
     appIcon.setContextMenu(contextMenu)
 
-    // Always highlight the tray icon
-    appIcon.setHighlightMode('always')
+    // Always highlight the tray icon - deprecated
+    // appIcon.setHighlightMode('always')
 
     // The tray icon is not destroyed
     appIcon.isDestroyed(false)
