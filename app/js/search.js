@@ -1,7 +1,6 @@
 'use strict'
 
 var CContentHelper = require('./js/helper/content')
-
 var helper = new CContentHelper()
 
 
