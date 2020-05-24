@@ -1,108 +1,87 @@
+'use strict'
+
 var CContentHelper = require('./js/helper/content')
 
 var helper = new CContentHelper()
 
 
-function search(_Self, _Event)
-{
-    if (_Event.code == "Enter")
-    {
+function search(_Self, _Event) {
+    if (_Event.code == 'Enter') {
         helper.clearContent()
         setHeaderViewAction()
         clearMenuSelection()
-        helper.setHeader(i18n.__("Search"))
+        helper.setHeader(i18n.__('Search'))
 
-        document.getElementById("res").setAttribute("return-value", "")
+        document.getElementById('res').setAttribute('return-value', '')
 
-        if (_Self.value.includes("http") && _Self.value.includes(":") && _Self.value.includes("//"))
-        {
+        if (_Self.value.includes('http') && _Self.value.includes(':') && _Self.value.includes('//')) {
             getPodcastsFromFeed(_Self.value)
-        }
-        else
-        {
+        } else {
             getPodcasts(_Self.value)
         }
-    }
-    else if (_Event.code == "Escape")
-    {
+    } else if (_Event.code == 'Escape') {
         clearTextField(_Self)
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastsFromFeed(_SearchTerm)
-{
+function getPodcastsFromFeed(_SearchTerm) {
     // http://feeds.feedburner.com/ICO-Radio
 
-    if (isProxySet())
-    {
+    if (isProxySet()) {
         makeRequest(getFeedProxyOptions(_SearchTerm), null, getFeedResults, eRequest.http)
-    }
-    else
-    {
-        if (_SearchTerm.includes("https"))
-        {
+    } else {
+        if (_SearchTerm.includes('https')) {
             makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
-        }
-        else
-        {
+        } else {
             makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
         }
     }
 }
 
-function getFeedResults(_Data)
-{
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(_Data, "text/xml");
+function getFeedResults(_Data) {
+    let parser = new DOMParser();
+    let xmlDoc = parser.parseFromString(_Data, 'text/xml');
 
-    var AllImageTags = xmlDoc.getElementsByTagName("image")
-    var Image = null
+    let AllImageTags = xmlDoc.getElementsByTagName('image')
+    let Image = null
 
-    if (AllImageTags.length > 0)
-    {
-        if(AllImageTags[0].nodeName == "itunes:image")
-        {
-            Image = AllImageTags[0].getAttribute("href")
-        }
-        else if (AllImageTags[0].nodeName == "image")
-        {
-            Image = AllImageTags[0].getElementsByTagName("url")[0].innerHTML
+    if (AllImageTags.length > 0) {
+        if(AllImageTags[0].nodeName == 'itunes:image') {
+            Image = AllImageTags[0].getAttribute('href')
+        } else if (AllImageTags[0].nodeName == 'image') {
+            Image = AllImageTags[0].getElementsByTagName('url')[0].innerHTML
         }
     }
 
-    var AllAuthorTags = xmlDoc.getElementsByTagName("author")
-    var Author = null
+    let AllAuthorTags = xmlDoc.getElementsByTagName('author')
+    let Author = null
 
-    if (AllAuthorTags.length > 0)
-    {
+    if (AllAuthorTags.length > 0) {
         Author = AllAuthorTags[0].innerHTML
-    }
-    else
-    {
-        Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
+    } else {
+        Author = xmlDoc.getElementsByTagName('creator')[0].childNodes[0].data
     }
 
     helper.clearContent()
 
-    var List = document.getElementById("list")
+    let List = document.getElementById('list')
 
     setGridLayout(List, false)
 
-    var PodcastInfos = {
-        "feedUrl": document.getElementById("search-input").value,
-        "artistName": Author,
-        "collectionName": xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].innerHTML,
-        "artworkUrl30": Image,
-        "artworkUrl60": Image,
-        "artworkUrl100": Image,
+    let PodcastInfos = {
+        'feedUrl': document.getElementById('search-input').value,
+        'artistName': Author,
+        'collectionName': xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('title')[0].innerHTML,
+        'artworkUrl30': Image,
+        'artworkUrl60': Image,
+        'artworkUrl100': Image,
     }
 
-    var Icon = getIcon(PodcastInfos)
+    let Icon = getIcon(PodcastInfos)
 
-    if (isAlreadySaved(PodcastInfos.feedUrl))
-    {
+    if (isAlreadySaved(PodcastInfos.feedUrl)) {
         Icon = getFullIcon(PodcastInfos)
     }
 
