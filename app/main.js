@@ -1,3 +1,5 @@
+'use strict'
+
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const url = require('url')
@@ -28,22 +30,19 @@ if (process.platform === 'darwin') {
     trayIcon = path.join(__dirname, './img/poddycast-app_icon.ico')
 }
 
-function createWindow()
-{
-    win = new  BrowserWindow
-    ({
-        width: 1000,
-        minWidth: 1000,
+function createWindow() {
+    win = new BrowserWindow ({
         height: 600,
-        minHeight: 600,
         icon: trayIcon,
+        minHeight: 600,
+        minWidth: 1000,
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        width: 1000
     })
 
-    win.loadURL(url.format
-    ({
+    win.loadURL(url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
         slashed: true
@@ -55,16 +54,16 @@ function createWindow()
     // Create RightClick context menu for tray icon
     const contextMenu = Menu.buildFromTemplate([
         {
-            label: 'Restore app',
             click: () => {
                 win.show()
-            }
+            },
+            label: 'Restore app'
         },
         {
-            label: 'Close app',
             click: () => {
                 win.close()
-            }
+            },
+            label: 'Close app'
         }
     ])
 
@@ -106,13 +105,11 @@ function createWindow()
     }
 
     // Quit when all windows are closed
-    win.on('window-all-closed', () =>
-    {
+    win.on('window-all-closed', () => {
         app.quit()
     })
 
-    win.on('closed', () =>
-    {
+    win.on('closed', () => {
         app.quit()
     })
 }
@@ -126,7 +123,7 @@ if (!gotTheLock) {
         // Someone tried to run a second instance, we should focus our window.
         if (win) {
             if (win.isMinimized()) win.restore()
-                win.focus()
+            win.focus()
         }
     })
 
