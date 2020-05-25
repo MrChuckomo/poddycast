@@ -3,7 +3,7 @@
 var CContentHelper = require('./js/helper/content')
 var helper = new CContentHelper()
 
-var CPlayer        = require('./js/helper/player')
+var CPlayer = require('./js/helper/player')
 var player = new CPlayer()
 
 function getInputEntry(_Name) {
