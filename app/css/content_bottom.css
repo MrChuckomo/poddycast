@@ -1,0 +1,14 @@
+#content-bottom
+{
+    position: fixed;
+    top: auto;
+    left: 0em;
+    right: 0em;
+    bottom: 0em;
+    overflow: auto;
+    height: auto;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-areas:
+        "audio-player"
+}

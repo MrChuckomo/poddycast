@@ -1,11 +1,16 @@
 const { BrowserWindow } = require('electron').remote
 
+const { systemPreferences } = require('electron')
 var CCOntentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 
 var helper = new CCOntentHelper()
 var player = new CPlayer()
+var playerVolume = 0.75
+var volumeOff = false
 
+// clamp number between 0 and 1
+const clamp = (num) => Math.max(Math.min(num, 1), 0);
 
 const s_Pause =
 `
@@ -401,5 +406,42 @@ function setSpeed()
 
     if (getPreference('speed') !== 1) {
         Player.playbackRate = parseFloat(getPreference('speed'))
+    }
+}
+
+function setPlaybackVolume(_Self) 
+{
+    var Player = document.getElementById("player")
+    var VolumeFill = document.getElementById("volume-fill")
+
+    if (_Self.valueAsNumber === 0.001) {
+        Player.volume = _Self.valueAsNumber
+        VolumeFill.style.width = "0%"
+    } else {
+        // creates a smooth exponential increase in volume rather than linear [0-1]
+        Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000)
+        VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + "%"
+    }
+
+    if (volumeOff === false) {
+        playerVolume = _Self.valueAsNumber
+    }
+
+    setPreference('volume', _Self.valueAsNumber)
+}
+
+function volumeToggle()
+{
+    var Player = document.getElementById("player")
+    var VolumeFill = document.getElementById("volume-fill")
+
+    if (volumeOff === true) {
+        volumeOff = false
+        Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000)
+        VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + "%"
+    } else {
+        volumeOff = true
+        Player.volume = 0
+        VolumeFill.style.width = "0%"
     }
 }

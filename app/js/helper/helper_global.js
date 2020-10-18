@@ -95,9 +95,13 @@ function init()
         setPreference('minimize', false)
         setPreference('proxymode', false)
         setPreference('playspeed', 1.0)
+        setPreference('volume', 0.75)
     }
 
     darkMode()
+
+    document.getElementById("volume").value = getPreference('volume')
+    document.getElementById("volume").dispatchEvent(new Event("input"))
 }
 
 function fileExistsAndIsNotEmpty(_File)

@@ -1,13 +1,14 @@
 
 #content-left
 {
-    height: 100%;
+    height: auto;
     width: 300px;
+    bottom: 59px;
+    top: 0px;
     display: grid;
     position: fixed;
     overflow: auto;
-    grid-template-rows: 70px 1fr 30px 3fr 60px;
-    grid-template-columns: 100%;
+    grid-template-rows: 70px 1fr 30px 2fr 60px;
     grid-template-areas:
         "search"
         "menu"
