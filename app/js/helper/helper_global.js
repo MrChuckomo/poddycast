@@ -82,9 +82,10 @@ function init()
         fs.openSync(getPlaylistFilePath(), 'w');
     }
 
-    if (!fs.existsSync(getSettingsFilePath()))
+    // check if user has old settings file
+    if (fs.existsSync(getSettingsFilePath()))
     {
-        fs.openSync(getSettingsFilePath(), 'w');
+        upgradeSettingsFile()
     }
 
     if (!fs.existsSync(getPreferencesFilePath()))
@@ -107,6 +108,40 @@ function init()
 function fileExistsAndIsNotEmpty(_File)
 {
     return (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
+}
+
+function upgradeSettingsFile()
+{
+    var oldFilePath = getSettingsFilePath()
+    var newFilePath = getSaveFilePath()
+    
+    // sync addToInbox values from old settings file
+    if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(oldFilePath, "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            setIsAddedToInbox(JsonContent[i].feedUrl, JsonContent[i].addToInbox)
+        }
+    }
+
+    // create addToInbox value to any remaining items in the favorites file
+    if (fs.existsSync(newFilePath) && fs.readFileSync(newFilePath, "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(newFilePath, "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (!JsonContent[i].hasOwnProperty('addToInbox'))
+            {
+                setIsAddedToInbox(JsonContent[i].feedUrl, true)
+            }
+        }
+    }
+
+    // rename old settings file so that it is not processed again in the future
+    fs.renameSync(oldFilePath, oldFilePath + ".old")
 }
 
 function isAlreadySaved(_FeedUrl)
@@ -310,6 +345,11 @@ function isProxySet()
     return ProxySettings
 }
 
+/**
+ * @deprecated No longer needed after merging of settings and favorites files.
+ * @param {string} _PodcastName 
+ * @param {string} _FeedUrl 
+ */
 function addToSettings(_PodcastName, _FeedUrl)
 {
     if (fs.existsSync(getSettingsFilePath()))
@@ -341,13 +381,39 @@ function addToSettings(_PodcastName, _FeedUrl)
     }
 }
 
+/**
+ * @deprecated Replaced with isAddedToInbox to improve usage clarity
+ * @param {*} _FeedUrl 
+ */
 function getSettings(_FeedUrl)
 {
     var ToInbox = true
 
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                ToInbox = JsonContent[i].addToInbox
+
+                break
+            }
+        }
+    }
+
+    return ToInbox
+}
+
+function isAddedToInbox(_FeedUrl)
+{
+    var ToInbox = true
+
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -367,9 +433,9 @@ function isInSettings(_FeedUrl)
 {
     var Result = false
 
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -385,11 +451,16 @@ function isInSettings(_FeedUrl)
     return Result
 }
 
+/**
+ * @deprecated Replaced with setIsAddedToInbox to improve usage clarity
+ * @param {*} _FeedUrl 
+ * @param {*} _ToInbox 
+ */
 function changeSettings(_FeedUrl, _ToInbox)
 {
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -401,7 +472,27 @@ function changeSettings(_FeedUrl, _ToInbox)
             }
         }
 
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    }
+}
+
+function setIsAddedToInbox(_FeedUrl, _ToInbox)
+{
+    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+        for (var i = 0; i < JsonContent.length; i++)
+        {
+            if (JsonContent[i].feedUrl == _FeedUrl)
+            {
+                JsonContent[i].addToInbox = _ToInbox
+
+                break
+            }
+        }
+
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
     }
 }
 
