@@ -103,6 +103,9 @@ function init()
 
     document.getElementById("volume").value = getPreference('volume')
     document.getElementById("volume").dispatchEvent(new Event("input"))
+    document.querySelector('#content-right-player-speed-indicator').innerHTML = getPreference('playspeed').toFixed(1) + "x"
+    document.getElementById("player").playbackRate = parseFloat(getPreference('playspeed'))
+    document.getElementById("player").defaultPlaybackRate = parseFloat(getPreference('playspeed'))
 }
 
 function fileExistsAndIsNotEmpty(_File)
