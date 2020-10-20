@@ -2,6 +2,7 @@ const { app, Menu } = require('electron').remote
 
 const template =
 [
+	/*
     {
         label: i18n.__('Edit'),
         submenu:
@@ -11,6 +12,7 @@ const template =
             {role: 'paste', label: i18n.__('Paste')}
         ]
     },
+    */
     {
         label: i18n.__('View'),
         submenu:
