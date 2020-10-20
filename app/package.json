@@ -2,7 +2,7 @@
     "main": "main.js",
     "description": "Podcast client to listen to all you favorite podcasts",
     "name": "Poddycast",
-    "version": "0.7.0",
+    "version": "0.7.1",
     "scripts": {
         "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
         "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
