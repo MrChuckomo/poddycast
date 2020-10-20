@@ -57,6 +57,19 @@ function getPreferencesFilePath()
 
 function init()
 {
+
+    if (!fs.existsSync(getPreferencesFilePath()))
+    {
+        fs.openSync(getPreferencesFilePath(), 'w');
+
+        setPreference('darkmode', false)
+        setPreference('minimize', false)
+        setPreference('proxymode', false)
+        setPreference('playspeed', 1.0)
+    }
+
+    darkMode()
+    
     if (!fs.existsSync(getSaveDirPath()))
     {
         fs.mkdirSync(getSaveDirPath());
@@ -87,17 +100,12 @@ function init()
         fs.openSync(getSettingsFilePath(), 'w');
     }
 
-    if (!fs.existsSync(getPreferencesFilePath()))
-    {
-        fs.openSync(getPreferencesFilePath(), 'w');
-
-        setPreference('darkmode', false)
-        setPreference('minimize', false)
-        setPreference('proxymode', false)
-        setPreference('playspeed', 1.0)
-    }
-
-    darkMode()
+    initController()
+    loadPlaylists()
+    readFeeds()
+    showNewEpisodes()
+    setItemCounts()
+    translate()
 }
 
 function fileExistsAndIsNotEmpty(_File)
@@ -262,9 +270,9 @@ function parseFeedEpisodeDuration(_Duration)
 
 function setProxyMode()
 {
-    const { app, Menu } = require('electron').remote
+    const { app } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    var MenuItems = app.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i--)
     {
@@ -289,9 +297,9 @@ function setProxyMode()
 function isProxySet()
 {
     var ProxySettings = false;
-    const { app, Menu } = require('electron').remote
+    const { app } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    var MenuItems = app.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i --)
     {
@@ -403,9 +411,9 @@ function changeSettings(_FeedUrl, _ToInbox)
 
 function setMinimize()
 {
-    const { app, Menu } = require('electron').remote
+    const { app } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    var MenuItems = app.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i--)
     {

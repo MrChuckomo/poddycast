@@ -20,27 +20,33 @@ let win
 const gotTheLock = app.requestSingleInstanceLock()
 
 // Load proper icon for specific platform
-if (process.platform === 'darwin') {
-    trayIcon = path.join(__dirname, './img/poddycast-app_icon-16x16.png')
-} else if (process.platform === 'linux') {
+if (process.platform === 'darwin' || process.platform === 'linux') {
     trayIcon = path.join(__dirname, './img/poddycast-app_icon.png')
-} else if (process.platform === 'win32') {
+} else if (process.platform == 'win32') {
     trayIcon = path.join(__dirname, './img/poddycast-app_icon.ico')
 }
 
 function createWindow()
 {
-    win = new  BrowserWindow
+    win = new BrowserWindow
     ({
         width: 1000,
         minWidth: 1000,
         height: 600,
         minHeight: 600,
-        icon: trayIcon,
-        webPreferences: {
-            nodeIntegration: true
-        }
+        autoHideMenuBar: true,
+        icon: trayIcon
     })
+    
+    menuBarVisibility = false
+    win.webContents.on("before-input-event", (event, input) => { 
+	    if(input.alt) {
+	        win.setMenuBarVisibility(menuBarVisibility)
+	        menuBarVisibility = !menuBarVisibility
+	    }
+	})
+    
+	win.setMenuBarVisibility(false)
 
     win.loadURL(url.format
     ({
@@ -77,8 +83,8 @@ function createWindow()
     // Create RightClick context menu
     appIcon.setContextMenu(contextMenu)
 
-    // Always highlight the tray icon - deprecated
-    // appIcon.setHighlightMode('always')
+    // Always highlight the tray icon
+    appIcon.setHighlightMode('always')
 
     // The tray icon is not destroyed
     appIcon.isDestroyed(false)

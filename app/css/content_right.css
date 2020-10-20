@@ -503,8 +503,8 @@ h1
 .edit-header button:hover
 {
     color: #FFF;
-    background: #E53935;
-    border-color: #E53935;
+    background:rgb(76, 175, 80);
+    border-color:rgb(76, 175, 80);
 }
 
 .podcast-edit-entry
@@ -563,4 +563,8 @@ h1
     border: 1px solid #DDD;
     font-size: 16px;
     padding: 0.8em;
+}
+
+.delete-playlist-button svg:hover {
+    fill:#E53935 !important;
 }

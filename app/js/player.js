@@ -9,14 +9,12 @@ var player = new CPlayer()
 
 const s_Pause =
 `
-    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M8 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2v10c0 1.1.9 2 2 2zm6-12v10c0 1.1.9 2 2 2s2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2z"/>
 `
 
 const s_Play =
 `
-    <path d="M8 5v14l11-7z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"/>
 `
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -46,7 +44,7 @@ function playNow(_Self)
     selectItem(_Self)
 
     // NOTE: Set the audio source
-
+    
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
 
@@ -336,18 +334,14 @@ function savePlaybackPosition(_Source, _CurrentTime)
     }
 }
 
-function togglePlayPauseButton()
-{
+function togglePlayPauseButton() {
     var Player = document.getElementById("player")
     var Button = document.getElementById("play-pause")
-
-    if (Button.getAttribute("mode") == "play")
-    {
-        playPlayer()
-    }
-    else
-    {
-        pausePlayer()
+    if($('#player source').attr('src')) {
+        if (Button.getAttribute("mode") == "play")
+            playPlayer();
+        else
+            pausePlayer();
     }
 }
 

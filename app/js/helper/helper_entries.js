@@ -71,13 +71,9 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     var TailElement     = document.createElement("div")
 
     if (_HeaderLayout == null)
-    {
         HeaderElement.classList.add("podcast-entry-header")
-    }
     else
-    {
         HeaderElement.classList.add(_HeaderLayout)
-    }
 
     ActionsElement.classList.add("podcast-entry-actions")
     BodyElement.classList.add("podcast-entry-body")
@@ -95,15 +91,20 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
 
     ListElement.classList.add("podcast-entry")
 
-    if (_Class       != null)      { ListElement.classList.remove("podcast-entry"); ListElement.classList.add(_Class) }
-    if (_IconElement != undefined) { ActionsElement.innerHTML = _IconElement }
-    if (_Artwork     != null)      { HeaderElement.append(ImageElement) }
+    if (_Class != null) { 
+        ListElement.classList.remove("podcast-entry"); 
+        ListElement.classList.add(_Class) 
+    }
 
-    if (_Subtitle != null) { HeaderElement.append(SubtitleElement)}
+    if (_IconElement != undefined) 
+        ActionsElement.innerHTML = _IconElement 
+    
+    if (_Artwork != null) 
+        HeaderElement.append(ImageElement) 
+    
+    if (_Subtitle != null) 
+        HeaderElement.append(SubtitleElement)
 
-    // ListElement.append(TitleElement)
-
-    // HeaderElement.append(getBoldTextPart(_Title))
     HeaderElement.append(TitleElement)
     HeaderElement.append(TailElement)
 
@@ -111,19 +112,6 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     ListElement.append(ActionsElement)
     ListElement.append(BodyElement)
 
-    // ListElement.append(SubtitleElement)
-
-    // return buildListItem(new cListElement
-    // (
-    //     [
-    //         getImagePart(_Artwork),
-    //         getBoldTextPart(_Title),
-    //         getSubTextPart((_TailElement == undefined) ? "" : _TailElement),
-    //         getTextPart(_Subtitle),
-    //         getIconButtonPart(_IconElement)
-    //     ], 
-    //     "5em 1fr 6em 1fr 5em"
-    // ), eLayout.row)
     return ListElement
 }
 

@@ -1,3 +1,14 @@
+
+::-webkit-scrollbar {     
+        background-color: #222;
+        width: .8em
+}
+
+::-webkit-scrollbar-thumb:window-inactive,
+::-webkit-scrollbar-thumb {
+        background:  #444;
+}
+
 body
 {
     background: #222;
@@ -166,4 +177,10 @@ svg.set-favorite
 {
     background: #333;
     color: #FFF;
+}
+
+#playlists ul li input:enabled
+{
+    background: #333;
+    color: #fff;
 }

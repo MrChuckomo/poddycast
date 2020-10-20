@@ -21,7 +21,7 @@ function selectMenuItem(_MenuId)
 
     MenuItem.classList.add("selected")
 
-    helper.setHeader(MenuItem.getElementsByTagName("span")[0].innerHTML)
+    helper.setHeader("<span>" + MenuItem.getElementsByTagName("span")[0].innerHTML + "</span>")
 }
 
 function showNewEpisodes()
@@ -48,6 +48,20 @@ function showNewEpisodes()
             if (/*Artwork != null*/ true) // Allow to show episodes without thumbnail
             {
                 // var ListElement = getPodcastElement(null, Artwork, JsonContent[i].channelName, JsonContent[i].episodeTitle, s_DeleteIcon, JsonContent[i].duration)
+
+                var episodeDescription = JsonContent[i].episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>")
+                episodeDescription = JsonContent[i].episodeDescription[0] != '<' ? episodeDescription[0] : episodeDescription[1]
+                episodeDescription = episodeDescription.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '')
+                //episodeDescription = episodeDescription.replace(/&nbsp;/g, '')
+                /*
+                var episodeDescription;
+                if(JsonContent[i].episodeDescription.substr(0, 3) == '<p>') {
+                    episodeDescription = document.createElement( 'div' );
+                    episodeDescription.innerHTML = JsonContent[i].episodeDescription
+                    episodeDescription = episodeDescription.getElementsByTagName('p')[0].innerHTML
+                } else
+                    episodeDescription = JsonContent[i].episodeDescription
+                */
                 var ListElement = buildListItem(new cListElement
                 (
                     [
@@ -55,7 +69,7 @@ function showNewEpisodes()
                         getBoldTextPart(JsonContent[i].episodeTitle),
                         getSubTextPart((JsonContent[i].duration == undefined) ? "" : JsonContent[i].duration),
                         getTextPart(JsonContent[i].channelName),
-                        getDescriptionPart(s_InfoIcon, JsonContent[i].episodeDescription),
+                        getDescriptionPart(s_InfoIcon, episodeDescription),
                         getIconButtonPart(s_DeleteIcon)
                     ],
                     "5em 1fr 6em 1fr 5em 5em"
@@ -260,4 +274,9 @@ function showStatistics()
     {
         List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  0))
     }
+}
+
+module.exports = {
+    selectMenuItem: selectMenuItem,
+    showNewEpisodes: showNewEpisodes
 }

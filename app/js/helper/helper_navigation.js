@@ -1,4 +1,3 @@
-
 // ---------------------------------------------------------------------------------------------------------------------
 // LEFT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
@@ -40,9 +39,10 @@ function clearPlaylists()
         }
     }
 }
-
+/*
 function clearRenameFocus(_Self)
 {
+    
     if (_Self.value == "")
     {
         var HeaderName = document.getElementById("content-right-header").getElementsByTagName("h1")[0].innerHTML
@@ -84,7 +84,7 @@ function renamePlaylistInEdit(_Self)
         console.log(_Self.parentElement.getElementsByTagName("button")[0].getAttribute("onclick"));
     }
 }
-
+*/
 function setPlaylistName(_OldName, _NewName)
 {
     if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
@@ -192,6 +192,7 @@ function dragToPlaylist(_PlaylistName, _PodcastName)
 
 function addToPlaylist(_PlaylistName, _PodcastName)
 {
+    /*
     var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
     for (var i = 0; i < JsonContent.length; i++)
@@ -210,10 +211,13 @@ function addToPlaylist(_PlaylistName, _PodcastName)
     }
 
     fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+    */
+    allPlaylist.memory.addPodcastByName(_PlaylistName, _PodcastName);
 }
 
 function removeFromPlaylist(_PlaylistName, _PodcastName)
 {
+    /*
     var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
     for (var i = 0; i < JsonContent.length; i++)
@@ -235,8 +239,10 @@ function removeFromPlaylist(_PlaylistName, _PodcastName)
     }
 
     fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+    */
+    allPlaylist.memory.removePodcastByName(_PlaylistName, _PodcastName);
 }
-
+/*
 function deletePlaylist(_PlaylistName)
 {
     var JsonContent  = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
@@ -255,5 +261,17 @@ function deletePlaylist(_PlaylistName)
     // TODO: clean remove
     // TODO: do not simply reload the whole app
 
-    location.reload()
+    //location.reload()
+
+    // functions of the menu.js file
+    
+    let title = document.getElementById("content-right").getElementsByTagName("h1")[0].innerHTML
+    if(title == _PlaylistName || title == '<span>' +  i18n.__("Edit Playlist" + '</span>')) {
+        selectMenuItem('menu-episodes')
+        showNewEpisodes()
+    } else if(title == '<span>' + i18n.__("Statistics") + '</span>') {
+        selectMenuItem('menu-statistics')
+        showStatistics()
+    }
 }
+*/

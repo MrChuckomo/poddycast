@@ -1,9 +1,8 @@
 
 const s_PlayIcon =
 `
-<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M8 5v14l11-7z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"/>
 </svg>
 `
 
@@ -23,15 +22,15 @@ const s_Favorite =
 
 const s_Delete =
 `
-<path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"></path>
-<path d="M0 0h24v24H0z" fill="none"></path>
+<path fill="none" d="M0 0h24v24H0V0z"/>
+<path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/>
 `
 
 const s_DeleteIcon =
 `
-<svg class="delete-icon" onclick="event.stopPropagation(); deleteEntryWithIcon(this)" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+<svg class="delete-icon" onclick="event.stopPropagation(); deleteEntryWithIcon(this)" fill="#000000" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24">
+    <path fill="none" d="M0 0h24v24H0V0z"/>
+    <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-3.5l-1-1zM18 7H6v12c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7z"/>
 </svg>
 `
 
@@ -83,24 +82,23 @@ const s_CheckBoxOutline =
 
 const s_GridView =
 `
-<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px">
     <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
 </svg>
 `
 
 const s_ListView =
 `
-<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px">
+    <path d="M0 0h24v24H0V0z" fill="none"/>
+    <path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/>
 </svg>
 `
 
 const s_InfoIcon =
 `
-<svg fill="#000000" style="isolation:isolate" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <defs><clipPath id="iconInfo"><path d="M0 0h24v24.001H0z"/></clipPath></defs>
-    <g clip-path="url(#iconInfo)"><path d="M11.472.011a11.99 11.99 0 0 1 5.867 1.241c2.782 1.373 4.988 3.869 5.996 6.804.858 2.447.885 5.175.084 7.641a12.003 12.003 0 0 1-3.601 5.405 11.922 11.922 0 0 1-5.717 2.714 12.01 12.01 0 0 1-7.438-1.065 12 12 0 0 1-3.817-2.992 11.948 11.948 0 0 1-2.635-5.507 12.104 12.104 0 0 1 .198-5.371 11.961 11.961 0 0 1 2.563-4.784A12.013 12.013 0 0 1 7.663.808a12.04 12.04 0 0 1 3.809-.797zm.326 4.243a1.758 1.758 0 0 0-.843 3.159c.639.488 1.609.448 2.204-.092.531-.454.74-1.242.501-1.898-.248-.762-1.068-1.278-1.862-1.169zM8.572 9.693c-.004.396.001.791 0 1.187a.25.25 0 0 0 .26.262c.485.005.969 0 1.454.001v6.002l-1.448.001a.25.25 0 0 0-.266.262c-.005.342.005.683-.003 1.025.006.119-.022.264.077.354.078.082.199.067.302.073 2.054-.002 4.109 0 6.164-.001.136.016.297-.06.309-.21.02-.413.004-.827.006-1.239a.249.249 0 0 0-.26-.264c-.485.001-.97-.004-1.454.001.003-2.465.001-4.931.001-7.396.024-.159-.088-.336-.262-.321H8.835a.25.25 0 0 0-.263.263z"/></g>
+<svg fill="#000000" style="isolation:isolate" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px">
+    <path d="M12,2A10,10,0,1,0,22,12,10.01114,10.01114,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8.00917,8.00917,0,0,1,12,20Zm0-8.5a1,1,0,0,0-1,1v3a1,1,0,0,0,2,0v-3A1,1,0,0,0,12,11.5Zm0-4a1.25,1.25,0,1,0,1.25,1.25A1.25,1.25,0,0,0,12,7.5Z"/>
 </svg>
 `

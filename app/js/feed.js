@@ -235,6 +235,11 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 
             PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, type: "checkbox", checked: IsInPlaylist, click(self)
             {
+
+                let playlistName = self.label;
+                let PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
+                addToPlaylist(playlistName, PodcastName);
+                /*
                 var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
 
                 for (var i = 0; i < JsonContent.length; i++)
@@ -261,6 +266,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
                 }
 
                 fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+                */
             }}))
         }
     }
@@ -356,6 +362,19 @@ function processEpisodes(_Content)
                 var Duration = ""
             }
 
+            var correctEpisodeDescription = EpisodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>")
+            correctEpisodeDescription = EpisodeDescription[0] != '<' ? correctEpisodeDescription[0] : correctEpisodeDescription[1]
+            correctEpisodeDescription = correctEpisodeDescription.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '')
+            //correctEpisodeDescription = correctEpisodeDescription.replace(/&nbsp;/g, '')
+            /*
+            if(EpisodeDescription.substr(0, 3) == '<p>') {
+                correctEpisodeDescription = document.createElement( 'div' );
+                correctEpisodeDescription.innerHTML = EpisodeDescription
+                correctEpisodeDescription = correctEpisodeDescription.getElementsByTagName('p')[0].innerHTML
+                correctEpisodeDescription = correctEpisodeDescription.replace(/(&nbsp;|<([^>]+)>)/ig, "<tag>").split("<tag>")[0];
+            } else
+                correctEpisodeDescription = EpisodeDescription
+            */
             var ListElement = buildListItem(new cListElement
             (
                 [
@@ -363,7 +382,7 @@ function processEpisodes(_Content)
                     getSubTextPart(new Date(PubDate).toLocaleString()),
                     getSubTextPart(Duration),
                     getFlagPart('Done', 'white', '#4CAF50'),
-                    getDescriptionPart(s_InfoIcon, EpisodeDescription),
+                    getDescriptionPart(s_InfoIcon, correctEpisodeDescription),
                     getIconButtonPart(s_AddEpisodeIcon)
                 ],
                 "3fr 1fr 1fr 5em 5em 5em"

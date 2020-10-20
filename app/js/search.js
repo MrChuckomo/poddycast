@@ -3,52 +3,36 @@ var CContentHelper = require('./js/helper/content')
 var helper = new CContentHelper()
 
 
-function search(_Self, _Event)
-{
-    if (_Event.code == "Enter")
-    {
-        helper.clearContent()
+function search(_Self, _Event) {
+    if (_Event.code == "Escape")
+        clearTextField(_Self)
+    else {
+        clearBody()
+
         setHeaderViewAction()
         clearMenuSelection()
-        helper.setHeader(i18n.__("Search"))
+
+        setHeader(i18n.__("Search"))
 
         document.getElementById("res").setAttribute("return-value", "")
 
         if (_Self.value.includes("http") && _Self.value.includes(":") && _Self.value.includes("//"))
-        {
             getPodcastsFromFeed(_Self.value)
-        }
         else
-        {
             getPodcasts(_Self.value)
-        }
-    }
-    else if (_Event.code == "Escape")
-    {
-        clearTextField(_Self)
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastsFromFeed(_SearchTerm)
-{
-    // http://feeds.feedburner.com/ICO-Radio
-
+function getPodcastsFromFeed(_SearchTerm) {
     if (isProxySet())
-    {
         makeRequest(getFeedProxyOptions(_SearchTerm), null, getFeedResults, eRequest.http)
-    }
-    else
-    {
+    else {
         if (_SearchTerm.includes("https"))
-        {
             makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
-        }
         else
-        {
             makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
-        }
     }
 }
 
@@ -60,29 +44,20 @@ function getFeedResults(_Data)
     var AllImageTags = xmlDoc.getElementsByTagName("image")
     var Image = null
 
-    if (AllImageTags.length > 0)
-    {
+    if (AllImageTags.length > 0) {
         if(AllImageTags[0].nodeName == "itunes:image")
-        {
             Image = AllImageTags[0].getAttribute("href")
-        }
         else if (AllImageTags[0].nodeName == "image")
-        {
             Image = AllImageTags[0].getElementsByTagName("url")[0].innerHTML
-        }
     }
 
     var AllAuthorTags = xmlDoc.getElementsByTagName("author")
     var Author = null
 
     if (AllAuthorTags.length > 0)
-    {
         Author = AllAuthorTags[0].innerHTML
-    }
     else
-    {
         Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
-    }
 
     helper.clearContent()
 
@@ -102,9 +77,7 @@ function getFeedResults(_Data)
     var Icon = getIcon(PodcastInfos)
 
     if (isAlreadySaved(PodcastInfos.feedUrl))
-    {
         Icon = getFullIcon(PodcastInfos)
-    }
 
     List.append(getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon))
 }

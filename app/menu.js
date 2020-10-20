@@ -19,13 +19,13 @@ const template =
             // {role: 'forcereload'},
             {type: 'separator'},
             {role: 'resetzoom', label: i18n.__('Reset Zoom')},
-            {role: 'zoomin', label: i18n.__('Zoom In')},
+            {role: 'zoomin', label: i18n.__('Zoom In'), accelerator: "CommandOrControl+="},
             {role: 'zoomout', label: i18n.__('Zoom Out')},
             {type: 'separator'},
             {
                 label: i18n.__('Dark Mode'),
                 type: "checkbox",
-                accelerator: "CommandOrControl+Alt+L",
+                accelerator: "CommandOrControl+Shift+L",
                 checked: getPreference('darkmode'),
                 click() { darkMode() }
             },
@@ -110,13 +110,13 @@ const template =
                 label: i18n.__("Proxy Mode"),
                 type: "checkbox",
                 checked: getPreference('proxymode'),
-                accelerator: "CommandOrControl+Alt+P",
+                accelerator: "CommandOrControl+Shift+P",
                 click() { setProxyMode() }
             },{
                 label: i18n.__("Minimize"),
                 type: "checkbox",
                 checked: getPreference('minimize'),
-                accelerator: "CommandOrControl+Alt+M",
+                accelerator: "CommandOrControl+Shift+M",
                 click() { setMinimize() }
             },
             {type: 'separator'},

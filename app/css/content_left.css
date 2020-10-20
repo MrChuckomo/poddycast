@@ -173,7 +173,12 @@
 #playlists ul li
 {
     /* padding: 0.5em; */
-    padding-left: 0.6em;
+    /* padding-left: 0.6em; */
+    
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    padding-left: 1.2em;
+    padding-right: 0.8em;
 }
 
 #playlists ul li.over
@@ -192,7 +197,7 @@
     outline: none;
     background: inherit;
     border: none;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 0.5em;
     padding: 0.5em;
     width: calc(100% - 3em);
@@ -205,9 +210,11 @@
 
 #playlists ul li input:enabled
 {
-    outline: 1px solid #039BE5;
-    background: #FEFEFE;
+    outline: none;
+    background: #ccc;
     color: #000;
+    width: 245px;
+    border-radius: 8px;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -220,15 +227,31 @@ footer
     grid-template-columns: 50px 1fr;
     grid-template-rows: 100%;
     grid-template-areas: "icon input";
+    position: relative;
 }
-
+/*
 footer svg
 {
     grid-area: icon;
     align-self: center;
     justify-self: center;
 }
+*/
 
+footer span
+{
+    width: 54px; 
+    height: 100%;
+    background:transparent; border:none; color:transparent;
+}
+
+
+footer svg
+{
+    position: absolute;
+    left: 15px;
+    bottom: 18px;
+}
 footer input
 {
     grid-area: input;

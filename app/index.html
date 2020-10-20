@@ -3,12 +3,12 @@
     <head>
         <meta charset="utf-8">
         <title>Poddycast</title>
-        <link rel="stylesheet" href="./css/main.css">
-        <link rel="stylesheet" href="./css/content_left.css">
-        <link rel="stylesheet" href="./css/content_right.css">
-        <link rel="stylesheet" href="./css/player.css">
-        <link rel="stylesheet" href="./css/list_item.css">
-        <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
+
+
+        <script type="text/javascript" src="./js/pages.js"></script>
+        <script type="text/javascript" src="./js/controller.js"></script>
+
+
         <script type="text/javascript" src="./js/icons.js"></script>
         <script type="text/javascript" src="./js/helper/helper_global.js"></script>
         <script type="text/javascript" src="./js/helper/helper_navigation.js"></script>
@@ -26,25 +26,35 @@
         <script type="text/javascript" src="./js/dark_mode.js"></script>
         <script>window.i18n = new(require('./translations/i18n'));</script>
         <script type="text/javascript" src="./js/translations.js"></script>
-        <script>
-            require('./menu.js')
-        </script>
-        <!-- <script src="https://itunes.apple.com/search?term=freakshow&media=podcast&callback="{get\}"/> -->
+        <script>window.$ = window.jQuery = require('./js/jquery-3.5.1.min.js');</script>
+
+        <script> require('./menu.js') </script>
+
+        <link rel="stylesheet" href="./css/main.css">
+        <link rel="stylesheet" href="./css/content_left.css">
+        <link rel="stylesheet" href="./css/content_right.css">
+        <link rel="stylesheet" href="./css/player.css">
+        <link rel="stylesheet" href="./css/list_item.css">
+        <link rel="stylesheet" href="./css/error.css">
     </head>
-    <body onload="init(); loadPlaylists(); readFeeds(); showNewEpisodes(); setItemCounts(); translate()">
+    <body onload="init()">
 
         <div id="content">
+
+            <!-- CONTENT LEFT -->
             <div id="content-left">
                 <div id="search">
                     <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                         <path d="M0 0h24v24H0z" fill="none"/>
                     </svg>
-                    <input id="search-input" type="text" name="search" placeholder="Find podcast" onkeyup="search(this, event)">
+                    <input id="search-input" type="text" name="search" placeholder="Find podcast">
                 </div>
+
+                <!-- MENU -->
                 <div id="menu">
                     <ul>
-                        <li id="menu-episodes" class="selected" onclick="selectMenuItem('menu-episodes'); showNewEpisodes()">
+                        <li id="menu-episodes" class="selected">
                             <svg class="blue" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/>
@@ -52,7 +62,7 @@
                             <span class="new-episodes">New Episodes</span>
                             <div class="menu-count">0</div>
                         </li>
-                        <li id="menu-favorites" onclick="selectMenuItem('menu-favorites'); showFavorites()">
+                        <li id="menu-favorites">
                             <svg class="pink" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -60,14 +70,14 @@
                             <span class="favorites">Favorites</span>
                             <div class="menu-count">0</div>
                         </li>
-                        <li id="menu-refresh" onclick="readFeeds()">
+                        <li id="menu-refresh">
                             <svg fill="#000" width="21" height="20.593" xmlns="http://www.w3.org/2000/svg" style="isolation:isolate" viewBox="0 0 24 23.593">
                                 <defs><clipPath id="arefresh"><path d="M0 0h24v23.593H0z"/></clipPath></defs>
                                 <g clip-path="url(#arefresh)"><path d="M14.383.015c1.393-.031 2.786-.002 4.18-.014 1.202.008 2.404-.008 3.606.007-.821.883-1.714 1.698-2.54 2.575.194.196.414.364.614.554a11.786 11.786 0 0 1 3.372 5.641 11.914 11.914 0 0 1-.08 6.301 11.78 11.78 0 0 1-3.964 5.928c-2.276 1.838-5.253 2.759-8.168 2.559 0-1.117.004-2.233-.002-3.35 1.195.071 2.412-.034 3.544-.442 2.068-.705 3.826-2.255 4.803-4.207a8.47 8.47 0 0 0 .811-5.005c-.317-2.197-1.541-4.265-3.348-5.56-.96.913-1.865 1.885-2.829 2.793.011-2.593.009-5.186.001-7.78zM4.511 2.766A11.75 11.75 0 0 1 11.245.262c.281-.003.57-.052.847.021-.01 1.1-.011 2.2 0 3.3-.99.012-1.988.116-2.928.444-2.002.65-3.727 2.092-4.746 3.931a8.424 8.424 0 0 0 1.878 10.493c.213-.148.373-.354.559-.53.781-.771 1.543-1.561 2.334-2.321-.007 2.594-.004 5.187-.002 7.781-2.594.024-5.19.009-7.786.007.821-.856 1.676-1.68 2.511-2.523a4.708 4.708 0 0 0-.112-.129 11.774 11.774 0 0 1-3.468-5.894 11.904 11.904 0 0 1 .119-6.035 11.807 11.807 0 0 1 4.06-6.041z"/></g>
-                                </svg>
+                            </svg>
                             <span class="refresh">Refresh</span>
                         </li>
-                        <li id="menu-history" onclick="selectMenuItem('menu-history'); showHistory()">
+                        <li id="menu-history">
                             <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
@@ -76,7 +86,7 @@
                                 History
                             </span>
                         </li>
-                        <li id="menu-statistics" onclick="selectMenuItem('menu-statistics'); showStatistics()">
+                        <li id="menu-statistics">
                             <svg class="teal" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -85,6 +95,8 @@
                         </li>
                     </ul>
                 </div>
+
+                <!-- PLAYLIST -->
                 <div id="playlist-header">
                     <h3 class="playlists">Playlists</h3>
                 </div>
@@ -93,64 +105,71 @@
                     </ul>
                 </div>
                 <footer>
-                    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                        <path d="M0 0h24v24H0z" fill="none"/>
-                    </svg>
-                    <!-- <button type="button" name="button">New List</button> -->
-                    <input id="new_list-input" type="text" name="new_list" placeholder="New List" onkeyup="createPlaylist(this, event)">
+                    <span id="new_list-button">
+                        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                        </svg>
+                    </span>
+                    <input id="new_list-input" type="text" name="new_list" placeholder="New List">
                 </footer>
             </div>
+
+            <!-- ------------------------------------------------------------------------------------------------------- -->
+
+            <!-- CONTENT RIGHT -->
             <div id="content-right">
+
+                <!-- HEADER -->
                 <div id="content-right-header">
                     <h1 class="new-episodes">New Episodes</h1>
                     <div id="content-right-header-actions"></div>
                 </div>
+
+                <!-- BODY -->
                 <div id="content-right-body">
                     <div id="res">
                         <ul id="list"></ul>
                     </div>
                 </div>
+
+                <!-- PLAYER -->
                 <div id="content-right-footer">
                     <audio id="player">
                         <source src="" type="audio/mpeg">
                     </audio>
                     <div id="content-right-player">
-                        <div id="content-right-player-progress-bar" onclick="seekProgress(this, event)">
-                            <div id="content-right-player-progress-bar-progress">
-                            </div>
+                        <div id="content-right-player-progress-bar">
+                            <div id="content-right-player-progress-bar-progress"></div>
                         </div>
-                        <img id="content-right-player-img" src="./img/podcast_07prct.png" alt="">
+                        <img id="content-right-player-img" src="./img/podcast_07prct.svg" alt="">
                         <div id="content-right-player-title">No episode selected</div>
-                        <svg id="replay-30-sec" onclick="playReply()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <defs>
-                                <path d="M0 0h24v24H0V0z" id="a"/>
-                            </defs>
-                            <clipPath id="b">
-                                <use overflow="visible" xlink:href="#a"/>
-                            </clipPath>
-                            <path clip-path="url(#b)" d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8zm-2.4 8.5h.4c.2 0 .4-.1.5-.2s.2-.2.2-.4v-.2s-.1-.1-.1-.2-.1-.1-.2-.1h-.5s-.1.1-.2.1-.1.1-.1.2v.2h-1c0-.2 0-.3.1-.5s.2-.3.3-.4.3-.2.4-.2.4-.1.5-.1c.2 0 .4 0 .6.1s.3.1.5.2.2.2.3.4.1.3.1.5v.3s-.1.2-.1.3-.1.2-.2.2-.2.1-.3.2c.2.1.4.2.5.4s.2.4.2.6c0 .2 0 .4-.1.5s-.2.3-.3.4-.3.2-.5.2-.4.1-.6.1c-.2 0-.4 0-.5-.1s-.3-.1-.5-.2-.2-.2-.3-.4-.1-.4-.1-.6h.8v.2s.1.1.1.2.1.1.2.1h.5s.1-.1.2-.1.1-.1.1-.2v-.5s-.1-.1-.1-.2-.1-.1-.2-.1h-.6v-.7zm5.7.7c0 .3 0 .6-.1.8l-.3.6s-.3.3-.5.3-.4.1-.6.1-.4 0-.6-.1-.3-.2-.5-.3-.2-.3-.3-.6-.1-.5-.1-.8v-.7c0-.3 0-.6.1-.8l.3-.6s.3-.3.5-.3.4-.1.6-.1.4 0 .6.1.3.2.5.3.2.3.3.6.1.5.1.8v.7zm-.8-.8v-.5c0-.1-.1-.2-.1-.3s-.1-.1-.2-.2-.2-.1-.3-.1-.2 0-.3.1l-.2.2s-.1.2-.1.3v2s.1.2.1.3.1.1.2.2.2.1.3.1.2 0 .3-.1l.2-.2s.1-.2.1-.3v-1.5z"/>
+                        
+                        <!-- REPLAY -->
+                        <svg id="replay-30-sec" fill="#000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <path d="M12 5V2.21c0-.45-.54-.67-.85-.35l-3.8 3.79c-.2.2-.2.51 0 .71l3.79 3.79c.32.31.86.09.86-.36V7c3.73 0 6.68 3.42 5.86 7.29-.47 2.27-2.31 4.1-4.57 4.57-3.57.75-6.75-1.7-7.23-5.01-.07-.48-.49-.85-.98-.85-.6 0-1.08.53-1 1.13.62 4.39 4.8 7.64 9.53 6.72 3.12-.61 5.63-3.12 6.24-6.24C20.84 9.48 16.94 5 12 5zm-2.44 8.49h.45c.21 0 .37-.05.48-.16s.16-.25.16-.43c0-.08-.01-.15-.04-.22s-.06-.12-.11-.17-.11-.09-.18-.11-.16-.04-.25-.04c-.08 0-.15.01-.22.03s-.13.05-.18.1-.09.09-.12.15-.05.13-.05.2h-.85c0-.18.04-.34.11-.48s.17-.27.3-.37.27-.18.44-.23.35-.08.54-.08c.21 0 .41.03.59.08s.33.13.46.23.23.23.3.38.11.33.11.53c0 .09-.01.18-.04.27s-.07.17-.13.25-.12.15-.2.22-.17.12-.28.17c.24.09.42.21.54.39s.18.38.18.61c0 .2-.04.38-.12.53s-.18.29-.32.39-.29.19-.48.24-.38.08-.6.08c-.18 0-.36-.02-.53-.07s-.33-.12-.46-.23-.25-.23-.33-.38-.12-.34-.12-.55h.85c0 .08.02.15.05.22s.07.12.13.17.12.09.2.11.16.04.25.04c.1 0 .19-.01.27-.04s.15-.07.2-.12.1-.11.13-.18.04-.15.04-.24c0-.11-.02-.21-.05-.29s-.08-.15-.14-.2-.13-.09-.22-.11-.18-.04-.29-.04h-.47v-.65zm5.74.75c0 .32-.03.6-.1.82s-.17.42-.29.57-.28.26-.45.33-.37.1-.59.1-.41-.03-.59-.1-.33-.18-.46-.33-.23-.34-.3-.57-.11-.5-.11-.82v-.74c0-.32.03-.6.1-.82s.17-.42.29-.57.28-.26.45-.33.37-.1.59-.1.41.03.59.1.33.18.46.33.23.34.3.57.11.5.11.82v.74zm-.85-.86c0-.19-.01-.35-.04-.48s-.07-.23-.12-.31-.11-.14-.19-.17-.16-.05-.25-.05-.18.02-.25.05-.14.09-.19.17-.09.18-.12.31-.04.29-.04.48v.97c0 .19.01.35.04.48s.07.24.12.32.11.14.19.17.16.05.25.05.18-.02.25-.05.14-.09.19-.17.09-.19.11-.32c.03-.13.04-.29.04-.48v-.97z"/>
                         </svg>
-                        <svg id="play-pause" onclick="playPause()" mode="pause" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5v14l11-7z"/>
-                            <path d="M0 0h24v24H0z" fill="none"/>
+
+                        <!-- PLAY-PAUSE -->
+                        <svg id="play-pause" mode="pause" fill="#000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"/>
                         </svg>
-                        <svg id="forward-30-sec" onclick="playForward()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <defs>
-                                <path d="M24 24H0V0h24v24z" id="a"/>
-                            </defs>
-                            <clipPath id="b">
-                                <use overflow="visible" xlink:href="#a"/>
-                            </clipPath>
-                            <path clip-path="url(#b)" d="M9.6 13.5h.4c.2 0 .4-.1.5-.2s.2-.2.2-.4v-.2s-.1-.1-.1-.2-.1-.1-.2-.1h-.5s-.1.1-.2.1-.1.1-.1.2v.2h-1c0-.2 0-.3.1-.5s.2-.3.3-.4.3-.2.4-.2.4-.1.5-.1c.2 0 .4 0 .6.1s.3.1.5.2.2.2.3.4.1.3.1.5v.3s-.1.2-.1.3-.1.2-.2.2-.2.1-.3.2c.2.1.4.2.5.4s.2.4.2.6c0 .2 0 .4-.1.5s-.2.3-.3.4-.3.2-.5.2-.4.1-.6.1c-.2 0-.4 0-.5-.1s-.3-.1-.5-.2-.2-.2-.3-.4-.1-.4-.1-.6h.8v.2s.1.1.1.2.1.1.2.1h.5s.1-.1.2-.1.1-.1.1-.2v-.5s-.1-.1-.1-.2-.1-.1-.2-.1h-.6v-.7zm5.7.7c0 .3 0 .6-.1.8l-.3.6s-.3.3-.5.3-.4.1-.6.1-.4 0-.6-.1-.3-.2-.5-.3-.2-.3-.3-.6-.1-.5-.1-.8v-.7c0-.3 0-.6.1-.8l.3-.6s.3-.3.5-.3.4-.1.6-.1.4 0 .6.1.3.2.5.3.2.3.3.6.1.5.1.8v.7zm-.9-.8v-.5s-.1-.2-.1-.3-.1-.1-.2-.2-.2-.1-.3-.1-.2 0-.3.1l-.2.2s-.1.2-.1.3v2s.1.2.1.3.1.1.2.2.2.1.3.1.2 0 .3-.1l.2-.2s.1-.2.1-.3v-1.5zM4 13c0 4.4 3.6 8 8 8s8-3.6 8-8h-2c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6v4l5-5-5-5v4c-4.4 0-8 3.6-8 8z"/>
+
+                        <!-- FORWARD -->
+                        <svg id="forward-30-sec" fill="#000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <path d="M18.92 13c-.5 0-.91.37-.98.86-.48 3.37-3.77 5.84-7.42 4.96-2.25-.54-3.91-2.27-4.39-4.53C5.32 10.42 8.27 7 12 7v2.79c0 .45.54.67.85.35l3.79-3.79c.2-.2.2-.51 0-.71l-3.79-3.79c-.31-.31-.85-.09-.85.36V5c-4.94 0-8.84 4.48-7.84 9.6.6 3.11 2.9 5.5 5.99 6.19 4.83 1.08 9.15-2.2 9.77-6.67.09-.59-.4-1.12-1-1.12zm-8.38 2.22c-.06.05-.12.09-.2.12s-.17.04-.27.04c-.09 0-.17-.01-.25-.04s-.14-.06-.2-.11-.1-.1-.13-.17-.05-.14-.05-.22h-.85c0 .21.04.39.12.55s.19.28.33.38.29.18.46.23.35.07.53.07c.21 0 .41-.03.6-.08s.34-.14.48-.24.24-.24.32-.39.12-.33.12-.53c0-.23-.06-.44-.18-.61s-.3-.3-.54-.39c.1-.05.2-.1.28-.17s.15-.14.2-.22.1-.16.13-.25.04-.18.04-.27c0-.2-.04-.37-.11-.53s-.17-.28-.3-.38-.28-.18-.46-.23-.37-.08-.59-.08c-.19 0-.38.03-.54.08s-.32.13-.44.23-.23.22-.3.37-.11.3-.11.48h.85c0-.07.02-.14.05-.2s.07-.11.12-.15.11-.07.18-.1.14-.03.22-.03c.1 0 .18.01.25.04s.13.06.18.11.08.11.11.17.04.14.04.22c0 .18-.05.32-.16.43s-.26.16-.48.16h-.43v.66h.45c.11 0 .2.01.29.04s.16.06.22.11.11.12.14.2.05.18.05.29c0 .09-.01.17-.04.24s-.08.11-.13.17zm3.9-3.44c-.18-.07-.37-.1-.59-.1s-.41.03-.59.1-.33.18-.45.33-.23.34-.29.57-.1.5-.1.82v.74c0 .32.04.6.11.82s.17.42.3.57.28.26.46.33.37.1.59.1.41-.03.59-.1.33-.18.45-.33.22-.34.29-.57.1-.5.1-.82v-.74c0-.32-.04-.6-.11-.82s-.17-.42-.3-.57-.28-.26-.46-.33zm.01 2.57c0 .19-.01.35-.04.48s-.06.24-.11.32-.11.14-.19.17-.16.05-.25.05-.18-.02-.25-.05-.14-.09-.19-.17-.09-.19-.12-.32-.04-.29-.04-.48v-.97c0-.19.01-.35.04-.48s.06-.23.12-.31.11-.14.19-.17.16-.05.25-.05.18.02.25.05.14.09.19.17.09.18.12.31.04.29.04.48v.97z"/>
                         </svg>
 
                         <div class="content-right-player-speed-btn">
-                            <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown" onclick="speedDown(this)">-</button>
+                            <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown">
+                                <span style="font-size: 20px;">-</span>
+                            </button>
 
                             <button id="content-right-player-speed-indicator">1.0x</button>
 
-                            <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed" onclick="speedUp(this)">+</button>
+                            <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed">
+                                <span style="font-size: 20px;">+</span>
+                            </button>
                         </div>
 
                         <div id="content-right-player-time">00:00:00</div>
