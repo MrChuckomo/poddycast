@@ -27,9 +27,19 @@ function matchText(e) {
         e.preventDefault();
 }
 
+function matchTextSearch(e) {
+    var char = String.fromCharCode(e.which)
+    if (char.match(/^[^A-Za-z0-9+!?#\.\-\ ]+$/)) 
+        e.preventDefault();
+}
+
 function initInput() {
-    $('input').keypress(function (e) {
+    $('input').not('#search-input').keypress(function (e) {
         matchText(e)
+    })
+    
+    $('#search-input').keypress(function (e) {
+        matchTextSearch(e)
     })
 
     $('#search-input').keyup(function (e) {

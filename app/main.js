@@ -9,6 +9,7 @@ const getPreference = require('./js/helper/helper_global')
 const Menu = require('electron').Menu
 const Tray = require('electron').Tray
 
+
 // Create variables for appIcon, trayIcon, win
 // to prevent their removal by garbage collection
 let appIcon = null
@@ -28,15 +29,19 @@ if (process.platform === 'darwin' || process.platform === 'linux') {
 
 function createWindow()
 {
-    win = new BrowserWindow
-    ({
+	let winObj = {
         width: 1000,
         minWidth: 1000,
         height: 600,
         minHeight: 600,
         autoHideMenuBar: true,
         icon: trayIcon
-    })
+    };
+    
+    if(process.platform === "win32")
+    	winObj['frame'] = false;
+    
+    win = new BrowserWindow(winObj);
     
     menuBarVisibility = false
     win.webContents.on("before-input-event", (event, input) => { 

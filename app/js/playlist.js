@@ -42,7 +42,11 @@ class PlaylistsInMemory {
     }
 
     load() {
-        this.playlists = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"));
+        let fileContent = ( fs.existsSync(getPlaylistFilePath()) ? 
+            fs.readFileSync(getPlaylistFilePath(), "utf-8") : ""
+        );
+        this.playlists = JSON.parse(fileContent == "" ? "[]": fileContent);
+
         for(let i in this.playlists) {
             let pl = this.playlists[i];
             this.playlists[i] = new Playlist(pl.index, pl.playlistName, pl.podcastList);
@@ -484,56 +488,41 @@ function removePlaylist(obj) {
     allPlaylist.removeByIndex(index);
     showNewEpisodesPage();
 }
-
+/*
 function getPlaylist(_Name)
 {
     // TODO: load podcasts associated with this playlist
 }
-
-function isInPlaylist(_PlaylistName, _PodcastName)
-{
-    var Result      = false
-    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        if (_PlaylistName == JsonContent[i].playlistName)
-        {
-            for (var j = 0; j < JsonContent[i].podcastList.length; j++)
-            {
-                if (JsonContent[i].podcastList[j] == _PodcastName)
-                {
-                    Result = true
-
-                    break
-                }
-            }
-        }
-    }
-
-    return Result;
+*/
+function isInPlaylist(_PlaylistName, _PodcastName) {
+    let playlist = allPlaylist.memory.getByName(_PlaylistName);
+    return (playlist != undefined && playlist.list.indexOf(_PodcastName) != -1);
 }
 
 function getPodcastEditItem(_Name, _Artwork, _IsSet)
 {
-    var Container = document.createElement("li")
-    var CheckBox  = ((_IsSet) ? s_CheckBox : s_CheckBoxOutline)
-    var Artwork   = document.createElement("img")
-    var Name      = document.createElement("span")
+    let $container = $('<li></li>');
+    let checkBox = (_IsSet ? s_CheckBox : s_CheckBoxOutline);
+    let $artwork = $('<img />');
+    let $name = $('<span></span>');
 
     // Artwork.src = _Artwork
-    Name.innerHTML = _Name
+    $name.html(_Name);
 
-    Container.setAttribute("onclick", "togglePodcast(this)")
-    Container.classList.add("podcast-edit-entry")
-    Container.innerHTML = CheckBox
-    Container.append(Artwork)
-    Container.append(Name)
+    $container.click(function () {
+        togglePodcast(this);
+    });
+    $container.addClass("podcast-edit-entry")
+    $container.html(checkBox);
+    $container.append($artwork);
+    $container.append($name);
 
-    if (_IsSet) { Container.classList.add("check")   }
-    else        { Container.classList.add("uncheck") }
+    if (_IsSet) 
+        $container.addClass("check");
+    else
+        $container.addClass("uncheck");
 
-    return Container
+    return $container;
 }
 
 function togglePodcast(_Self)
@@ -809,11 +798,14 @@ function showEditPlaylistPage(playlist) {
         removePlaylist('#list .edit-header');
     })
 
-    var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+    let fileContent = ( fs.existsSync(getSaveFilePath()) ? 
+        fs.readFileSync(getSaveFilePath(), "utf-8") : ""
+    );
+    let JsonContent = JSON.parse(fileContent == "" ? "[]": fileContent);
 
     JsonContent = sortByName(JsonContent)
 
-    for (var i = 0; i < JsonContent.length; i++)
+    for (let i = 0; i < JsonContent.length; i++)
         $bodyPage.append(getPodcastEditItem( JsonContent[i].collectionName, 
                                              JsonContent[i].artworkUrl30, 
                                              isInPlaylist(playlist, JsonContent[i].collectionName)))

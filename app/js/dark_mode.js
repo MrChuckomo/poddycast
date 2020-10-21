@@ -15,6 +15,11 @@ function darkMode()
         setPreference('darkmode', true)
 
         document.getElementsByTagName("head")[0].append(Stylesheet)
+        
+        if(titlebar != null) {
+            const customTitlebar = require('custom-electron-titlebar');
+            titlebar.updateBackground(customTitlebar.Color.fromHex('#1c1c1c'));
+        }
     }
     else
     {
@@ -30,6 +35,11 @@ function darkMode()
 
                 break
             }
+        }
+
+        if(titlebar != null) {
+            const customTitlebar = require('custom-electron-titlebar');
+            titlebar.updateBackground(customTitlebar.Color.fromHex('#ccc'));
         }
     }
 }

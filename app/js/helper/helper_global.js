@@ -1,9 +1,12 @@
 const fs = require('fs')
 const os = require('os')
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
+
+var titlebar = null;
 
 function getSaveDirPath()
 {
@@ -55,21 +58,44 @@ function getPreferencesFilePath()
     return getSaveDirPath() + "/poddycast-app_preferences.json"
 }
 
+function setTitlebarOnWin() {
+    if(isWindows()) {
+        const customTitlebar = require('custom-electron-titlebar');
+        titlebar = new customTitlebar.Titlebar({
+            backgroundColor: customTitlebar.Color.fromHex('#ccc')
+        });
+        $( '#content-left' ).height('calc(100% - 30px)');
+        $( '#content-right' ).height('calc(100% - 30px)');
+        
+        function setMenuBarVisibility(visibility) {
+            if(visibility)
+                $( '.menubar' ).show();
+            else
+                $( '.menubar' ).hide();
+        }
+
+        menuBarVisibility = false;
+        setMenuBarVisibility(menuBarVisibility);
+        $(document).keydown( (e) => { 
+            if(e.altKey) {
+                menuBarVisibility = !menuBarVisibility
+                setMenuBarVisibility(menuBarVisibility);
+            }
+        })
+    }
+}
+
+function setSearchWithoutFocus() {
+    $(document).keypress(function (e) {
+        let char = String.fromCharCode(e.which)
+        if(!char.match(/^[^A-Za-z0-9+!?#\.\-\ ]+$/) && !$("input:focus").get(0)) {
+            $('#search-input').focus();
+        }
+    })
+}
+
 function init()
 {
-
-    if (!fs.existsSync(getPreferencesFilePath()))
-    {
-        fs.openSync(getPreferencesFilePath(), 'w');
-
-        setPreference('darkmode', false)
-        setPreference('minimize', false)
-        setPreference('proxymode', false)
-        setPreference('playspeed', 1.0)
-    }
-
-    darkMode()
-    
     if (!fs.existsSync(getSaveDirPath()))
     {
         fs.mkdirSync(getSaveDirPath());
@@ -99,6 +125,21 @@ function init()
     {
         fs.openSync(getSettingsFilePath(), 'w');
     }
+
+    if (!fs.existsSync(getPreferencesFilePath()))
+    {
+        fs.openSync(getPreferencesFilePath(), 'w');
+
+        setPreference('darkmode', false)
+        setPreference('minimize', false)
+        setPreference('proxymode', false)
+        setPreference('playspeed', 1.0)
+    }
+
+    setTitlebarOnWin()
+    darkMode()
+
+    setSearchWithoutFocus()
 
     initController()
     loadPlaylists()
