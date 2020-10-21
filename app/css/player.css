@@ -1,0 +1,233 @@
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* NOTE: Player */
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+#content-right-player
+{
+    background-color: #FFF;
+    border-top: 1px solid #CCC;
+    text-align: center;
+    height: 60px;
+    display: grid;
+    grid-template-rows: 0.2em 1fr;
+    grid-template-columns: 20% 20% 20% 20% 20% 0 0 0;
+    grid-template-areas:
+        "progress progress progress progress progress progress progress progress"
+        "image replay play forward speed time duration playback-title";
+}
+
+#content-right-player-title
+{
+    grid-area: playback-title;
+    align-self: flex-end;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 0.2em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #999;
+}
+
+#replay-30-sec
+{
+    grid-area: replay;
+    align-self: center;
+    justify-self: center;
+}
+
+#play-pause
+{
+    grid-area: play;
+    align-self: center;
+    justify-self: center;
+}
+
+#forward-30-sec
+{
+    grid-area: forward;
+    align-self: center;
+    justify-self: center;
+}
+
+#content-right-player svg
+{
+    width: 36px;
+    height: 36px;
+    opacity: 0.65;
+}
+
+#content-right-player svg:hover
+{
+    opacity: 1;
+}
+
+#content-right-player-img
+{
+    grid-area: image;
+    align-self: center;
+    /* justify-self: center; */
+    margin-left: 2em;
+    width: 42px;
+    height: 42px;
+    border-radius: 4px;
+}
+
+[data-tooltip]
+{
+	position: relative;
+}
+
+[data-tooltip]:after
+{
+	content: attr(data-tooltip);
+    position: absolute;
+	color: #333;
+	background: #FFF;
+	padding-top: 0.6em;
+	padding-bottom: 0.6em;
+    opacity: 0;
+	bottom: 100%;
+    width: 100%;
+	white-space: nowrap;
+}
+
+[data-tooltip]:hover:after
+{
+	opacity: 0.95;
+}
+
+.content-right-player-speed-btn {
+    display: flex;
+    grid-area: speed;
+    align-self: center;
+    justify-self: center;
+    outline: 0;
+    font-size: 12px;
+    height: 35px;
+    width: 74px;
+    border: .1em solid #EEE;
+    border-radius: 4px;
+    background-color: inherit;
+}
+
+button#content-right-player-speed-indicator {
+    width: 3.3em;
+    padding: 0;
+}
+
+.content-right-player-speed-btn button {
+    color: #757575;
+    transition: color .25s ease-in-out;
+}
+
+.content-right-player-speed-btn button,
+.content-right-player-speed-btn:hover button,
+.content-right-player-speed-btn:active button {
+    outline: 0;
+    border: 0;
+    background-color: inherit;
+}
+
+.content-right-player-speed-btn:hover button,
+.content-right-player-speed-btn:active button {
+    color: #000;
+}
+
+.content-right-player-speed-btn:hover {
+    border-color: #CCC;
+}
+
+.content-right-player-speed-btn:active
+{
+    background-color: #EEE;
+}
+
+#content-right-player-time, #content-right-player-duration
+{
+    display: none;
+}
+
+#content-right-player-progress-bar
+{
+    grid-area: progress;
+    align-self: baseline;
+    background-color: #CCC;
+    height: 0.5em;
+    border-radius: 2px;
+    margin-top: 0.3em;
+}
+
+/* #content-right-player-progress-bar:hover #content-right-player-progress-bar-progress, #content-right-player-progress-bar:hover
+{
+    height: 10px;
+} */
+
+#content-right-player-progress-bar-progress
+{
+    /* background-color: #039BE5; */
+    /* background-color: #2979FF; */
+    background-color: #448AFF;
+    height: 0.5em;
+    border-radius: 2px;
+    width: 0%;
+}
+
+@media screen and (min-width: 900px)
+{
+    #content-right-player
+    {
+        background-color: #FFF;
+        text-align: center;
+        height: 58px;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 100px;
+        grid-template-areas:
+            "image replay play forward playback-title playback-title playback-title speed"
+            "image replay play forward time progress duration speed";
+    }
+    /* #content-right-player
+    {
+        background-color: #FFF;
+        text-align: center;
+        height: 58px;
+        display: grid;
+        grid-template-rows: 0.2em 1fr;
+        grid-template-columns: 100px 2fr 100px 100px 50px 100px 100px 2fr;
+        grid-template-areas:
+            "progress progress progress progress progress progress progress progress"
+            "image playback-title time replay play forward duration speed";
+    } */
+
+    #content-right-player-time, #content-right-player-duration
+    {
+        align-self: center;
+        justify-self: center;
+        align-self: center;
+        opacity: 0.5;
+        font-size: 14px;
+        margin-left: 0.1em;
+        display: block;
+    }
+
+    #content-right-player-time
+    {
+        grid-area: time;
+        align-self: baseline;
+        justify-self: right;
+        font-size: 12px;
+        padding: 0.2em;
+        padding-right: 0.5em;
+    }
+
+    #content-right-player-duration
+    {
+        grid-area: duration;
+        align-self: baseline;
+        justify-self: left;
+        font-size: 12px;
+        padding: 0.2em;
+        padding-left: 0.5em;
+    }
+}

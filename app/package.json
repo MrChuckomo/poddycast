@@ -1,0 +1,21 @@
+{
+    "main": "main.js",
+    "description": "Podcast client to listen to all you favorite podcasts",
+    "name": "Poddycast",
+    "version": "0.7.1",
+    "scripts": {
+        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
+        "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
+        "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
+        "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
+        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
+        "start": "electron main.js"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "custom-electron-titlebar": "^3.2.5",
+        "electron": "^4.2.12",
+        "electron-installer-debian": "^3.1.0",
+        "electron-packager": "^13.1.1"
+    }
+}

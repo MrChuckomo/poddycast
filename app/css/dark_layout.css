@@ -1,0 +1,186 @@
+
+::-webkit-scrollbar {     
+        background-color: #222;
+        width: .8em
+}
+
+::-webkit-scrollbar-thumb:window-inactive,
+::-webkit-scrollbar-thumb {
+        background:  #444;
+}
+
+body
+{
+    background: #222;
+    color: #DDD;
+}
+
+#content-right-header, #content-right-body, #content-right-footer, #content-right-player
+{
+    background: #333;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Left */
+
+#search
+{
+    background: #333;
+    border-color: #000;
+}
+
+#search svg
+{
+    fill: #FFF;
+}
+
+.selected
+{
+    background-color: #111;
+}
+
+#menu ul li svg
+{
+    opacity: 0.8;
+}
+
+#menu-history svg,
+#menu-refresh svg
+{
+    fill: #FFF;
+}
+
+#playlist-header h3
+{
+    border-color: #000;
+}
+
+footer, #content-right-player
+{
+    border-color: #000;
+}
+
+footer svg
+{
+    fill: #FFF;
+    opacity: 0.6;
+}
+
+input
+{
+    color: #FFF;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Right */
+
+.playlist-edit-input
+{
+    background: #444;
+    border-color: #000;
+}
+
+.edit-header button
+{
+    background: #222;
+}
+
+.uncheck svg
+{
+    fill: #666;
+}
+
+.check svg
+{
+    fill: #448AFF;
+}
+
+.podcast-entry, .settings
+{
+    border-color: #222;
+}
+
+.statistics-header
+{
+    background: #222;
+}
+
+.settings-unsubscribe
+{
+    background: #111;
+}
+
+.podcast-entry-actions svg
+{
+    fill: #FFF;
+}
+
+.podcast-entry:hover,
+.podcast-edit-entry:hover,
+.list-item-row-layout:hover
+{
+    background: #222;
+}
+
+.select-episode:hover
+{
+    /* background: #0288D1; */
+    background: #2979FF;
+}
+
+#content-right
+{
+    border-left: 1px solid #111;
+}
+
+#content-right-player svg,
+#content-right-header-actions svg,
+.list-item-icon svg
+{
+    fill: #FFF;
+}
+
+svg.set-favorite
+{
+    fill: #E91E63;
+    opacity: 0.7;
+}
+
+#content-right-player-progress-bar
+{
+    background: #222;
+}
+
+.content-right-player-speed-btn,
+.content-right-header-actions svg,
+.list-item-row-layout {
+    border-color: #222;
+    color: #FFF;
+}
+
+.content-right-player-speed-btn:hover,
+#content-right-header-actions svg:hover {
+    border-color: #111;
+}
+
+.content-right-player-speed-btn:active,
+#content-right-header-actions svg:active {
+    background: #111;
+}
+
+.content-right-player-speed-btn:hover button,
+.content-right-player-speed-btn:active button {
+    color: #fff;
+}
+
+[data-tooltip]:after
+{
+    background: #333;
+    color: #FFF;
+}
+
+#playlists ul li input:enabled
+{
+    background: #333;
+    color: #fff;
+}
