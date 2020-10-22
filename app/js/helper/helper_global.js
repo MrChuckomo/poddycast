@@ -69,9 +69,9 @@ function setTitlebarOnWin() {
         
         function setMenuBarVisibility(visibility) {
             if(visibility)
-                $( '.menubar' ).show();
+                $( '.menubar' ).css('visibility', 'dafault');
             else
-                $( '.menubar' ).hide();
+                $( '.menubar' ).css('visibility', 'hidden');
         }
 
         menuBarVisibility = false;
