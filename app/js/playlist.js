@@ -224,6 +224,7 @@ class PlaylistsInUI {
         $input.keyup(function (e) {
             renamePlaylist(this, e);
         });
+        $input.css('pointer-events', 'none')
 
         let $playlist = $('<li></li>')//.addClass("selected")
                                       .attr('index', '' + playlist.index)
@@ -234,11 +235,23 @@ class PlaylistsInUI {
         $playlist.dblclick(function () {
             enableRename(this);
         });
-        $playlist.on('dragenter', handleDragEnter);
-        $playlist.on('dragover', handleDragOver);
-        $playlist.on('dragleave', handleDragLeave);
-        $playlist.on('drop', handleDrop);
-        
+        $playlist.on('dragenter', function (e) {
+            //e = e.originalEvent;
+            handleDragEnter(this);//e);
+        });
+        $playlist.on('dragover', function (e) {
+            e = e.originalEvent;
+            handleDragOver(this,e);
+        });
+        $playlist.on('dragleave', function (e) {
+            e = e.originalEvent;
+            handleDragLeave(this, e);
+        });
+        $playlist.on('drop', function (e) {
+            e = e.originalEvent;
+            handleDrop(this, e);
+        });
+
         setContextMenu($playlist.get(0))
 
         $playlist.append($input);

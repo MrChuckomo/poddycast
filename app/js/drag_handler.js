@@ -1,45 +1,39 @@
-
-function handleDragStart(_Event)
-{
+function handleDragStart(_Event) {
     _Event.dataTransfer.setData('text/html', this.innerHTML);
-    // _Event.dataTransfer.setDragImage(this.getElementsByTagName("img")[0], 0, 0);
-    _Event.dataTransfer.setDragImage(this.getElementsByTagName("img")[0], -10, -10);
+    let img = this.getElementsByTagName("img")[0];
+    _Event.dataTransfer.setDragImage(img, img.width/2, img.height/2);
 
     this.classList.remove('over');
 }
 
-function handleDragEnter(_Event)
-{
-    this.classList.add('over');
+function handleDragEnter(obj) {
+    $(obj).addClass('over');
 }
 
-function handleDragLeave(_Event)
-{
-    this.classList.remove('over');
+function handleDragLeave(obj) {
+    $(obj).removeClass('over');
+    
 }
 
-function handleDragOver(_Event)
-{
+function handleDragOver(obj,_Event) {
     // NOTE: Necessary. Allows us to drop.
 
-    if (_Event.preventDefault)
-    {
+    if (_Event.preventDefault) {
         _Event.preventDefault();
     }
-
     _Event.dataTransfer.dropEffect = 'link';
 
     return false;
 }
 
-function handleDrop(_Event)
+function handleDrop(obj, _Event)
 {
-    this.classList.remove('over');
+    obj.classList.remove('over');
 
-    var Parser       = new DOMParser();
-    var XmlDoc       = Parser.parseFromString(_Event.dataTransfer.getData('text/html'), "text/xml");
-    var PodcastName  = XmlDoc.getElementsByClassName("podcast-entry-title")[0].innerHTML
-    var PlaylistName = this.getElementsByTagName("input")[0].value
+    var Parser = new DOMParser();
+    var XmlDoc = Parser.parseFromString(_Event.dataTransfer.getData('text/html'), "text/xml");
+    var PodcastName = XmlDoc.getElementsByClassName("podcast-entry-title")[0].innerHTML
+    var PlaylistName = obj.getElementsByTagName("input")[0].value
 
     dragToPlaylist(PlaylistName, PodcastName)
 }

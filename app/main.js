@@ -29,19 +29,15 @@ if (process.platform === 'darwin' || process.platform === 'linux') {
 
 function createWindow()
 {
-	let winObj = {
+	win = new BrowserWindow({
         width: 1000,
         minWidth: 1000,
         height: 600,
         minHeight: 600,
         autoHideMenuBar: true,
-        icon: trayIcon
-    };
-    
-    if(process.platform === "win32")
-    	winObj['frame'] = false;
-    
-    win = new BrowserWindow(winObj);
+        icon: trayIcon,
+        frame: !(process.platform === "win32")
+    });
     
     menuBarVisibility = false
     win.webContents.on("before-input-event", (event, input) => { 

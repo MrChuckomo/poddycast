@@ -189,6 +189,13 @@ function speedDown(_Self) {
     }
 }
 
+function setSpeedWithWheelMouse(e) {
+    if(e.originalEvent.deltaY < 0)
+        speedUp();
+    else 
+        speedDown();
+}
+
 function updateProgress()
 {
     var Player       = document.getElementById("player")
