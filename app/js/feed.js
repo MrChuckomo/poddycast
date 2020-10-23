@@ -94,7 +94,7 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
                 // NOTE: save latest episode if not already in History
 
-                if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+                if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", EpisodeUrl) == null)
                 {
                     saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, Duration)
                 }
@@ -115,7 +115,7 @@ function showAllEpisodes(_Self)
 
 function getAllEpisodesFromFeed(_Feed)
 {
-    var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
+    var PodcastName = getFileValue(getSaveFilePath(), "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName, _Feed)
 
@@ -225,49 +225,24 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 
     const PlaylistMenu = new Menu()
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+    let fileContent = ifExistsReadFile(getPlaylistFilePath());
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
+    if (fileContent != "") {
+        var JsonContent = JSON.parse(fileContent);
+
+        for (let i in JsonContent) {
             var IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName)
 
-            PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, type: "checkbox", checked: IsInPlaylist, click(self)
-            {
-
-                let playlistName = self.label;
-                let PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
-                addToPlaylist(playlistName, PodcastName);
-                /*
-                var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-
-                for (var i = 0; i < JsonContent.length; i++)
-                {
-                    if (self.label == JsonContent[i].playlistName)
-                    {
-                        var PodcastList = JsonContent[i].podcastList
-                        var PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
-
-                        if (isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName))
-                        {
-                            for (var j = PodcastList.length - 1; j >= 0 ; j--)
-                            {
-                                if(PodcastList[j] == PodcastName) { PodcastList.splice(j, 1) }
-                            }
-                        }
-                        else
-                        {
-                            PodcastList.push(PodcastName)
-                        }
-
-                        break
-                    }
+            PlaylistMenu.append(new MenuItem({
+                label: JsonContent[i].playlistName, 
+                type: "checkbox", 
+                checked: IsInPlaylist, 
+                click(self) {
+                    let playlistName = self.label;
+                    let PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
+                    addToPlaylist(playlistName, PodcastName);
                 }
-
-                fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
-                */
-            }}))
+            }))
         }
     }
 
@@ -306,11 +281,11 @@ function processEpisodes(_Content)
     xmlDoc = parser.parseFromString(_Content, "text/xml");
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-    var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+    var Artwork     = getFileValue(getSaveFilePath(), "artworkUrl60", "collectionName", ChannelName)
 
-    if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+    if (getFileValue(getSaveFilePath(), "artworkUrl100", "collectionName", ChannelName) != undefined && getFileValue(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
     {
-        Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+        Artwork = getFileValue(getSaveFilePath(), "artworkUrl100", "collectionName", ChannelName)
     } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0] !== undefined) {
         Artwork = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0].getAttribute("url")
     } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0] !== undefined) {
@@ -339,14 +314,17 @@ function processEpisodes(_Content)
         var Item = xmlDoc.getElementsByTagName("item")[i]
 
         // NOTE: Just enter if the current item contains an enclosure tag
-
+        
         if (Item.getElementsByTagName("enclosure").length > 0)
         {
             var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
             var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
             var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
             var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
-            var EpisodeDescription = Item.getElementsByTagName('itunes:subtitle')[0] !== undefined ? Item.getElementsByTagName('itunes:subtitle')[0].textContent : Item.getElementsByTagName('description')[0].textContent
+            var EpisodeDescription = ( Item.getElementsByTagName('itunes:subtitle')[0] !== undefined ? 
+                Item.getElementsByTagName('itunes:subtitle')[0].textContent : 
+                Item.getElementsByTagName('description')[0].textContent
+            );
             var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue
             var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
@@ -362,19 +340,8 @@ function processEpisodes(_Content)
                 var Duration = ""
             }
 
-            var correctEpisodeDescription = EpisodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>")
-            correctEpisodeDescription = EpisodeDescription[0] != '<' ? correctEpisodeDescription[0] : correctEpisodeDescription[1]
-            correctEpisodeDescription = correctEpisodeDescription.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '')
-            //correctEpisodeDescription = correctEpisodeDescription.replace(/&nbsp;/g, '')
-            /*
-            if(EpisodeDescription.substr(0, 3) == '<p>') {
-                correctEpisodeDescription = document.createElement( 'div' );
-                correctEpisodeDescription.innerHTML = EpisodeDescription
-                correctEpisodeDescription = correctEpisodeDescription.getElementsByTagName('p')[0].innerHTML
-                correctEpisodeDescription = correctEpisodeDescription.replace(/(&nbsp;|<([^>]+)>)/ig, "<tag>").split("<tag>")[0];
-            } else
-                correctEpisodeDescription = EpisodeDescription
-            */
+            var correctEpisodeDescription = (EpisodeDescription == undefined ? "" : getEpisodeInfoFromDescription(EpisodeDescription))
+
             var ListElement = buildListItem(new cListElement
             (
                 [
@@ -400,7 +367,7 @@ function processEpisodes(_Content)
 
             // NOTE: Set a episode item to "Done" if it is in the History file
 
-            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+            if (getFileValue(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
             {
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
@@ -451,7 +418,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
     }
     else
     {
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 
     if (!isEpisodeAlreadySaved(_EpisodeTitle))
@@ -459,7 +426,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         JsonContent.push(Feed)
     }
 
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
 
     setItemCounts()
 }

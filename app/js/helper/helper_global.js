@@ -147,7 +147,7 @@ function init()
     initController()
     loadPlaylists()
     readFeeds()
-    showNewEpisodes()
+    showNewEpisodesPage()
     setItemCounts()
     translate()
 }
@@ -199,49 +199,48 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
     return FeedExists
 }
 
-function isAlreadyInPlaylist(_ListName, _PodcastName)
-{
-    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-    var Result      = false
-
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        if (JsonContent[i].playlistName == _ListName)
-        {
-            for (var j = 0; j < JsonContent[i].podcastList.length; j++)
-            {
-                if (JsonContent[i].podcastList[j] == _PodcastName)
-                {
-                    Result = true
-                    break
-                }
-            }
-        }
-    }
-
-    return Result
+function isAlreadyInPlaylist(_ListName, _PodcastName) {
+    let i = allPlaylist.memory.findByName(_ListName);
+    return (allPlaylist.memory.findPodcast(i, _PodcastName) != -1);
 }
 
-function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
-{
-    var DestinationValue = null
+function getFileValue(filePath, _DestinationTag, _ReferenceTag, _Value) {
+    var DestinationValue = null;
 
-    if (fs.existsSync(_File()) && fs.readFileSync(_File(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
+    let fileContent = ifExistsReadFile(filePath);
+    if (fileContent == "")
+        return DestinationValue;
+    
+    var json = JSON.parse(fileContent)
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i][_ReferenceTag] == _Value)
-            {
-                DestinationValue = JsonContent[i][_DestinationTag]
-
-                break
-            }
+    for (let i in json)
+        if (json[i][_ReferenceTag] == _Value) {
+            DestinationValue = json[i][_DestinationTag];
+            return DestinationValue;
         }
-    }
 
-    return DestinationValue
+    return DestinationValue;
+}
+
+function getBestArtworkUrl(podcastName) {
+    let Artwork = getFileValue(getSaveFilePath(), "artworkUrl100", "collectionName", podcastName);
+    if(Artwork != undefined && Artwork != 'undefined')
+        return Artwork;
+    
+    Artwork = getFileValue(getSaveFilePath(), "artworkUrl60", "collectionName", podcastName);
+    if(Artwork != undefined && Artwork != 'undefined')
+        return Artwork;
+
+    //Set "no Artwork" image
+    Artwork = "img/generic_podcast_image.png";
+    return Artwork;
+}
+
+function ifExistsReadFile(filePath) {
+    let fileContent = "";
+    if(fs.existsSync(filePath))
+        fileContent = fs.readFileSync(filePath, "utf-8");
+    return fileContent;
 }
 
 function clearTextField(_InputField)
@@ -377,7 +376,7 @@ function addToSettings(_PodcastName, _FeedUrl)
         }
         else
         {
-            fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+            fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
         }
 
         if (!isInSettings(_FeedUrl))
@@ -385,7 +384,7 @@ function addToSettings(_PodcastName, _FeedUrl)
             JsonContent.push(SettingsObject)
         }
 
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 }
 
@@ -449,7 +448,7 @@ function changeSettings(_FeedUrl, _ToInbox)
             }
         }
 
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 }
 
@@ -498,7 +497,7 @@ function setPreference(_Key, _Value)
 
         JsonContent[_Key] = _Value
 
-        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 }
 

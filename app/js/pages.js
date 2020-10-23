@@ -47,24 +47,3 @@ function showPage(headerHtml, bodyHtml) {
     setHeader(headerHtml)
     setBody(bodyHtml)
 }
-
-function showNewEpisodesPage() {
-    selectMenuItem('menu-episodes')
-    showNewEpisodes()
-}
-
-function showFavoritesPage() {
-    selectMenuItem('menu-favorites')
-    showFavorites()
-}
-
-function showHistoryPage() {
-    selectMenuItem('menu-history')
-    showHistory()
-}
-
-function showStatisticsPage() {
-    selectMenuItem('menu-statistics')
-    showStatistics()
-}
-

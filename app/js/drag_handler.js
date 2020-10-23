@@ -26,8 +26,7 @@ function handleDragOver(obj,_Event) {
     return false;
 }
 
-function handleDrop(obj, _Event)
-{
+function handleDrop(obj, _Event) {
     obj.classList.remove('over');
 
     var Parser = new DOMParser();
@@ -35,5 +34,5 @@ function handleDrop(obj, _Event)
     var PodcastName = XmlDoc.getElementsByClassName("podcast-entry-title")[0].innerHTML
     var PlaylistName = obj.getElementsByTagName("input")[0].value
 
-    dragToPlaylist(PlaylistName, PodcastName)
+    addToPlaylist(PlaylistName, PodcastName)
 }

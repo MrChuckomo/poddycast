@@ -333,7 +333,7 @@ function savePlaybackPosition(_Source, _CurrentTime)
                 // console.log(JsonContent[i].playbackPosition);
                 // console.log(_CurrentTime);
 
-                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
 
                 break
             }

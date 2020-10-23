@@ -1,8 +1,4 @@
-var CContentHelper = require('./js/helper/content')
-var CPlayer        = require('./js/helper/player')
-
-var helper = new CContentHelper()
-var player = new CPlayer()
+var allPlaylist = null;
 
 class Playlist {
     constructor(index, name, list) {
@@ -42,9 +38,7 @@ class PlaylistsInMemory {
     }
 
     load() {
-        let fileContent = ( fs.existsSync(getPlaylistFilePath()) ? 
-            fs.readFileSync(getPlaylistFilePath(), "utf-8") : ""
-        );
+        let fileContent = ifExistsReadFile(getPlaylistFilePath());
         this.playlists = JSON.parse(fileContent == "" ? "[]": fileContent);
 
         for(let i in this.playlists) {
@@ -59,7 +53,7 @@ class PlaylistsInMemory {
             let pl = this.playlists[i];
             playlists.push({index: pl.index, playlistName: pl.name, podcastList: pl.list})
         }
-        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(playlists));
+        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(playlists, null, "\t"));
     }
 
     length() {
@@ -89,18 +83,7 @@ class PlaylistsInMemory {
                 return i;
         return -1;
     }
-/*
-    addPlaylist(name) {
-        let maxIndex = (this.length() == 0 ? -1 : this.playlists[this.length() - 1].getIndex());
-        if(this.findByName(name) == -1) {
-            let playlist = new Playlist(maxIndex + 1, name, []);
-            this.playlists.push(playlist);
-            this.update();
-            return playlist;
-        }
-        return false;
-    }
-*/
+
     addPlaylist(name) {
         let maxIndex = (this.length() == 0 ? -1 : this.playlists[this.length() - 1].getIndex());
         while(this.findByName(name) != -1) 
@@ -200,22 +183,7 @@ class PlaylistsInUI {
         let $input = $('<input></input>').val(playlist.name)
                                          .prop( "disabled", true )
                                          .prop('type','text');
-        $input.focusout(function () { /*
-            if (this.value == ""){
-                let HeaderName = document.getElementById("content-right-header").getElementsByTagName("h1")[0].innerHTML
-
-                _Self.value = HeaderName
-            }
-
-            renamePlaylistInline(_Self)*/
-            
-            /*
-            if(this.value != "") {
-                let index = $(this).parent().attr('index');
-                if(allPlaylist.renameByIndex(index, this.value))
-                    setHeader(this.value);
-            }
-            */
+        $input.focusout(function () {
            ifRenamePlaylistUpdateUI(this);
         });
         $input.keypress(function (e) {
@@ -226,8 +194,7 @@ class PlaylistsInUI {
         });
         $input.css('pointer-events', 'none')
 
-        let $playlist = $('<li></li>')//.addClass("selected")
-                                      .attr('index', '' + playlist.index)
+        let $playlist = $('<li></li>').attr('index', '' + playlist.index)
                                       .attr('playlist', playlist.name);
         $playlist.click(function () {
             showPlaylistContent(this);
@@ -235,9 +202,8 @@ class PlaylistsInUI {
         $playlist.dblclick(function () {
             enableRename(this);
         });
-        $playlist.on('dragenter', function (e) {
-            //e = e.originalEvent;
-            handleDragEnter(this);//e);
+        $playlist.on('dragenter', function () {
+            handleDragEnter(this);
         });
         $playlist.on('dragover', function (e) {
             e = e.originalEvent;
@@ -273,7 +239,7 @@ class PlaylistsInUI {
     }
 
     renameByName(oldName, name) {
-        let $playlist = this.getByName(name);
+        let $playlist = this.getByName(oldName);
         $playlist.find('input').val(name);
         $playlist.attr('playlist', name);
     }
@@ -300,6 +266,8 @@ class Playlists {
     }
 
     add(name) {
+        if(name == "")
+            return null;
         let playlist = this.memory.addPlaylist(name);
         if(playlist) 
             this.ui.add(playlist);
@@ -307,7 +275,7 @@ class Playlists {
     }
 
     renameByIndex(index, name) {
-        if(this.memory.renameByIndex(index, name)) {
+        if(name != "" && this.memory.renameByIndex(index, name)) {
             this.ui.renameByIndex(index, name);
             return true;
         }
@@ -315,7 +283,7 @@ class Playlists {
     }
 
     renameByName(oldName, name) {
-        if(this.memory.renameByName(oldName, name)) {
+        if(name != "" && this.memory.renameByName(oldName, name)) {
             this.ui.renameByName(oldName, name);
             return true;
         }
@@ -339,95 +307,14 @@ class Playlists {
     }
 }
 
-var allPlaylist = null;
-
-/*
-
-function getInputEntry(_Name)
-{
-    var InputItem = document.createElement("input")
-
-    InputItem.value = _Name
-    InputItem.type = "text"
-    InputItem.disabled = true
-    InputItem.setAttribute("onfocusout", "clearRenameFocus(this)")
-    InputItem.setAttribute("onkeypress", "matchText(event)")
-    
-    InputItem.setAttribute("onkeyup", "renamePlaylist(this, event)")
-
-    //$(InputItem).keyfilter(/[^#\*@0-9]/);
-
-    return InputItem
-}
-*/
-
-
-// ---------------------------------------------------------------------------------------------------------------------
-/*
 function createNewPlaylist() {
     var $input = $("footer input")
     var playlistName = $input.val().trim()
-    if(playlistName == "")
+    let newPlaylist = allPlaylist.add(playlistName);
+    if(!newPlaylist)
         return;
-    var JsonContent = []
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
-    else
-        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
-    
-    for(let i in JsonContent) {
-        let pl = JsonContent[i]
-        if(pl.playlistName == playlistName)
-            return;
-    }
-
-    var NewPlaylist = document.createElement("li")
-    NewPlaylist.setAttribute("onclick", "showPlaylistContent(this)")
-    NewPlaylist.setAttribute("ondblclick", "enableRename(this)")
-    
-    NewPlaylist.setAttribute("index", "" + JsonContent.length)
-    NewPlaylist.setAttribute("playlist", playlistName)
-
-    NewPlaylist.addEventListener('dragenter', handleDragEnter, false);
-    NewPlaylist.addEventListener('dragover', handleDragOver, false);
-    NewPlaylist.addEventListener('dragleave', handleDragLeave, false);
-    NewPlaylist.addEventListener('drop', handleDrop, false);
-    NewPlaylist.append(getInputEntry(playlistName))
-    setContextMenu(NewPlaylist)
-
-    var $playlistList = $("#playlists ul")
-    $playlistList.append(NewPlaylist)
-
-    $input.addClass("set-favorite")
-
-
-    var Playlist = {
-        "index": JsonContent.length,
-        "playlistName": playlistName,
-        "podcastList": []
-    }
-
-    JsonContent.push(Playlist)
-
-    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
-
-    showEditPlaylistPage(playlistName)
-    $input.val("")
-
-    let title = document.getElementById("content-right").getElementsByTagName("h1")[0].innerHTML
-    if(title == generateHtmlTitle("Statistics")) 
-        showStatisticsPage()
-}
-*/
-
-function createNewPlaylist() {
-    var $input = $("footer input")
-    var playlistName = $input.val().trim()
-    if(playlistName == "")
-        return;
-    allPlaylist.add(playlistName);
     clearTextField($input.get(0));
-    showEditPlaylistPage(playlistName);
+    showEditPlaylistPage(newPlaylist.name);
 }
 
 function inputNewPlaylist(_Self, _Event)
@@ -466,8 +353,6 @@ function setContextMenu(_Object)
     }, false)
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-
 function enableRename(_Self) {
     var InputField = _Self.getElementsByTagName("input")[0]
 
@@ -476,18 +361,17 @@ function enableRename(_Self) {
     InputField.disabled = false
     InputField.focus()
     InputField.select()
+    InputField.selectionStart = InputField.selectionEnd;
 }
 
 function ifRenamePlaylistUpdateUI(_Self) {
-    if(_Self.value != "") {
-        let $parent = $(_Self).parent(); 
-        let index = $parent.attr("index");
-        if(allPlaylist.renameByIndex(index, _Self.value))
-            setHeader(_Self.value);
-        else
-            _Self.value = $parent.attr('playlist');
-        _Self.disabled = true;
-    }
+    let $parent = $(_Self).parent(); 
+    let index = $parent.attr("index");
+    if(allPlaylist.renameByIndex(index, _Self.value))
+        setHeader(_Self.value);
+    else
+        _Self.value = $parent.attr('playlist');
+    _Self.disabled = true;
 }
 
 function renamePlaylist(_Self, _Event) {
@@ -501,12 +385,7 @@ function removePlaylist(obj) {
     allPlaylist.removeByIndex(index);
     showNewEpisodesPage();
 }
-/*
-function getPlaylist(_Name)
-{
-    // TODO: load podcasts associated with this playlist
-}
-*/
+
 function isInPlaylist(_PlaylistName, _PodcastName) {
     let playlist = allPlaylist.memory.getByName(_PlaylistName);
     return (playlist != undefined && playlist.list.indexOf(_PodcastName) != -1);
@@ -572,63 +451,15 @@ function togglePodcast(_Self)
     }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-/*
-function showEditPage(_Self)
-{
-    var PlaylistName = _Self.getElementsByTagName("input")[0].value
-    var List         = document.getElementById("list")
-
-    setGridLayout(List, false)
-    helper.clearContent()
-    setHeaderViewAction()
-    clearMenuSelection()
-    clearTextField(document.getElementById("search-input"))
-    clearTextField(document.getElementById("new_list-input"))
-    helper.setHeader(generateHtmlTitle("Edit Playlist"))
-
-    _Self.classList.add("selected")
-
-    var NameInput = document.createElement("input")
-    NameInput.value = PlaylistName
-    NameInput.classList.add("playlist-edit-input")
-
-    NameInput.setAttribute("onkeypress", "matchText(event)")
-    NameInput.setAttribute("onkeyup", "renamePlaylist(this, event)")
-
-    var DeleteButton = document.createElement("button")
-    DeleteButton.innerHTML = i18n.__("Delete")
-    DeleteButton.setAttribute("onclick", "deletePlaylist('" + PlaylistName + "')")
-
-    var HeaderSection = document.createElement("div")
-    HeaderSection.classList.add("edit-header")
-    HeaderSection.append(NameInput)
-    HeaderSection.append(DeleteButton)
-
-    List.append(HeaderSection)
-
-    List.append(getStatisticsElement("statistics-header", "Linked Podcasts", null))
-
-    var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-    console.log(JsonContent)
-    JsonContent = sortByName(JsonContent)
-
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        List.append(getPodcastEditItem(JsonContent[i].collectionName, JsonContent[i].artworkUrl30, isInPlaylist(PlaylistName, JsonContent[i].collectionName)))
-    }
-}
-*/
 function showPlaylistContent(_Self)
 {
     var PlaylistName = $(_Self).attr('playlist');
 
-    clearBody()
+    clearBody();
 
-    setHeaderViewAction()
-    clearMenuSelection()
-    clearTextField(document.getElementById("search-input"))
-    clearTextField(document.getElementById("new_list-input"))
+    //clearMenuSelection();
+    //clearTextField($('#search-input').get(0));
+    //clearTextField($('#new_list-input').get(0));
 
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header
@@ -640,89 +471,64 @@ function showPlaylistContent(_Self)
             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
         </svg>
     <span>`
-    )
+    );
 
     $('#content-right-header-actions .edit-playlist-button').click(function () {
         let playlist = $(this).parent().parent().find('h1').html();
         showEditPlaylistPage(playlist);
     });
 
-    _Self.classList.add("selected")
+    //_Self.classList.add("selected")
+    selectMenuItem($(_Self));
 
-    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+    let playlist = allPlaylist.memory.getByName(PlaylistName);
+    if(playlist == undefined)
+        return;
 
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        // if (_Self.innerHTML == JsonContent[i].playlistName)
-        if (PlaylistName == JsonContent[i].playlistName)
-        {
-            if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-            {
-                var NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-                var List                   = document.getElementById("list")
+    let fileContent = ifExistsReadFile(getNewEpisodesSaveFilePath());
+    if (fileContent == "")
+        return;
 
-                setGridLayout(List, false)
+    var NewEpisodesJsonContent = JSON.parse(fileContent);
+    var List = document.getElementById("list");
 
-                for (var a = 0; a < NewEpisodesJsonContent.length; a++)
-                {
-                    var Artwork = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", NewEpisodesJsonContent[a].channelName)
+    setGridLayout(List, false)
 
-                    if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName) != "undefined")
-                    {
-                        Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", NewEpisodesJsonContent[a].channelName)
-                    }
+    for (let a in NewEpisodesJsonContent) {
+        let Artwork = getBestArtworkUrl(NewEpisodesJsonContent[a].channelName);
+        let episodeDescription = getEpisodeInfoFromDescription(NewEpisodesJsonContent[a].episodeDescription);
+        let ListElement = buildListItem(new cListElement(
+            [
+                getImagePart(Artwork),
+                getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
+                getSubTextPart((NewEpisodesJsonContent[a].duration == undefined) ? "" : NewEpisodesJsonContent[a].duration),
+                getTextPart(NewEpisodesJsonContent[a].channelName),
+                getDescriptionPart(s_InfoIcon, episodeDescription),
+                getIconButtonPart(s_DeleteIcon)
+            ],
+            "5em 1fr 6em 1fr 5em 5em"
+        ), eLayout.row)
 
-                    if (Artwork != null)
-                    {
-                        var episodeDescription = NewEpisodesJsonContent[a].episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>")
-                        episodeDescription = NewEpisodesJsonContent[a].episodeDescription[0] != '<' ? episodeDescription[0] : episodeDescription[1]
-                        episodeDescription = episodeDescription.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '')
-                        //episodeDescription = episodeDescription.replace(/&nbsp;/g, '')
-                        /*
-                        var episodeDescription;
-                        if(NewEpisodesJsonContent[a].episodeDescription.substr(0, 3) == '<p>') {
-                            episodeDescription = document.createElement( 'div' );
-                            episodeDescription.innerHTML = NewEpisodesJsonContent[a].episodeDescription
-                            episodeDescription = episodeDescription.getElementsByTagName('p')[0].innerHTML
-                        } else
-                            episodeDescription = NewEpisodesJsonContent[a].episodeDescription
-                        */
-                        var ListElement = buildListItem(new cListElement(
-                            [
-                                getImagePart(Artwork),
-                                getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
-                                getSubTextPart((NewEpisodesJsonContent[a].duration == undefined) ? "" : NewEpisodesJsonContent[a].duration),
-                                getTextPart(NewEpisodesJsonContent[a].channelName),
-                                getDescriptionPart(s_InfoIcon, episodeDescription),
-                                getIconButtonPart(s_DeleteIcon)
-                            ],
-                            "5em 1fr 6em 1fr 5em 5em"
-                        ), eLayout.row)
+        if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl)) 
+            ListElement.classList.add("select-episode")
 
-                        if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl)) 
-                            ListElement.classList.add("select-episode")
+        ListElement.onclick = function () {
+            playNow(this);
+        }
+        ListElement.setAttribute("channel", NewEpisodesJsonContent[a].channelName)
+        ListElement.setAttribute("title", NewEpisodesJsonContent[a].episodeTitle)
+        ListElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
+        ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
+        ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
+        ListElement.setAttribute("artworkUrl", Artwork)
 
-                        ListElement.setAttribute("onclick", "playNow(this)")
-                        ListElement.setAttribute("channel", NewEpisodesJsonContent[a].channelName)
-                        ListElement.setAttribute("title", NewEpisodesJsonContent[a].episodeTitle)
-                        ListElement.setAttribute("type", NewEpisodesJsonContent[a].episodeType)
-                        ListElement.setAttribute("url", NewEpisodesJsonContent[a].episodeUrl)
-                        ListElement.setAttribute("length", NewEpisodesJsonContent[a].episodeLength)
-                        ListElement.setAttribute("artworkUrl", Artwork)
+        // NOTE: show just episodes of the playlist saved podcast
 
-                        // NOTE: show just episodes of the playlist saved podcast
-
-                        for (var j = 0; j < JsonContent[i].podcastList.length; j++) {
-                            if (NewEpisodesJsonContent[a].channelName == JsonContent[i].podcastList[j]) {
-                                List.append(ListElement);
-                                break;
-                            }
-                        }
-                    }
-                }
+        for (let j in playlist.list) {
+            if (NewEpisodesJsonContent[a].channelName == playlist.list[j]) {
+                List.append(ListElement);
+                break;
             }
-
-            break
         }
     }
 }
@@ -740,7 +546,7 @@ function showEditPlaylistPage(playlist) {
     clearBody()
 
 
-    setHeaderViewAction()
+    //setHeaderViewAction()
     clearMenuSelection()
 
     clearTextField(document.getElementById("search-input"))

@@ -22,7 +22,7 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
     }
     else
     {
-        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 
     if (!isAlreadySaved(_FeedUrl))
@@ -30,7 +30,7 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
         JsonContent.push(Feed)
     }
 
-    fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
 
     addToSettings(_CollectioName, _FeedUrl)
 

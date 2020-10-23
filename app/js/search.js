@@ -2,7 +2,6 @@ var CContentHelper = require('./js/helper/content')
 
 var helper = new CContentHelper()
 
-
 function search(_Self, _Event) {
     if (_Event.code == "Escape")
         clearTextField(_Self)

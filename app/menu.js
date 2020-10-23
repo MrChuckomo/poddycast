@@ -79,22 +79,22 @@ const template =
             {
                 label: i18n.__("New Episodes"),
                 accelerator: "CommandOrControl+1",
-                click() { selectMenuItem("menu-episodes"); showNewEpisodes() }
+                click() { showNewEpisodesPage(); }
             },
             {
                 label: i18n.__("Favorites"),
                 accelerator: "CommandOrControl+2",
-                click() { selectMenuItem("menu-favorites"); showFavorites() }
+                click() { showFavoritesPage(); }
             },
             {
                 label: i18n.__("History"),
                 accelerator: "CommandOrControl+3",
-                click() { selectMenuItem("menu-history"); showHistory() }
+                click() { showHistoryPage(); }
             },
             {
                 label: i18n.__("Statistics"),
                 accelerator: "CommandOrControl+4",
-                click() { selectMenuItem("menu-statistics"); showStatistics() }
+                click() { showStatisticsPage(); }
             },
             {type: 'separator'},
             {

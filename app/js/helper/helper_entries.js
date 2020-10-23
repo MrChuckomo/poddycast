@@ -29,8 +29,7 @@ function unsubscribeContextMenu(_PodcastName, _FeedUrl)
     removeFromFile(getNewEpisodesSaveFilePath, "channelName", _PodcastName, false)
     removeFromFile(getSaveFilePath, "feedUrl", _FeedUrl, true)
 
-    selectMenuItem("menu-favorites")
-    showFavorites()
+    showFavoritesPage()
     setItemCounts()
 }
 
@@ -50,7 +49,7 @@ function removeFromFile(_File, _ContentReference, _Value, _Break)
             }
         }
 
-        fs.writeFileSync(_File(), JSON.stringify(JsonContent))
+        fs.writeFileSync(_File(), JSON.stringify(JsonContent, null, "\t"))
     }
 }
 
@@ -86,7 +85,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     SubtitleElement.innerHTML = _Subtitle
     SubtitleElement.classList.add("podcast-entry-subtitle")
 
-    TailElement.innerHTML = (_TailElement == undefined) ? "" : _TailElement
+    TailElement.innerHTML = (_TailElement == undefined ? "" : _TailElement)
     TailElement.classList.add("podcast-entry-tail")
 
     ListElement.classList.add("podcast-entry")
@@ -111,6 +110,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     ListElement.append(HeaderElement)
     ListElement.append(ActionsElement)
     ListElement.append(BodyElement)
+    console.log(ListElement)
 
     return ListElement
 }
@@ -207,19 +207,26 @@ function deleteFromFile(_FeedUrl)
             }
             else
             {
-                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent, null, "\t"))
             }
 
             ArchiveJsonContent.push(Feed)
 
-            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent, null, "\t"))
 
             JsonContent.splice(i, 1)
             break
         }
     }
 
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
+}
+
+function getEpisodeInfoFromDescription(episodeDescription) {
+    var episodeInfo = episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>");
+    episodeInfo = ( episodeDescription[0] != '<' ? episodeInfo[0] : episodeInfo[1] );
+    episodeInfo = episodeInfo.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '');
+    return episodeInfo;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
