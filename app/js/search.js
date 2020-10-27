@@ -1,82 +1,104 @@
-var CContentHelper = require('./js/helper/content')
-
-var helper = new CContentHelper()
-
 function search(_Self, _Event) {
     if (_Event.code == "Escape")
-        clearTextField(_Self)
+        clearTextField(_Self);
     else {
-        clearBody()
+        if(!$('#search-nothing-to-show').get(0))
+            clearBody();
 
-        setHeaderViewAction()
-        clearMenuSelection()
+        clearMenuSelection();
+        setHeader(generateHtmlTitle("Search"), '');
 
-        setHeader(i18n.__("Search"))
-
-        document.getElementById("res").setAttribute("return-value", "")
-
-        if (_Self.value.includes("http") && _Self.value.includes(":") && _Self.value.includes("//"))
-            getPodcastsFromFeed(_Self.value)
-        else
-            getPodcasts(_Self.value)
+        $('#res').attr('return-value', '');
+        getPodcasts(_Self.value);
     }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-
-function getPodcastsFromFeed(_SearchTerm) {
+function getPodcasts(_SearchTerm) {
+    _SearchTerm = encodeURIComponent(_SearchTerm);
     if (isProxySet())
-        makeRequest(getFeedProxyOptions(_SearchTerm), null, getFeedResults, eRequest.http)
-    else {
-        if (_SearchTerm.includes("https"))
-            makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
-        else
-            makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
+        makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http);
+    else
+        makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https);
+}
+
+function getResults(_Data, _eRequest, _Options) {
+    let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
+    let query = decodeURI(FeedUrl).split('=')[1].split('&')[0];
+    
+    let obj = JSON.parse(_Data);
+
+    if(obj.results.length == 0)
+        setNothingToShowBody(s_SearchNothingFoundIcon, 'search-nothing-to-show');
+    else if(query == $('#search-input').val()){
+        clearBody();
+        let $list = $('#list');
+        setGridLayout($list.get(0), false);
+
+        for (let i in obj.results) {
+            let podcast = new Podcast (
+                obj.results[i].artistName,
+                obj.results[i].collectionName,
+                obj.results[i].artworkUrl30,
+                obj.results[i].artworkUrl60,
+                obj.results[i].artworkUrl100,
+                obj.results[i].feedUrl
+            );
+
+            var HeartButton = null;
+            if (isAlreadyFavorite(podcast.feedUrl))
+                HeartButton = getFullHeartButton(podcast);
+            else
+                HeartButton = getHeartButton(podcast);
+
+            $list.append(buildListItem(new cListElement(
+                [
+                    getImagePart(podcast.artworkUrl60),
+                    getBoldTextPart(podcast.collectionName),
+                    getSubTextPart(podcast.artistName),
+                    HeartButton
+                ],
+                "5em 1fr 1fr 5em"
+            ), eLayout.row));
+        }
     }
 }
 
-function getFeedResults(_Data)
-{
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(_Data, "text/xml");
+function getHeartButton(_PodcastInfos) {
+    let artists = _PodcastInfos.artistName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+    let collection = _PodcastInfos.collectionName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
 
-    var AllImageTags = xmlDoc.getElementsByTagName("image")
-    var Image = null
+    let $heartButtonElement = $('<div></div>');
 
-    if (AllImageTags.length > 0) {
-        if(AllImageTags[0].nodeName == "itunes:image")
-            Image = AllImageTags[0].getAttribute("href")
-        else if (AllImageTags[0].nodeName == "image")
-            Image = AllImageTags[0].getElementsByTagName("url")[0].innerHTML
-    }
+    $heartButtonElement.html(s_Heart);
+    $heartButtonElement.addClass('list-item-icon')
+    $heartButtonElement.find('svg').click(function () {
+        setFavorite(this, artists, 
+                          collection, 
+                          _PodcastInfos.artworkUrl30, 
+                          _PodcastInfos.artworkUrl60, 
+                          _PodcastInfos.artworkUrl100, 
+                          _PodcastInfos.feedUrl
+        );
+    })
+    return $heartButtonElement.get(0);
+}
 
-    var AllAuthorTags = xmlDoc.getElementsByTagName("author")
-    var Author = null
+function getFullHeartButton(_PodcastInfos) {
+    let artists = _PodcastInfos.artistName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+    let collection = _PodcastInfos.collectionName//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
 
-    if (AllAuthorTags.length > 0)
-        Author = AllAuthorTags[0].innerHTML
-    else
-        Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
+    let $heartButtonElement = $('<div></div>');
 
-    helper.clearContent()
-
-    var List = document.getElementById("list")
-
-    setGridLayout(List, false)
-
-    var PodcastInfos = {
-        "feedUrl": document.getElementById("search-input").value,
-        "artistName": Author,
-        "collectionName": xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].innerHTML,
-        "artworkUrl30": Image,
-        "artworkUrl60": Image,
-        "artworkUrl100": Image,
-    }
-
-    var Icon = getIcon(PodcastInfos)
-
-    if (isAlreadySaved(PodcastInfos.feedUrl))
-        Icon = getFullIcon(PodcastInfos)
-
-    List.append(getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon))
+    $heartButtonElement.html(s_FullHeart);
+    $heartButtonElement.addClass('list-item-icon')
+    $heartButtonElement.find('svg').click(function () {
+        unsetFavorite(this, artists, 
+                          collection, 
+                          _PodcastInfos.artworkUrl30, 
+                          _PodcastInfos.artworkUrl60, 
+                          _PodcastInfos.artworkUrl100, 
+                          _PodcastInfos.feedUrl
+        );
+    })
+    return $heartButtonElement.get(0);
 }

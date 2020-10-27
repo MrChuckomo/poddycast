@@ -1,61 +1,131 @@
 const fs = require('fs')
 const os = require('os')
 
+var titlebar = null;
+var allPreferences = null;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
 
-var titlebar = null;
+class Preferences {
+    constructor() {
+        this.load();
+    }
 
-function getSaveDirPath()
-{
-    return os.homedir() + "/poddycast-data"
+    load() {
+        if (!fs.existsSync(getPreferencesFilePath()))
+            fs.openSync(getPreferencesFilePath(), 'w');
+        
+        let fileContent = ifExistsReadFile(getPreferencesFilePath());
+        this.preference = JSON.parse(fileContent == "" ? "{}": fileContent);
+        this.check();
+    }
+
+    update() {
+        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(this.preference, null, "\t"));
+    }
+
+    check() {
+        if(!this.preference.darkmode)
+            this.preference.darkmode = false;
+        if(!this.preference.minimize)
+            this.preference.minimize = false;
+        if(!this.preference.proxymode)
+            this.preference.proxymode = false;
+        
+        if(!this.preference.darkmode || !this.preference.minimize || !this.preference.proxymode )
+            this.update();
+    }
+
+    setDarkmode(darkmode) {
+        this.preference.darkmode = darkmode;
+        this.update();
+    }
+
+    getDarkmode() {
+        return this.preference.darkmode;
+    }
+
+    setMinimize(minimize) {
+        this.preference.minimize = minimize;
+        this.update();
+    }
+
+    getMinimize() {
+        return this.preference.minimize;
+    }
+
+    setProxymode(proxymode) {
+        this.preference.proxymode = proxymode;
+        this.update();
+    }
+
+    getProxymode() {
+        return this.preference.proxymode;
+    }
+
+    set(preference, value) {
+        this.preference[preference] = value;
+        this.update();
+    }
+
+    get(preference) {
+        return this.preference[preference];
+    }
+}
+
+function loadPreferences() {
+    allPreferences = new Preferences();
+}
+
+function getSaveDirPath() {
+    return os.homedir() + '/poddycast-data';
+}
+
+function getFeedDirPath() {
+    return getSaveDirPath() + '/podcast-feeds';
+}
+
+function getIndexFeedFilePath() {
+    return getFeedDirPath() + '/index.json';
 }
 
 function isWindows()
 {
-    return process.platform == "win32"
+    return process.platform == 'win32';
 }
 
-function isDarwin()
-{
-    return process.platform == "darwin"
+function isDarwin() {
+    return process.platform == 'darwin';
 }
 
-function isLinux()
-{
-    return process.platform == "linux"
+function isLinux() {
+    return process.platform == 'linux';
 }
 
-function getSaveFilePath()
-{
-    return getSaveDirPath() + "/poddycast-favorite_podcasts.json"
+function getSaveFilePath() {
+    return getSaveDirPath() + '/poddycast-favorite_podcasts.json';
 }
 
-function getNewEpisodesSaveFilePath()
-{
-    return getSaveDirPath() + "/poddycast-new_episodes.json"
+function getNewEpisodesSaveFilePath() {
+    return getSaveDirPath() + '/poddycast-new_episodes.json';
 }
 
-function getArchivedFilePath()
-{
-    return getSaveDirPath() + "/poddycast-archived_episodes.json"
+function getArchivedFilePath() {
+    return getSaveDirPath() + '/poddycast-archived_episodes.json';
 }
 
-function getPlaylistFilePath()
-{
-    return getSaveDirPath() + "/poddycast-playlists.json"
+function getPlaylistFilePath() {
+    return getSaveDirPath() + '/poddycast-playlists.json';
 }
-
-function getSettingsFilePath()
-{
-    return getSaveDirPath() + "/poddycast-podcast_settings.json"
+/*
+function getSettingsFilePath() {
+    return getSaveDirPath() + '/poddycast-podcast_settings.json';
 }
-
-function getPreferencesFilePath()
-{
-    return getSaveDirPath() + "/poddycast-app_preferences.json"
+*/
+function getPreferencesFilePath() {
+    return getSaveDirPath() + '/poddycast-app_preferences.json';
 }
 
 function setTitlebarOnWin() {
@@ -97,106 +167,56 @@ function setSearchWithoutFocus() {
     })
 }
 
-function init()
-{
+function setTitle(title) {
+    if(isWindows())
+        titlebar.updateTitle(title);
+    else 
+        BrowserWindow.getAllWindows()[0].setTitle(title);
+}
+
+function init() {
     if (!fs.existsSync(getSaveDirPath()))
-    {
         fs.mkdirSync(getSaveDirPath());
-    }
-
-    if (!fs.existsSync(getSaveFilePath()))
-    {
-        fs.openSync(getSaveFilePath(), 'w');
-    }
-
-    if (!fs.existsSync(getNewEpisodesSaveFilePath()))
-    {
-        fs.openSync(getNewEpisodesSaveFilePath(), 'w');
-    }
 
     if (!fs.existsSync(getArchivedFilePath()))
     {
         fs.openSync(getArchivedFilePath(), 'w');
     }
-
-    if (!fs.existsSync(getPlaylistFilePath()))
-    {
-        fs.openSync(getPlaylistFilePath(), 'w');
-    }
-
+    /*
     if (!fs.existsSync(getSettingsFilePath()))
     {
         fs.openSync(getSettingsFilePath(), 'w');
     }
+    */
+    loadPreferences();
+    loadFeeds();
+    loadPlaylists();
+    loadFavoritePodcasts();
+    loadNewEpisodes();
 
-    if (!fs.existsSync(getPreferencesFilePath()))
-    {
-        fs.openSync(getPreferencesFilePath(), 'w');
-
-        setPreference('darkmode', false)
-        setPreference('minimize', false)
-        setPreference('proxymode', false)
-        setPreference('playspeed', 1.0)
-    }
-
-    setTitlebarOnWin()
-    darkMode()
+    setTitlebarOnWin();
+    darkMode();
 
     setSearchWithoutFocus()
 
     initController()
-    loadPlaylists()
+    
     readFeeds()
     showNewEpisodesPage()
     setItemCounts()
     translate()
 }
 
-function fileExistsAndIsNotEmpty(_File)
-{
+function fileExistsAndIsNotEmpty(_File) {
     return (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
 }
 
-function isAlreadySaved(_FeedUrl)
-{
-    var FeedExists  = false;
-
-    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i ++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
-                FeedExists = true
-                break
-            }
-        }
-    }
-
-    return FeedExists
+function isAlreadyFavorite(_FeedUrl) {
+   return (allFavoritePodcasts.findByFeedUrl(_FeedUrl) != -1);
 }
 
-function isEpisodeAlreadySaved(_EpisodeTitle)
-{
-    var FeedExists  = false;
-
-    if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i ++)
-        {
-            if (JsonContent[i].episodeTitle == _EpisodeTitle)
-            {
-                FeedExists = true
-                break
-            }
-        }
-    }
-
-    return FeedExists
+function episodeIsAlreadyInNewEpisodes(_EpisodeTitle) {
+    return (allNewEpisodes.findByTitleAndChannel(_EpisodeTitle) != -1);
 }
 
 function isAlreadyInPlaylist(_ListName, _PodcastName) {
@@ -223,17 +243,48 @@ function getFileValue(filePath, _DestinationTag, _ReferenceTag, _Value) {
 }
 
 function getBestArtworkUrl(podcastName) {
-    let Artwork = getFileValue(getSaveFilePath(), "artworkUrl100", "collectionName", podcastName);
-    if(Artwork != undefined && Artwork != 'undefined')
-        return Artwork;
-    
-    Artwork = getFileValue(getSaveFilePath(), "artworkUrl60", "collectionName", podcastName);
-    if(Artwork != undefined && Artwork != 'undefined')
-        return Artwork;
+    let podcast = allFavoritePodcasts.getByName(podcastName);
+
+    if(podcast != undefined) {
+        let Artwork = podcast.artworkUrl100;
+        if(Artwork != undefined && Artwork != 'undefined')
+            return Artwork;
+        
+        Artwork = podcast.artworkUrl60;
+        if(Artwork != undefined && Artwork != 'undefined')
+            return Artwork;
+    }
 
     //Set "no Artwork" image
-    Artwork = "img/generic_podcast_image.png";
+    Artwork = getGenericArtwork();
     return Artwork;
+}
+
+function getArtworkFromFeed(xmlDoc) {
+    if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0] !== undefined) 
+        return xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0].getAttribute("url")
+    
+    if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0] !== undefined) 
+        return xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0].getAttribute("href")
+    
+    // Find any element with 'href' or 'url' attribute containing an image (podcast thumbnail)
+    for (let i in xmlDoc.getElementsByTagName("channel")) {
+        if (xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").length !== 0) {
+            return xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").getAttribute('href')
+        } else if (xmlDoc.getElementsByTagName("channel")[i].querySelector("*[url*='.jpeg'], *[url*='.jpg'], *[url*='.png']").length !== 0) {
+            return xmlDoc.getElementsByTagName("channel")[i].querySelector("*[href*='.jpeg'], *[href*='.jpg'], *[href*='.png']").getAttribute('url')
+        }
+    }
+    
+    return getGenericArtwork();
+}
+
+function getGenericArtwork() {
+    return 'img/generic_podcast_image.png';
+}
+
+function isGenericArtwork(Artwork) {
+    return (Artwork == getGenericArtwork());
 }
 
 function ifExistsReadFile(filePath) {
@@ -243,18 +294,15 @@ function ifExistsReadFile(filePath) {
     return fileContent;
 }
 
-function clearTextField(_InputField)
-{
+function clearTextField(_InputField) {
     _InputField.value = ""
 }
 
-function focusTextField(_InputField)
-{
+function focusTextField(_InputField) {
     document.getElementById(_InputField).focus()
 }
 
-function loseFocusTextField(_InputField)
-{
+function loseFocusTextField(_InputField) {
     document.getElementById(_InputField).blur()
 }
 
@@ -356,7 +404,7 @@ function isProxySet()
 
     return ProxySettings
 }
-
+/*
 function addToSettings(_PodcastName, _FeedUrl)
 {
     if (fs.existsSync(getSettingsFilePath()))
@@ -387,9 +435,11 @@ function addToSettings(_PodcastName, _FeedUrl)
         fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
 }
-
+*/
 function getSettings(_FeedUrl)
 {
+    return allFavoritePodcasts.getExcludeFromNewEpisodesByFeedUrl(_FeedUrl);
+    /*
     var ToInbox = true
 
     if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
@@ -408,8 +458,9 @@ function getSettings(_FeedUrl)
     }
 
     return ToInbox
+    */
 }
-
+/*
 function isInSettings(_FeedUrl)
 {
     var Result = false
@@ -431,9 +482,11 @@ function isInSettings(_FeedUrl)
 
     return Result
 }
-
+*/
 function changeSettings(_FeedUrl, _ToInbox)
 {
+    allFavoritePodcasts.setExcludeFromNewEpisodesByFeedUrl(_FeedUrl, _ToInbox);
+    /*
     if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
@@ -450,6 +503,7 @@ function changeSettings(_FeedUrl, _ToInbox)
 
         fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
     }
+    */
 }
 
 function setMinimize()
@@ -482,33 +536,19 @@ function setMinimize()
 // PREFERENCES
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setPreference(_Key, _Value)
-{
-    if (fs.existsSync(getPreferencesFilePath()))
-    {
-        if (fs.readFileSync(getPreferencesFilePath(), "utf-8") == "")
-        {
-            var JsonContent = {}
-        }
-        else
-        {
-            var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
-        }
-
-        JsonContent[_Key] = _Value
-
-        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(JsonContent, null, "\t"))
-    }
+function setPreference(_Key, _Value) {
+    if(allPreferences.get(_Key) !== _Value)
+        allPreferences.set(_Key, _Value);
 }
 
 
-function getPreference(_Key)
-{
-    if (fs.existsSync(getPreferencesFilePath()) && fs.readFileSync(getPreferencesFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
-
-        return JsonContent[_Key]
+function getPreference(_Key) {
+    if(allPreferences)
+        return allPreferences.get(_Key);
+    
+    if (fs.existsSync(getPreferencesFilePath()) && fs.readFileSync(getPreferencesFilePath(), "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"));
+        return JsonContent[_Key];
     }
 }
 

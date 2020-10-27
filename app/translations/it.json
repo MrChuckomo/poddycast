@@ -37,12 +37,13 @@
 	"Rename": "Rinomina",
 	"Add to playlist": "Aggiungi alla playlist",
 	"Push to New Episodes": "Aggiungi a Nuovi episodi",
-	"History Items": "History Items",
+	"History Items": "Episodi ascoltati",
 	"Favorite Podcasts": "Podcasts preferiti",
 	"Last Podcast": "Ultimo Podcast",
 	"Episodes": "Episodi",
 	"Refresh Feeds": "Ricarica Feeds",
 	"Refresh":"Ricarica",
 	"Done": "Fatto",
-	"Set Playlist": "Imposta Playlist"
+	"Set Playlist": "Imposta Playlist",
+	"Nothing to show": "Niente da mostrare"
 }

@@ -38,17 +38,15 @@ function createWindow()
         icon: trayIcon,
         frame: !(process.platform === "win32")
     });
-    
-    menuBarVisibility = false
+    /*
+    var menuBarVisibility = false
     win.webContents.on("before-input-event", (event, input) => { 
 	    if(input.alt) {
 	        win.setMenuBarVisibility(menuBarVisibility)
-	        menuBarVisibility = !menuBarVisibility
+            menuBarVisibility = !menuBarVisibility
 	    }
 	})
-    
-	win.setMenuBarVisibility(false)
-
+    */
     win.loadURL(url.format
     ({
         pathname: path.join(__dirname, 'index.html'),

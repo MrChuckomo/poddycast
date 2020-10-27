@@ -15,6 +15,21 @@ function getBody() {
     return $('#content-right #content-right-body #list').html();
 }
 
+function setNothingToShowBody(icon, id) {
+    if(!id || !$('#' + id).get(0)) {
+        id = !id ? '' : id;
+
+        setGridLayout($('#list').get(0), false);
+        let $body = '<span id="' + id + '" style="text-align:center; width: 100%; display:inline-block; font-size: 20px">' +
+                        '<br>' +
+                        icon +
+                        '<br><br>' +
+                        i18n.__('Nothing to show') +
+                    '</span>';
+        setBody($body);
+    }
+}
+
 /*
  *  Header
  */
@@ -33,6 +48,10 @@ function setHeader(headerHtml, buttonHtml) {
 
 function getHeader() {
     return $('#content-right #content-right-header h1').html();
+}
+
+function notPlaylistHeader() {
+    return Boolean($('#content-right #content-right-header h1 span').get(0));
 }
 
 function generateHtmlTitle(title) {

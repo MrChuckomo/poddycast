@@ -45,6 +45,7 @@ function playNow(_Self)
 
     // NOTE: Set the audio source
     
+    PlayerSource.setAttribute("channel", _Self.getAttribute("channel"))
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
 
@@ -53,7 +54,7 @@ function playNow(_Self)
     togglePlayPauseButton()
 
     Player.load()
-    Player.currentTime = getPlaybackPosition(_Self.getAttribute("url"))
+    Player.currentTime = getPlaybackPosition(_Self.getAttribute("channel"), _Self.getAttribute("url"))
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
@@ -67,9 +68,8 @@ function playNow(_Self)
         togglePlayPauseButton()
     }
 
-    const mainAppWindow = BrowserWindow.getAllWindows()[0]
-
-    mainAppWindow.setTitle(_Self.getAttribute("title"))
+    setTitle(_Self.getAttribute("title"))
+    playPlayer()
 }
 
 
@@ -130,6 +130,11 @@ function speedUp(_Self) {
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
     switch (rate.innerHTML) {
+        case "0.5x": rate.innerHTML = "0.6x"; Player.playbackRate = 0.6; Player.defaultPlaybackRate = 0.6 ; break;
+        case "0.6x": rate.innerHTML = "0.7x"; Player.playbackRate = 0.7; Player.defaultPlaybackRate = 0.7 ; break;
+        case "0.7x": rate.innerHTML = "0.8x"; Player.playbackRate = 0.8; Player.defaultPlaybackRate = 0.8 ; break;
+        case "0.8x": rate.innerHTML = "0.9x"; Player.playbackRate = 0.9; Player.defaultPlaybackRate = 0.9 ; break;
+        case "0.9x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
         case "1.0x": rate.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
         case "1.1x": rate.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
         case "1.2x": rate.innerHTML = "1.3x"; Player.playbackRate = 1.3; Player.defaultPlaybackRate = 1.3 ; break;
@@ -148,7 +153,7 @@ function speedUp(_Self) {
         case "3.3x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
         case "3.5x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
         case "3.7x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
-        case "4.0x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
+        case "4.0x": rate.innerHTML = "0.5x"; Player.playbackRate = 0.5; Player.defaultPlaybackRate = 0.5 ; break;
         default: break;
     }
 }
@@ -184,7 +189,13 @@ function speedDown(_Self) {
         case "1.3x": rate.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
         case "1.2x": rate.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
         case "1.1x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
-        case "1.0x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
+        case "1.0x": rate.innerHTML = "0.9x"; Player.playbackRate = 0.9; Player.defaultPlaybackRate = 0.9 ; break;
+        case "0.9x": rate.innerHTML = "0.8x"; Player.playbackRate = 0.8; Player.defaultPlaybackRate = 0.8 ; break;
+        case "0.8x": rate.innerHTML = "0.7x"; Player.playbackRate = 0.7; Player.defaultPlaybackRate = 0.7 ; break;
+        case "0.7x": rate.innerHTML = "0.6x"; Player.playbackRate = 0.6; Player.defaultPlaybackRate = 0.6 ; break;
+        case "0.6x": rate.innerHTML = "0.5x"; Player.playbackRate = 0.5; Player.defaultPlaybackRate = 0.5 ; break;
+        case "0.5x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
+        
         default: break;
     }
 }
@@ -206,7 +217,7 @@ function updateProgress()
 
     if (parseInt(Player.currentTime) % 10 == 0)
     {
-        savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
+        savePlaybackPosition(PlayerSource.getAttribute("channel"), PlayerSource.getAttribute("src"), Player.currentTime)
     }
 
     if (Player.ended)
@@ -237,7 +248,7 @@ function updateProgress()
     setPlaybackTime(Player.duration, "content-right-player-duration")
 
     // Update progress bar in taskbar
-    mainAppWindow.setProgressBar(Value / 100)
+    //mainAppWindow.setProgressBar(Value / 100)
 }
 
 function seekProgress(_Self, _Event)
@@ -250,7 +261,7 @@ function seekProgress(_Self, _Event)
 
     Player.currentTime = percent * Player.duration;
 
-    savePlaybackPosition(PlayerSource.getAttribute("src"), Player.currentTime)
+    savePlaybackPosition(PlayerSource.getAttribute("channel"), PlayerSource.getAttribute("src"), Player.currentTime)
 }
 
 
@@ -318,27 +329,8 @@ function setPlaybackTime(_Time, _ElementName)
     }
 }
 
-function savePlaybackPosition(_Source, _CurrentTime)
-{
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].episodeUrl == _Source)
-            {
-                JsonContent[i].playbackPosition = _CurrentTime
-
-                // console.log(JsonContent[i].playbackPosition);
-                // console.log(_CurrentTime);
-
-                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent, null, "\t"))
-
-                break
-            }
-        }
-    }
+function savePlaybackPosition(channelName, _Source, _CurrentTime){
+    allFeeds.setPlaybackPositionByEpisodeUrl(channelName, _Source, _CurrentTime);
 }
 
 function togglePlayPauseButton() {
@@ -374,28 +366,11 @@ function pausePlayer()
     Player.pause()
 }
 
-function getPlaybackPosition(_Source)
-{
-    var PlaybackPosition = 0
-
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].episodeUrl == _Source)
-            {
-                PlaybackPosition = JsonContent[i].playbackPosition
-
-                break
-            }
-        }
-    }
-
-    return PlaybackPosition
+function getPlaybackPosition(channelName, _Source) {
+    playbackPosition = allFeeds.getPlaybackPositionByEpisodeUrl(channelName, _Source)
+    return playbackPosition ? playbackPosition : 0;
 }
-
+/*
 function setSpeed()
 {
     var Player = document.getElementById("player")
@@ -404,3 +379,4 @@ function setSpeed()
         Player.playbackRate = parseFloat(getPreference('speed'))
     }
 }
+*/

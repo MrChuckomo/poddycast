@@ -25,46 +25,14 @@ function showNewEpisodesPage() {
 
     clearBody();
 
-    let fileContent = ifExistsReadFile(getNewEpisodesSaveFilePath());
-    if (fileContent == "")
-        return;
-    
     let List = $('#list');
     setGridLayout(List.get(0), false);
 
-    let json  = JSON.parse(fileContent);
-    for (var i = json.length - 1; i >= 0 ; i--) {
+    if(allNewEpisodes.isEmpty())
+        setNothingToShowBody(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
 
-        let Artwork = getBestArtworkUrl(json[i].channelName);
-        let episodeDescription = getEpisodeInfoFromDescription(json[i].episodeDescription);
-        
-        var ListElement = buildListItem(new cListElement (
-            [
-                getImagePart(Artwork),
-                getBoldTextPart(json[i].episodeTitle),
-                getSubTextPart(json[i].duration == undefined ? "" : json[i].duration),
-                getTextPart(json[i].channelName),
-                getDescriptionPart(s_InfoIcon, episodeDescription),
-                getIconButtonPart(s_DeleteIcon)
-            ],
-            "5em 1fr 6em 1fr 5em 5em"
-        ), eLayout.row)
-        
-        ListElement.onclick = function() {
-            playNow(this);
-        };
-        ListElement.setAttribute("channel", json[i].channelName)
-        ListElement.setAttribute("title", json[i].episodeTitle)
-        ListElement.setAttribute("type", json[i].episodeType)
-        ListElement.setAttribute("url", json[i].episodeUrl)
-        ListElement.setAttribute("length", json[i].episodeLength)
-        ListElement.setAttribute("artworkUrl", Artwork)
-
-        if (player.isPlaying(json[i].episodeUrl))
-            ListElement.classList.add("select-episode")
-
-        List.append(ListElement)
-    }
+    for (let i in allNewEpisodes.episodes) 
+        List.append(allNewEpisodes.ui.getNewItemList(allNewEpisodes.get(i)));
 }
 
 function showFavoritesPage() {
@@ -77,11 +45,10 @@ function showFavoritesPage() {
 
     clearBody();
 
-    let fileContent = ifExistsReadFile(getSaveFilePath());
-    if (fileContent == "")
+    if (allFavoritePodcasts.isEmpty())
         return;
 
-    let JsonContent = sortByName(JSON.parse(fileContent));
+    let JsonContent = allFavoritePodcasts.getAll();//sortByName(allFavoritePodcasts.getAll());
 
     let List = document.getElementById("list");
     setGridLayout(List, true);
@@ -91,7 +58,7 @@ function showFavoritesPage() {
         if(Artwork == undefined || Artwork == 'undefined') {
             Artwork = JsonContent[i].artworkUrl60;
             if(Artwork == undefined || Artwork == 'undefined') 
-                Artwork = "img/generic_podcast_image.png";
+                Artwork = getGenericArtwork();
         }
 
         let ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite);
@@ -139,7 +106,7 @@ function showHistoryPage() {
         let EpisodeTitle = JsonContent[i].episodeTitle
         let Artwork = getBestArtworkUrl(ChannelName);
 
-        if (Artwork != 'img/generic_podcast_image.png') {
+        if (!isGenericArtwork(Artwork)) {
             let DateTime = new Date(JsonContent[i].date);
             let ListElement = buildListItem(new cListElement(
                 [
@@ -171,11 +138,7 @@ function showStatisticsPage() {
 
     List.append(getStatisticsElement("statistics-header", "Podcasts", null));
 
-    if (fileExistsAndIsNotEmpty(getSaveFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"));
-        List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"),  JsonContent.length));
-    } else 
-        List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"), 0));
+    List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"), allFavoritePodcasts.length()));
 
     if (fileExistsAndIsNotEmpty(getArchivedFilePath())) {
         JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"));
@@ -190,22 +153,9 @@ function showStatisticsPage() {
     else
         List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  0));
 
-    if (fileExistsAndIsNotEmpty(getNewEpisodesSaveFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"));
-        List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  JsonContent.length));
-    } else
-        List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  0));
+    List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  allNewEpisodes.length()));
 
     List.append(getStatisticsElement("statistics-header", i18n.__("Playlists"), null));
 
-    if (fileExistsAndIsNotEmpty(getPlaylistFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"));
-        List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  JsonContent.length));
-    } else
-        List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  0));
-}
-
-module.exports = {
-    selectMenuItem: selectMenuItem,
-    showNewEpisodesPage: showNewEpisodesPage
+    List.append(getStatisticsElement("statistics-entry", i18n.__("Playlists"),  allPlaylist.memory.length()));
 }

@@ -51,27 +51,21 @@ function getDarkModeMenuItem(_ParentMenu)
     // NOTE: Go through all menu items
     // NOTE: Find the "Dark Mode" menu item
 
-    var MenuItem = null
+    var MenuItem = null;
 
-    for (var i = 0; i < app.getApplicationMenu().items.length; i++)
-    {
-        appMenuItem = app.getApplicationMenu().items[i]
+    for (let i in app.getApplicationMenu().items) {
+        appMenuItem = app.getApplicationMenu().items[i];
 
-        for (var j = 0; j < appMenuItem.submenu.items.length; j++)
-        {
-            if (appMenuItem.submenu.items[j].label == i18n.__('Dark Mode') && appMenuItem.submenu.items[j].type == "checkbox")
-            {
-                MenuItem = appMenuItem.submenu.items[j]
-
-                break
+        for (let j in appMenuItem.submenu.items) {
+            if (appMenuItem.submenu.items[j].label == i18n.__('Dark Mode') && appMenuItem.submenu.items[j].type == "checkbox") {
+                MenuItem = appMenuItem.submenu.items[j];
+                break;
             }
         }
 
         if (MenuItem != null)
-        {
-            break
-        }
+            break;
     }
 
-    return MenuItem
+    return MenuItem;
 }

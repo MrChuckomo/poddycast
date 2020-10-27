@@ -124,3 +124,21 @@ function getIconButtonPart(_Icon)
 
     return IconButtonElement
 }
+
+function getAddEpisodeButtonPart() {
+    let addEpisodeButton = getIconButtonPart(s_AddEpisodeIcon);
+    addEpisodeButton.getElementsByTagName('svg')[0].onclick = function (event) {
+        event.stopPropagation(); 
+        addToEpisodes(this);
+    }
+    return addEpisodeButton;
+}
+
+function getDeleteButtonPart() {
+    let deleteButton = getIconButtonPart(s_DeleteIcon);
+    deleteButton.getElementsByTagName('svg')[0].onclick = function (event) {
+        event.stopPropagation(); 
+        deleteEntryWithIcon(this);
+    }
+    return deleteButton;
+}

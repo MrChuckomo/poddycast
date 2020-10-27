@@ -2,29 +2,9 @@
 // LEFT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setItemCounts()
-{
-    var NewEpisodesCount       = document.getElementById("menu-episodes").getElementsByClassName("menu-count")[0]
-
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
-    {
-        NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8")).length
-    }
-    else
-    {
-        NewEpisodesCount.innerHTML = 0
-    }
-
-    var FavoritesCount       = document.getElementById("menu-favorites").getElementsByClassName("menu-count")[0]
-
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
-    {
-        FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8")).length
-    }
-    else
-    {
-        FavoritesCount.innerHTML = 0
-    }
+function setItemCounts() {
+    $('#menu-episodes .menu-count').html(allNewEpisodes.length());
+    $('#menu-favorites .menu-count').html(allFavoritePodcasts.length());
 }
 
 function setGridLayout(_List, _Enable) {
