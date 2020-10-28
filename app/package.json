@@ -14,8 +14,9 @@
     "dependencies": {},
     "devDependencies": {
         "custom-electron-titlebar": "^3.2.5",
-        "electron": "^4.2.12",
+        "electron": "^10.1.5",
         "electron-installer-debian": "^3.1.0",
-        "electron-packager": "^13.1.1"
+        "electron-packager": "^13.1.1",
+        "node": "^12.16.3"
     }
 }

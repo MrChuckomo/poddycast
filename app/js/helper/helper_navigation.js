@@ -67,10 +67,10 @@ function clearMenuSelection() {
     $('#menu li, #playlists li').removeClass('selected')
 }
 
-function addToPlaylist(_PlaylistName, _PodcastName) {
-    allPlaylist.memory.addPodcastByName(_PlaylistName, _PodcastName);
+function addToPlaylist(_PlaylistName, _PodcastFeedUrl) {
+    allPlaylist.memory.addPodcastByFeedUrl(_PlaylistName, _PodcastFeedUrl);
 }
 
-function removeFromPlaylist(_PlaylistName, _PodcastName) {
-    allPlaylist.memory.removePodcastByName(_PlaylistName, _PodcastName);
+function removeFromPlaylist(_PlaylistName, _PodcastFeedUrl) {
+    allPlaylist.memory.removePodcastByFeedUrl(_PlaylistName, _PodcastFeedUrl);
 }

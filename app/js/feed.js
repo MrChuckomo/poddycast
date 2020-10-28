@@ -5,9 +5,21 @@ var player = new CPlayer()
 var allNewEpisodes = null;
 var allFeeds = null;
 
+process.dlopen = () => {
+  throw new Error('Load native module is not safe')
+}
+const worker = new Worker('script.js')
+worker.onmessage = function (ev) {
+    readFeeds();
+    console.log('Feeds have been read!');
+}
+
+worker.postMessage(""); 
+
 class Episode {
-    constructor(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
+    constructor(ChannelName, FeedUrl, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
         this.channelName = ChannelName;
+        this.feedUrl = FeedUrl;
         this.episodeTitle = EpisodeTitle;
         this.episodeUrl = EpisodeUrl;
         this.episodeType = EpisodeType;
@@ -40,17 +52,17 @@ class Feeds {
                 fs.openSync(this.getFeedPathByIndicator(indicator), 'w');
 
             let fileContent = ifExistsReadFile(this.getFeedPathByIndicator(indicator));
-            this[this.index[i].channelName] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
+            this[this.index[i].feedUrl] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
         }
     }
 
-    updateByChannelName(channelName) {
-        fs.writeFileSync(this.getFeedPathByChannelName(channelName), JSON.stringify(this[channelName], null, "\t"));
+    updateByFeedUrl(feedUrl) {
+        fs.writeFileSync(this.getFeedPathByFeedUrl(feedUrl), JSON.stringify(this[feedUrl], null, "\t"));
     }
 
     updateByIndicator(indicator) {
-        let channelName = this.getChannelNameByIndicator(indicator);
-        fs.writeFileSync(this.getFeedPathByIndicator(indicator), JSON.stringify(this[channelName], null, "\t"));
+        let feedUrl = this.getFeedUrlByIndicator(indicator);
+        fs.writeFileSync(this.getFeedPathByIndicator(indicator), JSON.stringify(this[feedUrl], null, "\t"));
     }
 
     updateIndex() {
@@ -60,42 +72,42 @@ class Feeds {
     updateAll() {
         this.updateIndex();
         for(let i in this.index)
-            this.update(this.index[i].channelName);
+            this.update(this.index[i].feedUrl);
     }
 
     getFeedPathByIndicator(indicator) {
         return getFeedDirPath() + '/' + indicator + '.json';
     }
 
-    getFeedPathByChannelName(channelName) {
-        return getFeedDirPath() + '/' + this.getIndicatorByChannelName(channelName) + '.json';
+    getFeedPathByFeedUrl(feedUrl) {
+        return getFeedDirPath() + '/' + this.getIndicatorByFeedUrl(feedUrl) + '.json';
     }
 
-    getIndicatorByChannelName(channelName) {
-        let i = this.getIofIndexByChannelName(channelName);
+    getIndicatorByFeedUrl(feedUrl) {
+        let i = this.getIofIndexByFeedUrl(feedUrl);
         if(i != -1)
             return this.index[i].indicator;
         return undefined;
     }
 
-    getIofIndexByChannelName(channelName) {
+    getIofIndexByFeedUrl(feedUrl) {
         for(let i in this.index)
-            if(this.index[i].channelName == channelName)
+            if(this.index[i].feedUrl == feedUrl)
                 return i;
         return -1;
     }
 
-    getChannelNameByIndicator(indicator) {
+    getFeedUrlByIndicator(indicator) {
         for(let i in this.index)
             if(this.index[i].indicator == indicator)
-                return this.index[i].channelName;
+                return this.index[i].feedUrl;
         return undefined;
     }
 
-    length(channelName) {
-        if(!this[channelName])
+    length(feedUrl) {
+        if(!this[feedUrl])
             return 0;
-        return this[channelName].length;
+        return this[feedUrl].length;
     }
 
     lengthIndex() {
@@ -106,25 +118,25 @@ class Feeds {
         let getNewIndicator = undefined;
         do {
             getNewIndicator = '_' + Math.random().toString(36).substr(2, 9);
-        } while(this.getChannelNameByIndicator(getNewIndicator));
+        } while(this.getFeedUrlByIndicator(getNewIndicator));
         return getNewIndicator;
     }
 
-    getFeedPodcast(channelName) {
-        return this[channelName];
+    getFeedPodcast(feedUrl) {
+        return this[feedUrl];
     }
 
-    getEpisode(channelName, i) {
-        return this[channelName][i];
+    getEpisode(feedUrl, i) {
+        return this[feedUrl][i];
     }
 
-    getLastEpisode(channelName) {
-        return this.getEpisode(channelName, 0);
+    getLastEpisode(feedUrl) {
+        return this.getEpisode(feedUrl, 0);
     }
 
     add(episode) {
-        let channelName = episode.channelName;
-        let indicator = this.getIndicatorByChannelName(channelName);
+        let feedUrl = episode.feedUrl;
+        let indicator = this.getIndicatorByFeedUrl(feedUrl);
         if(!indicator) {
             indicator = this.getNewIndicator();
 
@@ -132,15 +144,15 @@ class Feeds {
                 fs.openSync(this.getFeedPathByIndicator(indicator), 'w');
 
             let fileContent = ifExistsReadFile(this.getFeedPathByIndicator(indicator));
-            this[channelName] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
+            this[feedUrl] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
             
-            this.index.push({channelName: channelName, indicator: indicator});
+            this.index.push({feedUrl: feedUrl, indicator: indicator});
             this.updateIndex();
         }
 
-        let lastEpisode = this.getLastEpisode(channelName);
-        if(!lastEpisode || compareEpisodeDates(episode.pubDate, lastEpisode.pubDate) > 0) {
-            this[channelName].unshift(episode);
+        let lastEpisode = this.getLastEpisode(feedUrl);
+        if(!lastEpisode || compareEpisodeDates(episode.pubDate, lastEpisode.pubDate) >= 0) {
+            this[feedUrl].unshift(episode);
 
             this.updateByIndicator(indicator);
             return true;
@@ -161,6 +173,7 @@ class Feeds {
     toNewEpisodeObj(episode) {
         return new NewEpisode(
             episode.channelName,
+            episode.feedUrl,
             episode.episodeTitle,
             episode.episodeUrl,
             episode.episodeType,
@@ -171,23 +184,14 @@ class Feeds {
         )
     }
 
-    getFeedFromXml($xml) {
-        let channelName = getChannelNameFromXml($xml);
-        let itemCount = $xml.find('item').length;
-        let newEpisodesCount = itemCount - this.length(channelName);
-        for(let i = newEpisodesCount - 1; i >= 0; i--) {
-            let episode = getEpisodeObjFromXml($xml, i);
-            this.add(episode)
-        }
-        return (newEpisodesCount % itemCount);
-    }
 
-    delete(channelName) {
-        let i = this.getIofIndexByChannelName(channelName);
+
+    delete(feedUrl) {
+        let i = this.getIofIndexByFeedUrl(feedUrl);
         let indicator = this.index[i].indicator;
         try {
             fs.unlinkSync(this.getFeedPathByIndicator(indicator));
-            delete this[channelName];
+            delete this[feedUrl];
             this.index.splice(i, 1);
             this.updateIndex();
             console.log('successfully deleted ' + this.getFeedPathByIndicator(indicator));
@@ -196,31 +200,43 @@ class Feeds {
         }
     }
 
-    findEpisodeByEpisodeUrl(channelName, episodeUrl) {
-        for(let i in this[channelName])
-            if(this[channelName][i].episodeUrl == episodeUrl)
+    findEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
+        for(let i in this[feedUrl])
+            if(this[feedUrl][i].episodeUrl == episodeUrl)
                 return i;
         return -1
     }
     
-    setPlaybackPositionByEpisodeUrl(channelName, episodeUrl, playbackPosition) {
-        let i = this.findEpisodeByEpisodeUrl(channelName, episodeUrl);
+    setPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl, playbackPosition) {
+        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
         if(i != -1) {
-            this[channelName][i].playbackPosition = playbackPosition;
-            this.updateByChannelName(channelName);
+            this[feedUrl][i].playbackPosition = playbackPosition;
+            this.updateByFeedUrl(feedUrl);
         }
     }
 
-    getPlaybackPositionByEpisodeUrl(channelName, episodeUrl) {
-        let i = this.findEpisodeByEpisodeUrl(channelName, episodeUrl);
+    getPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl) {
+        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
         if(i != -1)
-            return this[channelName][i].playbackPosition;
+            return this[feedUrl][i].playbackPosition;
         return undefined;
     }
 }
 
 function loadFeeds() {
     allFeeds = new Feeds();
+}
+
+function getFeedFromXml($xml, feedUrl) {
+    let channelName = getChannelNameFromXml($xml);
+    let $item = $xml.find('item');
+    let itemCount = $item.length;
+    let newEpisodesCount = itemCount - allFeeds.length(feedUrl);
+    for(let i = newEpisodesCount - 1; i >= 0; i--) {
+        let episode = getEpisodeObjFromXml(channelName, feedUrl, $($item.get(i)));
+        allFeeds.add(episode)
+    }
+    return (newEpisodesCount % itemCount);
 }
 
 function compareEpisodeDates(episode1, episode2) {
@@ -234,8 +250,9 @@ function compareEpisodeDates(episode1, episode2) {
 }
 
 class NewEpisode {
-    constructor(channelName, episodeTitle, episodeUrl, episodeType, episodeLength, episodeDescription, duration, pubDate) {
+    constructor(channelName, feedUrl, episodeTitle, episodeUrl, episodeType, episodeLength, episodeDescription, duration, pubDate) {
         this.channelName = channelName;
+        this.feedUrl = feedUrl;
         this.episodeTitle = episodeTitle;
         this.episodeUrl = episodeUrl;
         this.episodeType = episodeType;
@@ -275,7 +292,6 @@ class NewEpisodesUI {
             }
         }
     }
-    
 
     getList() {
         return $('#list');
@@ -298,10 +314,12 @@ class NewEpisodesUI {
     }
 
     directAdd(i) {
-        if(!$(this.getAllItemsList().get(i)).get(0))//(i == 0 && this.isEmpity()) || i == allNewEpisodes.length() - 1)
-            this.getList().append(this.getNewItemList(i));
-        else
-            $(this.getAllItemsList().get(i)).before(this.getNewItemList(i));
+        if(!$(this.getAllItemsList().get(i)).get(0)) {
+            if(this.isEmpity())
+                clearBody();
+            this.getList().append(this.getNewItemList(allNewEpisodes.get(i)));
+        } else
+            $(this.getAllItemsList().get(i)).before(this.getNewItemList(allNewEpisodes.get(i)));
     }
 
     addPlaylist(i) {
@@ -309,8 +327,8 @@ class NewEpisodesUI {
 
         let playlistName = getHeader();
         let indexPlaylist = allPlaylist.memory.findByName(playlistName);
-        let podcastName = newEpisode.channelName;
-        if(allPlaylist.memory.findPodcast(indexPlaylist, podcastName) == -1)
+        let feedUrl = newEpisode.feedUrl;
+        if(allPlaylist.memory.findPodcast(indexPlaylist, feedUrl) == -1)
             return;
 
         let playlistEpisodes = allNewEpisodes.getPlaylistEpisodes(playlistName);
@@ -322,7 +340,7 @@ class NewEpisodesUI {
     }
 
     getNewItemList(newEpisode) {
-        let Artwork = getBestArtworkUrl(newEpisode.channelName);
+        let Artwork = getBestArtworkUrl(newEpisode.feedUrl);
         
         let ListElement = buildListItem(new cListElement (
             [
@@ -340,6 +358,7 @@ class NewEpisodesUI {
             playNow(this);
         };
         ListElement.setAttribute("channel", newEpisode.channelName)
+        ListElement.setAttribute("feedUrl", newEpisode.feedUrl)
         ListElement.setAttribute("title", newEpisode.episodeTitle)
         ListElement.setAttribute("type", newEpisode.episodeType)
         ListElement.setAttribute("url", newEpisode.episodeUrl)
@@ -385,7 +404,7 @@ class NewEpisodes {
     get(i) {
         return this.episodes[i];
     }
-
+/*
     findByTitle(title) {
         for(let i in this.episodes)
             if(this.episodes[i].episodeTitle == title)
@@ -397,7 +416,7 @@ class NewEpisodes {
         let i = this.findByTitle(title);
         return (i != -1 ? this.episodes[i] : undefined);
     }
-
+*/
     findByEpisodeUrl(episodeUrl) {
         for(let i in this.episodes)
             if(this.episodes[i].episodeUrl == episodeUrl)
@@ -409,7 +428,7 @@ class NewEpisodes {
         let i = this.findByEpisodeUrl(episodeUrl);
         return (i != -1 ? this.episodes[i] : undefined);
     }
-
+/*
     findByTitleAndChannel(title, channel) {
         for(let i in this.episodes)
             if(this.episodes[i].episodeTitle == title && this.episodes[i].channelName == channel)
@@ -422,8 +441,20 @@ class NewEpisodes {
         return (i != -1 ? this.episodes[i] : undefined);
     }
 
+    findByTitleAndChannel(feedUrl) {
+        for(let i in this.episodes)
+            if(this.episodes[i].feedUrl == feedUrl)
+                return i;
+        return -1;
+    }
+
+    getByTitleAndChannel(feedUrl) {
+        let i = this.findByTitleAndChannel(feedUrl);
+        return (i != -1 ? this.episodes[i] : undefined);
+    }
+*/
     add(episode) {
-        if(this.findByTitleAndChannel(episode.episodeTitle, episode.channelName) == -1) {
+        if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
             let i = 0;
             while(i < this.length() && compareEpisodeDates(this.episodes[i].pubDate, episode.pubDate) > 0)
                 i++;
@@ -432,10 +463,10 @@ class NewEpisodes {
             setItemCounts();
             this.ui.add(i);
             return episode;
-        }
+        } 
         return null;
     }
-
+/*
     removeByTitle(title) {
         let i = this.findByTitle(title);
         if(i != -1) {
@@ -455,7 +486,7 @@ class NewEpisodes {
         }
         return false;
     }
-
+*/
     removeByEpisodeUrl(episodeUrl) {
         let i = this.findByEpisodeUrl(episodeUrl);
         if(i != -1) {
@@ -466,9 +497,9 @@ class NewEpisodes {
         return false;
     }
 
-    removePodcastEpisodes(podcast) {
+    removePodcastEpisodes(feedUrl) {
         for(let i in this.episodes) {
-            if(this.episodes[i].channelName == podcast) 
+            if(this.episodes[i].feedUrl == feedUrl) 
                 this.episodes.splice(i--, 1);
         }
         this.update();
@@ -481,7 +512,7 @@ class NewEpisodes {
             return episodes;
 
         for(let i in this.episodes)
-            if(playlist.list.includes(this.episodes[i].channelName))
+            if(playlist.list.includes(this.episodes[i].feedUrl))
                 episodes.push(this.episodes[i]);
         return episodes;
     }
@@ -494,7 +525,6 @@ function loadNewEpisodes() {
 
 function readFeeds() {
     // TODO: create a new thread to read the feeds
-
     // Add animation to notify the user about fetching new episodes
     $('#menu-refresh svg').addClass('is-refreshing');
 
@@ -537,14 +567,12 @@ function updateFeed(_Content, _eRequest, _Options) {
 }
 
 function updateFeedAndNewEpisode($xml, FeedUrl) {
-    let channelName = getChannelNameFromXml($xml);
-    let numberNewEpisode = allFeeds.getFeedFromXml($xml);
     // NOTE: save latest episode if not already in History
     if(!getSettings(FeedUrl)) {
+        let numberNewEpisode = getFeedFromXml($xml, FeedUrl);
         for(let i = 0; i < numberNewEpisode; i++) {
-            let episode = allFeeds.getEpisode(channelName, i);
-            //if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
-                saveEpisode(episode);
+            let episode = allFeeds.getEpisode(FeedUrl, i);
+            saveEpisode(episode);
         }
     }
 }
@@ -552,7 +580,7 @@ function updateFeedAndNewEpisode($xml, FeedUrl) {
 function getChannelNameFromXml($xml) {
     return $xml.find('channel title').get(0).childNodes[0].nodeValue;
 }
-
+/*
 function getEpisodeObjFromXml($xml, i) {
     let enclosure = $xml.find('item enclosure').get(i);
     let description = '';
@@ -578,6 +606,40 @@ function getEpisodeObjFromXml($xml, i) {
     );
     return episode;
 }
+*/
+
+function getEpisodeObjFromXml(channelName, feedUrl, $item) {
+    let $enclosure = $item.find('enclosure').get(0);
+    let description = '';
+    let $subtitle = $item.find('itunes\\:subtitle').get(0);
+    if($subtitle)
+        description = $subtitle.textContent;
+    else {
+        $subtitle = $item.find('description').get(0);
+        if($subtitle)
+            description = $subtitle.textContent;
+    }
+    let duration = null;
+    let $duration = $item.find('itunes\\:duration').get(0);
+    if($duration)
+        duration = $duration.innerHTML;
+    else
+        duration = $item.find('duration').get(0).innerHTML;
+
+    let episode = new Episode(
+        channelName,
+        feedUrl,
+        $item.find('title').get(0).childNodes[0].nodeValue,
+        ($enclosure ? $enclosure.getAttribute('url') : ''),
+        ($enclosure ? $enclosure.getAttribute('type') : ''),
+        ($enclosure ? $enclosure.getAttribute('length') : ''),
+        getEpisodeInfoFromDescription(description),
+        duration,
+        $item.find('pubDate').get(0).innerHTML
+    );
+    return episode;
+}
+
 
 function showAllEpisodes(_Self) {
     setGridLayout(document.getElementById("list"), false);
@@ -589,9 +651,7 @@ function showAllEpisodes(_Self) {
 }
 
 function getAllEpisodesFromFeed(_Feed) {
-    let PodcastName = allFavoritePodcasts.getByFeedUrl(_Feed).collectionName;
-
-    appendSettingsSection(PodcastName, _Feed);
+    appendSettingsSection(_Feed);
 
     if (isProxySet()) {
         if (_Feed instanceof Object)
@@ -638,7 +698,7 @@ function getChangedFeed(_Feed, _eRequest) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function appendSettingsSection(_PodcastName, _Feed) {
+function appendSettingsSection(_Feed) {
     // NOTE: settings area in front of a podcast episode list
 
     var RightContent = document.getElementById("list")
@@ -661,7 +721,7 @@ function appendSettingsSection(_PodcastName, _Feed) {
 
     // NOTE: set context menu
 
-    setPodcastSettingsMenu(MoreElement, _PodcastName, _Feed)
+    setPodcastSettingsMenu(MoreElement, _Feed)
 
     // NOTE: build layout
 
@@ -673,32 +733,31 @@ function appendSettingsSection(_PodcastName, _Feed) {
     RightContent.append(SettingsDiv)
 }
 
-function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
+function setPodcastSettingsMenu(_Object, _Feed)
 {
     const {remote} = require('electron')
     const {Menu, MenuItem} = remote
 
-    const PlaylistMenu = new Menu()
+    const PlaylistMenu = new Menu();
+    
+    let JsonContent = allPlaylist.memory.playlists;
 
-    let fileContent = ifExistsReadFile(getPlaylistFilePath());
+    for (let i in JsonContent) {
+        let IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].name, _Feed)
 
-    if (fileContent != "") {
-        var JsonContent = JSON.parse(fileContent);
+        PlaylistMenu.append(new MenuItem({
+            label: JsonContent[i].name, 
+            type: "checkbox", 
+            checked: IsInPlaylist, 
+            click(self) {
+                let playlistName = self.label;
+                if(self.checked)
+                    addToPlaylist(playlistName, _Feed);
+                else
+                    removeFromPlaylist(playlistName, _Feed);
 
-        for (let i in JsonContent) {
-            var IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName)
-
-            PlaylistMenu.append(new MenuItem({
-                label: JsonContent[i].playlistName, 
-                type: "checkbox", 
-                checked: IsInPlaylist, 
-                click(self) {
-                    let playlistName = self.label;
-                    let PodcastName = document.getElementsByClassName("settings-header")[0].innerHTML
-                    addToPlaylist(playlistName, PodcastName);
-                }
-            }))
-        }
+            }
+        }))
     }
 
     const ContextMenu = new Menu()
@@ -717,7 +776,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
-        if (_PodcastName != null)
+        if (_Feed != null)
             unsubscribeContextMenu(_Feed);
     }}))
 
@@ -736,13 +795,13 @@ function processEpisodes(_Content, _Options) {
 
     let ChannelName = getChannelNameFromXml($xml);
 
-    let Artwork = getBestArtworkUrl(ChannelName, true);
+    let Artwork = getBestArtworkUrl(FeedUrl);
 
     if (isGenericArtwork(Artwork)) 
         Artwork = getArtworkFromFeed($xml.get(0));
 
     // NOTE: set settings information
-    let feed = allFeeds.getFeedPodcast(ChannelName);
+    let feed = allFeeds.getFeedPodcast(FeedUrl);
     $('.settings-image').get(0).src = Artwork;
     $('.settings-header').get(0).innerHTML = ChannelName;
     $('.settings-count').get(0).innerHTML = feed.length;
@@ -768,7 +827,7 @@ function processEpisodes(_Content, _Options) {
                 "3fr 1fr 1fr 5em 5em 5em"
             ), eLayout.row)
 
-            if (episodeIsAlreadyInNewEpisodes(episode.episodeTitle, ChannelName))
+            if (episodeIsAlreadyInNewEpisodes(episode.episodeUrl))
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
 
             if (player.isPlaying(episode.episodeUrl))
@@ -781,6 +840,7 @@ function processEpisodes(_Content, _Options) {
 
             ListElement.setAttribute("onclick", "playNow(this)");
             ListElement.setAttribute("channel", episode.channelName);
+            ListElement.setAttribute("feedUrl", episode.feedUrl);
             ListElement.setAttribute("title", episode.episodeTitle);
             ListElement.setAttribute("type", episode.episodeType);
             ListElement.setAttribute("url", episode.episodeUrl);
@@ -800,6 +860,7 @@ function addToEpisodes(_Self) {
 
     let episode = new Episode(
         ListElement.getAttribute("channel"),
+        ListElement.getAttribute("feedUrl"),
         ListElement.getAttribute("title"),
         ListElement.getAttribute("url"),
         ListElement.getAttribute("type"),

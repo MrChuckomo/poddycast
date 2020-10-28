@@ -46,6 +46,7 @@ function playNow(_Self)
     // NOTE: Set the audio source
     
     PlayerSource.setAttribute("channel", _Self.getAttribute("channel"))
+    PlayerSource.setAttribute("feedUrl", _Self.getAttribute("feedUrl"))
     PlayerSource.setAttribute("src", _Self.getAttribute("url"))
     PlayerSource.setAttribute("type", _Self.getAttribute("type"))
 
@@ -54,7 +55,7 @@ function playNow(_Self)
     togglePlayPauseButton()
 
     Player.load()
-    Player.currentTime = getPlaybackPosition(_Self.getAttribute("channel"), _Self.getAttribute("url"))
+    Player.currentTime = getPlaybackPosition(_Self.getAttribute("feedUrl"), _Self.getAttribute("url"))
     Player.addEventListener("timeupdate", updateProgress, false)
 
     document.getElementById("content-right-player-img").src = _Self.getAttribute("artworkUrl")
@@ -217,7 +218,7 @@ function updateProgress()
 
     if (parseInt(Player.currentTime) % 10 == 0)
     {
-        savePlaybackPosition(PlayerSource.getAttribute("channel"), PlayerSource.getAttribute("src"), Player.currentTime)
+        savePlaybackPosition(PlayerSource.getAttribute("feedUrl"), PlayerSource.getAttribute("src"), Player.currentTime)
     }
 
     if (Player.ended)
@@ -261,7 +262,7 @@ function seekProgress(_Self, _Event)
 
     Player.currentTime = percent * Player.duration;
 
-    savePlaybackPosition(PlayerSource.getAttribute("channel"), PlayerSource.getAttribute("src"), Player.currentTime)
+    savePlaybackPosition(PlayerSource.getAttribute("feedUrl"), PlayerSource.getAttribute("src"), Player.currentTime)
 }
 
 
@@ -329,8 +330,8 @@ function setPlaybackTime(_Time, _ElementName)
     }
 }
 
-function savePlaybackPosition(channelName, _Source, _CurrentTime){
-    allFeeds.setPlaybackPositionByEpisodeUrl(channelName, _Source, _CurrentTime);
+function savePlaybackPosition(feedUrl, _Source, _CurrentTime){
+    allFeeds.setPlaybackPositionByEpisodeUrl(feedUrl, _Source, _CurrentTime);
 }
 
 function togglePlayPauseButton() {
@@ -366,8 +367,8 @@ function pausePlayer()
     Player.pause()
 }
 
-function getPlaybackPosition(channelName, _Source) {
-    playbackPosition = allFeeds.getPlaybackPositionByEpisodeUrl(channelName, _Source)
+function getPlaybackPosition(feedUrl, _Source) {
+    playbackPosition = allFeeds.getPlaybackPositionByEpisodeUrl(feedUrl, _Source)
     return playbackPosition ? playbackPosition : 0;
 }
 /*

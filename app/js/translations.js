@@ -1,5 +1,5 @@
 
-function translate(){
+function translate() {
   translateByDescriptor(".new-episodes", 'New Episodes');
   translateByDescriptor(".favorites", 'Favorites');
   translateByDescriptor(".history", 'History');

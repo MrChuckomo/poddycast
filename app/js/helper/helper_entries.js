@@ -165,8 +165,8 @@ function deleteFromListView(_ListElement) {
     allNewEpisodes.ui.updateAfterDelete();
 }
 
-function deleteFromFile(_FeedUrl) {
-    let episode = allNewEpisodes.getByEpisodeUrl(_FeedUrl);
+function deleteFromFile(episodeUrl) {
+    let episode = allNewEpisodes.getByEpisodeUrl(episodeUrl);
     if(!episode)
         return false;
 
@@ -174,6 +174,7 @@ function deleteFromFile(_FeedUrl) {
         "channelName": episode.channelName,
         "episodeTitle": episode.episodeTitle,
         "episodeUrl": episode.episodeUrl,
+        "artwork": getBestArtworkUrl(episode.feedUrl),
         "archivedType": "deleted",
         "date": new Date
     }
@@ -183,7 +184,7 @@ function deleteFromFile(_FeedUrl) {
     ArchiveJsonContent.push(archivedEpisode);
     fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent, null, "\t"))
 
-    allNewEpisodes.removeByEpisodeUrl(_FeedUrl);
+    allNewEpisodes.removeByEpisodeUrl(episodeUrl);
     return true;
 }
 

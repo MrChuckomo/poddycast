@@ -6,30 +6,6 @@ class Playlist {
         this.name = name;
         this.list = list;
     }
-
-    setIndex(index) {
-        this.index = index;
-    }
-
-    getIndex() {
-        return this.index;
-    }
-
-    setName(name) {
-        this.name = name;
-    }
-
-    getName() {
-        return this.name;
-    }
-
-    setIndex(list) {
-        this.list = list;
-    }
-
-    getList() {
-        return this.list;
-    }
 }
 
 class PlaylistsInMemory {
@@ -43,20 +19,10 @@ class PlaylistsInMemory {
             
         let fileContent = ifExistsReadFile(getPlaylistFilePath());
         this.playlists = JSON.parse(fileContent == "" ? "[]": fileContent);
-
-        for(let i in this.playlists) {
-            let pl = this.playlists[i];
-            this.playlists[i] = new Playlist(pl.index, pl.playlistName, pl.podcastList);
-        }
     }
 
     update() {
-        let playlists = [];
-        for(let i in this.playlists) {
-            let pl = this.playlists[i];
-            playlists.push({index: pl.index, playlistName: pl.name, podcastList: pl.list})
-        }
-        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(playlists, null, "\t"));
+        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(this.playlists, null, "\t"));
     }
 
     length() {
@@ -75,20 +41,20 @@ class PlaylistsInMemory {
 
     findByIndex(index) {
         for(let i in this.playlists)
-            if(index == this.playlists[i].getIndex())
+            if(index == this.playlists[i].index)
                 return i;
         return -1;
     }
 
     findByName(name) {
         for(let i in this.playlists) 
-            if(name == this.playlists[i].getName())
+            if(name == this.playlists[i].name)
                 return i;
         return -1;
     }
 
     addPlaylist(name) {
-        let maxIndex = (this.length() == 0 ? -1 : this.playlists[this.length() - 1].getIndex());
+        let maxIndex = (this.length() == 0 ? -1 : this.playlists[this.length() - 1].index);
         while(this.findByName(name) != -1) 
             name += "#"
         let playlist = new Playlist(maxIndex + 1, name, []);
@@ -101,7 +67,7 @@ class PlaylistsInMemory {
         if(this.findByName(name) == -1) {
             let i = this.findByIndex(index);
             if(i != -1) {
-                this.playlists[i].setName(name);
+                this.playlists[i].name = name;
                 this.update();
                 return true;
             }
@@ -113,7 +79,7 @@ class PlaylistsInMemory {
         if(this.findByName(name) == -1) {
             let i = this.findByName(oldName);
             if(i != -1) {
-                this.playlists[i].setName(name);
+                this.playlists[i].name = name;
                 this.update();
                 return true;
             }
@@ -141,25 +107,25 @@ class PlaylistsInMemory {
         return false;
     }
 
-    findPodcast(i, podcast) {
+    findPodcast(i, podcastFeedUrl) {
         if(i < 0 || i >= this.length())
             return -1;
-        return this.playlists[i].list.indexOf(podcast);
+        return this.playlists[i].list.indexOf(podcastFeedUrl);
     }
 
-    addPodcastByName(name, podcast) {
+    addPodcastByFeedUrl(name, podcastFeedUrl) {
         let i = this.findByName(name);
-        if(i != -1 && this.findPodcast(i, podcast) == -1) {
-            this.playlists[i].list.push(podcast);
+        if(i != -1 && this.findPodcast(i, podcastFeedUrl) == -1) {
+            this.playlists[i].list.push(podcastFeedUrl);
             this.update();
             return true;
         }
         return false;
     }
 
-    removePodcastByName(name, podcast) {
+    removePodcastByFeedUrl(name, podcastFeedUrl) {
         let i = this.findByName(name);
-        let k = this.findPodcast(i, podcast);
+        let k = this.findPodcast(i, podcastFeedUrl);
         if(i != -1 && k != -1) {
             this.playlists[i].list.splice(k, 1);
             this.update();
@@ -168,9 +134,9 @@ class PlaylistsInMemory {
         return false;
     }
 
-    removePodcastByNameFromAllPlaylists(podcastName) {
+    removePodcastByFeedUrlFromAllPlaylists(podcastFeedUrl) {
         for(let i in this.playlists) {
-            let j = this.findPodcast(i, podcastName);
+            let j = this.findPodcast(i, podcastFeedUrl);
             if(j != -1)
                 this.playlists[i].list.splice(j, 1);
         }
@@ -398,12 +364,12 @@ function removePlaylist(obj) {
     showNewEpisodesPage();
 }
 
-function isInPlaylist(_PlaylistName, _PodcastName) {
+function isInPlaylist(_PlaylistName, _PodcastFeedUrl) {
     let playlist = allPlaylist.memory.getByName(_PlaylistName);
-    return (playlist != undefined && playlist.list.indexOf(_PodcastName) != -1);
+    return (playlist != undefined && playlist.list.indexOf(_PodcastFeedUrl) != -1);
 }
 
-function getPodcastEditItem(_Name, _Artwork, _IsSet)
+function getPodcastEditItem(_Name, _FeedUrl, _Artwork, _IsSet)
 {
     let $container = $('<li></li>');
     let checkBox = (_IsSet ? s_CheckBox : s_CheckBoxOutline);
@@ -420,6 +386,7 @@ function getPodcastEditItem(_Name, _Artwork, _IsSet)
     $container.html(checkBox);
     $container.append($artwork);
     $container.append($name);
+    $container.attr('feedUrl', _FeedUrl);
 
     if (_IsSet) 
         $container.addClass("check");
@@ -446,7 +413,7 @@ function togglePodcast(_Self)
                 _Self.classList.add("uncheck")
                 _Self.getElementsByTagName("svg")[0].innerHTML = CheckBoxOutline.getElementsByTagName("svg")[0].innerHTML
                 //removeFromPlaylist(_Self.parentElement.getElementsByClassName("playlist-edit-input")[0].value, _Self.getElementsByTagName("span")[0].innerHTML)
-                removeFromPlaylist($(_Self).parent().find(".playlist-edit-input").val(), $(_Self).find("span").html())
+                removeFromPlaylist($(_Self).parent().find(".playlist-edit-input").val(), $(_Self).attr('feedUrl'))
 
                 break;
 
@@ -454,7 +421,7 @@ function togglePodcast(_Self)
                 _Self.classList.remove("uncheck")
                 _Self.classList.add("check")
                 _Self.getElementsByTagName("svg")[0].innerHTML = CheckBox.getElementsByTagName("svg")[0].innerHTML
-                addToPlaylist(_Self.parentElement.getElementsByClassName("playlist-edit-input")[0].value, _Self.getElementsByTagName("span")[0].innerHTML)
+                addToPlaylist(_Self.parentElement.getElementsByClassName("playlist-edit-input")[0].value, $(_Self).attr('feedUrl'))
 
                 break;
 
@@ -599,10 +566,11 @@ function showEditPlaylistPage(playlist) {
         removePlaylist('#list .edit-header');
     })
 
-    let JsonContent = allFavoritePodcasts.getAll();//sortByName(allFavoritePodcasts.getAll())
+    let JsonContent = allFavoritePodcasts.getAll();
 
     for (let i = 0; i < JsonContent.length; i++)
         $bodyPage.append(getPodcastEditItem( JsonContent[i].collectionName, 
+                                             JsonContent[i].feedUrl,
                                              JsonContent[i].artworkUrl30, 
-                                             isInPlaylist(playlist, JsonContent[i].collectionName)))
+                                             isInPlaylist(playlist, JsonContent[i].feedUrl)))
 }

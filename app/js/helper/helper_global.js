@@ -182,12 +182,34 @@ function init() {
     {
         fs.openSync(getArchivedFilePath(), 'w');
     }
-    /*
-    if (!fs.existsSync(getSettingsFilePath()))
+
+    /*  
+    const notifier = require('node-notifier');
+    const path = require('path');
+
+    notifier.notify(
     {
-        fs.openSync(getSettingsFilePath(), 'w');
+        title: 'My awesome title',
+        message: 'Hello from node, Mr. User!',
+        icon: path.join(__dirname, 'img/poddycast-app_icon.png'), // Absolute path (doesn't work on balloons)
+        sound: true, // Only Notification Center or Windows Toasters
+        wait: true // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
+    },
+    function (err, response) {
+        // Response is response from notification
     }
+    );
+    
+    notifier.on('click', function (notifierObject, options, event) {
+        // Triggers if `wait: true` and user clicks notification
+        console.log("click")
+    });
+    
+    notifier.on('timeout', function (notifierObject, options) {
+        // Triggers if `wait: true` and notification closes
+    });
     */
+
     loadPreferences();
     loadFeeds();
     loadPlaylists();
@@ -202,9 +224,9 @@ function init() {
     initController()
     
     readFeeds()
-    showNewEpisodesPage()
     setItemCounts()
     translate()
+    showNewEpisodesPage()
 }
 
 function fileExistsAndIsNotEmpty(_File) {
@@ -215,13 +237,13 @@ function isAlreadyFavorite(_FeedUrl) {
    return (allFavoritePodcasts.findByFeedUrl(_FeedUrl) != -1);
 }
 
-function episodeIsAlreadyInNewEpisodes(_EpisodeTitle) {
-    return (allNewEpisodes.findByTitleAndChannel(_EpisodeTitle) != -1);
+function episodeIsAlreadyInNewEpisodes(episodeUrl) {
+    return (allNewEpisodes.findByEpisodeUrl(episodeUrl) != -1);
 }
 
-function isAlreadyInPlaylist(_ListName, _PodcastName) {
+function isAlreadyInPlaylist(_ListName, _PodcastFeed) {
     let i = allPlaylist.memory.findByName(_ListName);
-    return (allPlaylist.memory.findPodcast(i, _PodcastName) != -1);
+    return (allPlaylist.memory.findPodcast(i, _PodcastFeed) != -1);
 }
 
 function getFileValue(filePath, _DestinationTag, _ReferenceTag, _Value) {
@@ -242,8 +264,8 @@ function getFileValue(filePath, _DestinationTag, _ReferenceTag, _Value) {
     return DestinationValue;
 }
 
-function getBestArtworkUrl(podcastName) {
-    let podcast = allFavoritePodcasts.getByName(podcastName);
+function getBestArtworkUrl(feedUrl) {
+    let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
 
     if(podcast != undefined) {
         let Artwork = podcast.artworkUrl100;
@@ -361,9 +383,9 @@ function parseFeedEpisodeDuration(_Duration)
 
 function setProxyMode()
 {
-    const { app } = require('electron').remote
+    const { Menu } = require('electron').remote
 
-    var MenuItems = app.getApplicationMenu().items
+    var MenuItems = Menu.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i--)
     {
@@ -388,9 +410,9 @@ function setProxyMode()
 function isProxySet()
 {
     var ProxySettings = false;
-    const { app } = require('electron').remote
+    const { Menu } = require('electron').remote
 
-    var MenuItems = app.getApplicationMenu().items
+    var MenuItems = Menu.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i --)
     {
@@ -483,9 +505,9 @@ function isInSettings(_FeedUrl)
     return Result
 }
 */
-function changeSettings(_FeedUrl, _ToInbox)
+function changeSettings(_FeedUrl, excludeFromNewEpisodes)
 {
-    allFavoritePodcasts.setExcludeFromNewEpisodesByFeedUrl(_FeedUrl, _ToInbox);
+    allFavoritePodcasts.setExcludeFromNewEpisodesByFeedUrl(_FeedUrl, excludeFromNewEpisodes);
     /*
     if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
     {

@@ -1,4 +1,4 @@
-const {app} = require('electron').remote
+const {Menu} = require('electron').remote
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -53,8 +53,8 @@ function getDarkModeMenuItem(_ParentMenu)
 
     var MenuItem = null;
 
-    for (let i in app.getApplicationMenu().items) {
-        appMenuItem = app.getApplicationMenu().items[i];
+    for (let i in Menu.getApplicationMenu().items) {
+        appMenuItem = Menu.getApplicationMenu().items[i];
 
         for (let j in appMenuItem.submenu.items) {
             if (appMenuItem.submenu.items[j].label == i18n.__('Dark Mode') && appMenuItem.submenu.items[j].type == "checkbox") {

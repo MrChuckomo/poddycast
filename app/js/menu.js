@@ -48,7 +48,7 @@ function showFavoritesPage() {
     if (allFavoritePodcasts.isEmpty())
         return;
 
-    let JsonContent = allFavoritePodcasts.getAll();//sortByName(allFavoritePodcasts.getAll());
+    let JsonContent = allFavoritePodcasts.getAll();
 
     let List = document.getElementById("list");
     setGridLayout(List, true);
@@ -102,9 +102,8 @@ function showHistoryPage() {
     let Count = (JsonContent.length <= 100 ? JsonContent.length : 100);
 
     for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
-        let ChannelName = JsonContent[i].channelName
         let EpisodeTitle = JsonContent[i].episodeTitle
-        let Artwork = getBestArtworkUrl(ChannelName);
+        let Artwork = JsonContent[i].artwork;
 
         if (!isGenericArtwork(Artwork)) {
             let DateTime = new Date(JsonContent[i].date);

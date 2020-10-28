@@ -31,8 +31,8 @@ function handleDrop(obj, _Event) {
 
     var Parser = new DOMParser();
     var XmlDoc = Parser.parseFromString(_Event.dataTransfer.getData('text/html'), "text/xml");
-    var PodcastName = XmlDoc.getElementsByClassName("podcast-entry-title")[0].innerHTML
+    var PodcastFeedUrl = XmlDoc.getElementsByClassName("podcast-entry-header")[0].getAttribute('feedurl')
     var PlaylistName = obj.getElementsByTagName("input")[0].value
 
-    addToPlaylist(PlaylistName, PodcastName)
+    addToPlaylist(PlaylistName, PodcastFeedUrl)
 }

@@ -9,7 +9,6 @@ const getPreference = require('./js/helper/helper_global')
 const Menu = require('electron').Menu
 const Tray = require('electron').Tray
 
-
 // Create variables for appIcon, trayIcon, win
 // to prevent their removal by garbage collection
 let appIcon = null
@@ -36,17 +35,13 @@ function createWindow()
         minHeight: 600,
         autoHideMenuBar: true,
         icon: trayIcon,
-        frame: !(process.platform === "win32")
+        frame: !(process.platform === "win32"),
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true
+        }
     });
-    /*
-    var menuBarVisibility = false
-    win.webContents.on("before-input-event", (event, input) => { 
-	    if(input.alt) {
-	        win.setMenuBarVisibility(menuBarVisibility)
-            menuBarVisibility = !menuBarVisibility
-	    }
-	})
-    */
+    
     win.loadURL(url.format
     ({
         pathname: path.join(__dirname, 'index.html'),
@@ -83,7 +78,7 @@ function createWindow()
     appIcon.setContextMenu(contextMenu)
 
     // Always highlight the tray icon
-    appIcon.setHighlightMode('always')
+    //appIcon.setHighlightMode('always')
 
     // The tray icon is not destroyed
     appIcon.isDestroyed(false)
