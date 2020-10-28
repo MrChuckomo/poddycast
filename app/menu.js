@@ -127,6 +127,11 @@ const template =
     }
 ]
 
+// Remove minimize setting from the menubar on linux 
+// Electron tray doesn't work on linux
+if(process.platform === 'linux') 
+    template[3].submenu.splice(1, 1);
+
 if (process.platform === 'darwin')
 {
     template.unshift

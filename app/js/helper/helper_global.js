@@ -530,9 +530,9 @@ function changeSettings(_FeedUrl, excludeFromNewEpisodes)
 
 function setMinimize()
 {
-    const { app } = require('electron').remote
+    const { Menu } = require('electron').remote
 
-    var MenuItems = app.getApplicationMenu().items
+    var MenuItems = Menu.getApplicationMenu().items
 
     for (var i = MenuItems.length - 1; i >= 0; i--)
     {
