@@ -323,25 +323,26 @@ function nextEpisode()
         {
             var Classes = AllListItems[i].getAttribute("class")
 
-            if (Classes.includes("select-episode") && i < (AllListItems.length - 1))
+            if (Classes.includes("select-episode") && i > 0)
             {
-                playNow(AllListItems[i + 1])
+                playNow(AllListItems[i - 1])
 
                 // NOTE: No need to delete it if it's played from the podcast detail view
-
-                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites'))
+                console.log(document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML, generateHtmlTitle('Favorites'))
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != generateHtmlTitle('Favorites'))
                 {
                     deleteFromListView(AllListItems[i])
                 }
 
                 break
             }
-            else if (i == (AllListItems.length - 1))
+            else if (i == 0)
             {
                 // NOTE: Currently playling episode is the last item in the list
                 // NOTE: No need to delete it if it's played from the podcast detail view
+                console.log(document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML, generateHtmlTitle('Favorites'))
 
-                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != i18n.__('Favorites'))
+                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML != generateHtmlTitle('Favorites'))
                 {
                     deleteFromListView(AllListItems[i])
                 }
