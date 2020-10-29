@@ -71,6 +71,47 @@ function playNow(_Self)
 
     setTitle(_Self.getAttribute("title"))
     playPlayer()
+    setNavigator(_Self.getAttribute("title"), 
+                 _Self.getAttribute("channel"), 
+                 _Self.getAttribute("pubDate"), 
+                 _Self.getAttribute("artworkUrl"));
+}
+
+function setNavigator(title, artist, album, artwork) {
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: title,
+            artist: artist,
+            album: album,
+            artwork: [{src: artwork}]
+        });
+
+        navigator.mediaSession.setActionHandler('play', async function () {
+            console.log('> User clicked "Play" icon.');
+            playPlayer();
+            // Do something more than just playing audio...
+        });
+
+        navigator.mediaSession.setActionHandler('pause', function () {
+            console.log('> User clicked "Pause" icon.');
+            pausePlayer();
+            // Do something more than just pausing audio...
+        });
+
+        navigator.mediaSession.setActionHandler("previoustrack", (details) => {
+            // const skipTime = details.seekOffset || defaultSkipTime;
+            // video.currentTime = Math.max(video.currentTime - skipTime, 0);
+            // TODO: Update playback state.
+            playReply()
+        });
+
+        navigator.mediaSession.setActionHandler("nexttrack", (details) => {
+            // const skipTime = details.seekOffset || defaultSkipTime;
+            // video.currentTime = Math.min(video.currentTime + skipTime, video.duration);
+            // TODO: Update playback state.
+            playForward()
+        });
+    }
 }
 
 
@@ -354,6 +395,8 @@ function playPlayer()
     Button.setAttribute("mode", "pause")
 
     Player.play()
+
+    navigator.mediaSession.playbackState = "playing";
 }
 
 function pausePlayer()
@@ -365,6 +408,8 @@ function pausePlayer()
     Button.setAttribute("mode", "play")
 
     Player.pause()
+    
+    navigator.mediaSession.playbackState = "paused";
 }
 
 function getPlaybackPosition(feedUrl, _Source) {

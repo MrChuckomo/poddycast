@@ -364,6 +364,7 @@ class NewEpisodesUI {
         ListElement.setAttribute("url", newEpisode.episodeUrl)
         ListElement.setAttribute("length", newEpisode.episodeLength)
         ListElement.setAttribute("artworkUrl", Artwork)
+        ListElement.setAttribute("pubDate", newEpisode.pubDate)
 
         if (player.isPlaying(newEpisode.episodeUrl))
             ListElement.classList.add("select-episode")
@@ -838,7 +839,9 @@ function processEpisodes(_Content, _Options) {
             if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
 
-            ListElement.setAttribute("onclick", "playNow(this)");
+            ListElement.onclick = function() {
+                playNow(this);
+            }
             ListElement.setAttribute("channel", episode.channelName);
             ListElement.setAttribute("feedUrl", episode.feedUrl);
             ListElement.setAttribute("title", episode.episodeTitle);
