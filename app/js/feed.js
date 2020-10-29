@@ -567,9 +567,9 @@ function updateFeed(_Content, _eRequest, _Options) {
 }
 
 function updateFeedAndNewEpisode($xml, FeedUrl) {
+	let numberNewEpisode = getFeedFromXml($xml, FeedUrl);
     // NOTE: save latest episode if not already in History
     if(!getSettings(FeedUrl)) {
-        let numberNewEpisode = getFeedFromXml($xml, FeedUrl);
         for(let i = 0; i < numberNewEpisode; i++) {
             let episode = allFeeds.getEpisode(FeedUrl, i);
             saveEpisode(episode);
