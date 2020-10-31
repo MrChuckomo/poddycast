@@ -233,7 +233,7 @@ const s_HistoryNothingFoundIcon =
             <feComposite in="SourceGraphic" />
         </filter>
     </defs>
-    <g transform="matrix(1.818181872367859, 0, 0, 1.818181872367859, -3.8030307590961456, -3.6363600393136295)">
+    <g transform="matrix(1.818181872367859, 0, 0, 1.818181872367859, -3.636364062627152, -3.636360168457024)">
         <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="none" stroke-linecap="butt"
             stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
             font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
