@@ -88,18 +88,17 @@ function showHistoryPage() {
     clearBody();
 
     let fileContent = ifExistsReadFile(getArchivedFilePath());
-    if (fileContent == "")
-        return;
+    let JsonContent = JSON.parse(fileContent == "" ? "[]" : fileContent);
 
     let List = document.getElementById("list");
     setGridLayout(List, false);
-
-    let JsonContent = JSON.parse(fileContent);
 
     // NOTE: Show just the last 100 entries in History
     // TODO: The can be loaded after user interaction
 
     let Count = (JsonContent.length <= 100 ? JsonContent.length : 100);
+    if(Count == 0)
+        setNothingToShowBody(s_HistoryNothingFoundIcon, 'history-nothing-to-show');
 
     for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
         let EpisodeTitle = JsonContent[i].episodeTitle

@@ -29,7 +29,7 @@ function matchText(e) {
 
 function matchTextSearch(e) {
     var char = String.fromCharCode(e.which)
-    if (char.match(/^[^A-Za-z0-9+!?#\.\-\ ]+$/)) 
+    if (char.match(/^[^A-Za-z0-9+!?#\.\-\ ']+$/)) 
         e.preventDefault();
 }
 
