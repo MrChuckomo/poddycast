@@ -188,13 +188,6 @@ function deleteFromFile(episodeUrl) {
     return true;
 }
 
-function getEpisodeInfoFromDescription(episodeDescription) {
-    var episodeInfo = episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>");
-    episodeInfo = ( episodeDescription[0] != '<' ? episodeInfo[0] : episodeInfo[1] );
-    episodeInfo = episodeInfo.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '');
-    return episodeInfo;
-}
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Sort And Filter
 // ---------------------------------------------------------------------------------------------------------------------

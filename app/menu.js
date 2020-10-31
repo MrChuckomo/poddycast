@@ -1,4 +1,5 @@
 const { app, Menu } = require('electron').remote
+const { webFrame } = require('electron')
 
 const template =
 [
@@ -29,7 +30,10 @@ const template =
                 type: "checkbox",
                 accelerator: "CommandOrControl+Shift+L",
                 checked: getPreference('darkmode'),
-                click() { darkMode() }
+                click() { 
+                    changeThemeMode()
+                    darkMode()
+                }
             },
             {role: 'togglefullscreen', label: i18n.__('Toggle Full Screen')}
         ]
@@ -113,13 +117,19 @@ const template =
                 type: "checkbox",
                 checked: getPreference('proxymode'),
                 accelerator: "CommandOrControl+Shift+P",
-                click() { setProxyMode() }
+                click() { 
+                    changeProxyModeMenuItem()
+                    setProxyMode() 
+                }
             },{
                 label: i18n.__("Minimize"),
                 type: "checkbox",
                 checked: getPreference('minimize'),
                 accelerator: "CommandOrControl+Shift+M",
-                click() { setMinimize() }
+                click() { 
+                    changeMinimizeMenuItem()
+                    setMinimize() 
+                }
             },
             {type: 'separator'},
             {role: 'toggledevtools'}
@@ -135,6 +145,36 @@ const template =
 * if(process.platform === 'linux') 
 *     template[3].submenu.splice(1, 1);
 */
+
+if(process.platform === 'win32') {
+    template[0].submenu.splice(2, 3, 
+            {
+                label: 'Reset Zoom',
+                accelerator: "CommandOrControl+O",
+                click() { 
+                    webFrame.setZoomFactor(1);
+                }
+            },
+            {
+                label: 'Zoom In',
+                accelerator: "CommandOrControl+=",
+                click() { 
+                    let zoomFactor = webFrame.getZoomFactor() - 0.1;
+                    if(zoomFactor > 0)
+                        webFrame.setZoomFactor(zoomFactor);
+                }
+            },
+            {
+                label: 'Zoom Out',
+                accelerator: "CommandOrControl+-",
+                click() { 
+                    let zoomFactor = webFrame.getZoomFactor() + 0.1;
+                    if(zoomFactor < 2)
+                        webFrame.setZoomFactor(zoomFactor);
+                }
+            }
+    );
+}
 
 if (process.platform === 'darwin')
 {

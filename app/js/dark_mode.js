@@ -44,9 +44,14 @@ function darkMode()
     }
 }
 
+function changeThemeMode() {
+    var DarkModeMenu = getDarkModeMenuItem()
+    DarkModeMenu.checked = !getPreference('darkmode');
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getDarkModeMenuItem(_ParentMenu)
+function getDarkModeMenuItem()
 {
     // NOTE: Go through all menu items
     // NOTE: Find the "Dark Mode" menu item

@@ -11,7 +11,10 @@
         "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
         "start": "electron main.js"
     },
-    "dependencies": {},
+    "dependencies": {
+        "browserify": "^17.0.0",
+        "jsdom": "^16.4.0"
+    },
     "devDependencies": {
         "custom-electron-titlebar": "^3.2.5",
         "electron": "^10.1.5",

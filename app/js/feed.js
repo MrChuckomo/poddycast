@@ -8,13 +8,12 @@ var allFeeds = null;
 process.dlopen = () => {
   throw new Error('Load native module is not safe')
 }
-const worker = new Worker('script.js')
-worker.onmessage = function (ev) {
+const xmlParserWorker = new Worker('./js/xmlparser_worker.js')
+
+setInterval(function () { 
     readFeeds();
     console.log('Feeds have been read!');
-}
-
-worker.postMessage(""); 
+}, 30 * 60 * 1000);
 
 class Episode {
     constructor(ChannelName, FeedUrl, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
@@ -31,9 +30,110 @@ class Episode {
     }
 }
 
+class FeedsUI {
+    constructor() {
+    }
+
+    getInfoFeedView() {
+        return $('.settings-header').html();
+    }
+
+    getArtworkSrcFromView() {
+        let $image = $('.settings-image').get(0);
+        return ($image ? $image.src : '');
+    }
+
+    isEmpity() {
+        return !this.getAllItemsList().get(0);
+    }
+
+    getList() {
+        return $('#list');
+    }
+
+    getAllItemsList() {
+        return $('#list li');
+    }
+
+    add(episode) {
+        let pageType = this.getInfoFeedView();
+        if(pageType == episode.channelName) {
+            this.directAdd(episode);
+            this.updateItemCount(episode.feedUrl);
+        }
+    }
+
+    directAdd(episode) {
+        if(!$(this.getAllItemsList().get(0)).get(0)) {
+            $(this.getNewItemList(episode))
+                .hide()
+                .css('opacity', 0.0)
+                .appendTo($(this.getList()))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
+        } else
+            $(this.getNewItemList(episode))
+                .hide()
+                .css('opacity', 0.0)
+                .insertBefore($(this.getAllItemsList().get(0)))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
+    }
+
+    updateItemCount(FeedUrl) {
+        let $count = $('.settings-count').get(0);
+        if($count)
+            $count.innerHTML = allFeeds.getFeedPodcast(FeedUrl).length;
+    }
+
+    getNewItemList(episode) {
+        let Artwork = this.getArtworkSrcFromView();
+
+        let ListElement = buildListItem(new cListElement(
+            [
+                getBoldTextPart(episode.episodeTitle),
+                getSubTextPart(new Date(episode.pubDate).toLocaleString()),
+                getSubTextPart(allFeeds.getDurationFromDurationKey(episode)),
+                getFlagPart('Done', 'white', '#4CAF50'),
+                getDescriptionPart(s_InfoIcon, episode.episodeDescription),
+                allNewEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? $('<div></div>').get(0) : getAddEpisodeButtonPart()
+            ],
+            "3fr 1fr 1fr 5em 5em 5em"
+        ), eLayout.row)
+
+        if (episodeIsAlreadyInNewEpisodes(episode.episodeUrl))
+            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
+
+        if (player.isPlaying(episode.episodeUrl))
+            ListElement.classList.add("select-episode")
+
+        // NOTE: Set a episode item to "Done" if it is in the History file
+
+        if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
+            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
+
+        ListElement.onclick = function() {
+            playNow(this);
+        }
+        ListElement.setAttribute("channel", episode.channelName);
+        ListElement.setAttribute("feedUrl", episode.feedUrl);
+        ListElement.setAttribute("title", episode.episodeTitle);
+        ListElement.setAttribute("type", episode.episodeType);
+        ListElement.setAttribute("url", episode.episodeUrl);
+        ListElement.setAttribute("length", episode.episodeLength);
+        ListElement.setAttribute("durationKey", episode.durationKey);
+        ListElement.setAttribute("description", episode.episodeDescription);
+        ListElement.setAttribute("artworkUrl", Artwork);
+        ListElement.setAttribute("pubDate", episode.pubDate);
+        
+        return ListElement;
+    }
+}
+
 class Feeds {
     constructor() {
         this.load();
+        this.ui = new FeedsUI();
     }
 
     load() {
@@ -155,6 +255,7 @@ class Feeds {
             this[feedUrl].unshift(episode);
 
             this.updateByIndicator(indicator);
+            this.ui.add(episode);
             return true;
         }
         return false;
@@ -183,8 +284,6 @@ class Feeds {
             episode.pubDate
         )
     }
-
-
 
     delete(feedUrl) {
         let i = this.getIofIndexByFeedUrl(feedUrl);
@@ -225,18 +324,6 @@ class Feeds {
 
 function loadFeeds() {
     allFeeds = new Feeds();
-}
-
-function getFeedFromXml($xml, feedUrl) {
-    let channelName = getChannelNameFromXml($xml);
-    let $item = $xml.find('item');
-    let itemCount = $item.length;
-    let newEpisodesCount = itemCount - allFeeds.length(feedUrl);
-    for(let i = newEpisodesCount - 1; i >= 0; i--) {
-        let episode = getEpisodeObjFromXml(channelName, feedUrl, $($item.get(i)));
-        allFeeds.add(episode)
-    }
-    return (newEpisodesCount % itemCount);
 }
 
 function compareEpisodeDates(episode1, episode2) {
@@ -317,9 +404,19 @@ class NewEpisodesUI {
         if(!$(this.getAllItemsList().get(i)).get(0)) {
             if(this.isEmpity())
                 clearBody();
-            this.getList().append(this.getNewItemList(allNewEpisodes.get(i)));
+            $(this.getNewItemList(allNewEpisodes.get(i)))
+                .hide()
+                .css('opacity', 0.0)
+                .appendTo($(this.getList()))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
         } else
-            $(this.getAllItemsList().get(i)).before(this.getNewItemList(allNewEpisodes.get(i)));
+            $(this.getNewItemList(allNewEpisodes.get(i)))
+                .hide()
+                .css('opacity', 0.0)
+                .insertBefore($(this.getAllItemsList().get(i)))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
     }
 
     addPlaylist(i) {
@@ -405,19 +502,7 @@ class NewEpisodes {
     get(i) {
         return this.episodes[i];
     }
-/*
-    findByTitle(title) {
-        for(let i in this.episodes)
-            if(this.episodes[i].episodeTitle == title)
-                return i;
-        return -1;
-    }
-
-    getByTitle(title) {
-        let i = this.findByTitle(title);
-        return (i != -1 ? this.episodes[i] : undefined);
-    }
-*/
+    
     findByEpisodeUrl(episodeUrl) {
         for(let i in this.episodes)
             if(this.episodes[i].episodeUrl == episodeUrl)
@@ -429,31 +514,7 @@ class NewEpisodes {
         let i = this.findByEpisodeUrl(episodeUrl);
         return (i != -1 ? this.episodes[i] : undefined);
     }
-/*
-    findByTitleAndChannel(title, channel) {
-        for(let i in this.episodes)
-            if(this.episodes[i].episodeTitle == title && this.episodes[i].channelName == channel)
-                return i;
-        return -1;
-    }
-
-    getByTitleAndChannel(title, channel) {
-        let i = this.findByTitleAndChannel(title, channel);
-        return (i != -1 ? this.episodes[i] : undefined);
-    }
-
-    findByTitleAndChannel(feedUrl) {
-        for(let i in this.episodes)
-            if(this.episodes[i].feedUrl == feedUrl)
-                return i;
-        return -1;
-    }
-
-    getByTitleAndChannel(feedUrl) {
-        let i = this.findByTitleAndChannel(feedUrl);
-        return (i != -1 ? this.episodes[i] : undefined);
-    }
-*/
+    
     add(episode) {
         if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
             let i = 0;
@@ -467,27 +528,7 @@ class NewEpisodes {
         } 
         return null;
     }
-/*
-    removeByTitle(title) {
-        let i = this.findByTitle(title);
-        if(i != -1) {
-            this.episodes.splice(i, 1);
-            this.update();
-            return true;
-        }
-        return false;
-    }
-
-    removeByTitleAndChannel(title, channel) {
-        let i = this.findByTitleAndChannel(title, channel);
-        if(i != -1) {
-            this.episodes.splice(i, 1);
-            this.update();
-            return true;
-        }
-        return false;
-    }
-*/
+    
     removeByEpisodeUrl(episodeUrl) {
         let i = this.findByEpisodeUrl(episodeUrl);
         if(i != -1) {
@@ -530,12 +571,8 @@ function readFeeds() {
     $('#menu-refresh svg').addClass('is-refreshing');
 
     let podcasts = allFavoritePodcasts.getAll();
-    for (let i in podcasts) {
-        if (isProxySet()) 
-            makeFeedRequest(getFeedProxyOptions(podcasts[i].feedUrl), updateFeed);
-        else 
-            makeFeedRequest(podcasts[i].feedUrl, updateFeed);
-    }
+    for (let i in podcasts) 
+        readFeedByFeedUrl(podcasts[i].feedUrl);
 
     // Remove animation to notify the user about fetching new episodes.
     // Let the animation take at least 2 seconds. Otherwise user may not notice it.
@@ -544,12 +581,18 @@ function readFeeds() {
     }, 2000);
 }
 
+function readFeedByFeedUrl(feedUrl) {
+    if (isProxySet()) 
+        makeFeedRequest(getFeedProxyOptions(feedUrl), updateFeed);
+    else 
+        makeFeedRequest(feedUrl, updateFeed);
+}
+
 function updateFeed(_Content, _eRequest, _Options) {
     let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
 
     // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
-    //if (getSettings(FeedUrl)) {
     if (isContent302NotFound(_Content))
         makeFeedRequest(getChangedFeed(_Options, _eRequest), updateFeed);
     else {
@@ -560,87 +603,38 @@ function updateFeed(_Content, _eRequest, _Options) {
             // console.log(_Content);
         } else  {
             // NOTE: Parse a real feed and just access the last element
-            let $xml = $($.parseXML(_Content));
-            updateFeedAndNewEpisode($xml, FeedUrl);
+            xmlParserWorker.postMessage({
+                xml: _Content,
+                feedUrl: FeedUrl
+            })
         }
     }
-    //}
 }
 
-function updateFeedAndNewEpisode($xml, FeedUrl) {
-	let numberNewEpisode = getFeedFromXml($xml, FeedUrl);
-    // NOTE: save latest episode if not already in History
+function getFeedFromWorkerResponse(json, feedUrl) {
+    let itemCount = json.length;
+    let newEpisodesCount = itemCount - allFeeds.length(feedUrl);
+    for(let i = newEpisodesCount - 1; i >= 0; i--) {
+        let episode = json[i];
+        allFeeds.add(episode)
+    }
+    return (newEpisodesCount % itemCount);
+}
+
+xmlParserWorker.onmessage = function(ev) {
+    let numberNewEpisode = getFeedFromWorkerResponse(ev.data.json, ev.data.feedUrl);
+
+    updateFeedAndNewEpisode(ev.data.feedUrl, numberNewEpisode);
+}
+
+function updateFeedAndNewEpisode(FeedUrl, numberNewEpisode) {
     if(!getSettings(FeedUrl)) {
-        for(let i = 0; i < numberNewEpisode; i++) {
+        for(let i = numberNewEpisode - 1; i >= 0; i--) {
             let episode = allFeeds.getEpisode(FeedUrl, i);
             saveEpisode(episode);
         }
     }
 }
-
-function getChannelNameFromXml($xml) {
-    return $xml.find('channel title').get(0).childNodes[0].nodeValue;
-}
-/*
-function getEpisodeObjFromXml($xml, i) {
-    let enclosure = $xml.find('item enclosure').get(i);
-    let description = '';
-    if($xml.find('item itunes:subtitle').get(i))
-        description = $xml.find('item itunes\\:subtitle').get(i).textContent;
-    else if($xml.find('item description').get(i))
-        description = $xml.find('item description').get(i).textContent;
-    let duration = null;
-    if($xml.find('item itunes\\:duration').get(i))
-        duration = $xml.find('item itunes\\:duration').get(i).innerHTML;
-    else
-        duration = $xml.find('item duration').get(i).innerHTML;
-
-    let episode = new Episode(
-        getChannelNameFromXml($xml),
-        $xml.find('item title').get(i).childNodes[0].nodeValue,
-        (enclosure ? enclosure.getAttribute('url') : ''),
-        (enclosure ? enclosure.getAttribute('type') : ''),
-        (enclosure ? enclosure.getAttribute('length') : ''),
-        getEpisodeInfoFromDescription(description),
-        duration,
-        $xml.find('item pubDate').get(i).innerHTML
-    );
-    return episode;
-}
-*/
-
-function getEpisodeObjFromXml(channelName, feedUrl, $item) {
-    let $enclosure = $item.find('enclosure').get(0);
-    let description = '';
-    let $subtitle = $item.find('itunes\\:subtitle').get(0);
-    if($subtitle)
-        description = $subtitle.textContent;
-    else {
-        $subtitle = $item.find('description').get(0);
-        if($subtitle)
-            description = $subtitle.textContent;
-    }
-    let duration = null;
-    let $duration = $item.find('itunes\\:duration').get(0);
-    if($duration)
-        duration = $duration.innerHTML;
-    else
-        duration = $item.find('duration').get(0).innerHTML;
-
-    let episode = new Episode(
-        channelName,
-        feedUrl,
-        $item.find('title').get(0).childNodes[0].nodeValue,
-        ($enclosure ? $enclosure.getAttribute('url') : ''),
-        ($enclosure ? $enclosure.getAttribute('type') : ''),
-        ($enclosure ? $enclosure.getAttribute('length') : ''),
-        getEpisodeInfoFromDescription(description),
-        duration,
-        $item.find('pubDate').get(0).innerHTML
-    );
-    return episode;
-}
-
 
 function showAllEpisodes(_Self) {
     setGridLayout(document.getElementById("list"), false);
@@ -653,6 +647,18 @@ function showAllEpisodes(_Self) {
 
 function getAllEpisodesFromFeed(_Feed) {
     appendSettingsSection(_Feed);
+
+    let Artwork = getBestArtworkUrl(_Feed);
+
+    let feed = allFeeds.getFeedPodcast(_Feed);
+    let podcast = allFavoritePodcasts.getByFeedUrl(_Feed);
+
+    // NOTE: set settings information
+    $('.settings-image').get(0).src = Artwork;
+    $('.settings-header').get(0).innerHTML = (podcast ? podcast.collectionName : 'null');
+    $('.settings-count').get(0).innerHTML = (feed ? feed.length : "-1");
+
+    showAllFeedElements(feed);
 
     if (isProxySet()) {
         if (_Feed instanceof Object)
@@ -765,15 +771,7 @@ function setPodcastSettingsMenu(_Object, _Feed)
     ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: !getSettings(_Feed), click(self) {
-        //if (isInSettings(_Feed))
-        //{
-        //    changeSettings(_Feed, self.checked)
-        //}
-        //else
-        //{
-        //    addToSettings(_PodcastName, _Feed)
-            changeSettings(_Feed, !self.checked)
-        //}
+        changeSettings(_Feed, !self.checked);
     }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
@@ -790,71 +788,18 @@ function setPodcastSettingsMenu(_Object, _Feed)
 
 function processEpisodes(_Content, _Options) {
     let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
-    let $xml = $($.parseXML(_Content));
     
-    updateFeedAndNewEpisode($xml, FeedUrl);
+    xmlParserWorker.postMessage({
+        xml: _Content,
+        feedUrl: FeedUrl
+    });
+}
 
-    let ChannelName = getChannelNameFromXml($xml);
-
-    let Artwork = getBestArtworkUrl(FeedUrl);
-
-    if (isGenericArtwork(Artwork)) 
-        Artwork = getArtworkFromFeed($xml.get(0));
-
-    // NOTE: set settings information
-    let feed = allFeeds.getFeedPodcast(FeedUrl);
-    $('.settings-image').get(0).src = Artwork;
-    $('.settings-header').get(0).innerHTML = ChannelName;
-    $('.settings-count').get(0).innerHTML = feed.length;
-
-    let List = document.getElementById("list")
-
+function showAllFeedElements(feed) {
+    let list = $('#list');
     for (let i in feed) {
-
-        // NOTE: Just enter if the current item contains an enclosure tag
-        
-        //if ($xml.find('item enclosure').length > 0) {
-            let episode = feed[i];
-
-            let ListElement = buildListItem(new cListElement(
-                [
-                    getBoldTextPart(episode.episodeTitle),
-                    getSubTextPart(new Date(episode.pubDate).toLocaleString()),
-                    getSubTextPart(allFeeds.getDurationFromDurationKey(episode)),
-                    getFlagPart('Done', 'white', '#4CAF50'),
-                    getDescriptionPart(s_InfoIcon, episode.episodeDescription),
-                    allNewEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? $('<div></div>').get(0) : getAddEpisodeButtonPart()
-                ],
-                "3fr 1fr 1fr 5em 5em 5em"
-            ), eLayout.row)
-
-            if (episodeIsAlreadyInNewEpisodes(episode.episodeUrl))
-                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
-
-            if (player.isPlaying(episode.episodeUrl))
-                ListElement.classList.add("select-episode")
-
-            // NOTE: Set a episode item to "Done" if it is in the History file
-
-            if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
-                ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
-
-            ListElement.onclick = function() {
-                playNow(this);
-            }
-            ListElement.setAttribute("channel", episode.channelName);
-            ListElement.setAttribute("feedUrl", episode.feedUrl);
-            ListElement.setAttribute("title", episode.episodeTitle);
-            ListElement.setAttribute("type", episode.episodeType);
-            ListElement.setAttribute("url", episode.episodeUrl);
-            ListElement.setAttribute("length", episode.episodeLength);
-            ListElement.setAttribute("durationKey", episode.durationKey);
-            ListElement.setAttribute("description", episode.episodeDescription);
-            ListElement.setAttribute("artworkUrl", Artwork);
-            ListElement.setAttribute("pubDate", episode.pubDate);
-
-            List.append(ListElement)
-        //}
+        let episode = feed[i];
+        list.append(allFeeds.ui.getNewItemList(episode));
     }
 }
 

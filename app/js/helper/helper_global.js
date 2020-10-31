@@ -119,11 +119,7 @@ function getArchivedFilePath() {
 function getPlaylistFilePath() {
     return getSaveDirPath() + '/poddycast-playlists.json';
 }
-/*
-function getSettingsFilePath() {
-    return getSaveDirPath() + '/poddycast-podcast_settings.json';
-}
-*/
+
 function getPreferencesFilePath() {
     return getSaveDirPath() + '/poddycast-app_preferences.json';
 }
@@ -182,33 +178,6 @@ function init() {
     {
         fs.openSync(getArchivedFilePath(), 'w');
     }
-
-    /*  
-    const notifier = require('node-notifier');
-    const path = require('path');
-
-    notifier.notify(
-    {
-        title: 'My awesome title',
-        message: 'Hello from node, Mr. User!',
-        icon: path.join(__dirname, 'img/poddycast-app_icon.png'), // Absolute path (doesn't work on balloons)
-        sound: true, // Only Notification Center or Windows Toasters
-        wait: true // Wait with callback, until user action is taken against notification, does not apply to Windows Toasters as they always wait or notify-send as it does not support the wait option
-    },
-    function (err, response) {
-        // Response is response from notification
-    }
-    );
-    
-    notifier.on('click', function (notifierObject, options, event) {
-        // Triggers if `wait: true` and user clicks notification
-        console.log("click")
-    });
-    
-    notifier.on('timeout', function (notifierObject, options) {
-        // Triggers if `wait: true` and notification closes
-    });
-    */
 
     loadPreferences();
     loadFeeds();
@@ -381,175 +350,72 @@ function parseFeedEpisodeDuration(_Duration)
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setProxyMode()
-{
+function getProxyModeMenuItem() {
     const { Menu } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    let MenuItems = Menu.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0; i--)
+    for (let i = MenuItems.length - 1; i >= 0; i--)
     {
         if (MenuItems[i].label == i18n.__('Settings'))
         {
             // NOTE: Item 0 is "Use Proxy" for now
 
-            ProxySettings = MenuItems[i].submenu.items[0].checked
-
-            if (ProxySettings)
-            {
-                setPreference('proxymode', true)
-            }
-            else
-            {
-                setPreference('proxymode', false)
-            }
+            return MenuItems[i].submenu.items[0];
         }
     }
 }
 
-function isProxySet()
-{
-    var ProxySettings = false;
-    const { Menu } = require('electron').remote
-
-    var MenuItems = Menu.getApplicationMenu().items
-
-    for (var i = MenuItems.length - 1; i >= 0; i --)
-    {
-        if (MenuItems[i].label == i18n.__('Settings'))
-        {
-            // NOTE: Item 0 is "Use Proxy" for now
-
-            ProxySettings = MenuItems[i].submenu.items[0].checked
-        }
-    }
-
-    return ProxySettings
+function changeProxyModeMenuItem() {
+    let ProxyModeMenuItem = getProxyModeMenuItem()
+    ProxyModeMenuItem.checked = !getPreference('proxymode');
 }
-/*
-function addToSettings(_PodcastName, _FeedUrl)
-{
-    if (fs.existsSync(getSettingsFilePath()))
-    {
-        var SettingsObject =
-        {
-            "podcastName": _PodcastName,
-            "feedUrl": _FeedUrl,
-            "addToInbox": true,
-        }
 
-        var JsonContent = []
-
-        if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
-        {
-            JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
-        }
-        else
-        {
-            fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
-        }
-
-        if (!isInSettings(_FeedUrl))
-        {
-            JsonContent.push(SettingsObject)
-        }
-
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
-    }
+function setProxyMode() {
+    let ProxyModeMenuItem = getProxyModeMenuItem()
+    
+    if (ProxyModeMenuItem.checked)
+        setPreference('proxymode', true)
+    else
+        setPreference('proxymode', false)
 }
-*/
-function getSettings(_FeedUrl)
-{
+
+function isProxySet() {
+    return getPreference('proxymode');
+}
+ 
+function getSettings(_FeedUrl) {
     return allFavoritePodcasts.getExcludeFromNewEpisodesByFeedUrl(_FeedUrl);
-    /*
-    var ToInbox = true
-
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
-                ToInbox = JsonContent[i].addToInbox
-
-                break
-            }
-        }
-    }
-
-    return ToInbox
-    */
 }
-/*
-function isInSettings(_FeedUrl)
-{
-    var Result = false
 
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
-                Result = true
-
-                break
-            }
-        }
-    }
-
-    return Result
-}
-*/
-function changeSettings(_FeedUrl, excludeFromNewEpisodes)
-{
+function changeSettings(_FeedUrl, excludeFromNewEpisodes) {
     allFavoritePodcasts.setExcludeFromNewEpisodesByFeedUrl(_FeedUrl, excludeFromNewEpisodes);
-    /*
-    if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
-
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
-                JsonContent[i].addToInbox = _ToInbox
-
-                break
-            }
-        }
-
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent, null, "\t"))
-    }
-    */
+    
 }
 
-function setMinimize()
-{
+function setMinimize() {
+    let MinimizeMenuItem = getMinimizeMenuItem()
+    
+    if (MinimizeMenuItem.checked)
+        setPreference('minimize', true)
+    else
+        setPreference('minimize', false)
+}
+
+function changeMinimizeMenuItem() {
+    let MinimizeMenuItem = getMinimizeMenuItem()
+    MinimizeMenuItem.checked = !getPreference('minimize');
+}
+
+function getMinimizeMenuItem() {
     const { Menu } = require('electron').remote
 
     var MenuItems = Menu.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0; i--)
-    {
-        if (MenuItems[i].label == i18n.__('Settings'))
-        {
-            // NOTE: Item 0 is "Use Proxy" for now
+    for (var i = MenuItems.length - 1; i >= 0; i--) {
+        if (MenuItems[i].label == i18n.__('Settings')) {
 
-            MinimizeSettings = MenuItems[i].submenu.items[1].checked
-
-            if (MinimizeSettings)
-            {
-                setPreference('minimize', true)
-            }
-            else
-            {
-                setPreference('minimize', false)
-            }
+            return MenuItems[i].submenu.items[1];
         }
     }
 }
