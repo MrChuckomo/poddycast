@@ -399,7 +399,7 @@ class NewEpisodesUI {
                 break;
         }
     }
-
+/*
     directAdd(i) {
         if(!$(this.getAllItemsList().get(i)).get(0)) {
             if(this.isEmpity())
@@ -418,7 +418,26 @@ class NewEpisodesUI {
                 .slideDown('slow')
                 .animate({opacity: 1.0});
     }
-
+*/
+	directAdd(i) {
+        if(!$(this.getAllItemsList().get(i)).get(0)) {
+            if(this.isEmpity())
+                clearBody();
+            $(this.getNewItemList(allNewEpisodes.get(i)))
+                .hide()
+                .css('opacity', 0.0)
+                .appendTo($(this.getList()))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
+        } else
+            $(this.getNewItemList(allNewEpisodes.get(i)))
+                .hide()
+                .css('opacity', 0.0)
+                .insertBefore($(this.getAllItemsList().get(i)))
+                .slideDown('slow')
+                .animate({opacity: 1.0});
+    }
+    
     addPlaylist(i) {
         let newEpisode = allNewEpisodes.get(i);
 
