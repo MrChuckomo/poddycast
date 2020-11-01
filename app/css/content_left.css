@@ -245,13 +245,13 @@ footer span
     background:transparent; border:none; color:transparent;
 }
 
-
 footer svg
 {
     position: absolute;
     left: 15px;
     bottom: 18px;
 }
+
 footer input
 {
     grid-area: input;
@@ -260,4 +260,12 @@ footer input
     outline: none;
     text-align: left;
     font-size: 16px;
+}
+
+#new_list-button:hover > svg {
+    fill: white;
+}
+
+#new_list-button > svg {
+    fill: #aaa;
 }

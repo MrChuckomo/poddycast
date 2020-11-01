@@ -161,7 +161,11 @@ function deleteEntry(_ListElement) {
 }
 
 function deleteFromListView(_ListElement) {
-    _ListElement.parentElement.removeChild(_ListElement)
+    $(_ListElement)
+        .animate({opacity: 0.0}, 150)
+        .slideUp(150, function () { 
+            this.remove(); 
+        });
     allNewEpisodes.ui.updateAfterDelete();
 }
 
