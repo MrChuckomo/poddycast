@@ -159,8 +159,8 @@ if(process.platform === 'win32') {
                 label: 'Zoom In',
                 accelerator: "CommandOrControl+=",
                 click() { 
-                    let zoomFactor = webFrame.getZoomFactor() - 0.1;
-                    if(zoomFactor > 0)
+                    let zoomFactor = webFrame.getZoomFactor() + 0.1;
+                    if(zoomFactor < 2)
                         webFrame.setZoomFactor(zoomFactor);
                 }
             },
@@ -168,8 +168,8 @@ if(process.platform === 'win32') {
                 label: 'Zoom Out',
                 accelerator: "CommandOrControl+-",
                 click() { 
-                    let zoomFactor = webFrame.getZoomFactor() + 0.1;
-                    if(zoomFactor < 2)
+                    let zoomFactor = webFrame.getZoomFactor() - 0.1;
+                    if(zoomFactor > 0)
                         webFrame.setZoomFactor(zoomFactor);
                 }
             }
