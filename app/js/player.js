@@ -83,7 +83,18 @@ function setNavigator(title, artist, album, artwork) {
             title: title,
             artist: artist,
             album: album,
-            artwork: [{src: artwork}]
+            artwork: [
+                {
+                    src: artwork,
+                    sizes: '512x512',
+                    type: 'image/jpg'
+                },
+                {
+                    src: 'img/generic_podcast_image.png',
+                    sizes: '256x256',
+                    type: 'image/png'
+                }
+            ]
         });
 
         navigator.mediaSession.setActionHandler('play', async function () {
