@@ -6,14 +6,11 @@
     "scripts": {
         "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
         "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
+        "package:deb64": "electron-installer-debian --src builds/Poddycast-linux-x64/ --dest builds/installers/ --arch amd64 --icon=img/poddycast-app_icon.icns",
         "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
         "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
         "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
         "start": "electron main.js"
-    },
-    "dependencies": {
-        "browserify": "^17.0.0",
-        "jsdom": "^16.4.0"
     },
     "devDependencies": {
         "custom-electron-titlebar": "^3.2.5",
