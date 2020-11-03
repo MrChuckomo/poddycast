@@ -9,7 +9,12 @@ function unsubscribeListElement(_Self) {
     var FeedUrl = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl");
 
     // NOTE: Remove optically
-    ListElement.parentElement.removeChild(ListElement);
+    //ListElement.parentElement.removeChild(ListElement);
+    $(ListElement)
+        .animate({opacity: 0.0}, 150)
+        .slideUp(150, function () { 
+            this.remove(); 
+        });
 
     // NOTE: Remove from files
     allFavoritePodcasts.removeByFeedUrl(FeedUrl);
@@ -25,6 +30,30 @@ function unsubscribeContextMenu(_FeedUrl)
 
     showFavoritesPage()
     setItemCounts()
+}
+
+function setHeartContent(self, emptyHeart) {
+    $(self)
+        .stop()
+        .removeAttr('style')
+    
+    if(emptyHeart) {
+        $(self).animate(
+            {opacity: 0.4}, 
+            150, 
+            function() {
+                $(self)
+                    .html($(s_Heart).html())
+                    .animate(
+                        {opacity: 0.6}, 
+                        150, 
+                        function () {
+                            $(self).removeAttr('style');
+                        });
+            }
+        );
+    } else 
+        $(self).html($(s_FullHeart).html());
 }
 
 function removeFromFile(_File, _ContentReference, _Value, _Break)

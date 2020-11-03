@@ -71,8 +71,10 @@ function initPlayer() {
     $('.content-right-player-speed-btn').on('wheel', function(event){
         setSpeedWithWheelMouse(event);
     });
-
+     
     $('#replay-30-sec').click(playReply)
     $('#play-pause').click(playPause)
     $('#forward-30-sec').click(playForward)
+     
+    setInitialOpacityPlayerButtons()
 }

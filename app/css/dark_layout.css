@@ -192,3 +192,7 @@ svg.set-favorite
     background: #333;
     color: #fff;
 }
+
+#new_list-button:hover > svg {
+    fill: white;
+}

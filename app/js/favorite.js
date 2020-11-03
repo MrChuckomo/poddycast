@@ -80,6 +80,11 @@ class FavoritePodcasts {
             allNewEpisodes.removePodcastEpisodes(feedUrl);
             allPlaylist.memory.removePodcastByFeedUrlFromAllPlaylists(feedUrl);
             allFeeds.delete(feedUrl);
+
+            // UPDATE UI
+            if(this.isEmpty() && getHeader() == generateHtmlTitle('Favorites'))
+                setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');
+                
             return true;
         }
         return false;

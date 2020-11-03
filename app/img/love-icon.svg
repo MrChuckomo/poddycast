@@ -1,0 +1,49 @@
+<svg id="master-artboard" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+    style="enable-background:new 0 0 1400 980;" width="80px" height="80px">
+    <defs>
+        <linearGradient x1="0" y1="0" x2="0" y2="0" gradientUnits="userSpaceOnUse" id="color-1">
+            <stop offset="1" stop-color="#000000" stop-opacity="0" />
+            <stop offset="1" stop-color="#000000" stop-opacity="0" />
+        </linearGradient>
+        <filter id="dropshadow-base">
+            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .8 0" />
+            <feOffset dx="0" dy="1" />
+            <feGaussianBlur stdDeviation="1" />
+            <feComposite in="SourceGraphic" />
+        </filter>
+        <filter id="dropshadow-banner" x="-10%" y="-10%" width="120%" height="130%">
+            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .4 0" />
+            <feOffset dx="0" dy="1" />
+            <feGaussianBlur stdDeviation="0.5" />
+            <feComposite in="SourceGraphic" />
+        </filter>
+    </defs>
+    <rect id="ee-background" x="0" y="0" width="80" height="80"
+        style="fill: white; fill-opacity: 0; pointer-events: none;" />
+    <g transform="matrix(1.8030302463625543, 0, 0, 1.8030302463625543, -3.2727260467717394, -3.2727234241673693)">
+        <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="none" stroke-linecap="butt"
+            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
+            font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
+            <path
+                d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
+                id="base 1 5" fill="#bdc1c6" stroke-width="1" />
+            <path d="" fill="url(#color-1)" stroke-width="1" />
+            <path transform="translate(-2.859,-3.02221) scale(1.11913,1.11913)"
+                d="M24,31.79167l-1.20833,-1.1c-4.29167,-3.89167 -7.125,-6.45833 -7.125,-9.60833c0,-2.56667 2.01667,-4.58333 4.58333,-4.58333c1.45,0 2.84167,0.675 3.75,1.74167c0.90833,-1.06667 2.3,-1.74167 3.75,-1.74167c2.56667,0 4.58333,2.01667 4.58333,4.58333c0,3.15 -2.83333,5.71667 -7.125,9.61667z"
+                fill="none" stroke-width="0" />
+            <path
+                d="M24,32.55664l-1.35228,-1.23104c-4.80291,-4.35526 -7.97377,-7.22768 -7.97377,-10.75293c0,-2.87242 2.2569,-5.12932 5.12932,-5.12932c1.62273,0 3.18018,0.75541 4.19672,1.94914c1.01654,-1.19373 2.57399,-1.94914 4.19672,-1.94914c2.87242,0 5.12932,2.2569 5.12932,5.12932c0,3.52524 -3.17085,6.39767 -7.97377,10.76225z"
+                fill="#ffffff" stroke-width="0" />
+            <path
+                d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
+                id="base 1 1 1" fill="none" stroke-width="1" />
+            <g fill="#000000" stroke-width="1" font-family="Roboto, sans-serif" font-weight="400" font-size="14"
+                text-anchor="start" />
+            <path d="M 2 2 H 46 V 24 H 2 V 2 Z" fill="none" stroke-width="1" />
+            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
+            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
+            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
+            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
+        </g>
+    </g>
+</svg>

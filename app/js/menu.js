@@ -45,13 +45,14 @@ function showFavoritesPage() {
 
     clearBody();
 
-    if (allFavoritePodcasts.isEmpty())
-        return;
-
     let JsonContent = allFavoritePodcasts.getAll();
 
     let List = document.getElementById("list");
     setGridLayout(List, true);
+
+    
+    if (allFavoritePodcasts.isEmpty())
+        setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');
 
     for (let i in JsonContent) {
         let Artwork = JsonContent[i].artworkUrl100;
@@ -61,7 +62,7 @@ function showFavoritesPage() {
                 Artwork = getGenericArtwork();
         }
 
-        let ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_Favorite);
+        let ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_FullHeart);
         
         ListElement.setAttribute('draggable', true);
         ListElement.addEventListener('dragstart', handleDragStart, false);
@@ -73,6 +74,22 @@ function showFavoritesPage() {
         HeaderElement.onclick = function () {
             showAllEpisodes(this);
         }
+
+        let $heartButton = $(ListElement).find('.podcast-entry-actions');
+        $heartButton.click(function () {
+            $(this).stop();
+            unsubscribeListElement($(this).find('svg').get(0));
+        });
+        
+        $heartButton.hoverIntent(function () {
+            setHeartContent($(this).find('svg'), true);
+        }, function () {
+            setHeartContent($(this).find('svg'), false);
+        });
+
+        $(ListElement).mouseleave(function () {
+            setHeartContent($(this).find('svg'), false);
+        })
 
         List.append(ListElement)
     }

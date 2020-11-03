@@ -18,5 +18,8 @@
         "electron-installer-debian": "^3.1.0",
         "electron-packager": "^13.1.1",
         "node": "^12.16.3"
+    },
+    "dependencies": {
+        "jquery": "^3.5.1"
     }
 }

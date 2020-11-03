@@ -559,9 +559,9 @@ class NewEpisodes {
     }
 
     removePodcastEpisodes(feedUrl) {
-        for(let i in this.episodes) {
-            if(this.episodes[i].feedUrl == feedUrl) 
-                this.episodes.splice(i--, 1);
+        for(let i = this.episodes.length - 1; i >= 0; i--) {
+            if(this.episodes[i].feedUrl == feedUrl)  
+                this.episodes.splice(i, 1);
         }
         this.update();
     }

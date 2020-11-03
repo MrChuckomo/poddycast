@@ -6,38 +6,27 @@ var CPlayer = require('./js/helper/player')
 var helper = new CCOntentHelper()
 var player = new CPlayer()
 
-
-const s_Pause =
-`
-    <path d="M8 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2v10c0 1.1.9 2 2 2zm6-12v10c0 1.1.9 2 2 2s2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2z"/>
-`
-
-const s_Play =
-`
-    <path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18c.62-.39.62-1.29 0-1.69L9.54 5.98C8.87 5.55 8 6.03 8 6.82z"/>
-`
-
-// ---------------------------------------------------------------------------------------------------------------------
-
 function playNow(_Self)
 {
     var Player = document.getElementById("player")
     var PlayerSource = Player.getElementsByTagName("source")[0]
 
     // NOTE: Set old played episode to delete icon again
-
+    /*
     var FeedUrl = PlayerSource.getAttribute("src")
     var AllListItems = document.getElementsByClassName("podcast-entry")
-
+    
     for (var i = 0; i < AllListItems.length; i++)
     {
         if (AllListItems[i].getAttribute("url") == FeedUrl)
         {
-            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
+            AllListItems[i].getElementsByTagName("svg")[0].innerHTML = $(s_DeleteIcon).html()
             // AllListItems[i].getElementsByTagName("svg")[0].innerHTML = s_Delete
             break
         }
     }
+    */
+    removeInitialOpacityPlayerButtons()
 
     // NOTE: Set current episode to play
 
@@ -125,6 +114,20 @@ function setNavigator(title, artist, album, artwork) {
     }
 }
 
+function setInitialOpacityPlayerButtons() {
+    $('#replay-30-sec').css('opacity', 0.4);
+    $('#play-pause').css('opacity', 0.4);
+    $('#forward-30-sec').css('opacity', 0.4);
+    $('#content-right-player-img').css('opacity', 0.6);
+}
+
+function removeInitialOpacityPlayerButtons() {
+    $('#replay-30-sec').removeAttr('style');
+    $('#play-pause').removeAttr('style');
+    $('#forward-30-sec').removeAttr('style');
+    $('#content-right-player-img').removeAttr('style');
+}
+
 
 /*
     Select a new list item. The current selection is cleared in any case.
@@ -152,23 +155,40 @@ function playPause()
     togglePlayPauseButton()
 }
 
-
+function playerIsSet() {
+    return Boolean($('#player source').attr('src'));
+}
+ 
 /*
     Access the player and skip foward by 30 sec.
 */
-function playForward()
-{
-    document.getElementById("player").currentTime += 30
+function playForward() {
+    if(playerIsSet()) {
+        document.getElementById("player").currentTime += 30
+        $('#forward-30-sec').animateRotate(360, 900)
+    }
 }
 
 
 /*
     Access the player and skip backward by 30 sec.
 */
-function playReply()
-{
+function playReply() {
+    if(playerIsSet()) {
+        document.getElementById("player").currentTime -= 30
+        $('#replay-30-sec').animateRotate(-360, 900)
+    }
+}
+
+/*
+function playForward() {
+    document.getElementById("player").currentTime += 30
+}
+
+function playReply() {
     document.getElementById("player").currentTime -= 30
 }
+*/
 
 
 /*
@@ -388,7 +408,6 @@ function savePlaybackPosition(feedUrl, _Source, _CurrentTime){
 }
 
 function togglePlayPauseButton() {
-    var Player = document.getElementById("player")
     var Button = document.getElementById("play-pause")
     if($('#player source').attr('src')) {
         if (Button.getAttribute("mode") == "play")
@@ -403,7 +422,18 @@ function playPlayer()
     var Button = document.getElementById("play-pause")
     var Player = document.getElementById("player")
 
-    Button.innerHTML = s_Pause
+    //Button.innerHTML = $(s_PauseIcon).html()
+    $(Button)
+        .fadeTo(100, 0.3,
+                 function() {
+                    $(Button)
+                        .html($(s_PauseIcon).html())
+                        .fadeTo(80, 0.65, function () {
+                            $(Button)
+                                .removeAttr('style')
+                        })
+        })
+    
     Button.setAttribute("mode", "pause")
 
     Player.play()
@@ -416,7 +446,17 @@ function pausePlayer()
     var Button = document.getElementById("play-pause")
     var Player = document.getElementById("player")
 
-    Button.innerHTML = s_Play
+    //Button.innerHTML = $(s_PlayIcon).html()
+    $(Button)
+        .fadeTo(100, 0.3,
+                 function() {
+                    $(Button)
+                        .html($(s_PlayIcon).html())
+                        .fadeTo(80, 0.65, function () {
+                            $(Button)
+                                .removeAttr('style')
+                        })
+        })
     Button.setAttribute("mode", "play")
 
     Player.pause()

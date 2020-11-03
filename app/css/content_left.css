@@ -263,7 +263,7 @@ footer input
 }
 
 #new_list-button:hover > svg {
-    fill: white;
+    fill: #666;
 }
 
 #new_list-button > svg {
