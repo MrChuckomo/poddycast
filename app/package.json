@@ -45,9 +45,7 @@
             "target": [
                 "nsis",
                 "portable",
-                "msi",
-                "squirrel",
-                "zip"
+                "msi"
             ],
             "icon": "./img/poddycast-app_icon.ico"
         }

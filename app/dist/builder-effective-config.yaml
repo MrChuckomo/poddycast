@@ -25,7 +25,5 @@ win:
     - nsis
     - portable
     - msi
-    - squirrel
-    - zip
   icon: ./img/poddycast-app_icon.ico
 electronVersion: 10.1.5
