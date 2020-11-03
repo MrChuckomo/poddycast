@@ -2,14 +2,7 @@ directories:
   output: dist
   buildResources: build
 appId: com.electron.poddycast
-dmg:
-  contents:
-    - x: 110
-      'y': 150
-    - x: 240
-      'y': 150
-      type: link
-      path: /Applications
+icon: ./img/poddycast-app_icon512x512.png
 mac:
   target:
     - dmg
@@ -17,7 +10,7 @@ mac:
     - pkg
     - zip
   category: public.app-category.utilities
-  icon: img/poddycast-app_icon.icns
+  icon: ./img/poddycast-app_icon.icns
 linux:
   target:
     - AppImage
@@ -25,7 +18,7 @@ linux:
     - rpm
     - snap
     - zip
-  icon: img/poddycast-app_icon.png
+  icon: ./img/
   category: Utility
 win:
   target:
@@ -34,5 +27,5 @@ win:
     - msi
     - squirrel
     - zip
-  icon: img/poddycast-app_icon.ico
+  icon: ./img/poddycast-app_icon.ico
 electronVersion: 10.1.5
