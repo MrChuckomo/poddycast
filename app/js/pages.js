@@ -17,6 +17,8 @@ function getBody() {
 
 function setNothingToShowBody(icon, id) {
     if(!id || !$('#' + id).get(0)) {
+        setHeaderViewAction("");
+        
         id = !id ? '' : id;
 
         setGridLayout($('#list').get(0), false);

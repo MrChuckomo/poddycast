@@ -49,7 +49,6 @@ function showFavoritesPage() {
 
     let List = document.getElementById("list");
     setGridLayout(List, true);
-
     
     if (allFavoritePodcasts.isEmpty())
         setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');

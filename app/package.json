@@ -3,6 +3,9 @@
     "description": "Podcast client to listen to all you favorite podcasts",
     "name": "Poddycast",
     "version": "0.7.1",
+    "license": "MIT",
+    "author": "paologiuaa <paologiuaa@gmail.com>",
+    "homepage": "https://github.com/paologiua/poddycast",
     "scripts": {
         "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
         "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
@@ -10,11 +13,48 @@
         "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
         "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
         "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
-        "start": "electron main.js"
+        "start": "npm install && electron main.js",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder"
+    },
+    "build": {
+        "appId": "com.electron.poddycast",
+        "mac": {
+            "target": [
+                "dmg",
+                "mas",
+                "pkg",
+                "zip"
+            ],
+            "category": "public.app-category.utilities",
+            "icon": "img/poddycast-app_icon.icns"
+        },
+        "linux": {
+            "target": [
+                "AppImage",
+                "deb",
+                "rpm",
+                "snap",
+                "zip"
+            ],
+            "icon": "img/poddycast-app_icon.png",
+            "category": "Utility"
+        },
+        "win": {
+            "target": [
+                "nsis",
+                "portable",
+                "msi",
+                "squirrel",
+                "zip"
+            ],
+            "icon": "img/poddycast-app_icon.ico"
+        }
     },
     "devDependencies": {
         "custom-electron-titlebar": "^3.2.5",
         "electron": "^10.1.5",
+        "electron-builder": "^22.9.1",
         "electron-installer-debian": "^3.1.0",
         "electron-packager": "^13.1.1",
         "node": "^12.16.3"
