@@ -40,8 +40,7 @@ function createWindow()
         frame: !(process.platform === "win32"),
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true,
-            zoomFactor: 0.9
+            enableRemoteModule: true
         }
     });
     
