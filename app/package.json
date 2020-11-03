@@ -53,7 +53,6 @@
         }
     },
     "devDependencies": {
-        "custom-electron-titlebar": "^3.2.5",
         "electron": "^10.1.5",
         "electron-builder": "^22.9.1",
         "electron-installer-debian": "^3.1.0",
@@ -61,6 +60,7 @@
         "node": "^12.16.3"
     },
     "dependencies": {
+        "custom-electron-titlebar": "^3.2.5",
         "jquery": "^3.5.1"
     }
 }
