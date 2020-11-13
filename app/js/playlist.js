@@ -473,9 +473,9 @@ function showPlaylistContent(_Self)
     if(PlaylistEpisodesJsonContent.length == 0) 
         setNothingToShowBody(s_PlaylistNothingFoundIcon, 'playlist-nothing-to-show');
 
-    let List = document.getElementById("list");
-    setGridLayout(List, false)
+    setGridLayout(false)
 
+    let List = document.getElementById("list");
     for (let a in PlaylistEpisodesJsonContent) {
         // NOTE: show just episodes of the playlist saved podcast
         List.append(allNewEpisodes.ui.getNewItemList(PlaylistEpisodesJsonContent[a]));
@@ -485,17 +485,13 @@ function showPlaylistContent(_Self)
 function showEditPlaylistPage(playlist) {
 
     $playlist = $( 'li[playlist="' + playlist + '"]' )
-    console.log($playlist)
-    var bodyPage = document.getElementById("list")
 
-    setGridLayout(bodyPage, false)
+    setGridLayout(false)
 
-    var $bodyPage = $(bodyPage);
+    let $list = $('#list');
 
     clearBody()
 
-
-    //setHeaderViewAction()
     clearMenuSelection()
 
     clearTextField(document.getElementById("search-input"))
@@ -513,7 +509,7 @@ function showEditPlaylistPage(playlist) {
     $playlist.addClass("selected")
 
 
-    $bodyPage.html('<div class="edit-header" index="' + $playlist.attr('index') + '">' + 
+    $list.html('<div class="edit-header" index="' + $playlist.attr('index') + '">' + 
                         '<input class="playlist-edit-input">' +
                         '<button class="playlist-done-button">' + i18n.__('Done') + '</button>' +
                     '</div>' +
@@ -569,8 +565,8 @@ function showEditPlaylistPage(playlist) {
     let JsonContent = allFavoritePodcasts.getAll();
 
     for (let i = 0; i < JsonContent.length; i++)
-        $bodyPage.append(getPodcastEditItem( JsonContent[i].collectionName, 
-                                             JsonContent[i].feedUrl,
-                                             JsonContent[i].artworkUrl30, 
-                                             isInPlaylist(playlist, JsonContent[i].feedUrl)))
+        $list.append(getPodcastEditItem( JsonContent[i].collectionName, 
+                                         JsonContent[i].feedUrl,
+                                         JsonContent[i].artworkUrl30, 
+                                         isInPlaylist(playlist, JsonContent[i].feedUrl)))
 }

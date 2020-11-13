@@ -109,6 +109,14 @@ const s_SearchNothingFoundIcon =
 </svg>
 `
 
+const s_ArrowUpIcon = 
+`
+<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+</svg>
+`
+
 const s_PlaylistNothingFoundIcon = 
 `
 <svg id="master-artboard" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" style="enable-background:new 0 0 336 235.2;" width="80px" height="80px">

@@ -16,9 +16,64 @@ class Podcast {
     }
 }
 
+class FavoritePodcastsUI {
+    constructor() {
+    }
+    
+    isFavoritesPage() {
+        if(getHeader() == generateHtmlTitle('Favorites'))
+            return true;
+        return false;
+    }
+
+    isEmpty() {
+        return !this.getAllItemsList().get(0);
+    }
+
+    getList() {
+        return $('#list');
+    }
+    
+    getAllItemsList() {
+        return $('#list li');
+    }
+
+    getByFeedUrl(feedUrl) {
+        return this.getList().find('.podcast-entry-header[feedurl="' + feedUrl + '"]').parent();
+    }
+
+    add() {
+        setItemCounts();
+    }
+
+    showNothingToShowPage() {
+        if(this.isFavoritesPage()) {
+            setHeaderViewAction("");
+            setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');
+        }
+    }
+
+    removeByFeedUrl(feedUrl) {
+        if(this.isFavoritesPage()) {
+            let $podcast = this.getByFeedUrl(feedUrl);
+            $podcast
+                .animate({opacity: 0.0}, 150)
+                .slideUp(150, () => { 
+                    $podcast.remove(); 
+                    
+                    if(this.isEmpty())
+                        this.showNothingToShowPage();
+                });
+
+        }
+        setItemCounts();
+    }
+}
+
 class FavoritePodcasts {
     constructor() {
         this.load();
+        this.ui = new FavoritePodcastsUI();
     }
 
     load() {
@@ -65,7 +120,7 @@ class FavoritePodcasts {
                 i++;
             this.podcasts.splice(i, 0, podcast);
             this.update();
-            setItemCounts();
+            this.ui.add();
             readFeedByFeedUrl(podcast.feedUrl);
             return podcast;
         }
@@ -81,9 +136,7 @@ class FavoritePodcasts {
             allPlaylist.memory.removePodcastByFeedUrlFromAllPlaylists(feedUrl);
             allFeeds.delete(feedUrl);
 
-            // UPDATE UI
-            if(this.isEmpty() && getHeader() == generateHtmlTitle('Favorites'))
-                setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');
+            this.ui.removeByFeedUrl(feedUrl);
                 
             return true;
         }
@@ -127,7 +180,6 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
     $(_Self).parent().remove();
     $podcastRow.append(getFullHeartButton(podcast));
 
-
     allFavoritePodcasts.add(podcast);
 
 }
@@ -147,6 +199,4 @@ function unsetFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork6
     let $podcastRow = $(_Self).parent().parent();
     $(_Self).parent().remove();
     $podcastRow.append(getHeartButton(podcast));
-    
-    setItemCounts();
 }

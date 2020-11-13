@@ -1,10 +1,3 @@
-var CPlayer = require('./js/helper/player')
-
-var player = new CPlayer()
-
-var allNewEpisodes = null;
-var allFeeds = null;
-
 process.dlopen = () => {
   throw new Error('Load native module is not safe')
 }
@@ -15,317 +8,6 @@ setInterval(function () {
     console.log('Feeds have been read!');
 }, 30 * 60 * 1000);
 
-class Episode {
-    constructor(ChannelName, FeedUrl, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
-        this.channelName = ChannelName;
-        this.feedUrl = FeedUrl;
-        this.episodeTitle = EpisodeTitle;
-        this.episodeUrl = EpisodeUrl;
-        this.episodeType = EpisodeType;
-        this.episodeLength = EpisodeLength;
-        this.episodeDescription = EpisodeDescription;
-        this.durationKey = DurationKey;
-        this.pubDate = pubDate;
-        this.playbackPosition = ( playbackPosition ? playbackPosition : 0 );
-    }
-}
-
-class FeedsUI {
-    constructor() {
-    }
-
-    getInfoFeedView() {
-        return $('.settings-header').html();
-    }
-
-    getArtworkSrcFromView() {
-        let $image = $('.settings-image').get(0);
-        return ($image ? $image.src : '');
-    }
-
-    isEmpity() {
-        return !this.getAllItemsList().get(0);
-    }
-
-    getList() {
-        return $('#list');
-    }
-
-    getAllItemsList() {
-        return $('#list li');
-    }
-
-    add(episode) {
-        let pageType = this.getInfoFeedView();
-        if(pageType == episode.channelName) {
-            this.directAdd(episode);
-            this.updateItemCount(episode.feedUrl);
-        }
-    }
-
-    directAdd(episode) {
-        if(!$(this.getAllItemsList().get(0)).get(0)) {
-            $(this.getNewItemList(episode))
-                .hide()
-                .css('opacity', 0.0)
-                .appendTo($(this.getList()))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-        } else
-            $(this.getNewItemList(episode))
-                .hide()
-                .css('opacity', 0.0)
-                .insertBefore($(this.getAllItemsList().get(0)))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-    }
-
-    updateItemCount(FeedUrl) {
-        let $count = $('.settings-count').get(0);
-        if($count)
-            $count.innerHTML = allFeeds.getFeedPodcast(FeedUrl).length;
-    }
-
-    getNewItemList(episode) {
-        let Artwork = this.getArtworkSrcFromView();
-
-        let ListElement = buildListItem(new cListElement(
-            [
-                getBoldTextPart(episode.episodeTitle),
-                getSubTextPart(new Date(episode.pubDate).toLocaleString()),
-                getSubTextPart(allFeeds.getDurationFromDurationKey(episode)),
-                getFlagPart('Done', 'white', '#4CAF50'),
-                getDescriptionPart(s_InfoIcon, episode.episodeDescription),
-                allNewEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? $('<div></div>').get(0) : getAddEpisodeButtonPart()
-            ],
-            "3fr 1fr 1fr 5em 5em 5em"
-        ), eLayout.row)
-
-        if (episodeIsAlreadyInNewEpisodes(episode.episodeUrl))
-            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
-
-        if (player.isPlaying(episode.episodeUrl))
-            ListElement.classList.add("select-episode")
-
-        // NOTE: Set a episode item to "Done" if it is in the History file
-
-        if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
-            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
-
-        ListElement.onclick = function() {
-            playNow(this);
-        }
-        ListElement.setAttribute("channel", episode.channelName);
-        ListElement.setAttribute("feedUrl", episode.feedUrl);
-        ListElement.setAttribute("title", episode.episodeTitle);
-        ListElement.setAttribute("type", episode.episodeType);
-        ListElement.setAttribute("url", episode.episodeUrl);
-        ListElement.setAttribute("length", episode.episodeLength);
-        ListElement.setAttribute("durationKey", episode.durationKey);
-        ListElement.setAttribute("description", episode.episodeDescription);
-        ListElement.setAttribute("artworkUrl", Artwork);
-        ListElement.setAttribute("pubDate", episode.pubDate);
-        
-        return ListElement;
-    }
-}
-
-class Feeds {
-    constructor() {
-        this.load();
-        this.ui = new FeedsUI();
-    }
-
-    load() {
-        if (!fs.existsSync(getFeedDirPath()))
-            fs.mkdirSync(getFeedDirPath());
-
-        if (!fs.existsSync(getIndexFeedFilePath()))
-            fs.openSync(getIndexFeedFilePath(), 'w');
-
-        let fileContent = ifExistsReadFile(getIndexFeedFilePath());
-        this.index = JSON.parse(fileContent == "" ? "[]": fileContent);
-        
-        for(let i in this.index) {
-            let indicator = this.index[i].indicator;
-            if (!fs.existsSync(this.getFeedPathByIndicator(indicator)))
-                fs.openSync(this.getFeedPathByIndicator(indicator), 'w');
-
-            let fileContent = ifExistsReadFile(this.getFeedPathByIndicator(indicator));
-            this[this.index[i].feedUrl] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
-        }
-    }
-
-    updateByFeedUrl(feedUrl) {
-        fs.writeFileSync(this.getFeedPathByFeedUrl(feedUrl), JSON.stringify(this[feedUrl], null, "\t"));
-    }
-
-    updateByIndicator(indicator) {
-        let feedUrl = this.getFeedUrlByIndicator(indicator);
-        fs.writeFileSync(this.getFeedPathByIndicator(indicator), JSON.stringify(this[feedUrl], null, "\t"));
-    }
-
-    updateIndex() {
-        fs.writeFileSync(getIndexFeedFilePath(), JSON.stringify(this.index, null, "\t"));
-    }
-
-    updateAll() {
-        this.updateIndex();
-        for(let i in this.index)
-            this.update(this.index[i].feedUrl);
-    }
-
-    getFeedPathByIndicator(indicator) {
-        return getFeedDirPath() + '/' + indicator + '.json';
-    }
-
-    getFeedPathByFeedUrl(feedUrl) {
-        return getFeedDirPath() + '/' + this.getIndicatorByFeedUrl(feedUrl) + '.json';
-    }
-
-    getIndicatorByFeedUrl(feedUrl) {
-        let i = this.getIofIndexByFeedUrl(feedUrl);
-        if(i != -1)
-            return this.index[i].indicator;
-        return undefined;
-    }
-
-    getIofIndexByFeedUrl(feedUrl) {
-        for(let i in this.index)
-            if(this.index[i].feedUrl == feedUrl)
-                return i;
-        return -1;
-    }
-
-    getFeedUrlByIndicator(indicator) {
-        for(let i in this.index)
-            if(this.index[i].indicator == indicator)
-                return this.index[i].feedUrl;
-        return undefined;
-    }
-
-    length(feedUrl) {
-        if(!this[feedUrl])
-            return 0;
-        return this[feedUrl].length;
-    }
-
-    lengthIndex() {
-        return this.index.length;
-    }
-
-    getNewIndicator() {
-        let getNewIndicator = undefined;
-        do {
-            getNewIndicator = '_' + Math.random().toString(36).substr(2, 9);
-        } while(this.getFeedUrlByIndicator(getNewIndicator));
-        return getNewIndicator;
-    }
-
-    getFeedPodcast(feedUrl) {
-        return this[feedUrl];
-    }
-
-    getEpisode(feedUrl, i) {
-        return this[feedUrl][i];
-    }
-
-    getLastEpisode(feedUrl) {
-        return this.getEpisode(feedUrl, 0);
-    }
-
-    add(episode) {
-        let feedUrl = episode.feedUrl;
-        let indicator = this.getIndicatorByFeedUrl(feedUrl);
-        if(!indicator) {
-            indicator = this.getNewIndicator();
-
-            if (!fs.existsSync(this.getFeedPathByIndicator(indicator)))
-                fs.openSync(this.getFeedPathByIndicator(indicator), 'w');
-
-            let fileContent = ifExistsReadFile(this.getFeedPathByIndicator(indicator));
-            this[feedUrl] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
-            
-            this.index.push({feedUrl: feedUrl, indicator: indicator});
-            this.updateIndex();
-        }
-
-        let lastEpisode = this.getLastEpisode(feedUrl);
-        if(!lastEpisode || compareEpisodeDates(episode.pubDate, lastEpisode.pubDate) >= 0) {
-            this[feedUrl].unshift(episode);
-
-            this.updateByIndicator(indicator);
-            this.ui.add(episode);
-            return true;
-        }
-        return false;
-    }
-
-    getDurationFromDurationKey(episode) {
-        let duration = parseFeedEpisodeDuration(episode.durationKey.split(":"));
-
-        if (duration.hours == 0 && duration.minutes == 0) 
-            duration = "";
-        else
-            duration = duration.hours + "h " + duration.minutes + "min";
-        return duration;
-    }
-
-    toNewEpisodeObj(episode) {
-        return new NewEpisode(
-            episode.channelName,
-            episode.feedUrl,
-            episode.episodeTitle,
-            episode.episodeUrl,
-            episode.episodeType,
-            episode.episodeLength,
-            episode.episodeDescription,
-            this.getDurationFromDurationKey(episode),
-            episode.pubDate
-        )
-    }
-
-    delete(feedUrl) {
-        let i = this.getIofIndexByFeedUrl(feedUrl);
-        let indicator = this.index[i].indicator;
-        try {
-            fs.unlinkSync(this.getFeedPathByIndicator(indicator));
-            delete this[feedUrl];
-            this.index.splice(i, 1);
-            this.updateIndex();
-            console.log('successfully deleted ' + this.getFeedPathByIndicator(indicator));
-        } catch (err) {
-            console.log('error in deleting ' + this.getFeedPathByIndicator(indicator));
-        }
-    }
-
-    findEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
-        for(let i in this[feedUrl])
-            if(this[feedUrl][i].episodeUrl == episodeUrl)
-                return i;
-        return -1
-    }
-    
-    setPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl, playbackPosition) {
-        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
-        if(i != -1) {
-            this[feedUrl][i].playbackPosition = playbackPosition;
-            this.updateByFeedUrl(feedUrl);
-        }
-    }
-
-    getPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl) {
-        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
-        if(i != -1)
-            return this[feedUrl][i].playbackPosition;
-        return undefined;
-    }
-}
-
-function loadFeeds() {
-    allFeeds = new Feeds();
-}
-
 function compareEpisodeDates(episode1, episode2) {
     let date1 = new Date(episode1);
     let date2 = new Date(episode2);
@@ -335,259 +17,68 @@ function compareEpisodeDates(episode1, episode2) {
         return 1;
     return 0;
 }
-
-class NewEpisode {
-    constructor(channelName, feedUrl, episodeTitle, episodeUrl, episodeType, episodeLength, episodeDescription, duration, pubDate) {
-        this.channelName = channelName;
-        this.feedUrl = feedUrl;
-        this.episodeTitle = episodeTitle;
-        this.episodeUrl = episodeUrl;
-        this.episodeType = episodeType;
-        this.episodeLength = episodeLength;
-        this.episodeDescription = episodeDescription;
-        this.duration = duration;
-        this.pubDate = pubDate;
-    }
-}
-
-class NewEpisodesUI {
-    constructor() {
-    }
-
-    getPageType() {
-        if(!notPlaylistHeader())
-            return 'playlist';
-        if(getHeader() == generateHtmlTitle('New Episodes'))
-            return 'newEpisodes';
-        return undefined;
-    }
-
-    isEmpity() {
-        return !this.getAllItemsList().get(0);
-    }
-    
-    updateAfterDelete() {
-        if(this.isEmpity()) {
-            let pageType = this.getPageType();
-            switch(pageType) {
-                case 'playlist':
-                    setNothingToShowBody(s_PlaylistNothingFoundIcon, 'playlist-nothing-to-show');
-                    break;
-                case 'newEpisodes':
-                    setNothingToShowBody(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
-                    break;
-            }
-        }
-    }
-
-    getList() {
-        return $('#list');
-    }
-
-    getAllItemsList() {
-        return $('#list li');
-    }
-
-    add(i) {
-        let pageType = this.getPageType();
-        switch(pageType) {
-            case 'playlist':
-                this.addPlaylist(i);
-                break;
-            case 'newEpisodes':
-                this.directAdd(i);
-                break;
-        }
-    }
 /*
-    directAdd(i) {
-        if(!$(this.getAllItemsList().get(i)).get(0)) {
-            if(this.isEmpity())
-                clearBody();
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .appendTo($(this.getList()))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-        } else
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .insertBefore($(this.getAllItemsList().get(i)))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-    }
+function urlify(inputText) {
+    var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+    //URLs starting with http://, https://, or ftp://
+    replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+    replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+    replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+    //Change email addresses to mailto:: links.
+    replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
+    replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+    return replacedText;
+}
 */
-	directAdd(i) {
-        if(!$(this.getAllItemsList().get(i)).get(0)) {
-            if(this.isEmpity())
-                clearBody();
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .appendTo($(this.getList()))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-        } else
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .insertBefore($(this.getAllItemsList().get(i)))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-    }
-    
-    addPlaylist(i) {
-        let newEpisode = allNewEpisodes.get(i);
 
-        let playlistName = getHeader();
-        let indexPlaylist = allPlaylist.memory.findByName(playlistName);
-        let feedUrl = newEpisode.feedUrl;
-        if(allPlaylist.memory.findPodcast(indexPlaylist, feedUrl) == -1)
-            return;
+/*
+function urlify(text) {
+    let urlRegex = /(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
+    return text.replace(urlRegex, function (url) {
+        return '<a href="' + (url.indexOf('http') == -1 ? 'http://' + url : url) + '">' + url + '</a>';
+    })
+}
+*/
 
-        let playlistEpisodes = allNewEpisodes.getPlaylistEpisodes(playlistName);
-        for(let j in playlistEpisodes)
-            if(playlistEpisodes[j].episodeUrl == newEpisode.episodeUrl) {
-                this.directAdd(j);
-                return;
-            }
-    }
-
-    getNewItemList(newEpisode) {
-        let Artwork = getBestArtworkUrl(newEpisode.feedUrl);
-        
-        let ListElement = buildListItem(new cListElement (
-            [
-                getImagePart(Artwork),
-                getBoldTextPart(newEpisode.episodeTitle),
-                getSubTextPart(newEpisode.duration == undefined ? "" : newEpisode.duration),
-                getTextPart(newEpisode.channelName),
-                getDescriptionPart(s_InfoIcon, newEpisode.episodeDescription),
-                getDeleteButtonPart()
-            ],
-            "5em 1fr 6em 1fr 5em 5em"
-        ), eLayout.row)
-        
-        ListElement.onclick = function() {
-            playNow(this);
-        };
-        ListElement.setAttribute("channel", newEpisode.channelName)
-        ListElement.setAttribute("feedUrl", newEpisode.feedUrl)
-        ListElement.setAttribute("title", newEpisode.episodeTitle)
-        ListElement.setAttribute("type", newEpisode.episodeType)
-        ListElement.setAttribute("url", newEpisode.episodeUrl)
-        ListElement.setAttribute("length", newEpisode.episodeLength)
-        ListElement.setAttribute("artworkUrl", Artwork)
-        ListElement.setAttribute("pubDate", newEpisode.pubDate)
-
-        if (player.isPlaying(newEpisode.episodeUrl))
-            ListElement.classList.add("select-episode")
-        return ListElement;
-    }
+function urlify(text) {
+    //let urlRegex = /(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
+    //let urlRegex = /[a-z0-9-\.@:/]+(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
+    let urlRegex = /(https?:\/\/)?[\w\-@~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
+    //let urlRegex = /[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/;
+    return text.replace(urlRegex, function (url) {
+        let content = url;
+        if(url.indexOf('@') != -1)
+            url = 'mailto:' + url;
+        else if(url.substr(0, 4) != 'http')
+            url = 'http://' + url;
+        return '<a href="' + url + '">' + content + '</a>';
+    })
 }
 
-class NewEpisodes {
-    constructor() {
-        this.load();
-        this.ui = new NewEpisodesUI;
-    }
-
-    load() {
-        if (!fs.existsSync(getNewEpisodesSaveFilePath()))
-            fs.openSync(getNewEpisodesSaveFilePath(), 'w');
-            
-        let fileContent = ifExistsReadFile(getNewEpisodesSaveFilePath());
-        this.episodes = JSON.parse(fileContent == "" ? "[]": fileContent);
-    }
-
-    update() {
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(this.episodes, null, "\t"));
-    }
-    
-    length() {
-        return this.episodes.length;
-    }
-
-    isEmpty() {
-        return (this.length() == 0);
-    }
-
-    getAll() {
-        return this.episodes;
-    }
-
-    get(i) {
-        return this.episodes[i];
-    }
-    
-    findByEpisodeUrl(episodeUrl) {
-        for(let i in this.episodes)
-            if(this.episodes[i].episodeUrl == episodeUrl)
-                return i;
-        return -1;
-    }
-
-    getByEpisodeUrl(episodeUrl) {
-        let i = this.findByEpisodeUrl(episodeUrl);
-        return (i != -1 ? this.episodes[i] : undefined);
-    }
-    
-    add(episode) {
-        if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
-            let i = 0;
-            while(i < this.length() && compareEpisodeDates(this.episodes[i].pubDate, episode.pubDate) > 0)
-                i++;
-            this.episodes.splice(i, 0, episode);
-            this.update();
-            setItemCounts();
-            this.ui.add(i);
-            return episode;
-        } 
-        return null;
-    }
-    
-    removeByEpisodeUrl(episodeUrl) {
-        let i = this.findByEpisodeUrl(episodeUrl);
-        if(i != -1) {
-            this.episodes.splice(i, 1);
-            this.update();
-            return true;
-        }
-        return false;
-    }
-
-    removePodcastEpisodes(feedUrl) {
-        for(let i = this.episodes.length - 1; i >= 0; i--) {
-            if(this.episodes[i].feedUrl == feedUrl)  
-                this.episodes.splice(i, 1);
-        }
-        this.update();
-    }
-
-    getPlaylistEpisodes(playlistName) {
-        let episodes = [];
-        let playlist = allPlaylist.memory.getByName(playlistName);
-        if(playlist == undefined)
-            return episodes;
-
-        for(let i in this.episodes)
-            if(playlist.list.includes(this.episodes[i].feedUrl))
-                episodes.push(this.episodes[i]);
-        return episodes;
-    }
-
+function getEpisodeInfoFromDescription(episodeDescription) {
+    return (episodeDescription.indexOf('</a>') == -1 ? urlify(episodeDescription) : episodeDescription);
+/*
+    let $div = $('<div></div>');
+    $div.html(episodeDescription.indexOf('</a>') == -1 ? urlify(episodeDescription) : episodeDescription);
+    $div.find('h1, h2, h3').replaceWith(function () { 
+        return $('<b>' + this.innerHTML + '</b>')
+    });
+    return $div.html();
+*/
 }
 
-function loadNewEpisodes() {
-    allNewEpisodes = new NewEpisodes();
-}
 
 function readFeeds() {
     // TODO: create a new thread to read the feeds
     // Add animation to notify the user about fetching new episodes
     $('#menu-refresh svg').addClass('is-refreshing');
+    $('#menu-refresh').off('click');
 
     let podcasts = allFavoritePodcasts.getAll();
     for (let i in podcasts) 
@@ -597,6 +88,7 @@ function readFeeds() {
     // Let the animation take at least 2 seconds. Otherwise user may not notice it.
     setTimeout(() => {
         $('#menu-refresh svg').removeClass('is-refreshing');
+        $('#menu-refresh').click(readFeeds);
     }, 2000);
 }
 
@@ -632,16 +124,59 @@ function updateFeed(_Content, _eRequest, _Options) {
 
 function getFeedFromWorkerResponse(json, feedUrl) {
     let itemCount = json.length;
+    if(itemCount == 0)
+        return 0;
     let newEpisodesCount = itemCount - allFeeds.length(feedUrl);
+    let indicatorChannel = false;
     for(let i = newEpisodesCount - 1; i >= 0; i--) {
         let episode = json[i];
-        allFeeds.add(episode)
+        indicatorChannel = allFeeds.unsafeAdd(episode);
     }
+
+    if(indicatorChannel)
+        allFeeds.updateByIndicator(indicatorChannel); 
+
     return (newEpisodesCount % itemCount);
 }
+/*
+xmlParserWorker.onmessage = function(ev) {
+    let json = ev.data.json;
+    let feedUrl = ev.data.feedUrl;
+
+    let initialFeedLength = allFeeds.length(feedUrl);
+    let numberNewEpisode = getFeedFromWorkerResponse(json, feedUrl);
+
+    let numberElementToShow = numberNewEpisode;
+    if(initialFeedLength == 0 && numberNewEpisode == 0) {
+        let feedLength = allFeeds.length(feedUrl);
+        numberElementToShow = (feedLength > 200 ? 200 : feedLength);
+    }
+
+    for(let i = numberElementToShow - 1; i >= 0; i--) {
+        let episode = json[i]
+        allFeeds.ui.add(episode);
+    }
+
+    updateFeedAndNewEpisode(ev.data.feedUrl, numberNewEpisode);
+}
+*/
 
 xmlParserWorker.onmessage = function(ev) {
-    let numberNewEpisode = getFeedFromWorkerResponse(ev.data.json, ev.data.feedUrl);
+    let json = ev.data.json;
+    let feedUrl = ev.data.feedUrl;
+
+    let initialFeedLength = allFeeds.length(feedUrl);
+    let numberNewEpisode = getFeedFromWorkerResponse(json, feedUrl);
+
+    if(initialFeedLength == 0 && numberNewEpisode == 0) {
+        allFeeds.ui.showLastNFeedElements(json);
+        return;
+    }
+
+    for(let i = numberNewEpisode - 1; i >= 0; i--) {
+        let episode = json[i]
+        allFeeds.ui.add(episode);
+    }
 
     updateFeedAndNewEpisode(ev.data.feedUrl, numberNewEpisode);
 }
@@ -656,7 +191,7 @@ function updateFeedAndNewEpisode(FeedUrl, numberNewEpisode) {
 }
 
 function showAllEpisodes(_Self) {
-    setGridLayout(document.getElementById("list"), false);
+    setGridLayout(false);
 
     clearBody();
     setHeaderViewAction();
@@ -665,19 +200,10 @@ function showAllEpisodes(_Self) {
 }
 
 function getAllEpisodesFromFeed(_Feed) {
-    appendSettingsSection(_Feed);
-
-    let Artwork = getBestArtworkUrl(_Feed);
+    allFeeds.ui.showHeader(_Feed);
 
     let feed = allFeeds.getFeedPodcast(_Feed);
-    let podcast = allFavoritePodcasts.getByFeedUrl(_Feed);
-
-    // NOTE: set settings information
-    $('.settings-image').get(0).src = Artwork;
-    $('.settings-header').get(0).innerHTML = (podcast ? podcast.collectionName : 'null');
-    $('.settings-count').get(0).innerHTML = (feed ? feed.length : "-1");
-
-    showAllFeedElements(feed);
+    allFeeds.ui.showLastNFeedElements(feed);
 
     if (isProxySet()) {
         if (_Feed instanceof Object)
@@ -724,87 +250,6 @@ function getChangedFeed(_Feed, _eRequest) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function appendSettingsSection(_Feed) {
-    // NOTE: settings area in front of a podcast episode list
-
-    var RightContent = document.getElementById("list")
-
-    var SettingsDiv = document.createElement("div")
-    SettingsDiv.classList.add("settings")
-
-    var PodcastImage = document.createElement("img")
-    PodcastImage.classList.add("settings-image")
-
-    var podcastName = document.createElement("div")
-    podcastName.classList.add("settings-header")
-
-    var EpisodeCount = document.createElement("div")
-    EpisodeCount.classList.add("settings-count")
-
-    var MoreElement = document.createElement("div")
-    MoreElement.innerHTML = s_MoreOptionIcon
-    MoreElement.classList.add("settings-unsubscribe")
-
-    // NOTE: set context menu
-
-    setPodcastSettingsMenu(MoreElement, _Feed)
-
-    // NOTE: build layout
-
-    SettingsDiv.append(PodcastImage)
-    SettingsDiv.append(podcastName)
-    SettingsDiv.append(EpisodeCount)
-    SettingsDiv.append(MoreElement)
-
-    RightContent.append(SettingsDiv)
-}
-
-function setPodcastSettingsMenu(_Object, _Feed)
-{
-    const {remote} = require('electron')
-    const {Menu, MenuItem} = remote
-
-    const PlaylistMenu = new Menu();
-    
-    let JsonContent = allPlaylist.memory.playlists;
-
-    for (let i in JsonContent) {
-        let IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].name, _Feed)
-
-        PlaylistMenu.append(new MenuItem({
-            label: JsonContent[i].name, 
-            type: "checkbox", 
-            checked: IsInPlaylist, 
-            click(self) {
-                let playlistName = self.label;
-                if(self.checked)
-                    addToPlaylist(playlistName, _Feed);
-                else
-                    removeFromPlaylist(playlistName, _Feed);
-
-            }
-        }))
-    }
-
-    const ContextMenu = new Menu()
-    ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: !getSettings(_Feed), click(self) {
-        changeSettings(_Feed, !self.checked);
-    }}))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
-        if (_Feed != null)
-            unsubscribeContextMenu(_Feed);
-    }}))
-
-    _Object.addEventListener('click', (_Event) => {
-        _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true })
-    }, false)
-
-}
-
 function processEpisodes(_Content, _Options) {
     let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
     
@@ -813,7 +258,7 @@ function processEpisodes(_Content, _Options) {
         feedUrl: FeedUrl
     });
 }
-
+/*
 function showAllFeedElements(feed) {
     let list = $('#list');
     for (let i in feed) {
@@ -821,7 +266,7 @@ function showAllFeedElements(feed) {
         list.append(allFeeds.ui.getNewItemList(episode));
     }
 }
-
+*/
 function addToEpisodes(_Self) {
     let ListElement = _Self.parentElement.parentElement;
 

@@ -1,13 +1,10 @@
-var eLayout =
-{
+var eLayout = {
     row: 'list-item-row-layout',
     box: 'list-item-box-layout'
 }
 
-class cListElement
-{
-    constructor(_Parts, _LayoutRatio)
-    {
+class cListElement {
+    constructor(_Parts, _LayoutRatio) {
         this.Parts = _Parts
         this.LayoutRatio = _LayoutRatio
     }
@@ -69,7 +66,8 @@ function getDescriptionPart(_Icon, _Text)
     var TextElement = document.createElement("div")
 
     TextElement.innerHTML = _Icon
-    TextElement.title = _Text
+    //TextElement.title = _Text
+    TextElement.setAttribute('description', _Text)
     TextElement.classList.add("list-item-description")
     TextElement.classList.add('list-item-icon')
 
@@ -107,8 +105,7 @@ function getTextButtonPart(_Text)
     return ButtonElement
 }
 
-function getIconButtonPart(_Icon)
-{
+function getIconButtonPart(_Icon) {
     var IconButtonElement = document.createElement("div")
 
     // fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"

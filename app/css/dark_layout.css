@@ -17,6 +17,30 @@
         background:  #444;
 }
 
+a:link {
+  color: #5880c7;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color:#5880c7;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #5880c7;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #5880c7;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
 body
 {
     background: #222;
@@ -195,4 +219,16 @@ svg.set-favorite
 
 #new_list-button:hover > svg {
     fill: white;
+}
+
+#list li[info-mode] {
+    background-color: #181818;
+}
+
+#list li[info-mode] svg{
+    fill: #fff;
+}
+
+.more-episodes-top {
+    border-color: #222;
 }

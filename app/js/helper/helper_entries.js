@@ -4,32 +4,14 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-function unsubscribeListElement(_Self) {
-    var ListElement = _Self.parentElement.parentElement;
-    var FeedUrl = ListElement.getElementsByClassName("podcast-entry-header")[0].getAttribute("feedUrl");
-
-    // NOTE: Remove optically
-    //ListElement.parentElement.removeChild(ListElement);
-    $(ListElement)
-        .animate({opacity: 0.0}, 150)
-        .slideUp(150, function () { 
-            this.remove(); 
-        });
-
-    // NOTE: Remove from files
-    allFavoritePodcasts.removeByFeedUrl(FeedUrl);
-
-    setItemCounts();
+function unsubscribeListElement(self) {
+    let feedUrl = $(self).parent().parent().find('.podcast-entry-header').attr('feedUrl');
+    allFavoritePodcasts.removeByFeedUrl(feedUrl);
 }
 
-function unsubscribeContextMenu(_FeedUrl)
-{
-    // NOTE: Support context menu unsubscribe
-
+function unsubscribeContextMenu(_FeedUrl) {
     allFavoritePodcasts.removeByFeedUrl(_FeedUrl);
-
-    showFavoritesPage()
-    setItemCounts()
+    showFavoritesPage();
 }
 
 function setHeartContent(self, emptyHeart) {
@@ -164,12 +146,12 @@ function getStatisticsElement(_Class, _Title, _Value)
 
     return ListElement
 }
-
+/*
 function setPodcastElementToDone(_ListElement)
 {
     _ListElement.getElementsByClassName("podcast-entry-title")[0].classList.add("done")
 }
-
+*/
 function deleteEntryWithIcon(_Self)
 {
     deleteEntry(_Self.parentElement.parentElement)
@@ -183,12 +165,14 @@ function deleteEntryWithAudioPlayer(_FeedUrl)
 }
 */
 function deleteEntry(_ListElement) {
-    if(deleteFromFile(_ListElement.getAttribute("url")))
-        deleteFromListView(_ListElement);
+    //if(
+    deleteFromFile(_ListElement.getAttribute("url"))
+    //)
+    //    deleteFromListView(_ListElement);
 
-    setItemCounts();
+    //setItemCounts();
 }
-
+/*
 function deleteFromListView(_ListElement) {
     $(_ListElement)
         .animate({opacity: 0.0}, 150)
@@ -197,7 +181,7 @@ function deleteFromListView(_ListElement) {
         });
     allNewEpisodes.ui.updateAfterDelete();
 }
-
+*/
 function deleteFromFile(episodeUrl) {
     let episode = allNewEpisodes.getByEpisodeUrl(episodeUrl);
     if(!episode)
@@ -221,17 +205,3 @@ function deleteFromFile(episodeUrl) {
     return true;
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Sort And Filter
-// ---------------------------------------------------------------------------------------------------------------------
-
-function sortByName(_Json) {
-    return _Json.sort((a, b) => {
-        if(a.collectionName < b.collectionName)
-            return -1
-        if(a.collectionName > b.collectionName)
-            return 1;
-        if(a.collectionName == b.collectionName)
-            return 0;
-    });
-}

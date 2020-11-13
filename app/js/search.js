@@ -14,11 +14,13 @@ function search(_Self, _Event) {
 }
 
 function getPodcasts(_SearchTerm) {
-    _SearchTerm = encodeURIComponent(_SearchTerm);
-    if (isProxySet())
-        makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http);
-    else
-        makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https);
+    setTimeout(() => {
+        _SearchTerm = encodeURIComponent(_SearchTerm);
+        if (isProxySet())
+            makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http);
+        else
+            makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https);
+    }, 300);
 }
 
 function getResults(_Data, _eRequest, _Options) {
@@ -31,9 +33,9 @@ function getResults(_Data, _eRequest, _Options) {
         setNothingToShowBody(s_SearchNothingFoundIcon, 'search-nothing-to-show');
     else if(query == $('#search-input').val()){
         clearBody();
-        let $list = $('#list');
-        setGridLayout($list.get(0), false);
+        setGridLayout(false);
 
+        let $list = $('#list');
         for (let i in obj.results) {
             let podcast = new Podcast (
                 obj.results[i].artistName,
@@ -85,7 +87,7 @@ function getHeartButton(_PodcastInfos) {
 
 function getFullHeartButton(_PodcastInfos) {
     let artists = _PodcastInfos.artistName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-    let collection = _PodcastInfos.collectionName//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+    let collection = _PodcastInfos.collectionName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
 
     let $heartButtonElement = $('<div></div>');
 

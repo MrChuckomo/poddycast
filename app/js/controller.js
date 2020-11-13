@@ -2,6 +2,15 @@ function initController() {
     initLink();
     initInput();
     initPlayer();
+
+    enableOpenLinkInDefaultBrowser();
+}
+
+function enableOpenLinkInDefaultBrowser() {
+    $('body').on('click', 'a', (event) => {
+        event.preventDefault();
+        require("electron").shell.openExternal(event.target.href);
+    });
 }
 
 /*

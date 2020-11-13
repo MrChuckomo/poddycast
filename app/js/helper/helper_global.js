@@ -171,13 +171,13 @@ function setTitle(title) {
 }
 
 function init() {
+    setTitlebarOnWin();
+    
     if (!fs.existsSync(getSaveDirPath()))
         fs.mkdirSync(getSaveDirPath());
 
     if (!fs.existsSync(getArchivedFilePath()))
-    {
         fs.openSync(getArchivedFilePath(), 'w');
-    }
 
     loadPreferences();
     loadFeeds();
@@ -185,7 +185,6 @@ function init() {
     loadFavoritePodcasts();
     loadNewEpisodes();
 
-    setTitlebarOnWin();
     darkMode();
 
     setSearchWithoutFocus()
@@ -315,8 +314,13 @@ function getFullTime(_TimeInSeconds)
     return FullTime
 }
 
-function parseFeedEpisodeDuration(_Duration)
-{
+function parseFeedEpisodeDuration(_Duration) {
+    if(_Duration == '') {
+        return {
+            minutes: "#",
+            hours: "#"
+        }
+    }
     var Time = {}
 
     if (_Duration.length == 1)
@@ -342,6 +346,9 @@ function parseFeedEpisodeDuration(_Duration)
 
     Time.hours = ((Hours == "") ? "0" : Hours)
     Time.minutes = Minutes
+
+    Time.hours = "" + (parseInt(Time.hours) + Math.floor(parseInt(Time.minutes) / 60));
+    Time.minutes = "" + (parseInt(Time.minutes) % 60);
 
     return Time
 }

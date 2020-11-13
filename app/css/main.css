@@ -6,8 +6,8 @@
 }
 
 ::-webkit-scrollbar {     
-        background-color: #ddd;
-        width: .8em
+    background-color: #ddd;
+    width: .8em
 }
 
 ::-webkit-scrollbar-thumb:hover { 
@@ -20,7 +20,7 @@
 
 ::-webkit-scrollbar-thumb:window-inactive,
 ::-webkit-scrollbar-thumb {
-        background:  #aaa;
+    background:  #aaa;
 }
 
 ::selection {
@@ -41,8 +41,43 @@ input {
     font-family: "Montserrat", "Roboto", sans-serif;
 }
 
-body
-{
+a {
+    -ms-word-break: break-all;
+    word-break: break-all;
+    /* Non standard for webkit */
+    word-break: break-word;
+
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+a:link {
+  color: #364f7a;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:visited {
+  color:#364f7a;
+  background-color: transparent;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #364f7a;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+a:active {
+  color: #364f7a;
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+body {
     margin: 0;
     padding: 0;
     font-family: "Montserrat", "Roboto", sans-serif;
@@ -50,6 +85,7 @@ body
     user-select: none;
     cursor: default;
 }
+
 /* Tooltip container */
 .tooltip {
     position: relative;

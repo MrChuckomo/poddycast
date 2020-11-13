@@ -37,6 +37,14 @@
     opacity: 0.5;
     align-self: center;
     text-align: center;
+    height: 100%;
+}
+
+.list-item-icon svg {
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 .list-item-icon:hover
@@ -77,4 +85,12 @@
 .list-item-sub-text
 {
     opacity: 0.4;
+}
+
+#list li[info-mode] {
+    background-color: #e5e5e5;
+}
+
+#list li[info-mode] svg{
+    fill: #222;
 }

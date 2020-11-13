@@ -7,11 +7,11 @@ function setItemCounts() {
     $('#menu-favorites .menu-count').html(allFavoritePodcasts.length());
 }
 
-function setGridLayout(_List, _Enable) {
+function setGridLayout(_Enable) {
     if (_Enable)
-        _List.classList.add("grid-layout");
+        $('#list').addClass("grid-layout");
     else
-        _List.classList.remove("grid-layout");
+        $('#list').removeClass("grid-layout");
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -42,15 +42,14 @@ function setHeaderViewAction(_Mode) {
 }
 
 function toggleList(_View) {
-    let List = document.getElementById("list")
     switch (_View) {
         case "list":
-            setGridLayout(List, false)
+            setGridLayout(false)
             setHeaderViewAction("grid")
             break;
 
         case "grid":
-            setGridLayout(List, true)
+            setGridLayout(true)
             setHeaderViewAction("list")
             break;
 

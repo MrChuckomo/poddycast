@@ -1,6 +1,3 @@
-var CPlayer = require('./js/helper/player')
-
-var player = new CPlayer()
 
 function selectMenuItem(_MenuId) {
     let $menuItem = _MenuId;
@@ -24,13 +21,14 @@ function showNewEpisodesPage() {
     selectMenuItem($newEpisodesEntry);
 
     clearBody();
+    setScrollPositionOnTop();
 
-    let List = $('#list');
-    setGridLayout(List.get(0), false);
+    setGridLayout(false);
 
     if(allNewEpisodes.isEmpty())
         setNothingToShowBody(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
 
+    let List = $('#list');
     for (let i in allNewEpisodes.episodes) 
         List.append(allNewEpisodes.ui.getNewItemList(allNewEpisodes.get(i)));
 }
@@ -44,15 +42,16 @@ function showFavoritesPage() {
     setHeaderViewAction("list");
 
     clearBody();
+    setScrollPositionOnTop();
 
     let JsonContent = allFavoritePodcasts.getAll();
 
-    let List = document.getElementById("list");
-    setGridLayout(List, true);
+    setGridLayout(true);
     
     if (allFavoritePodcasts.isEmpty())
-        setNothingToShowBody(s_FavoritesNothingFoundIcon, 'favorites-nothing-to-show');
+        allFavoritePodcasts.ui.showNothingToShowPage();
 
+    let List = document.getElementById("list");
     for (let i in JsonContent) {
         let Artwork = JsonContent[i].artworkUrl100;
         if(Artwork == undefined || Artwork == 'undefined') {
@@ -102,12 +101,12 @@ function showHistoryPage() {
     selectMenuItem($historyEntry);
 
     clearBody();
+    setScrollPositionOnTop();
 
     let fileContent = ifExistsReadFile(getArchivedFilePath());
     let JsonContent = JSON.parse(fileContent == "" ? "[]" : fileContent);
 
-    let List = document.getElementById("list");
-    setGridLayout(List, false);
+    setGridLayout(false);
 
     // NOTE: Show just the last 100 entries in History
     // TODO: The can be loaded after user interaction
@@ -116,6 +115,7 @@ function showHistoryPage() {
     if(Count == 0)
         setNothingToShowBody(s_HistoryNothingFoundIcon, 'history-nothing-to-show');
 
+    let List = document.getElementById("list");
     for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
         let EpisodeTitle = JsonContent[i].episodeTitle
         let Artwork = JsonContent[i].artwork;
@@ -144,11 +144,13 @@ function showStatisticsPage() {
     selectMenuItem($statisticsEntry);
 
     clearBody();
+    setScrollPositionOnTop();
 
     let JsonContent = null;
 
+    setGridLayout(false);
+
     let List = document.getElementById("list");
-    setGridLayout(List, false);
 
     List.append(getStatisticsElement("statistics-header", "Podcasts", null));
 

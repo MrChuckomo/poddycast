@@ -424,6 +424,7 @@ function playPlayer()
 
     //Button.innerHTML = $(s_PauseIcon).html()
     $(Button)
+        .stop()
         .fadeTo(100, 0.3,
                  function() {
                     $(Button)
@@ -448,6 +449,7 @@ function pausePlayer()
 
     //Button.innerHTML = $(s_PlayIcon).html()
     $(Button)
+        .stop()
         .fadeTo(100, 0.3,
                  function() {
                     $(Button)

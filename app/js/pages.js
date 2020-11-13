@@ -17,11 +17,12 @@ function getBody() {
 
 function setNothingToShowBody(icon, id) {
     if(!id || !$('#' + id).get(0)) {
-        setHeaderViewAction("");
+        //if(getHeader() == generateHtmlTitle('Favorites')) 
+        //    setHeaderViewAction("");
         
         id = !id ? '' : id;
 
-        setGridLayout($('#list').get(0), false);
+        setGridLayout(false);
         let $body = '<span id="' + id + '" style="text-align:center; width: 100%; display:inline-block; font-size: 20px">' +
                         '<br>' +
                         icon +
@@ -67,4 +68,8 @@ function generateHtmlTitle(title) {
 function showPage(headerHtml, bodyHtml) {
     setHeader(headerHtml)
     setBody(bodyHtml)
+}
+
+function setScrollPositionOnTop() {
+    $('#content-right-body').scrollTop(0);
 }

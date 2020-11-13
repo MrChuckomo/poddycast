@@ -15,12 +15,31 @@ class Episode {
     }
 }
 
+// This function removes advertising
+/*
 function getEpisodeInfoFromDescription(episodeDescription) {
-    var episodeInfo = episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>");
+    //NOTE: It works better but slow
+    /*
+    let htmlDoc = new JSDOM(episodeDescription, {contentType: "text/html"}).window.document;
+    let $p = htmlDoc.getElementsByTagName("p");
+    if($p.length != 0) {
+        $p[0].innerHTML = $p[0].innerText || $p[0].textContent;
+        episodeDescription = $p[0].innerHTML;
+    }
+    *//*
+
+    let backup = episodeDescription;
+
+    let episodeInfo = episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>");
     episodeInfo = ( episodeDescription[0] != '<' ? episodeInfo[0] : episodeInfo[1] );
     episodeInfo = episodeInfo.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '');
+
+    if(episodeInfo.trim() == '')
+        episodeInfo = backup;
+
     return episodeInfo;
 }
+*/
 
 function xmlParser(xml, feedUrl) {
     let xmlDoc = new JSDOM(xml, {contentType: "text/xml"}).window.document;
@@ -35,17 +54,25 @@ function xmlParser(xml, feedUrl) {
         let subtitle = item.getElementsByTagName('itunes:subtitle')[0];
         if(subtitle)
             description = subtitle.textContent;
-        else {
-            subtitle = item.getElementsByTagName('description')[0];
-            if(subtitle)
-                description = subtitle.textContent;
-        }
+
+        subtitle = item.getElementsByTagName('description')[0];
+        if(subtitle && subtitle.textContent.length > description.length)
+            description = subtitle.textContent;
+        
+        subtitle = item.getElementsByTagName('itunes:summary')[0];
+        if(subtitle && subtitle.textContent.length > description.length)
+            description = subtitle.textContent;
 
         let duration = item.getElementsByTagName('itunes:duration')[0];
         if(duration)
             duration = duration.innerHTML;
-        else
-            duration = item.getElementsByTagName('duration')[0].innerHTML;
+        else {
+            duration = item.getElementsByTagName('duration')[0];
+            if(duration)
+                duration = duration.innerHTML;
+            else
+                duration = '';
+        }
 
         let episode = new Episode (
             channelName,
@@ -54,7 +81,7 @@ function xmlParser(xml, feedUrl) {
             (enclosure ? enclosure.getAttribute('url') : ''),
             (enclosure ? enclosure.getAttribute('type') : ''),
             (enclosure ? enclosure.getAttribute('length') : ''),
-            getEpisodeInfoFromDescription(description),
+            description, //getEpisodeInfoFromDescription(description),
             duration,
             item.getElementsByTagName('pubDate')[0].innerHTML
         );
