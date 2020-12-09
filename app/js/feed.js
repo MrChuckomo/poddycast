@@ -80,16 +80,16 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
                 var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
 
+                var Duration = ""
                 if (xmlDoc.getElementsByTagName(DurationKey).length > 0)
                 {
                     var Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
 
                     if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
-                    else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
-                }
-                else
-                {
-                    var Duration = ""
+                    else if (Duration != null)
+                    {                        
+                        Duration = (Duration.hours != "0" ? Duration.hours + "h " : "") + Duration.minutes + "min"
+                    }
                 }
 
                 // NOTE: save latest episode if not already in History
@@ -336,16 +336,16 @@ function processEpisodes(_Content)
             var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue
             var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
-            if ((Item.getElementsByTagName(DurationKey).length > 0))
+            var Duration = ""
+            if (Item.getElementsByTagName(DurationKey).length > 0)
             {
                 var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
 
                 if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
-                else                                              { Duration = Duration.hours + "h " + Duration.minutes + "min" }
-            }
-            else
-            {
-                var Duration = ""
+                else if (Duration != null)
+                {
+                    Duration = (Duration.hours != "0" ? Duration.hours + "h " : "") + Duration.minutes + "min"
+                }
             }
 
             var ListElement = buildListItem(new cListElement

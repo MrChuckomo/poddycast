@@ -8,7 +8,8 @@
     display: grid;
     grid-template-rows: 1fr;
     font-size: 14px;
-    height: 2.7em;
+    min-height: 2.7em;
+    height: auto;
     border-bottom: 1px solid #EEE;
     padding: 0.5em;
     padding-left: 2em;
