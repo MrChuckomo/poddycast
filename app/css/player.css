@@ -173,6 +173,79 @@ button#content-right-player-speed-indicator {
     width: 0%;
 }
 
+#volume-button
+{
+    grid-area: volume-button;
+    margin: auto;
+    margin-right: 0.5em;
+}
+
+input[id=volume] 
+{
+    grid-area: volume;
+    height: 0px;
+    -webkit-appearance: none;
+    margin: auto 0;
+    width: 100%;
+}
+
+input[id=volume]:focus 
+{
+  outline: none;
+}
+
+input[id=volume]::-webkit-slider-runnable-track 
+{
+  width: 100%;
+  height: 0.5em;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: 1px 1px 1px #222;
+  background: #222;
+  border-radius: 2px;
+  border: 0px solid #000000;
+}
+
+#volume-fill
+{
+    grid-area: volume;
+  width: 50%;
+  margin: auto 0;
+  height: 0.5em;
+  background: #448AFF;
+}
+
+input[id=volume]:hover + #volume-fill
+{
+    grid-area: volume;
+  width: 50%;
+  margin: auto 0;
+  height: 0.5em;
+  background: #448AFF;
+}
+
+input[id=volume]::-webkit-slider-thumb 
+{
+  height: 0;
+  width: 0;
+  -webkit-appearance: none;
+}
+
+input[id=volume]:hover::-webkit-slider-thumb 
+{
+    position: relative;
+  box-shadow: 0px 0px 0px #000000;
+  border: 0px solid #000000;
+  height: 1em;
+  width: 1em;
+  border-radius: 1em;
+  background: #CCC;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -0.25em;
+  z-index: 99 !important;
+}
+
 @media screen and (min-width: 900px)
 {
     #content-right-player
@@ -182,10 +255,10 @@ button#content-right-player-speed-indicator {
         height: 58px;
         display: grid;
         grid-template-rows: 1fr 1fr;
-        grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 100px;
+        grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 50px 100px 100px;
         grid-template-areas:
-            "image replay play forward playback-title playback-title playback-title speed"
-            "image replay play forward time progress duration speed";
+            "image replay play forward playback-title playback-title playback-title volume-button volume speed"
+            "image replay play forward time progress duration volume-button volume speed";
     }
     /* #content-right-player
     {

@@ -47,8 +47,10 @@ function saveLatestEpisode(_Content, _eRequest, _Options) {
 
     // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
-    if (getSettings(FeedUrl)) {
-        if (isContent302NotFound(_Content)) {
+    if (isAddedToInbox(FeedUrl))
+    {
+        if (isContent302NotFound(_Content))
+        {
             makeFeedRequest(getChangedFeed(_Options, _eRequest), saveLatestEpisode)
         } else {
             if (_Content.includes('<html>')) {
@@ -236,39 +238,20 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
     }
 
     const ContextMenu = new Menu()
-    ContextMenu.append(new MenuItem({
-        label: i18n.__('Add to playlist'),
-        submenu: PlaylistMenu
-    }))
-    ContextMenu.append(new MenuItem({
-        type: 'separator'
-    }))
-    ContextMenu.append(new MenuItem({
-        checked: getSettings(_Feed),
-        click(self) {
-            if (isInSettings(_Feed)) {
-                changeSettings(_Feed, self.checked)
-            } else {
-                addToSettings(_PodcastName, _Feed)
-                changeSettings(_Feed, self.checked)
-            }
-        },
-        label: i18n.__('Push to New Episodes'),
-        type: 'checkbox'
-    }))
-    ContextMenu.append(new MenuItem({
-        type: 'separator'
-    }))
-    ContextMenu.append(new MenuItem({
-        click() {
-            if (_PodcastName !== null) {
-                unsubscribeContextMenu(_PodcastName, _Feed)
-            }
-        },
-        label: i18n.__('Unsubscribe')
-    }))
+    ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: isAddedToInbox(_Feed), click(self)
+    {
+        setIsAddedToInbox(_Feed, self.checked)
+    }}))
+    ContextMenu.append(new MenuItem({type: 'separator'}))
+    ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click()
+    {
+        if (_PodcastName != null) { unsubscribeContextMenu(_PodcastName, _Feed) }
+    }}))
 
-    _Object.addEventListener('click', (_Event) => {
+    _Object.addEventListener('click', (_Event) =>
+    {
         _Event.preventDefault()
         ContextMenu.popup(remote.getCurrentWindow(), { async:true })
     }, false)
