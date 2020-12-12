@@ -1,11 +1,19 @@
 const { BrowserWindow } = require('electron').remote
 
+const { systemPreferences } = require('electron')
 var CCOntentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 
 var helper = new CCOntentHelper()
 var player = new CPlayer()
+var playerVolume = 0.75
+var volumeOff = false
+const MIN_PLAYER_SPEED = 0.2
+const MAX_PLAYER_SPEED = 4.0
+const PLAYER_SPEED_INCREMENT = 0.1
 
+// clamp number between 0 and 1
+const clamp = (num) => Math.max(Math.min(num, 1), 0);
 
 const s_Pause =
 `
@@ -119,76 +127,32 @@ function playReply()
     document.getElementById("player").currentTime -= 30
 }
 
-
-/*
-    Speedup the plackback by clicking the playback speed-up button.
-    The steps to increase the playback is predefined in this function.
-
-    Args:
-        _Self (button): The speed up button itself
-*/
-function speedUp(_Self) {
+/**
+ * Increase the playback speed by PLAYER_SPEED_INCREMENT
+ */
+function speedUp() {
     var Player = document.getElementById("player")
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
-    switch (rate.innerHTML) {
-        case "1.0x": rate.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
-        case "1.1x": rate.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
-        case "1.2x": rate.innerHTML = "1.3x"; Player.playbackRate = 1.3; Player.defaultPlaybackRate = 1.3 ; break;
-        case "1.3x": rate.innerHTML = "1.5x"; Player.playbackRate = 1.5; Player.defaultPlaybackRate = 1.5 ; break;
-        case "1.5x": rate.innerHTML = "1.7x"; Player.playbackRate = 1.7; Player.defaultPlaybackRate = 1.7 ; break;
-        case "1.7x": rate.innerHTML = "2.0x"; Player.playbackRate = 2.0; Player.defaultPlaybackRate = 2.0 ; break;
-        case "2.0x": rate.innerHTML = "2.1x"; Player.playbackRate = 2.1; Player.defaultPlaybackRate = 2.1 ; break;
-        case "2.1x": rate.innerHTML = "2.2x"; Player.playbackRate = 2.2; Player.defaultPlaybackRate = 2.2 ; break;
-        case "2.2x": rate.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
-        case "2.3x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
-        case "2.5x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
-        case "2.7x": rate.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
-        case "3.0x": rate.innerHTML = "3.1x"; Player.playbackRate = 3.1; Player.defaultPlaybackRate = 3.1 ; break;
-        case "3.1x": rate.innerHTML = "3.2x"; Player.playbackRate = 3.2; Player.defaultPlaybackRate = 3.2 ; break;
-        case "3.2x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
-        case "3.3x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
-        case "3.5x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
-        case "3.7x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
-        case "4.0x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
-        default: break;
-    }
+    Player.playbackRate = Player.playbackRate >= MAX_PLAYER_SPEED ? MIN_PLAYER_SPEED : Player.playbackRate + PLAYER_SPEED_INCREMENT
+    Player.defaultPlaybackRate = Player.playbackRate
+    rate.innerHTML = Player.playbackRate.toFixed(1) + "x"
+
+    saveSpeed(Player.playbackRate)
 }
 
-
-/*
-    Speeddown the plackback by clicking the playback speed-down button.
-    The steps to increase the playback is predefined in this function.
-
-    Args:
-        _Self (button): The speed up button itself
-*/
-function speedDown(_Self) {
+/**
+ * Decrease the playback speed by PLAYER_SPEED_INCREMENT
+ */
+function speedDown() {
     var Player = document.getElementById("player")
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
-    switch (rate.innerHTML) {
-        case "4.0x": rate.innerHTML = "3.7x"; Player.playbackRate = 3.7; Player.defaultPlaybackRate = 3.7 ; break;
-        case "3.7x": rate.innerHTML = "3.5x"; Player.playbackRate = 3.5; Player.defaultPlaybackRate = 3.5 ; break;
-        case "3.5x": rate.innerHTML = "3.3x"; Player.playbackRate = 3.3; Player.defaultPlaybackRate = 3.3 ; break;
-        case "3.3x": rate.innerHTML = "3.2x"; Player.playbackRate = 3.2; Player.defaultPlaybackRate = 3.2 ; break;
-        case "3.2x": rate.innerHTML = "3.1x"; Player.playbackRate = 3.1; Player.defaultPlaybackRate = 3.1 ; break;
-        case "3.1x": rate.innerHTML = "3.0x"; Player.playbackRate = 3.0; Player.defaultPlaybackRate = 3.0 ; break;
-        case "3.0x": rate.innerHTML = "2.7x"; Player.playbackRate = 2.7; Player.defaultPlaybackRate = 2.7 ; break;
-        case "2.7x": rate.innerHTML = "2.5x"; Player.playbackRate = 2.5; Player.defaultPlaybackRate = 2.5 ; break;
-        case "2.5x": rate.innerHTML = "2.3x"; Player.playbackRate = 2.3; Player.defaultPlaybackRate = 2.3 ; break;
-        case "2.3x": rate.innerHTML = "2.2x"; Player.playbackRate = 2.2; Player.defaultPlaybackRate = 2.2 ; break;
-        case "2.2x": rate.innerHTML = "2.1x"; Player.playbackRate = 2.1; Player.defaultPlaybackRate = 2.1 ; break;
-        case "2.1x": rate.innerHTML = "2.0x"; Player.playbackRate = 2.0; Player.defaultPlaybackRate = 2.0 ; break;
-        case "2.0x": rate.innerHTML = "1.7x"; Player.playbackRate = 1.7; Player.defaultPlaybackRate = 1.7 ; break;
-        case "1.7x": rate.innerHTML = "1.5x"; Player.playbackRate = 1.5; Player.defaultPlaybackRate = 1.5 ; break;
-        case "1.5x": rate.innerHTML = "1.3x"; Player.playbackRate = 1.3; Player.defaultPlaybackRate = 1.3 ; break;
-        case "1.3x": rate.innerHTML = "1.2x"; Player.playbackRate = 1.2; Player.defaultPlaybackRate = 1.2 ; break;
-        case "1.2x": rate.innerHTML = "1.1x"; Player.playbackRate = 1.1; Player.defaultPlaybackRate = 1.1 ; break;
-        case "1.1x": rate.innerHTML = "1.0x"; Player.playbackRate = 1.0; Player.defaultPlaybackRate = 1.0 ; break;
-        case "1.0x": rate.innerHTML = "4.0x"; Player.playbackRate = 4.0; Player.defaultPlaybackRate = 4.0 ; break;
-        default: break;
-    }
+    Player.playbackRate = Player.playbackRate <= MIN_PLAYER_SPEED ? MAX_PLAYER_SPEED : Player.playbackRate - PLAYER_SPEED_INCREMENT
+    Player.defaultPlaybackRate = Player.playbackRate
+    rate.innerHTML = Player.playbackRate.toFixed(1) + "x"
+
+    saveSpeed(Player.playbackRate)
 }
 
 function updateProgress()
@@ -395,11 +359,44 @@ function getPlaybackPosition(_Source)
     return PlaybackPosition
 }
 
-function setSpeed()
+function saveSpeed(_Value)
+{
+    setPreference('playspeed', _Value)
+}
+
+function setPlaybackVolume(_Self) 
 {
     var Player = document.getElementById("player")
+    var VolumeFill = document.getElementById("volume-fill")
 
-    if (getPreference('speed') !== 1) {
-        Player.playbackRate = parseFloat(getPreference('speed'))
+    if (_Self.valueAsNumber === 0.001) {
+        Player.volume = _Self.valueAsNumber
+        VolumeFill.style.width = "0%"
+    } else {
+        // creates a smooth exponential increase in volume rather than linear [0-1]
+        Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000)
+        VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + "%"
+    }
+
+    if (volumeOff === false) {
+        playerVolume = _Self.valueAsNumber
+    }
+
+    setPreference('volume', _Self.valueAsNumber)
+}
+
+function volumeToggle()
+{
+    var Player = document.getElementById("player")
+    var VolumeFill = document.getElementById("volume-fill")
+
+    if (volumeOff === true) {
+        volumeOff = false
+        Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000)
+        VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + "%"
+    } else {
+        volumeOff = true
+        Player.volume = 0
+        VolumeFill.style.width = "0%"
     }
 }

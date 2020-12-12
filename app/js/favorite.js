@@ -1,14 +1,15 @@
 
-function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl)
+function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl)
 {
     var Feed =
     {
         "artistName": _ArtistName,
-        "collectionName": _CollectioName,
+        "collectionName": _CollectionName,
         "artworkUrl30": _Artwork30,
         "artworkUrl60": _Artwork60,
         "artworkUrl100": _Artwork100,
-        "feedUrl": _FeedUrl
+        "feedUrl": _FeedUrl,
+        "addToInbox": true
     }
 
     _Self.innerHTML = s_HeartFilled
@@ -31,8 +32,6 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
     }
 
     fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
-
-    addToSettings(_CollectioName, _FeedUrl)
 
     setItemCounts()
 }

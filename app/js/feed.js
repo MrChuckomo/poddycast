@@ -49,7 +49,7 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
     // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
-    if (getSettings(FeedUrl))
+    if (isAddedToInbox(FeedUrl))
     {
         if (isContent302NotFound(_Content))
         {
@@ -268,17 +268,9 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
     const ContextMenu = new Menu()
     ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
-    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: getSettings(_Feed), click(self)
+    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: isAddedToInbox(_Feed), click(self)
     {
-        if (isInSettings(_Feed))
-        {
-            changeSettings(_Feed, self.checked)
-        }
-        else
-        {
-            addToSettings(_PodcastName, _Feed)
-            changeSettings(_Feed, self.checked)
-        }
+        setIsAddedToInbox(_Feed, self.checked)
     }}))
     ContextMenu.append(new MenuItem({type: 'separator'}))
     ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click()

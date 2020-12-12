@@ -17,10 +17,11 @@ h1
     left: 300px;
     right: 0em;
     overflow: auto;
-    height: 100vh;
+    height: 100%;
+    bottom: 59px;
     border-left: 1px solid #E7E7E7;
     display: grid;
-    grid-template-rows: 70px 1fr 60px;
+    grid-template-rows: 70px 1fr 0px;
     grid-template-columns: 100%;
     grid-template-areas:
         "right-header"
