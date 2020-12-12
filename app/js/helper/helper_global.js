@@ -5,92 +5,54 @@ const os = require('os')
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getSaveDirPath()
-{
-    return os.homedir() + "/poddycast-data"
-}
+const saveDirPath = os.homedir() + "/poddycast-data"
+const saveFilePath = saveDirPath + "/poddycast-favorite_podcasts.json"
+const newEpisodesSaveFilePath = saveDirPath + "/poddycast-new_episodes.json"
+const archivedFilePath = saveDirPath + "/poddycast-archived_episodes.json"
+const playlistFilePath = saveDirPath + "/poddycast-playlists.json"
+const settingsFilePath = saveDirPath + "/poddycast-podcast_settings.json"
+const preferencesFilePath = saveDirPath + "/poddycast-app_preferences.json"
 
-function isWindows()
-{
-    return process.platform == "win32"
-}
-
-function isDarwin()
-{
-    return process.platform == "darwin"
-}
-
-function isLinux()
-{
-    return process.platform == "linux"
-}
-
-function getSaveFilePath()
-{
-    return getSaveDirPath() + "/poddycast-favorite_podcasts.json"
-}
-
-function getNewEpisodesSaveFilePath()
-{
-    return getSaveDirPath() + "/poddycast-new_episodes.json"
-}
-
-function getArchivedFilePath()
-{
-    return getSaveDirPath() + "/poddycast-archived_episodes.json"
-}
-
-function getPlaylistFilePath()
-{
-    return getSaveDirPath() + "/poddycast-playlists.json"
-}
-
-function getSettingsFilePath()
-{
-    return getSaveDirPath() + "/poddycast-podcast_settings.json"
-}
-
-function getPreferencesFilePath()
-{
-    return getSaveDirPath() + "/poddycast-app_preferences.json"
-}
+const isWindows = process.platform == "win32"
+const isDarwin = process.platform == "darwin"
+const isLinux = process.platform == "linux"
 
 function init()
 {
-    if (!fs.existsSync(getSaveDirPath()))
+    if (!fs.existsSync(saveDirPath))
     {
-        fs.mkdirSync(getSaveDirPath());
+        fs.mkdirSync(saveDirPath);
     }
 
-    if (!fs.existsSync(getSaveFilePath()))
+    if (!fs.existsSync(saveFilePath))
     {
-        fs.openSync(getSaveFilePath(), 'w');
+        fs.openSync(saveFilePath, 'w');
     }
 
-    if (!fs.existsSync(getNewEpisodesSaveFilePath()))
+    if (!fs.existsSync(newEpisodesSaveFilePath))
     {
-        fs.openSync(getNewEpisodesSaveFilePath(), 'w');
+        fs.openSync(newEpisodesSaveFilePath, 'w');
     }
 
-    if (!fs.existsSync(getArchivedFilePath()))
+    if (!fs.existsSync(archivedFilePath))
     {
-        fs.openSync(getArchivedFilePath(), 'w');
+        fs.openSync(archivedFilePath, 'w');
     }
 
-    if (!fs.existsSync(getPlaylistFilePath()))
+    if (!fs.existsSync(playlistFilePath))
     {
-        fs.openSync(getPlaylistFilePath(), 'w');
+        fs.openSync(playlistFilePath, 'w');
     }
 
     // check if user has old settings file
-    if (fs.existsSync(getSettingsFilePath()))
+    if (fs.existsSync(settingsFilePath))
     {
         upgradeSettingsFile()
     }
 
-    if (!fs.existsSync(getPreferencesFilePath()))
+    if (!fs.existsSync(preferencesFilePath))
     {
-        fs.openSync(getPreferencesFilePath(), 'w');
+        fs.openSync(preferencesFilePath, 'w');
 
         setPreference('darkmode', false)
         setPreference('minimize', false)
@@ -115,8 +77,8 @@ function fileExistsAndIsNotEmpty(_File)
 
 function upgradeSettingsFile()
 {
-    var oldFilePath = getSettingsFilePath()
-    var newFilePath = getSaveFilePath()
+    var oldFilePath = settingsFilePath
+    var newFilePath = saveFilePath
     
     // sync addToInbox values from old settings file
     if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, "utf-8") != "")
@@ -151,9 +113,9 @@ function isAlreadySaved(_FeedUrl)
 {
     var FeedExists  = false;
 
-    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i ++)
         {
@@ -172,9 +134,9 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
 {
     var FeedExists  = false;
 
-    if (fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i ++)
         {
@@ -191,7 +153,7 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
 
 function isAlreadyInPlaylist(_ListName, _PodcastName)
 {
-    var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+    var JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
     var Result      = false
 
     for (var i = 0; i < JsonContent.length; i++)
@@ -216,9 +178,9 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
 {
     var DestinationValue = null
 
-    if (fs.existsSync(_File()) && fs.readFileSync(_File(), "utf-8") != "")
+    if (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(_File, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -355,7 +317,7 @@ function isProxySet()
  */
 function addToSettings(_PodcastName, _FeedUrl)
 {
-    if (fs.existsSync(getSettingsFilePath()))
+    if (fs.existsSync(settingsFilePath))
     {
         var SettingsObject =
         {
@@ -366,13 +328,13 @@ function addToSettings(_PodcastName, _FeedUrl)
 
         var JsonContent = []
 
-        if (fs.existsSync(getSettingsFilePath()) && fs.readFileSync(getSettingsFilePath(), "utf-8") != "")
+        if (fs.existsSync(settingsFilePath) && fs.readFileSync(settingsFilePath, "utf-8") != "")
         {
-            JsonContent = JSON.parse(fs.readFileSync(getSettingsFilePath(), "utf-8"))
+            JsonContent = JSON.parse(fs.readFileSync(settingsFilePath, "utf-8"))
         }
         else
         {
-            fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+            fs.writeFileSync(settingsFilePath, JSON.stringify(JsonContent))
         }
 
         if (!isInSettings(_FeedUrl))
@@ -380,7 +342,7 @@ function addToSettings(_PodcastName, _FeedUrl)
             JsonContent.push(SettingsObject)
         }
 
-        fs.writeFileSync(getSettingsFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(settingsFilePath, JSON.stringify(JsonContent))
     }
 }
 
@@ -392,9 +354,9 @@ function getSettings(_FeedUrl)
 {
     var ToInbox = true
 
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -414,9 +376,9 @@ function isAddedToInbox(_FeedUrl)
 {
     var ToInbox = true
 
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -436,9 +398,9 @@ function isInSettings(_FeedUrl)
 {
     var Result = false
 
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -461,9 +423,9 @@ function isInSettings(_FeedUrl)
  */
 function changeSettings(_FeedUrl, _ToInbox)
 {
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -475,15 +437,15 @@ function changeSettings(_FeedUrl, _ToInbox)
             }
         }
 
-        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
     }
 }
 
 function setIsAddedToInbox(_FeedUrl, _ToInbox)
 {
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -495,8 +457,14 @@ function setIsAddedToInbox(_FeedUrl, _ToInbox)
             }
         }
 
-        fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
     }
+}
+
+function isFeedUrlSaved(_FeedUrl)
+{
+
+    return false
 }
 
 function setMinimize()
@@ -531,29 +499,29 @@ function setMinimize()
 
 function setPreference(_Key, _Value)
 {
-    if (fs.existsSync(getPreferencesFilePath()))
+    if (fs.existsSync(preferencesFilePath))
     {
-        if (fs.readFileSync(getPreferencesFilePath(), "utf-8") == "")
+        if (fs.readFileSync(preferencesFilePath, "utf-8") == "")
         {
             var JsonContent = {}
         }
         else
         {
-            var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
+            var JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, "utf-8"))
         }
 
         JsonContent[_Key] = _Value
 
-        fs.writeFileSync(getPreferencesFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(preferencesFilePath, JSON.stringify(JsonContent))
     }
 }
 
 
 function getPreference(_Key)
 {
-    if (fs.existsSync(getPreferencesFilePath()) && fs.readFileSync(getPreferencesFilePath(), "utf-8") != "")
+    if (fs.existsSync(preferencesFilePath) && fs.readFileSync(preferencesFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getPreferencesFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, "utf-8"))
 
         return JsonContent[_Key]
     }

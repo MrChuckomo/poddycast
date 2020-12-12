@@ -12,9 +12,9 @@ function readFeeds()
     // Add animation to notify the user about fetching new episodes
     document.querySelector('#menu-refresh svg').classList.add('is-refreshing')
 
-    if (fs.readFileSync(getSaveFilePath(), "utf-8") != "")
+    if (fs.readFileSync(saveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -94,7 +94,7 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
 
                 // NOTE: save latest episode if not already in History
 
-                if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+                if (getValueFromFile(archivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
                 {
                     saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, Duration)
                 }
@@ -115,7 +115,7 @@ function showAllEpisodes(_Self)
 
 function getAllEpisodesFromFeed(_Feed)
 {
-    var PodcastName = getValueFromFile(getSaveFilePath, "collectionName", "feedUrl", _Feed)
+    var PodcastName = getValueFromFile(saveFilePath, "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName, _Feed)
 
@@ -225,9 +225,9 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 
     const PlaylistMenu = new Menu()
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), "utf-8") != "")
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -235,7 +235,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 
             PlaylistMenu.append(new MenuItem({label: JsonContent[i].playlistName, type: "checkbox", checked: IsInPlaylist, click(self)
             {
-                var JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), "utf-8"))
+                var JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
 
                 for (var i = 0; i < JsonContent.length; i++)
                 {
@@ -260,7 +260,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
                     }
                 }
 
-                fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+                fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
             }}))
         }
     }
@@ -292,11 +292,11 @@ function processEpisodes(_Content)
     xmlDoc = parser.parseFromString(_Content, "text/xml");
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-    var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
+    var Artwork     = getValueFromFile(saveFilePath, "artworkUrl60", "collectionName", ChannelName)
 
-    if (getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
+    if (getValueFromFile(saveFilePath, "artworkUrl100", "collectionName", ChannelName) != undefined && getValueFromFile(saveFilePath, "artworkUrl100", "collectionName", ChannelName) != "undefined")
     {
-        Artwork = getValueFromFile(getSaveFilePath, "artworkUrl100", "collectionName", ChannelName)
+        Artwork = getValueFromFile(saveFilePath, "artworkUrl100", "collectionName", ChannelName)
     } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0] !== undefined) {
         Artwork = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0].getAttribute("url")
     } else if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("itunes:image")[0] !== undefined) {
@@ -373,7 +373,7 @@ function processEpisodes(_Content)
 
             // NOTE: Set a episode item to "Done" if it is in the History file
 
-            if (getValueFromFile(getArchivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+            if (getValueFromFile(archivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
             {
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
@@ -418,13 +418,13 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
 
     var JsonContent = []
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
     {
-        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
     }
     else
     {
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
     }
 
     if (!isEpisodeAlreadySaved(_EpisodeTitle))
@@ -432,7 +432,7 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
         JsonContent.push(Feed)
     }
 
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
 
     setItemCounts()
 }

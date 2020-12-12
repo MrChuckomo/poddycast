@@ -1,9 +1,9 @@
 const { BrowserWindow } = require('electron').remote
 
-var CCOntentHelper = require('./js/helper/content')
+var CContentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 
-var helper = new CCOntentHelper()
+var helper = new CContentHelper()
 var player = new CPlayer()
 var playerVolume = 0.75
 var volumeOff = false
@@ -278,9 +278,9 @@ function setPlaybackTime(_Time, _ElementName)
 
 function savePlaybackPosition(_Source, _CurrentTime)
 {
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
@@ -291,7 +291,7 @@ function savePlaybackPosition(_Source, _CurrentTime)
                 // console.log(JsonContent[i].playbackPosition);
                 // console.log(_CurrentTime);
 
-                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+                fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
 
                 break
             }
@@ -340,9 +340,9 @@ function getPlaybackPosition(_Source)
 {
     var PlaybackPosition = 0
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8") != "")
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
     {
-        var JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), "utf-8"))
+        var JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         for (var i = 0; i < JsonContent.length; i++)
         {
