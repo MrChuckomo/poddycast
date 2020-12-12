@@ -120,12 +120,12 @@ function playReply() {
  * Increase the playback speed by PLAYER_SPEED_INCREMENT
  */
 function speedUp() {
-    var Player = document.getElementById("player")
+    let Player = document.getElementById('player')
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
     Player.playbackRate = Player.playbackRate >= MAX_PLAYER_SPEED ? MIN_PLAYER_SPEED : Player.playbackRate + PLAYER_SPEED_INCREMENT
     Player.defaultPlaybackRate = Player.playbackRate
-    rate.innerHTML = Player.playbackRate.toFixed(1) + "x"
+    rate.innerHTML = Player.playbackRate.toFixed(1) + 'x'
 
     saveSpeed(Player.playbackRate)
 }
@@ -134,12 +134,12 @@ function speedUp() {
  * Decrease the playback speed by PLAYER_SPEED_INCREMENT
  */
 function speedDown() {
-    var Player = document.getElementById("player")
+    let Player = document.getElementById('player')
     const rate = document.querySelector('#content-right-player-speed-indicator')
 
     Player.playbackRate = Player.playbackRate <= MIN_PLAYER_SPEED ? MAX_PLAYER_SPEED : Player.playbackRate - PLAYER_SPEED_INCREMENT
     Player.defaultPlaybackRate = Player.playbackRate
-    rate.innerHTML = Player.playbackRate.toFixed(1) + "x"
+    rate.innerHTML = Player.playbackRate.toFixed(1) + 'x'
 
     saveSpeed(Player.playbackRate)
 }
@@ -311,23 +311,21 @@ function getPlaybackPosition(_Source) {
     return PlaybackPosition
 }
 
-function saveSpeed(_Value)
-{
+function saveSpeed(_Value) {
     setPreference('playspeed', _Value)
 }
 
-function setPlaybackVolume(_Self) 
-{
-    var Player = document.getElementById("player")
-    var VolumeFill = document.getElementById("volume-fill")
+function setPlaybackVolume(_Self) {
+    let Player = document.getElementById('player')
+    let VolumeFill = document.getElementById('volume-fill')
 
     if (_Self.valueAsNumber === 0.001) {
         Player.volume = _Self.valueAsNumber
-        VolumeFill.style.width = "0%"
+        VolumeFill.style.width = '0%'
     } else {
         // creates a smooth exponential increase in volume rather than linear [0-1]
         Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000)
-        VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + "%"
+        VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + '%'
     }
 
     if (volumeOff === false) {
@@ -337,18 +335,17 @@ function setPlaybackVolume(_Self)
     setPreference('volume', _Self.valueAsNumber)
 }
 
-function volumeToggle()
-{
-    var Player = document.getElementById("player")
-    var VolumeFill = document.getElementById("volume-fill")
+function volumeToggle() {
+    let Player = document.getElementById('player')
+    let VolumeFill = document.getElementById('volume-fill')
 
     if (volumeOff === true) {
         volumeOff = false
         Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000)
-        VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + "%"
+        VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + '%'
     } else {
         volumeOff = true
         Player.volume = 0
-        VolumeFill.style.width = "0%"
+        VolumeFill.style.width = '0%'
     }
 }
