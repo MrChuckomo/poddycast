@@ -235,13 +235,19 @@ button#content-right-player-speed-indicator {
 }
 
 
+@media screen and (max-width: 899px) {
+    .slider {
+        display: none;
+    }
+}
+
 @media screen and (min-width: 900px)
 {
     #content-right-player
     {
         background-color: #FFF;
         text-align: center;
-        height: 58px;
+        height: 59px;
         display: grid;
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 100px;
