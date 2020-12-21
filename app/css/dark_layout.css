@@ -76,7 +76,7 @@ body
     opacity: 0.8;
 }
 
-#menu-history svg,
+#menu-archive svg,
 #menu-refresh svg
 {
     fill: #FFF;
@@ -178,10 +178,12 @@ svg.set-favorite
     opacity: 0.7;
 }
 
+/*
 #content-right-player-progress-bar
 {
     background: #222;
 }
+*/
 
 .content-right-player-speed-btn,
 .content-right-header-actions svg,
@@ -231,4 +233,33 @@ svg.set-favorite
 
 .more-episodes-top {
     border-color: #222;
+}
+
+#list .more-episodes-bottom:last-child {
+    border-color: #222;
+}
+
+.top-border {
+    border-color: #222;
+}
+
+
+.slider {
+  --theme-slider: #222;
+}
+
+.settings-image {
+    border: none;
+}
+
+.settings-unsubscribe svg {
+    fill: #fff;
+}
+
+.list-item-row-layout > img {
+    border: none;
+}
+
+#content-right-player-img {
+    border: none;
 }

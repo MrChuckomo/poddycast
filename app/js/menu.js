@@ -25,12 +25,7 @@ function showNewEpisodesPage() {
 
     setGridLayout(false);
 
-    if(allNewEpisodes.isEmpty())
-        setNothingToShowBody(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
-
-    let List = $('#list');
-    for (let i in allNewEpisodes.episodes) 
-        List.append(allNewEpisodes.ui.getNewItemList(allNewEpisodes.get(i)));
+    allNewEpisodes.ui.showAll();
 }
 
 function showFavoritesPage() {
@@ -53,14 +48,9 @@ function showFavoritesPage() {
 
     let List = document.getElementById("list");
     for (let i in JsonContent) {
-        let Artwork = JsonContent[i].artworkUrl100;
-        if(Artwork == undefined || Artwork == 'undefined') {
-            Artwork = JsonContent[i].artworkUrl60;
-            if(Artwork == undefined || Artwork == 'undefined') 
-                Artwork = getGenericArtwork();
-        }
+        let Artwork = getBestArtworkUrl(JsonContent[i].feedUrl);
 
-        let ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].collectionName, s_FullHeart);
+        let ListElement = getPodcastElement("podcast-entry", Artwork, null, JsonContent[i].data.collectionName, s_FullHeart);
         
         ListElement.setAttribute('draggable', true);
         ListElement.addEventListener('dragstart', handleDragStart, false);
@@ -93,47 +83,19 @@ function showFavoritesPage() {
     }
 }
 
-function showHistoryPage() {
-    let $historyEntry = $('#menu-history');
-    let title = $historyEntry.find('span').html();
-
+function showArchivePage() {
+    let $archiveEntry = $('#menu-archive');
+    let title = $archiveEntry.find('span').html();
+    
     setHeader(generateHtmlTitle(title), '');
-    selectMenuItem($historyEntry);
+    selectMenuItem($archiveEntry);
 
     clearBody();
     setScrollPositionOnTop();
 
-    let fileContent = ifExistsReadFile(getArchivedFilePath());
-    let JsonContent = JSON.parse(fileContent == "" ? "[]" : fileContent);
-
     setGridLayout(false);
 
-    // NOTE: Show just the last 100 entries in History
-    // TODO: The can be loaded after user interaction
-
-    let Count = (JsonContent.length <= 100 ? JsonContent.length : 100);
-    if(Count == 0)
-        setNothingToShowBody(s_HistoryNothingFoundIcon, 'history-nothing-to-show');
-
-    let List = document.getElementById("list");
-    for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
-        let EpisodeTitle = JsonContent[i].episodeTitle
-        let Artwork = JsonContent[i].artwork;
-
-        if (!isGenericArtwork(Artwork)) {
-            let DateTime = new Date(JsonContent[i].date);
-            let ListElement = buildListItem(new cListElement(
-                [
-                    getImagePart(Artwork),
-                    getBoldTextPart(EpisodeTitle),
-                    getSubTextPart(DateTime.toLocaleString())
-                ],
-                '5em 3fr 1fr'
-            ), eLayout.row);
-
-            List.insertBefore(ListElement, List.childNodes[0]);
-        }
-    }
+    allArchiveEpisodes.ui.showAll()
 }
 
 function showStatisticsPage() {
@@ -146,8 +108,6 @@ function showStatisticsPage() {
     clearBody();
     setScrollPositionOnTop();
 
-    let JsonContent = null;
-
     setGridLayout(false);
 
     let List = document.getElementById("list");
@@ -156,19 +116,16 @@ function showStatisticsPage() {
 
     List.append(getStatisticsElement("statistics-entry", i18n.__("Favorite Podcasts"), allFavoritePodcasts.length()));
 
-    if (fileExistsAndIsNotEmpty(getArchivedFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), "utf-8"));
-        List.append(getStatisticsElement("statistics-entry", i18n.__("Last Podcast"),  JsonContent[JsonContent.length - 1].channelName));
+    if(!allNewEpisodes.isEmpty()) {
+        let channelName = allFavoritePodcasts.getByFeedUrl(allNewEpisodes.get(0).feedUrl).data.collectionName;
+        List.append(getStatisticsElement("statistics-entry", i18n.__("Last Podcast"),  channelName));
     } else
         List.append(getStatisticsElement("statistics-entry", i18n.__("Last Podcast"),  "None"));
 
     List.append(getStatisticsElement("statistics-header", i18n.__("Episodes"), null));
 
-    if (fileExistsAndIsNotEmpty(getArchivedFilePath()))
-        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  JsonContent.length));
-    else
-        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  0));
-
+    List.append(getStatisticsElement("statistics-entry", i18n.__("Archive Items"),  allArchiveEpisodes.length()));
+    
     List.append(getStatisticsElement("statistics-entry", i18n.__("New Episodes"),  allNewEpisodes.length()));
 
     List.append(getStatisticsElement("statistics-header", i18n.__("Playlists"), null));

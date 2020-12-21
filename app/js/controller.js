@@ -1,13 +1,17 @@
 function initController() {
     initLink();
     initInput();
-    initPlayer();
 
     enableOpenLinkInDefaultBrowser();
 }
 
 function enableOpenLinkInDefaultBrowser() {
     $('body').on('click', 'a', (event) => {
+        event.preventDefault();
+        require("electron").shell.openExternal(event.target.href);
+    });
+    
+    $('body').on('auxclick', 'a', (event) => {
         event.preventDefault();
         require("electron").shell.openExternal(event.target.href);
     });
@@ -21,7 +25,7 @@ function initLink() {
     $('#menu-episodes').click(showNewEpisodesPage)
     $('#menu-favorites').click(showFavoritesPage)
     $('#menu-refresh').click(readFeeds)
-    $('#menu-history').click(showHistoryPage)
+    $('#menu-archive').click(showArchivePage)
     $('#menu-statistics').click(showStatisticsPage)
     $('#new_list-button').click(createNewPlaylist)
 }
@@ -63,11 +67,13 @@ function initInput() {
 /*
  *  Player
  */
-
+/*
 function initPlayer() {
+    /*
     $('#content-right-player-progress-bar').click(function (e) {
         seekProgress(this, e);
     })
+    */ /*
 
     $('#content-right-player-speed-down').click(function () {
         speedDown(this);
@@ -81,9 +87,8 @@ function initPlayer() {
         setSpeedWithWheelMouse(event);
     });
      
-    $('#replay-30-sec').click(playReply)
-    $('#play-pause').click(playPause)
-    $('#forward-30-sec').click(playForward)
-     
-    setInitialOpacityPlayerButtons()
+    $('#replay-30-sec').click(() => playerManager.reply())
+    $('#play-pause').click(() => playerManager.togglePlayPause())
+    $('#forward-30-sec').click(() => playerManager.forward())
 }
+*/

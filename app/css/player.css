@@ -71,6 +71,20 @@
     width: 42px;
     height: 42px;
     border-radius: 4px;
+    /*
+    box-shadow:  0.1px  0.1px 5px #222,
+              -0.1px -0.1px 5px #222,
+               0.1px -0.1px 5px #222,
+              -0.1px  0.1px 5px #222;
+    */
+}
+
+#content-right-player-img {
+    border: .5px solid #f0f0f0;
+}
+
+#content-right-player-img[style] {
+    border: none;
 }
 
 [data-tooltip]
@@ -148,6 +162,7 @@ button#content-right-player-speed-indicator {
     display: none;
 }
 
+/*
 #content-right-player-progress-bar
 {
     grid-area: progress;
@@ -157,21 +172,68 @@ button#content-right-player-speed-indicator {
     border-radius: 2px;
     margin-top: 0.3em;
 }
+*/
 
-/* #content-right-player-progress-bar:hover #content-right-player-progress-bar-progress, #content-right-player-progress-bar:hover
+/* 
+#content-right-player-progress-bar:hover #content-right-player-progress-bar-progress, #content-right-player-progress-bar:hover
 {
     height: 10px;
-} */
+} 
 
 #content-right-player-progress-bar-progress
 {
     /* background-color: #039BE5; */
-    /* background-color: #2979FF; */
+    /* background-color: #2979FF; */ /*
     background-color: #448AFF;
     height: 0.5em;
     border-radius: 2px;
     width: 0%;
+} 
+*/
+
+#slider-container {
+    padding-left: 5px;
+    padding-right: 5px;
+    position: relative;
+    bottom: 3px;
 }
+  
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  --theme-slider: #d3d3d3;
+  background: linear-gradient(to right, #448AFF 0%, #448AFF 0%, var(--theme-slider) 0%, var(--theme-slider) 100%);
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0px;
+  height: 0px;
+  border-radius: 50%;
+  background: #448AFF; /*#039BE5*/
+  cursor: pointer;
+
+  transition: width .2s, height .2s;
+}
+
+.slider:hover::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  
+  transition: width .2s, height .2s;
+}
+
 
 @media screen and (min-width: 900px)
 {

@@ -33,14 +33,15 @@ function createWindow()
 	win = new BrowserWindow({
         width: 1200, //1000
         minWidth: 1000, //1000
-        height: (process.platform === 'win32' ? 760 : 730), //630-600
+        height: (process.platform === 'win32' ? 765 : 735), //630-600
         minHeight: (process.platform === 'win32' ? 630 : 600), //630-600
         autoHideMenuBar: true,
         icon: trayIcon,
         frame: !(process.platform === "win32"),
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true
+            enableRemoteModule: true,
+            zoomFactor: (process.platform === 'win32' ? 1.0 : 0.9)
         }
     });
     

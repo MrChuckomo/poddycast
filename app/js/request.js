@@ -53,6 +53,13 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
                 console.log('Use fallback options: ' + _FallbackOptions);
                 makeRequest(_FallbackOptions, null, _Callback, _eRequest);
             }
+
+            let feedUrl = (_Options instanceof Object ? _Options.path: _Options);
+            if(allFeeds.lastFeedUrlToReload == feedUrl)
+                setTimeout(() => {
+                    $('#menu-refresh svg').removeClass('is-refreshing');
+                    $('#menu-refresh').click(readFeeds);
+                }, 2000);  
         });
 
         Req.end();

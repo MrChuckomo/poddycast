@@ -43,7 +43,7 @@ h1 {
 }
 
 #content-right-header-actions svg {
-    border: 1px solid #EEE;
+    border: 1px solid #888; /*#EEE;*/
     border-radius: 4px;
     padding: 0.2em;
     padding-left: 0.8em;
@@ -53,7 +53,7 @@ h1 {
 }
 
 #content-right-header-actions svg:hover {
-    border-color: #CCC;
+    border-color: #bbb;/*#CCC;*/
 }
 
 #content-right-header-actions svg:active {
@@ -80,6 +80,18 @@ h1 {
 #list {
     margin: 0;
     padding: 0;
+}
+
+#list > .statistics-header:first-child {
+    margin-top: 0;
+}
+
+#list li:last-of-type {
+    border-bottom: 0;
+}
+
+#list .more-episodes-bottom:last-child {
+    border-top: 1px solid #EEE;
 }
 
 .statistics-header {
@@ -293,7 +305,9 @@ h1 {
     grid-area: ptitle;
     text-align: center;
     font-size: 14px;
-    color: #777;
+    /*color: #777;*/
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .grid-layout .podcast-entry .podcast-entry-actions {
@@ -332,22 +346,28 @@ h1 {
     color: #FFF;
 }
 
-.select-episode svg {
+.select-episode .list-item-sub-text {
+    opacity: 0.8;
+}
+
+.select-episode .list-item-icon {
     fill: #FFF;
     opacity: 0.8;
 }
 
-.select-episode svg:hover {
+.select-episode .list-item-icon:hover {
     fill: #FFF;
     opacity: 1;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-.delete-icon {
+/*
+.delete-icon {*/
     /*fill: #F44336;*/
-    /*opacity: 0.3;*/
+    /*opacity: 0.3;*//*
 }
+*/
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
@@ -357,15 +377,18 @@ h1 {
     padding-left: 2em;
     padding-right: 2em;
     display: grid;
-    grid-template-columns: 60px 1fr 1fr 35px;
+    /* grid-template-columns: 60px 1fr 1fr 35px; */
+    grid-template-columns: 100px 1fr 35px;
     grid-template-rows: 1fr;
-    grid-template-areas: "image name items button";
+    /* grid-template-areas: "image name items button"; */
+    grid-template-areas: "image name button";
 }
 
 .settings-image {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     border-radius: 6px;
+    border: .1px solid #ddd;
 }
 
 .settings-header {
@@ -376,7 +399,7 @@ h1 {
     font-size: 22px;
     align-self: center;
 }
-
+/*
 .settings-count::before {
     content: "All: ";
     font-weight: bold;
@@ -388,24 +411,64 @@ h1 {
     padding: 0.5em;
     align-self: center;
 }
-
+*/
 .settings-unsubscribe {
     grid-area: button;
-    background: #333;
+    background: #ddd;/* #898989;*/
     border-radius: 6px;
     text-align: center;
     padding-top: 0.2em;
     /*margin-right: 1em;*/
     opacity: 0.8;
-    align-self: center;
+    /*align-self: center;*/
+    height: 28px;
 }
 
 .settings-unsubscribe svg {
-    fill: #FFF;
+    fill: #000;
 }
 
 .settings-unsubscribe:hover {
     opacity: 1;
+}
+
+.settings .settings-header .count-header {
+    opacity: .5;
+    font-size: 13px;
+}
+
+.settings .settings-header .description-header {
+    opacity: .7;
+    font-size: 15px;
+    display: block; 
+    overflow: hidden; 
+}
+
+.settings .settings-header .description-header > p{
+    opacity: .7;
+    font-size: 15px;
+    margin: 0;
+}
+
+.settings .settings-header .description-header h1, h2, h3 {
+    font-size: 15px;
+}
+
+.settings .settings-header .description-other {
+    font-size: 15px;
+    color: #5880c7;
+}
+
+.settings .settings-header .description-other:hover {
+    text-decoration: underline;
+}
+
+.settings .settings-header .artist-header {
+    opacity: .7;
+    font-size: 15px;
+    overflow: hidden;
+    display: block;
+    line-height: 2;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -512,10 +575,38 @@ h1 {
     border-bottom: 1px solid #EEE;
 }
 
-#info-item-list {
+#info-item-list, .description-header {
     line-height: 1.5;
 }
 
 #info-item-list h1, h2, h3 {
     font-size: 15px;
+}
+
+#info-item-list strong { 
+    font-weight:normal; 
+}
+
+.border-top {
+    border-top: 1px solid #EEE;
+}
+/*
+.description-header-wrapper {
+  display: block;
+  overflow: hidden;
+  transition: max-height 300ms;
+  max-height: 32px; 
+}*/
+.select-episode .list-item-icon {
+    fill: #FFF;
+}
+/*
+.list-item-row-layout > img {
+    position: relative;
+    bottom: 1px;
+}
+*/
+
+.list-item-row-layout > img {
+    border: .5px solid #f0f0f0;
 }

@@ -124,6 +124,10 @@ function getPreferencesFilePath() {
     return getSaveDirPath() + '/poddycast-app_preferences.json';
 }
 
+function getPlaybackSaveFilePath() {
+    return getSaveDirPath() + '/poddycast-playback_episodes.json';
+}
+
 function setTitlebarOnWin() {
     if(isWindows()) {
         const customTitlebar = require('custom-electron-titlebar');
@@ -166,8 +170,10 @@ function setSearchWithoutFocus() {
 function setTitle(title) {
     if(isWindows())
         titlebar.updateTitle(title);
-    else 
+    else {
+        const { BrowserWindow } = require('electron').remote
         BrowserWindow.getAllWindows()[0].setTitle(title);
+    }
 }
 
 function init() {
@@ -176,14 +182,14 @@ function init() {
     if (!fs.existsSync(getSaveDirPath()))
         fs.mkdirSync(getSaveDirPath());
 
-    if (!fs.existsSync(getArchivedFilePath()))
-        fs.openSync(getArchivedFilePath(), 'w');
-
     loadPreferences();
-    loadFeeds();
-    loadPlaylists();
+    loadPlayerManager();
+
     loadFavoritePodcasts();
+    loadFeeds();
+    loadArchiveEpisodes();
     loadNewEpisodes();
+    loadPlaylists();
 
     darkMode();
 
@@ -236,11 +242,7 @@ function getBestArtworkUrl(feedUrl) {
     let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
 
     if(podcast != undefined) {
-        let Artwork = podcast.artworkUrl100;
-        if(Artwork != undefined && Artwork != 'undefined')
-            return Artwork;
-        
-        Artwork = podcast.artworkUrl60;
+        let Artwork = podcast.data.artworkUrl;
         if(Artwork != undefined && Artwork != 'undefined')
             return Artwork;
     }

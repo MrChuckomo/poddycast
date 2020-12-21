@@ -1,50 +1,55 @@
 importScripts('./lib/jsdom.js')
-
-class Episode {
-    constructor(ChannelName, FeedUrl, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
-        this.channelName = ChannelName;
-        this.feedUrl = FeedUrl;
-        this.episodeTitle = EpisodeTitle;
-        this.episodeUrl = EpisodeUrl;
-        this.episodeType = EpisodeType;
-        this.episodeLength = EpisodeLength;
-        this.episodeDescription = EpisodeDescription;
-        this.durationKey = DurationKey;
-        this.pubDate = pubDate;
-        this.playbackPosition = ( playbackPosition ? playbackPosition : 0 );
-    }
-}
-
-// This function removes advertising
-/*
-function getEpisodeInfoFromDescription(episodeDescription) {
-    //NOTE: It works better but slow
-    /*
-    let htmlDoc = new JSDOM(episodeDescription, {contentType: "text/html"}).window.document;
-    let $p = htmlDoc.getElementsByTagName("p");
-    if($p.length != 0) {
-        $p[0].innerHTML = $p[0].innerText || $p[0].textContent;
-        episodeDescription = $p[0].innerHTML;
-    }
-    *//*
-
-    let backup = episodeDescription;
-
-    let episodeInfo = episodeDescription.replace(/(<([^>]+)>)/ig, "<tag>").split("<tag>");
-    episodeInfo = ( episodeDescription[0] != '<' ? episodeInfo[0] : episodeInfo[1] );
-    episodeInfo = episodeInfo.replace(/<[^>]*(>|$)|&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/g, '');
-
-    if(episodeInfo.trim() == '')
-        episodeInfo = backup;
-
-    return episodeInfo;
-}
-*/
+importScripts('./episode_class.js')
 
 function xmlParser(xml, feedUrl) {
     let xmlDoc = new JSDOM(xml, {contentType: "text/xml"}).window.document;
+
+    let channel = xmlDoc.getElementsByTagName("channel")[0];
+    let channelName = channel.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+    
+    let artworkUrl = channel.getElementsByTagName("itunes:image")[0];
+    if(artworkUrl)
+    	artworkUrl = artworkUrl.getAttribute('href');
+    else {
+		artworkUrl = channel.getElementsByTagName("image")[0];
+		if(artworkUrl) {
+			artworkUrl = artworkUrl.getElementsByTagName("url")[0]
+			if(artworkUrl)
+				artworkUrl = artworkUrl.textContent;
+		}
+    }
+
+    let artistName = channel.getElementsByTagName("itunes:author")[0];
+    if(artistName)
+        artistName = artistName.textContent;
+    else {
+        let artistName = channel.getElementsByTagName("author")[0];
+        if(artistName)
+            artistName = artistName.childNodes[0].nodeValue;
+        else 
+            artistName = '';
+    }
+
+    let podcastDescription = '';
+    let podcastSubtitle = channel.getElementsByTagName('itunes:subtitle')[0];
+    if(podcastSubtitle)
+        podcastDescription = podcastSubtitle.textContent;
+    podcastSubtitle = channel.getElementsByTagName('description')[0];
+    if(podcastSubtitle && podcastSubtitle.textContent.length > podcastDescription.length)
+        podcastDescription = podcastSubtitle.textContent;
+    
+    podcastSubtitle = channel.getElementsByTagName('itunes:summary')[0];
+    if(podcastSubtitle && podcastSubtitle.textContent.length > podcastDescription.length)
+        podcastDescription = podcastSubtitle.textContent;
+
+    podcastData = {
+        artistName: artistName,
+        collectionName: channelName,
+        artworkUrl: artworkUrl,
+        description: podcastDescription
+    }
+
     let json = [];
-    let channelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue;
     let items = xmlDoc.getElementsByTagName("item");
     for(let i = 0; i < items.length; i++) {
         let item = items[i];
@@ -78,18 +83,17 @@ function xmlParser(xml, feedUrl) {
             channelName,
             feedUrl,
             item.getElementsByTagName("title")[0].childNodes[0].nodeValue,
-            (enclosure ? enclosure.getAttribute('url') : ''),
+            (enclosure ? enclosure.getAttribute('url').split("?")[0] : ''),
             (enclosure ? enclosure.getAttribute('type') : ''),
             (enclosure ? enclosure.getAttribute('length') : ''),
-            description, //getEpisodeInfoFromDescription(description),
+            description, 
             duration,
             item.getElementsByTagName('pubDate')[0].innerHTML
         );
         json.push(episode);
     }
     
-    // console.log(json)
-    postMessage({json: json, feedUrl: feedUrl});
+    postMessage({json: json, feedUrl: feedUrl, podcastData: podcastData});
 }
 
 onmessage = function (ev) { 

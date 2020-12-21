@@ -222,19 +222,18 @@ class PlaylistsInUI {
 
     removeByName(name) {
         this.$playlists.find( 'li[playlist="' + name + '"]' ).remove();
-        allNewEpisodes.ui.updateAfterDelete();
+        allNewEpisodes.ui.showNothingToShow();
     }
 
     removeByIndex(index) {
         this.$playlists.find( 'li[index="' + index + '"]' ).remove();
-        allNewEpisodes.ui.updateAfterDelete();
+        allNewEpisodes.ui.showNothingToShow();
     }
 }
 
 class Playlists {
     constructor() {
         this.memory = new PlaylistsInMemory();
-        console.log(this.memory.playlists)
         this.ui = new PlaylistsInUI(this.memory.playlists);
     }
 
@@ -369,14 +368,15 @@ function isInPlaylist(_PlaylistName, _PodcastFeedUrl) {
     return (playlist != undefined && playlist.list.indexOf(_PodcastFeedUrl) != -1);
 }
 
-function getPodcastEditItem(_Name, _FeedUrl, _Artwork, _IsSet)
+function getPodcastEditItem(_Name, _FeedUrl, playlist)
 {
+    let _IsSet = isInPlaylist(playlist, _FeedUrl);
+
     let $container = $('<li></li>');
     let checkBox = (_IsSet ? s_CheckBox : s_CheckBoxOutline);
     let $artwork = $('<img />');
     let $name = $('<span></span>');
 
-    // Artwork.src = _Artwork
     $name.html(_Name);
 
     $container.click(function () {
@@ -436,13 +436,7 @@ function showPlaylistContent(_Self)
     let PlaylistName = $(_Self).attr('playlist');
 
     clearBody();
-
-    //clearMenuSelection();
-    //clearTextField($('#search-input').get(0));
-    //clearTextField($('#new_list-input').get(0));
-
-    // TODO: header can be a input field as well for playlists
-    // TODO: allow inline editing for playlist header
+    setScrollPositionOnTop();
 
     setHeader(PlaylistName,
     `<span class="edit-playlist-button">
@@ -458,16 +452,7 @@ function showPlaylistContent(_Self)
         showEditPlaylistPage(playlist);
     });
 
-    //_Self.classList.add("selected")
     selectMenuItem($(_Self));
-
-    //let playlist = allPlaylist.memory.getByName(PlaylistName);
-    //if(playlist == undefined)
-    //    return;
-
-    //let fileContent = ifExistsReadFile(getNewEpisodesSaveFilePath());
-    //if (fileContent == "")
-    //    return;
 
     let PlaylistEpisodesJsonContent = allNewEpisodes.getPlaylistEpisodes(PlaylistName);
     if(PlaylistEpisodesJsonContent.length == 0) 
@@ -476,10 +461,9 @@ function showPlaylistContent(_Self)
     setGridLayout(false)
 
     let List = document.getElementById("list");
-    for (let a in PlaylistEpisodesJsonContent) {
+    for (let a = 0; a < PlaylistEpisodesJsonContent.length && a < allNewEpisodes.ui.bufferSize; a++) 
         // NOTE: show just episodes of the playlist saved podcast
         List.append(allNewEpisodes.ui.getNewItemList(PlaylistEpisodesJsonContent[a]));
-    }
 }
 
 function showEditPlaylistPage(playlist) {
@@ -491,6 +475,7 @@ function showEditPlaylistPage(playlist) {
     let $list = $('#list');
 
     clearBody()
+    setScrollPositionOnTop();
 
     clearMenuSelection()
 
@@ -565,8 +550,7 @@ function showEditPlaylistPage(playlist) {
     let JsonContent = allFavoritePodcasts.getAll();
 
     for (let i = 0; i < JsonContent.length; i++)
-        $list.append(getPodcastEditItem( JsonContent[i].collectionName, 
+        $list.append(getPodcastEditItem( JsonContent[i].data.collectionName, 
                                          JsonContent[i].feedUrl,
-                                         JsonContent[i].artworkUrl30, 
-                                         isInPlaylist(playlist, JsonContent[i].feedUrl)))
+                                         playlist));
 }

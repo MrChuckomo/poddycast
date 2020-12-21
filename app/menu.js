@@ -53,7 +53,7 @@ const template =
                         // console.log(document.activeElement);
                         // console.log(document.activeElement.type);
                         // console.log(Object.prototype.toString.call(document.activeElement));
-                        playPause("play-pause")
+                        playerManager.togglePlayPause("play-pause")
                     }
                 }
             },
@@ -61,12 +61,12 @@ const template =
             {
                 label: i18n.__('30sec Reply'),
                 accelerator: "Left",
-                click() { playReply() }
+                click() { playerManager.reply(); }
             },
             {
                 label: i18n.__("30sec Forward"),
                 accelerator: "Right",
-                click() { playForward() }
+                click() { playerManager.forward(); }
             }
         ]
     },
@@ -91,9 +91,9 @@ const template =
                 click() { showFavoritesPage(); }
             },
             {
-                label: i18n.__("History"),
+                label: i18n.__("Archive"),
                 accelerator: "CommandOrControl+3",
-                click() { showHistoryPage(); }
+                click() { showArchivePage(); }
             },
             {
                 label: i18n.__("Statistics"),

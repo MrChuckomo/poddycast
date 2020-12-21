@@ -38,26 +38,6 @@ function setHeartContent(self, emptyHeart) {
         $(self).html($(s_FullHeart).html());
 }
 
-function removeFromFile(_File, _ContentReference, _Value, _Break)
-{
-    if (fs.readFileSync(_File(), "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(_File(), "utf-8"))
-
-        for (var i = JsonContent.length - 1; i >= 0 ; i--)
-        {
-            if (_Value == JsonContent[i][_ContentReference])
-            {
-                JsonContent.splice(i, 1)
-
-                if (_Break) { break }
-            }
-        }
-
-        fs.writeFileSync(_File(), JSON.stringify(JsonContent, null, "\t"))
-    }
-}
-
 // ---------------------------------------------------------------------------------------------------------------------
 // PODCAST ENTRY
 // ---------------------------------------------------------------------------------------------------------------------
@@ -146,62 +126,3 @@ function getStatisticsElement(_Class, _Title, _Value)
 
     return ListElement
 }
-/*
-function setPodcastElementToDone(_ListElement)
-{
-    _ListElement.getElementsByClassName("podcast-entry-title")[0].classList.add("done")
-}
-*/
-function deleteEntryWithIcon(_Self)
-{
-    deleteEntry(_Self.parentElement.parentElement)
-}
-/*
-function deleteEntryWithAudioPlayer(_FeedUrl)
-{
-    // TODO: just catch list element if new episodes menu is open
-
-    var AllListElements = document.getElementById("list").getElementsByTagName("li")
-}
-*/
-function deleteEntry(_ListElement) {
-    //if(
-    deleteFromFile(_ListElement.getAttribute("url"))
-    //)
-    //    deleteFromListView(_ListElement);
-
-    //setItemCounts();
-}
-/*
-function deleteFromListView(_ListElement) {
-    $(_ListElement)
-        .animate({opacity: 0.0}, 150)
-        .slideUp(150, function () { 
-            this.remove(); 
-        });
-    allNewEpisodes.ui.updateAfterDelete();
-}
-*/
-function deleteFromFile(episodeUrl) {
-    let episode = allNewEpisodes.getByEpisodeUrl(episodeUrl);
-    if(!episode)
-        return false;
-
-    let archivedEpisode = {
-        "channelName": episode.channelName,
-        "episodeTitle": episode.episodeTitle,
-        "episodeUrl": episode.episodeUrl,
-        "artwork": getBestArtworkUrl(episode.feedUrl),
-        "archivedType": "deleted",
-        "date": new Date
-    }
-
-    let ArchiveFileContent = ifExistsReadFile(getArchivedFilePath());
-    let ArchiveJsonContent = JSON.parse(ArchiveFileContent == "" ? "[]": ArchiveFileContent);
-    ArchiveJsonContent.push(archivedEpisode);
-    fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent, null, "\t"))
-
-    allNewEpisodes.removeByEpisodeUrl(episodeUrl);
-    return true;
-}
-

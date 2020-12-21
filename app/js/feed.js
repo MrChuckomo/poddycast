@@ -2,21 +2,43 @@ process.dlopen = () => {
   throw new Error('Load native module is not safe')
 }
 const xmlParserWorker = new Worker('./js/xmlparser_worker.js')
+const updateFeedWorker = new Worker('./js/update_feed_worker.js')
 
 setInterval(function () { 
     readFeeds();
     console.log('Feeds have been read!');
 }, 30 * 60 * 1000);
 
+function checkDateIsInTheLastWeek(episode) {
+    var day = new Date();
+    var previousweek = day.getTime() - 7 * 24 * 60 * 60 * 1000;
+
+    //return (compareEpisodeDates(dateStr, previousweek) > 0);
+    return (compareEpisodeDates(episode, {pubDate: previousweek}) > 0);
+}
+
 function compareEpisodeDates(episode1, episode2) {
-    let date1 = new Date(episode1);
-    let date2 = new Date(episode2);
+    
+    let pubDate1 = (episode1.pubDate ? episode1.pubDate : getInfoEpisodeByObj(episode1).pubDate);
+    let pubDate2 = (episode2.pubDate ? episode2.pubDate : getInfoEpisodeByObj(episode2).pubDate);
+    let date1 = new Date(pubDate1);
+    let date2 = new Date(pubDate2);
     if(date1.getTime() < date2.getTime())
         return -1;
     if(date1.getTime() > date2.getTime())
         return 1;
     return 0;
 }
+
+
+function getInfoEpisodeByObj(episode) {
+    let feedUrl = episode.feedUrl;
+    let episodeUrl = episode.episodeUrl;
+    if(feedUrl && episodeUrl)
+        return allFeeds.getEpisodeByEpisodeUrl(feedUrl, episodeUrl);
+    return undefined;
+}
+
 /*
 function urlify(inputText) {
     var replacedText, replacePattern1, replacePattern2, replacePattern3;
@@ -52,6 +74,8 @@ function urlify(text) {
     let urlRegex = /(https?:\/\/)?[\w\-@~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
     //let urlRegex = /[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/;
     return text.replace(urlRegex, function (url) {
+        if(url.length <= 3)
+            return url;
         let content = url;
         if(url.indexOf('@') != -1)
             url = 'mailto:' + url;
@@ -61,7 +85,7 @@ function urlify(text) {
     })
 }
 
-function getEpisodeInfoFromDescription(episodeDescription) {
+function getInfoFromDescription(episodeDescription) {
     return (episodeDescription.indexOf('</a>') == -1 ? urlify(episodeDescription) : episodeDescription);
 /*
     let $div = $('<div></div>');
@@ -73,6 +97,18 @@ function getEpisodeInfoFromDescription(episodeDescription) {
 */
 }
 
+function getDurationFromDurationKey(episode) {
+    if(!episode.durationKey)
+        return "#h #min";
+
+    let duration = parseFeedEpisodeDuration(episode.durationKey.split(":"));
+
+    if (duration.hours == 0 && duration.minutes == 0) 
+        duration = "";
+    else
+        duration = duration.hours + "h " + duration.minutes + "min";
+    return duration;
+}
 
 function readFeeds() {
     // TODO: create a new thread to read the feeds
@@ -81,15 +117,19 @@ function readFeeds() {
     $('#menu-refresh').off('click');
 
     let podcasts = allFavoritePodcasts.getAll();
-    for (let i in podcasts) 
+    for (let i in podcasts) {
+        allFeeds.lastFeedUrlToReload = podcasts[i].feedUrl;
         readFeedByFeedUrl(podcasts[i].feedUrl);
+    }
 
     // Remove animation to notify the user about fetching new episodes.
     // Let the animation take at least 2 seconds. Otherwise user may not notice it.
+    /*
     setTimeout(() => {
         $('#menu-refresh svg').removeClass('is-refreshing');
         $('#menu-refresh').click(readFeeds);
     }, 2000);
+    */
 }
 
 function readFeedByFeedUrl(feedUrl) {
@@ -101,7 +141,7 @@ function readFeedByFeedUrl(feedUrl) {
 
 function updateFeed(_Content, _eRequest, _Options) {
     let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
-
+    allFeeds.initFeed(FeedUrl)
     // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
     if (isContent302NotFound(_Content))
@@ -121,7 +161,7 @@ function updateFeed(_Content, _eRequest, _Options) {
         }
     }
 }
-
+/*
 function getFeedFromWorkerResponse(json, feedUrl) {
     let itemCount = json.length;
     if(itemCount == 0)
@@ -138,29 +178,9 @@ function getFeedFromWorkerResponse(json, feedUrl) {
 
     return (newEpisodesCount % itemCount);
 }
-/*
-xmlParserWorker.onmessage = function(ev) {
-    let json = ev.data.json;
-    let feedUrl = ev.data.feedUrl;
-
-    let initialFeedLength = allFeeds.length(feedUrl);
-    let numberNewEpisode = getFeedFromWorkerResponse(json, feedUrl);
-
-    let numberElementToShow = numberNewEpisode;
-    if(initialFeedLength == 0 && numberNewEpisode == 0) {
-        let feedLength = allFeeds.length(feedUrl);
-        numberElementToShow = (feedLength > 200 ? 200 : feedLength);
-    }
-
-    for(let i = numberElementToShow - 1; i >= 0; i--) {
-        let episode = json[i]
-        allFeeds.ui.add(episode);
-    }
-
-    updateFeedAndNewEpisode(ev.data.feedUrl, numberNewEpisode);
-}
 */
 
+/*
 xmlParserWorker.onmessage = function(ev) {
     let json = ev.data.json;
     let feedUrl = ev.data.feedUrl;
@@ -178,14 +198,74 @@ xmlParserWorker.onmessage = function(ev) {
         allFeeds.ui.add(episode);
     }
 
-    updateFeedAndNewEpisode(ev.data.feedUrl, numberNewEpisode);
+    updateFeedAndNewEpisode(feedUrl, numberNewEpisode);
+}
+*/
+
+xmlParserWorker.onmessage = function(ev) {
+    let newFeed = ev.data.json;
+    let feedUrl = ev.data.feedUrl;
+    let podcastData = ev.data.podcastData;
+    let oldFeed = allFeeds.getFeedPodcast(feedUrl);
+    oldFeed = !oldFeed ? [] : oldFeed;
+
+    allFavoritePodcasts.setData(feedUrl, podcastData);
+    if(!allFeeds.set(newFeed))
+        return;
+
+    updateFeedWorker.postMessage({
+        oldFeed: oldFeed,
+        newFeed: newFeed
+    })
+
+    if(allFeeds.lastFeedUrlToReload == feedUrl)
+        setTimeout(() => {
+            $('#menu-refresh svg').removeClass('is-refreshing');
+            $('#menu-refresh').click(readFeeds);
+        }, 2000);  
 }
 
-function updateFeedAndNewEpisode(FeedUrl, numberNewEpisode) {
-    if(!getSettings(FeedUrl)) {
-        for(let i = numberNewEpisode - 1; i >= 0; i--) {
-            let episode = allFeeds.getEpisode(FeedUrl, i);
-            saveEpisode(episode);
+updateFeedWorker.onmessage = function(ev) {
+    let feedUrl = ev.data.feedUrl;
+    let new_episodes = ev.data.new_episodes;
+    let deleted_episodes = ev.data.deleted_episodes;
+    let initialLength = ev.data.initialLength;
+
+    if(initialLength == 0 && new_episodes.length == allFeeds.length(feedUrl)) {
+        let $headerDescription = allFeeds.ui.getHeaderDescription().get(0);
+        if($headerDescription) {
+            let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
+            $headerDescription.innerHTML = getInfoFromDescription(podcast ? podcast.data.description : '');
+        }
+        allFeeds.ui.showLastNFeedElements(allFeeds.getFeedPodcast(feedUrl));
+    } else {
+        for(let i = new_episodes.length - 1; i >= 0; i--) {
+            let episode = allFeeds.getEpisode(feedUrl, i);
+            allFeeds.ui.add(episode);
+        }
+    }
+
+    for(let i = deleted_episodes.length - 1; i >= 0; i--) {
+        let episodeUrl = deleted_episodes[i];
+
+        allFeeds.ui.remove(feedUrl, episodeUrl);
+        allFeeds.playback.remove(episodeUrl)
+        allNewEpisodes.removeByEpisodeUrl(episodeUrl);
+        allArchiveEpisodes.removeByEpisodeUrl(episodeUrl);
+    } 
+    
+    updateFeedAndNewEpisode(feedUrl, new_episodes.length);
+}
+
+function updateFeedAndNewEpisode(feedUrl, numberNewEpisode) {
+    if(!getSettings(feedUrl)) {
+        for(let i = 0; i < numberNewEpisode; i++) {
+            let episode = allFeeds.getEpisode(feedUrl, i);
+            if(checkDateIsInTheLastWeek(episode)) 
+                allNewEpisodes.add(episode);
+            else 
+                return;
+            
         }
     }
 }
@@ -267,28 +347,19 @@ function showAllFeedElements(feed) {
     }
 }
 */
-function addToEpisodes(_Self) {
+
+function addToArchive(_Self) {
     let ListElement = _Self.parentElement.parentElement;
 
-    let episode = new Episode(
-        ListElement.getAttribute("channel"),
-        ListElement.getAttribute("feedUrl"),
-        ListElement.getAttribute("title"),
-        ListElement.getAttribute("url"),
-        ListElement.getAttribute("type"),
-        ListElement.getAttribute("length"),
-        ListElement.getAttribute("description"),
-        ListElement.getAttribute("durationKey"),
-        ListElement.getAttribute("pubDate")
-    );
-    
-    saveEpisode(episode)
+    allArchiveEpisodes.add({
+        feedUrl: ListElement.getAttribute('feedUrl'),
+        episodeUrl: ListElement.getAttribute('url')
+    });
 
-    _Self.innerHTML = "";
 }
 
-function saveEpisode(episode) {
-    let newEpisode = allFeeds.toNewEpisodeObj(episode);
+function removeFromArchive(_Self) {
+    let ListElement = _Self.parentElement.parentElement;
 
-    allNewEpisodes.add(newEpisode);
+    allArchiveEpisodes.removeByEpisodeUrl(ListElement.getAttribute('url'));
 }

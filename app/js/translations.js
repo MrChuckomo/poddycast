@@ -2,7 +2,7 @@
 function translate() {
   translateByDescriptor(".new-episodes", 'New Episodes');
   translateByDescriptor(".favorites", 'Favorites');
-  translateByDescriptor(".history", 'History');
+  translateByDescriptor(".archive", 'Archive');
   translateByDescriptor(".playlists", 'Playlists');
   translateByDescriptor(".refresh", 'Refresh');
   translateByDescriptor(".statistics", 'Statistics');

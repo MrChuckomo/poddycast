@@ -37,6 +37,7 @@ const s_DeleteIcon =
 </svg>
 `
 
+/*
 const s_AddEpisodeIcon =
 `
 <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
@@ -44,6 +45,33 @@ const s_AddEpisodeIcon =
     <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/>
 </svg>
 `
+*/
+
+const s_AddEpisodeIcon =
+`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="none" d="M0 0h24v24H0z"/>
+    <path d="M3 10H2V4.003C2 3.449 2.455 3 2.992 3h18.016A.99.99 0 0 1 22 4.003V10h-1v10.001a.996.996 0 0 1-.993.999H3.993A.996.996 0 0 1 3 20.001V10zm16 0H5v9h14v-9zM4 5v3h16V5H4zm5 7h6v2H9v-2z"/>
+</svg>
+`
+
+const s_RemoveEpisodeIcon =
+`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="none" d="M0 0h24v24H0z"/>
+    <path d="M20 3l2 4v13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.004L4 3h16zm0 6H4v10h16V9zm-8 1l4 4h-3v4h-2v-4H8l4-4zm6.764-5H5.236l-.999 2h15.527l-1-2z"/>
+</svg>
+`
+
+/*
+const s_RemoveEpisodeIcon =
+`
+<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/>
+</svg>
+`
+*/
 
 const s_MoreOptionIcon =
 `
@@ -77,11 +105,21 @@ const s_CheckBoxOutline =
 </svg>
 `
 
+/*
 const s_GridView =
 `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="24px" height="24px">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
+</svg>
+`
+*/
+
+const s_GridView =
+`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <path fill="none" d="M0 0h24v24H0z"/>
+    <path d="M14 10v4h-4v-4h4zm2 0h5v4h-5v-4zm-2 11h-4v-5h4v5zm2 0v-5h5v4a1 1 0 0 1-1 1h-4zM14 3v5h-4V3h4zm2 0h4a1 1 0 0 1 1 1v4h-5V3zm-8 7v4H3v-4h5zm0 11H4a1 1 0 0 1-1-1v-4h5v5zM8 3v5H3V4a1 1 0 0 1 1-1h4z"/>
 </svg>
 `
 
@@ -95,7 +133,7 @@ const s_ListView =
 
 const s_InfoIcon =
 `
-<svg fill="#000000" style="isolation:isolate" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px">
+<svg fill="#fffff" style="isolation:isolate" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28px" height="28px">
     <path d="M12,2A10,10,0,1,0,22,12,10.01114,10.01114,0,0,0,12,2Zm0,18a8,8,0,1,1,8-8A8.00917,8.00917,0,0,1,12,20Zm0-8.5a1,1,0,0,0-1,1v3a1,1,0,0,0,2,0v-3A1,1,0,0,0,12,11.5Zm0-4a1.25,1.25,0,1,0,1.25,1.25A1.25,1.25,0,0,0,12,7.5Z"/>
 </svg>
 `
@@ -194,62 +232,38 @@ const s_NewEpisodesNothingFoundIcon =
 </svg>
 `
 
-const s_HistoryNothingFoundIcon = 
+const s_ArchiveNothingFoundIcon = 
 `
-<svg id="master-artboard" viewBox="0 0 80 80" version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-    style="enable-background:new 0 0 336 235.2;" width="80px" height="80px">
-    <rect id="ee-background" x="0" y="0" width="80" height="80"
-        style="fill: white; fill-opacity: 0; pointer-events: none;" />
-    <defs>
-        <style id="ee-google-fonts">
-            @import url(https://fonts.googleapis.com/css?family=Audiowide:400);
-        </style>
-        <linearGradient x1="13.76468" y1="15.22687" x2="78.68189" y2="77.21971" gradientUnits="userSpaceOnUse"
-            id="color-1">
-            <stop offset="1" stop-color="#000000" stop-opacity="0" />
-            <stop offset="1" stop-color="#000000" stop-opacity="0" />
-        </linearGradient>
-        <filter id="dropshadow-base">
-            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .8 0" />
-            <feOffset dx="0" dy="1" />
-            <feGaussianBlur stdDeviation="1" />
-            <feComposite in="SourceGraphic" />
-        </filter>
-        <filter id="dropshadow-banner" x="-10%" y="-10%" width="120%" height="130%">
-            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .4 0" />
-            <feOffset dx="0" dy="1" />
-            <feGaussianBlur stdDeviation="0.5" />
-            <feComposite in="SourceGraphic" />
-        </filter>
-    </defs>
-    <g transform="matrix(1.818181872367859, 0, 0, 1.818181872367859, -3.636364062627152, -3.636360168457024)">
-        <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="none" stroke-linecap="butt"
-            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none"
-            font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-            <path
-                d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
-                id="base 1 5" fill="#bdc1c6" stroke-width="1" />
-            <path
-                d="M19.26251,30.19968l0.3168,-0.3168l-1.95445,-1.95445l-0.06823,-0.13647l-3.79195,-3.79195h2.92438c0,-4.84472 3.92841,-8.77313 8.77313,-8.77313c2.42236,0 4.61564,0.9821 6.20334,2.5698c0,0 0,0 0,0l13.19891,13.19891c-1.94542,5.80472 -6.2454,10.52971 -11.76549,13.04054z"
-                fill="url(#color-1)" stroke-width="1" />
-            <path
-                d="M34.23532,24c0,4.84472 -3.92841,8.77313 -8.77313,8.77313c-2.42723,0 -4.61077,-0.98454 -6.19968,-2.57345l1.38421,-1.38421c1.22824,1.23799 2.93413,2.00807 4.81547,2.00807c3.77245,0 6.82355,-3.0511 6.82355,-6.82355c0,-3.77245 -3.0511,-6.82355 -6.82355,-6.82355c-3.77245,0 -6.82355,3.0511 -6.82355,6.82355h2.92438l-3.93816,3.92841l-0.06824,-0.13647l-3.79194,-3.79194h2.92438c0,-4.84472 3.92841,-8.77313 8.77313,-8.77313c4.84472,0 8.77313,3.92841 8.77313,8.77313zM25.94958,20.10083v4.14287l3.41177,2.02757l-0.70185,1.1795l-4.17211,-2.47597v-4.87396z"
-                fill="none" stroke-width="0" />
-            <path
-                d="M34.23532,24c0,4.84472 -3.92841,8.77313 -8.77313,8.77313c-2.42723,0 -4.61077,-0.98454 -6.19968,-2.57345l1.38421,-1.38421c1.22824,1.23799 2.93413,2.00807 4.81547,2.00807c3.77245,0 6.82355,-3.0511 6.82355,-6.82355c0,-3.77245 -3.0511,-6.82355 -6.82355,-6.82355c-3.77245,0 -6.82355,3.0511 -6.82355,6.82355h2.92438l-3.93816,3.92841l-0.06824,-0.13647l-3.79194,-3.79194h2.92438c0,-4.84472 3.92841,-8.77313 8.77313,-8.77313c4.84472,0 8.77313,3.92841 8.77313,8.77313zM25.94958,20.10083v4.14287l3.41177,2.02757l-0.70185,1.1795l-4.17211,-2.47597v-4.87396z"
-                fill="#ffffff" stroke-width="0" />
-            <path
-                d="M2,24c0,-12.15026 9.84974,-22 22,-22c12.15026,0 22,9.84974 22,22c0,12.15026 -9.84974,22 -22,22c-12.15026,0 -22,-9.84974 -22,-22z"
-                id="base 1 1 1" fill="none" stroke-width="1" />
-            <g fill="#000000" stroke-width="1" font-family="Roboto, sans-serif" font-weight="400" font-size="14"
-                text-anchor="start" />
-            <path d="M 2 2 H 46 V 24 H 2 V 2 Z" fill="none" stroke-width="1" />
-            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
-            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
-            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
-            <path d="M2,24v-22h44v22z" fill="none" stroke-width="1" />
-        </g>
-    </g>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" height="80" viewBox="0 0 80 80" width="80" version="1.1"
+   id="svg6" sodipodi:docname="inbox-24px.svg" inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+   <metadata id="metadata12">
+      <rdf:RDF>
+         <cc:Work rdf:about="">
+            <dc:format>image/svg+xml</dc:format>
+            <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+            <dc:title></dc:title>
+         </cc:Work>
+      </rdf:RDF>
+   </metadata>
+   <defs id="defs10" />
+   <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10"
+      gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2"
+      inkscape:window-width="1920" inkscape:window-height="1016" id="namedview8" showgrid="false"
+      inkscape:zoom="4.15625" inkscape:cx="34.765659" inkscape:cy="17.467417" inkscape:window-x="0"
+      inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="g842" />
+   <circle style="fill:#bdc1c6;stroke-width:209.832;stroke-opacity:0.873911;fill-opacity:1" id="path844" cx="40" cy="40"
+      r="40" />
+   <g id="g842" transform="translate(28,28)">
+      <path d="M 0,0 H 24 V 24 H 0 Z" fill="none" id="path2" />
+      <path
+         d="M 25.611111,-5.5 H -1.6305556 c -2.1583333,0 -3.85,1.7305556 -3.85,3.8888889 L -5.5,25.611111 C -5.5,27.75 -3.7888889,29.5 -1.6305556,29.5 H 25.611111 C 27.75,29.5 29.5,27.75 29.5,25.611111 V -1.6111111 C 29.5,-3.7694444 27.75,-5.5 25.611111,-5.5 Z m 0,23.333333 h -7.777778 c 0,3.227778 -2.625,5.833334 -5.833333,5.833334 -3.208333,0 -5.833333,-2.605556 -5.833333,-5.833334 H -1.6305556 V -1.6111111 H 25.611111 Z"
+         id="path4" style="fill:#ffffff;stroke-width:1.94444" />
+      <rect style="opacity:0;fill:#ffffff;stroke-width:292.691;stroke-opacity:0.873911" id="rect837" width="80"
+         height="80" x="-28" y="-28" rx="182.05968" ry="240.0775" />
+   </g>
 </svg>
 `
 

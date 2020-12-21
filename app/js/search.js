@@ -1,3 +1,5 @@
+var searchTimeoutVar = null;
+
 function search(_Self, _Event) {
     if (_Event.code == "Escape")
         clearTextField(_Self);
@@ -9,12 +11,21 @@ function search(_Self, _Event) {
         setHeader(generateHtmlTitle("Search"), '');
 
         $('#res').attr('return-value', '');
+        
         getPodcasts(_Self.value);
     }
 }
 
 function getPodcasts(_SearchTerm) {
-    setTimeout(() => {
+    if(searchTimeoutVar)
+        clearTimeout(searchTimeoutVar);
+
+    if(!_SearchTerm) {
+        showSearchNothingToShow();
+        return;
+    }
+
+    searchTimeoutVar = setTimeout(() => {
         _SearchTerm = encodeURIComponent(_SearchTerm);
         if (isProxySet())
             makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http);
@@ -30,19 +41,23 @@ function getResults(_Data, _eRequest, _Options) {
     let obj = JSON.parse(_Data);
 
     if(obj.results.length == 0)
-        setNothingToShowBody(s_SearchNothingFoundIcon, 'search-nothing-to-show');
+        showSearchNothingToShow();
     else if(query == $('#search-input').val()){
         clearBody();
         setGridLayout(false);
 
         let $list = $('#list');
         for (let i in obj.results) {
+            let Artwork = obj.results[i].artworkUrl100;
+            if(Artwork == undefined || Artwork == 'undefined') {
+                Artwork = obj.results[i].artworkUrl60;
+                if(Artwork == undefined || Artwork == 'undefined') 
+                    Artwork = getGenericArtwork();
+            }
             let podcast = new Podcast (
                 obj.results[i].artistName,
                 obj.results[i].collectionName,
-                obj.results[i].artworkUrl30,
-                obj.results[i].artworkUrl60,
-                obj.results[i].artworkUrl100,
+                Artwork,
                 obj.results[i].feedUrl
             );
 
@@ -54,9 +69,9 @@ function getResults(_Data, _eRequest, _Options) {
 
             $list.append(buildListItem(new cListElement(
                 [
-                    getImagePart(podcast.artworkUrl60),
-                    getBoldTextPart(podcast.collectionName),
-                    getSubTextPart(podcast.artistName),
+                    getImagePart(obj.results[i].artworkUrl60),
+                    getBoldTextPart(podcast.data.collectionName),
+                    getSubTextPart(podcast.data.artistName),
                     HeartButton
                 ],
                 "5em 1fr 1fr 5em"
@@ -65,41 +80,37 @@ function getResults(_Data, _eRequest, _Options) {
     }
 }
 
-function getHeartButton(_PodcastInfos) {
-    let artists = _PodcastInfos.artistName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-    let collection = _PodcastInfos.collectionName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+function showSearchNothingToShow() {
+    setNothingToShowBody(s_SearchNothingFoundIcon, 'search-nothing-to-show');
+}
 
+function getHeartButton(_PodcastInfos) {
     let $heartButtonElement = $('<div></div>');
 
     $heartButtonElement.html(s_Heart);
     $heartButtonElement.addClass('list-item-icon')
     $heartButtonElement.find('svg').click(function () {
-        setFavorite(this, artists, 
-                          collection, 
-                          _PodcastInfos.artworkUrl30, 
-                          _PodcastInfos.artworkUrl60, 
-                          _PodcastInfos.artworkUrl100, 
-                          _PodcastInfos.feedUrl
+        setFavorite(this, _PodcastInfos.data.artistName, 
+                          _PodcastInfos.data.collectionName, 
+                          _PodcastInfos.data.artworkUrl, 
+                          _PodcastInfos.feedUrl,
+                          _PodcastInfos.data.description
         );
     })
     return $heartButtonElement.get(0);
 }
 
 function getFullHeartButton(_PodcastInfos) {
-    let artists = _PodcastInfos.artistName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-    let collection = _PodcastInfos.collectionName;//.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-
     let $heartButtonElement = $('<div></div>');
 
     $heartButtonElement.html(s_FullHeart);
     $heartButtonElement.addClass('list-item-icon')
     $heartButtonElement.find('svg').click(function () {
-        unsetFavorite(this, artists, 
-                          collection, 
-                          _PodcastInfos.artworkUrl30, 
-                          _PodcastInfos.artworkUrl60, 
-                          _PodcastInfos.artworkUrl100, 
-                          _PodcastInfos.feedUrl
+        unsetFavorite(this, _PodcastInfos.data.artistName, 
+                          _PodcastInfos.data.collectionName, 
+                          _PodcastInfos.data.artworkUrl, 
+                          _PodcastInfos.feedUrl,
+                          _PodcastInfos.data.description
         );
     })
     return $heartButtonElement.get(0);

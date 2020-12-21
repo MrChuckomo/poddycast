@@ -14,6 +14,7 @@
 	"Search": "Cerca un Podcast",
 	"Favorites": "Preferiti",
 	"History": "Storia",
+	"Archive": "Archivio",
 	"Statistics": "Statistiche",
 	"Window": "Finestra",
 	"Minimize": "Riduci a System Tray (richiede riavvio)",
@@ -37,6 +38,7 @@
 	"Rename": "Rinomina",
 	"Add to playlist": "Aggiungi alla playlist",
 	"Push to New Episodes": "Aggiungi a Nuovi episodi",
+	"Archive Items": "Episodi archiviati",
 	"History Items": "Episodi ascoltati",
 	"Favorite Podcasts": "Podcasts preferiti",
 	"Last Podcast": "Ultimo Podcast",
@@ -47,5 +49,9 @@
 	"Set Playlist": "Imposta Playlist",
 	"Nothing to show": "Niente da mostrare",
 	"Show more episodes": "Mostra più episodi",
-	"Show more recent episodes": "Mostra episodi più recenti"
+	"Show more recent episodes": "Mostra episodi più recenti",
+	"Add to archive": "Archivia",
+	"Remove from archive": "Rimuovi dall'archivio",
+	"Other": "Altro",
+	"Reduce": "Riduci"
 }

@@ -6,7 +6,8 @@
     display: grid;
     position: fixed;
     overflow: auto;
-    grid-template-rows: 70px 1fr 30px 3fr 60px;
+    /* grid-template-rows: 70px 1fr 30px 3fr 60px; */
+    grid-template-rows: 70px 215px 30px 3fr 60px;
     grid-template-columns: 100%;
     grid-template-areas:
         "search"
@@ -56,6 +57,7 @@
 #menu ul
 {
     padding: 0;
+    margin-top: 0;
 }
 
 #menu ul li
@@ -174,11 +176,13 @@
 {
     /* padding: 0.5em; */
     /* padding-left: 0.6em; */
-    
+
+    /*
     padding-bottom: 0.5em;
     padding-top: 0.5em;
     padding-left: 1.2em;
     padding-right: 0.8em;
+    */
 }
 
 #playlists ul li.over
@@ -201,6 +205,11 @@
     line-height: 0.5em;
     padding: 0.5em;
     width: calc(100% - 3em);
+
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 
 #playlists ul li input:disabled
@@ -213,7 +222,7 @@
     outline: none;
     background: #ccc;
     color: #000;
-    width: 245px;
+    /*width: 245px;*/
     border-radius: 8px;
 }
 

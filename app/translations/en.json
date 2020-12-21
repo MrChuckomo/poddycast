@@ -13,6 +13,7 @@
 	"Player": "Player",
 	"Search": "Find podcast",
 	"Favorites": "Favorites",
+	"Archive": "Archive",
 	"History": "History",
 	"Statistics": "Statistics",
 	"Window": "Window",
@@ -37,10 +38,15 @@
 	"Rename": "Rename",
 	"Add to playlist": "Add to playlist",
 	"Push to New Episodes": "Push to New Episodes",
+	"Archive Items": "Archive Items",
 	"History Items": "History Items",
 	"Favorite Podcasts": "Favorite Podcasts",
 	"Last Podcast": "Last Podcast",
 	"Episodes": "Episodes",
 	"Refresh Feeds": "Refresh Feeds",
-	"Refresh":"Refresh"
+	"Refresh":"Refresh",
+	"Add to archive": "Add to archive",
+	"Remove from archive": "Remove from archive",
+	"Other": "Other",
+	"Reduce": "Reduce"
 }

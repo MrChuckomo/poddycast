@@ -1,126 +1,101 @@
-var CPlayer = require('./js/helper/player')
-var player = new CPlayer()
-
 var allNewEpisodes = null;
 
-class NewEpisode {
-    constructor(channelName, feedUrl, episodeTitle, episodeUrl, episodeType, episodeLength, episodeDescription, duration, pubDate) {
-        this.channelName = channelName;
-        this.feedUrl = feedUrl;
-        this.episodeTitle = episodeTitle;
-        this.episodeUrl = episodeUrl;
-        this.episodeType = episodeType;
-        this.episodeLength = episodeLength;
-        this.episodeDescription = episodeDescription;
-        this.duration = duration;
-        this.pubDate = pubDate;
-    }
-}
+class NewEpisodesUI extends ListUI {
 
-class NewEpisodesUI {
-    constructor() {
+    showNothingToShow() {
+        if(this.isNewEpisodesPage()) 
+            super.showNothingToShow(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
+        else if(this.isPlaylistPage())
+            super.showNothingToShow(s_PlaylistNothingFoundIcon, 'playlist-nothing-to-show');
     }
 
-    getPageType() {
-        if(!notPlaylistHeader())
-            return 'playlist';
-        if(getHeader() == generateHtmlTitle('New Episodes'))
-            return 'newEpisodes';
-        return undefined;
+    isNewEpisodesPage() {
+        return (this.getPageType() == 'newEpisodes');
     }
 
-    isEmpity() {
-        return !this.getAllItemsList().get(0);
-    }
-    
-    updateAfterDelete() {
-        if(this.isEmpity()) {
-            let pageType = this.getPageType();
-            switch(pageType) {
-                case 'playlist':
-                    setNothingToShowBody(s_PlaylistNothingFoundIcon, 'playlist-nothing-to-show');
-                    break;
-                case 'newEpisodes':
-                    setNothingToShowBody(s_NewEpisodesNothingFoundIcon, 'new_episodes-nothing-to-show');
-                    break;
-            }
-        }
+    isPlaylistPage() {
+        return (this.getPageType() == 'playlist');
     }
 
-    getList() {
-        return $('#list');
-    }
-
-    getAllItemsList() {
-        return $('#list li');
-    }
-
-    getByEpisodeUrl(episodeUrl) {
-        return this.getAllItemsList().filter('[url="' + episodeUrl + '"]');
-    }
-
-    add(i) {
+    add(episode, i) {
         setItemCounts();
-        let pageType = this.getPageType();
-        switch(pageType) {
-            case 'playlist':
-                this.addPlaylist(i);
-                break;
-            case 'newEpisodes':
-                this.directAdd(i);
-                break;
-        }
+        if(this.isNewEpisodesPage() || this.isPlaylistPage())
+            super.add(episode, i);
     }
- 
-	directAdd(i) {
-        if(!$(this.getAllItemsList().get(i)).get(0)) {
-            if(this.isEmpity())
-                clearBody();
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .appendTo($(this.getList()))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-        } else
-            $(this.getNewItemList(allNewEpisodes.get(i)))
-                .hide()
-                .css('opacity', 0.0)
-                .insertBefore($(this.getAllItemsList().get(i)))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
+
+
+    directAdd(episode, i, forceOriginalDirectAdd) {
+        if(this.isNewEpisodesPage() || forceOriginalDirectAdd)
+            super.directAdd(episode, i);
+        else if(this.isPlaylistPage())
+            this.addPlaylist(episode);
     }
     
-    addPlaylist(i) {
-        let newEpisode = allNewEpisodes.get(i);
-
+    addPlaylist(episode) {
         let playlistName = getHeader();
         let indexPlaylist = allPlaylist.memory.findByName(playlistName);
-        let feedUrl = newEpisode.feedUrl;
+        let feedUrl = episode.feedUrl;
         if(allPlaylist.memory.findPodcast(indexPlaylist, feedUrl) == -1)
             return;
 
-        let playlistEpisodes = allNewEpisodes.getPlaylistEpisodes(playlistName);
+        let playlistEpisodes = this.dataObject.getPlaylistEpisodes(playlistName);
         for(let j in playlistEpisodes)
-            if(playlistEpisodes[j].episodeUrl == newEpisode.episodeUrl) {
-                this.directAdd(j);
+            if(playlistEpisodes[j].episodeUrl == episode.episodeUrl) {
+                this.directAdd(episode, j - this.firstEpisodeDisplayed, true);
                 return;
             }
     }
 
     removeByEpisodeUrl(episodeUrl) {
         setItemCounts();
-        if(this.getPageType()) {
-            let $episodeItem = this.getByEpisodeUrl(episodeUrl);
-            
-            $episodeItem
-                .animate({opacity: 0.0}, 150)
-                .slideUp(150, () => { 
-                    $episodeItem.remove(); 
+        if(this.isNewEpisodesPage() || this.isPlaylistPage()) 
+            super.removeByEpisodeUrl(episodeUrl);
+    }
 
-                    this.updateAfterDelete();
-                });
+    /*
+    showAll() {
+        if(this.dataObject.isEmpty())
+            this.showNothingToShow();
+
+        let $list = this.getList();
+        for (let i in this.dataObject.episodes) {
+            try {
+            let episode = this.dataObject.get(i);
+            if(!checkDateIsInTheLastWeek(episode))
+                this.dataObject.removeByEpisodeUrl(episode.episodeUrl);
+            else if(i < this.bufferSize)
+                $list.append(this.getNewItemList(this.dataObject.get(i)));
+            } catch(err) {
+                console.log(err);
+            }
         }
+    }
+    */
+
+    showAll() {
+        if(this.dataObject.isEmpty())
+            this.showNothingToShow();
+
+        let $list = this.getList();
+        let epShownCounter = 0;
+        for (let i in this.dataObject.episodes) {
+            let episode = this.dataObject.get(i);
+            if(!checkDateIsInTheLastWeek(episode))
+                this.dataObject.removeByEpisodeUrl(episode.episodeUrl);
+            else if(epShownCounter < this.bufferSize) {
+                $list.append(this.getNewItemList(episode));
+                epShownCounter++;
+            }
+        }
+        let length = this.length()
+
+        this.firstEpisodeDisplayed = 0;
+        this.lastEpisodeDisplayed = length - 1;
+        
+        this.appendShowMoreEpisodesButton();
+        this.prependShowMoreEpisodesButton();
+
+        setScrollPositionOnTop();
     }
 
     convertItemIntoInfoItemList(obj) {
@@ -147,8 +122,7 @@ class NewEpisodesUI {
                 '</span>' +
                 '<br>' +
                 '<span style="font-size:15px;">' +
-                    //$descriptionItem.attr('title') +
-                    getEpisodeInfoFromDescription($descriptionItem.attr('description')) +
+                    getInfoFromDescription($obj.attr('description')) +
                 '</span>' +
                 '<br>' +
                 '<span style="font-size:13px;opacity:0.7;">' +
@@ -197,7 +171,7 @@ class NewEpisodesUI {
                     e.preventDefault();
                     return;
                 }
-                playNow(this);
+                playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
             });
         
             $obj.find('div').removeAttr('style');
@@ -214,7 +188,7 @@ class NewEpisodesUI {
                 .css('height', height)
                 .stop()
                 .animate(
-                    {height: '2.7em'}, // 37.7778px
+                    {height: '2.86em'}, // 2.7em => 37.7778px
                     300, 
                     function () {
                         $obj.css('height', '');
@@ -229,37 +203,43 @@ class NewEpisodesUI {
     }
 
     getNewItemList(newEpisode) {
-        let Artwork = getBestArtworkUrl(newEpisode.feedUrl);
+        let episode = getInfoEpisodeByObj(newEpisode);
+
+        let Artwork = getBestArtworkUrl(episode.feedUrl);
+        let duration = getDurationFromDurationKey(episode);
         
         let ListElement = buildListItem(new cListElement (
             [
                 getImagePart(Artwork),
-                getBoldTextPart(newEpisode.episodeTitle),
-                getSubTextPart(newEpisode.duration == undefined ? "" : newEpisode.duration),
-                getTextPart(newEpisode.channelName),
-                getDescriptionPart(s_InfoIcon, newEpisode.episodeDescription),
-                getDeleteButtonPart()
+                getBoldTextPart(episode.episodeTitle),
+                getSubTextPart(duration),
+                getTextPart(episode.channelName),
+                getDescriptionPart(s_InfoIcon, episode.episodeDescription),
+                getAddEpisodeButtonPart(allArchiveEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? 'remove' : 'add')
             ],
             "5em 1fr 6em 1fr 5em 5em"
         ), eLayout.row)
-        
+
         $(ListElement).click(function(e) {
             if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
                 e.preventDefault();
                 return;
             }
-            playNow(this);
+            playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
         });
-        ListElement.setAttribute("channel", newEpisode.channelName)
-        ListElement.setAttribute("feedUrl", newEpisode.feedUrl)
-        ListElement.setAttribute("title", newEpisode.episodeTitle)
-        ListElement.setAttribute("type", newEpisode.episodeType)
-        ListElement.setAttribute("url", newEpisode.episodeUrl)
-        ListElement.setAttribute("length", newEpisode.episodeLength)
-        ListElement.setAttribute("artworkUrl", Artwork)
-        ListElement.setAttribute("pubDate", newEpisode.pubDate)
 
-        if (player.isPlaying(newEpisode.episodeUrl))
+        ListElement.setAttribute("channel", episode.channelName);
+        ListElement.setAttribute("feedUrl", episode.feedUrl);
+        ListElement.setAttribute("title", episode.episodeTitle);
+        ListElement.setAttribute("type", episode.episodeType);
+        ListElement.setAttribute("url", episode.episodeUrl);
+        ListElement.setAttribute("length", episode.episodeLength);
+        ListElement.setAttribute("durationKey", episode.durationKey);
+        ListElement.setAttribute("description", episode.episodeDescription);
+        ListElement.setAttribute("artworkUrl", Artwork);
+        ListElement.setAttribute("pubDate", episode.pubDate);
+
+        if (playerManager.isPlaying(episode.episodeUrl))
             ListElement.classList.add("select-episode")
         
         $(ListElement).find('.list-item-description').click(() => {
@@ -278,7 +258,7 @@ class NewEpisodesUI {
 class NewEpisodes {
     constructor() {
         this.load();
-        this.ui = new NewEpisodesUI;
+        this.ui = new NewEpisodesUI(this);
     }
 
     load() {
@@ -308,6 +288,11 @@ class NewEpisodes {
     get(i) {
         return this.episodes[i];
     }
+
+    getInfoByIndex(i) {
+        let newEpisode = this.get(i);
+        return getInfoEpisodeByObj(newEpisode);
+    }
     
     findByEpisodeUrl(episodeUrl) {
         for(let i in this.episodes)
@@ -322,13 +307,17 @@ class NewEpisodes {
     }
     
     add(episode) {
+        episode = {
+            feedUrl: episode.feedUrl,
+            episodeUrl: episode.episodeUrl
+        }
         if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
             let i = 0;
-            while(i < this.length() && compareEpisodeDates(this.episodes[i].pubDate, episode.pubDate) > 0)
+            while(i < this.length() && compareEpisodeDates(this.episodes[i], episode) > 0)
                 i++;
             this.episodes.splice(i, 0, episode);
             this.update();
-            this.ui.add(i);
+            this.ui.add(episode, i);
             return episode;
         } 
         return null;

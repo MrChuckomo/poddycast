@@ -1,18 +1,21 @@
 var allFavoritePodcasts = null;
 
 class Podcast {
-    constructor(artistName, collectionName, artworkUrl30, artworkUrl60, artworkUrl100, feedUrl) {
-        this.artistName = artistName;
-        this.collectionName = collectionName;
-        this.artworkUrl30 = artworkUrl30;
-        this.artworkUrl60 = artworkUrl60;
-        this.artworkUrl100 = artworkUrl100;
+    constructor(artistName, collectionName, artworkUrl, feedUrl, description) {
         this.feedUrl = feedUrl;
+        
+        this.data = {
+            artistName: artistName,
+            collectionName: collectionName,
+            artworkUrl: artworkUrl,
+            description: (description ? description : '')
+        };
+
         this.excludeFromNewEpisodes = false;
     }
 
     isValid() {
-        return (this.artistName && this.collectionName && this.feedUrl);
+        return (this.data.artistName && this.data.collectionName && this.feedUrl);
     }
 }
 
@@ -112,11 +115,23 @@ class FavoritePodcasts {
         return (i != -1 ? this.podcasts[i] : undefined);
     }
 
+    setData(feedUrl, data) {
+        let i = this.findByFeedUrl(feedUrl);
+        if(i != -1) {
+            let oldArtwork = this.podcasts[i].data.artworkUrl;
+            this.podcasts[i].data = data;
+            this.podcasts[i].data.artworkUrl = oldArtwork;
+            this.update();
+            return true;
+        }
+        return false;
+    }
+
     add(podcast) {
         let p = Object.assign(new Podcast, podcast);
         if(p.isValid() && this.findByFeedUrl(podcast.feedUrl) == -1) {
             let i = 0;
-            while(i < this.podcasts.length && podcast.collectionName.localeCompare(this.podcasts[i].collectionName) == 1)
+            while(i < this.podcasts.length && podcast.data.collectionName.localeCompare(this.podcasts[i].data.collectionName) == 1)
                 i++;
             this.podcasts.splice(i, 0, podcast);
             this.update();
@@ -133,6 +148,7 @@ class FavoritePodcasts {
             this.podcasts.splice(i, 1);
             this.update();
             allNewEpisodes.removePodcastEpisodes(feedUrl);
+            allArchiveEpisodes.removePodcastEpisodes(feedUrl);
             allPlaylist.memory.removePodcastByFeedUrlFromAllPlaylists(feedUrl);
             allFeeds.delete(feedUrl);
 
@@ -166,14 +182,13 @@ function loadFavoritePodcasts() {
 }
 
 
-function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl) {
+function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork, _FeedUrl, description) {
     let podcast = new Podcast(
         _ArtistName,
         _CollectioName, 
-        _Artwork30, 
-        _Artwork60, 
-        _Artwork100, 
-        _FeedUrl
+        _Artwork, 
+        _FeedUrl,
+        description
     );
 
     let $podcastRow = $(_Self).parent().parent();
@@ -184,14 +199,13 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60,
 
 }
 
-function unsetFavorite(_Self, _ArtistName, _CollectioName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl) {
+function unsetFavorite(_Self, _ArtistName, _CollectioName, _Artwork, _FeedUrl, description) {
     let podcast = new Podcast(
         _ArtistName,
         _CollectioName, 
-        _Artwork30, 
-        _Artwork60, 
-        _Artwork100, 
-        _FeedUrl
+        _Artwork,
+        _FeedUrl,
+        description
     );
 
     allFavoritePodcasts.removeByFeedUrl(_FeedUrl);

@@ -1,29 +1,6 @@
-var CPlayer = require('./js/helper/player')
-var player = new CPlayer()
-
 var allFeeds = null;
 
-class Episode {
-    constructor(ChannelName, FeedUrl, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, DurationKey, pubDate, playbackPosition) {
-        this.channelName = ChannelName;
-        this.feedUrl = FeedUrl;
-        this.episodeTitle = EpisodeTitle;
-        this.episodeUrl = EpisodeUrl;
-        this.episodeType = EpisodeType;
-        this.episodeLength = EpisodeLength;
-        this.episodeDescription = EpisodeDescription;
-        this.durationKey = DurationKey;
-        this.pubDate = pubDate;
-        this.playbackPosition = ( playbackPosition ? playbackPosition : 0 );
-    }
-}
-
-class FeedsUI {
-    constructor() {
-        this.firstEpisodeDisplayed = null;
-        this.lastEpisodeDisplayed = null;
-        this.bufferSize = 200;
-    }
+class FeedsUI extends ListUI {
 
 /*
  * HEADER
@@ -38,11 +15,19 @@ class FeedsUI {
     }
 
     getHeaderTitle() {
-        return $('.settings .settings-header');
+        return $('.settings .settings-header .title-header');
+    }
+
+    getHeaderArtist() {
+        return $('.settings .settings-header .artist-header');
     }
 
     getHeaderCount() {
-        return $('.settings .settings-count');
+        return $('.settings .settings-header .settings-count');
+    }
+
+    getHeaderDescription() {
+        return $('.settings .settings-header .description-header');
     }
 
     setHeaderCountValue(n) {
@@ -59,51 +44,114 @@ class FeedsUI {
 
         // NOTE: set settings information
         this.getHeaderImage().get(0).src = Artwork;
-        this.getHeaderTitle().get(0).innerHTML = (podcast ? podcast.collectionName : 'null');
+        this.getHeaderTitle().get(0).innerHTML = (podcast ? podcast.data.collectionName : 'null');
+        this.getHeaderArtist().get(0).innerHTML = (podcast ? podcast.data.artistName : 'null');
         this.getHeaderCount().get(0).innerHTML = (podcast ? '0' : '-1'); //(feed ? feed.length : (podcast ? '0' : '-1'));
-
+        this.getHeaderDescription().get(0).innerHTML = getInfoFromDescription(podcast ? podcast.data.description : '');
     }
 
     appendHeaderSection(_Feed) {
-        // NOTE: settings area in front of a podcast episode list
+        if(this.getHeader().get(0) == undefined) {
+            // NOTE: settings area in front of a podcast episode list
 
-        var RightContent = document.getElementById("list")
+            var RightContent = document.getElementById("list")
 
-        var SettingsDiv = document.createElement("div")
-        SettingsDiv.classList.add("settings")
+            var SettingsDiv = document.createElement("div")
+            SettingsDiv.classList.add("settings")
 
-        var PodcastImage = document.createElement("img")
-        PodcastImage.classList.add("settings-image")
+            var PodcastImage = document.createElement("img")
+            PodcastImage.classList.add("settings-image")
 
-        var podcastName = document.createElement("div")
-        podcastName.classList.add("settings-header")
+            //var podcastName = document.createElement("div")
+            //podcastName.classList.add("settings-header")
 
-        var EpisodeCount = document.createElement("div")
-        EpisodeCount.classList.add("settings-count")
+            var $settingsHeader = $(
+                '<div class="settings-header">' +
+                    '<span class="title-header"></span><br>' +
+                    '<span class="artist-header" style="height: 0;"></span>' +
+                    '<span class="count-header">' +
+                        '<span class="settings-count">-</span>' +
+                        ' ' + i18n.__('Episodes').toLowerCase() +
+                    '</span><br>' +
+                    '<span class="description-header" style="height:24px"></span>' +
+                    '<span class="description-other">' +
+                        i18n.__('Other') +
+                    '</span>' +
+                '</div>'
+            );
 
-        var MoreElement = document.createElement("div")
-        MoreElement.innerHTML = s_MoreOptionIcon
-        MoreElement.classList.add("settings-unsubscribe")
+            $settingsHeader.find('.description-other').click(function() {
+                let $descriptionHeader = $settingsHeader.find('.description-header');
+                let initialHeightDH = $descriptionHeader.css('height');
+                let finalHeightDH = null;
 
-        // NOTE: set context menu
+                let $artistHeader = $settingsHeader.find('.artist-header');
+                let initialHeightAH = $artistHeader.css('height');
+                let finalHeightAH = null;
 
-        this.setPodcastHeaderMenu(MoreElement, _Feed)
+                if($(this).html() == i18n.__('Other')) {
+                    $descriptionHeader.css('height', 'auto');
+                    finalHeightDH = $descriptionHeader.css('height');
+                    $descriptionHeader.css('height', initialHeightDH);
+                    $(this).html(i18n.__('Reduce'));
 
-        // NOTE: build layout
+                    $artistHeader.css('height', 'auto');
+                    finalHeightAH = $artistHeader.css('height');
+                    $artistHeader.css('height', initialHeightAH);
+                } else {
+                    finalHeightDH = '24px';
 
-        SettingsDiv.append(PodcastImage)
-        SettingsDiv.append(podcastName)
-        SettingsDiv.append(EpisodeCount)
-        SettingsDiv.append(MoreElement)
+                    finalHeightAH = '0';
+                    $(this).html(i18n.__('Other'));
+                }
 
-        let podcast = allFavoritePodcasts.getByFeedUrl(_Feed);
-        if(podcast)
-            $(SettingsDiv).attr({
-                collectionName: podcast.collectionName,
-                feedUrl: podcast.feedUrl
+                $descriptionHeader
+                    .stop()
+                    .animate(
+                        {height: finalHeightDH},
+                        300,
+                        () => {
+                            if(!($(this).html() == i18n.__('Other'))) 
+                                $descriptionHeader.attr('style', '');
+                        }
+                    );
+
+                $artistHeader
+                    .stop()
+                    .animate(
+                        {height: finalHeightAH},
+                        300
+                    );
             });
 
-        RightContent.append(SettingsDiv)
+            //var EpisodeCount = document.createElement("div")
+            //EpisodeCount.classList.add("settings-count")
+
+            var MoreElement = document.createElement("div")
+            MoreElement.innerHTML = s_MoreOptionIcon
+            MoreElement.classList.add("settings-unsubscribe")
+
+            // NOTE: set context menu
+
+            this.setPodcastHeaderMenu(MoreElement, _Feed)
+
+            // NOTE: build layout
+
+            SettingsDiv.append(PodcastImage)
+            //SettingsDiv.append(podcastName)
+            SettingsDiv.append($settingsHeader.get(0))
+            //SettingsDiv.append(EpisodeCount)
+            SettingsDiv.append(MoreElement)
+
+            let podcast = allFavoritePodcasts.getByFeedUrl(_Feed);
+            if(podcast)
+                $(SettingsDiv).attr({
+                    collectionName: podcast.data.collectionName,
+                    feedUrl: podcast.feedUrl
+                });
+
+            RightContent.append(SettingsDiv)
+        }
     }
         
     setPodcastHeaderMenu(_Object, _Feed) {
@@ -156,7 +204,7 @@ class FeedsUI {
  */
 
     isFavoritesPage() {
-        return (getHeader() == generateHtmlTitle('Favorites'));
+        return (this.getPageType() == 'favorites');
     }
 
     getInfoFeedView() {
@@ -199,59 +247,31 @@ class FeedsUI {
  * LIST
  */
 
-    listIsEmpity() {
-        return !this.getAllItemsList().get(0);
+    showNothingToShow() {
+        /*
+         *  ToDo
+         */
     }
 
-    getList() {
-        return $('#list');
-    }
-
-    getAllItemsList() {
-        return $('#list li');
-    }
-
-    getFirstItemList() {
-        return $(this.getAllItemsList().get(0));
-    }
-
-    getItemListByIndex(i) {
-        return $(this.getAllItemsList().get(i));
-    }
-
-    add(episode) {
+    add(episode, i) {
+        this.updateItemCount(episode.feedUrl);
         if(this.checkPageByFeedUrl(episode.feedUrl)) {
-            this.lastEpisodeDisplayed++;
-            if(this.firstEpisodeIsDisplayed()) {
-                this.directAdd(episode);
-                this.updateItemCount(episode.feedUrl);
-            } else {
-                this.firstEpisodeDisplayed++;
-                console.log(this.firstEpisodeDisplayed)
-            }
+            if(i == undefined)
+                i = this.dataObject[episode.feedUrl].indexOf(episode);
+            super.add(episode, i);
         }
     }
 
-    directAdd(episode) {
-        if(!$(this.getAllItemsList().get(0)).get(0)) {
-            $(this.getNewItemList(episode))
-                .hide()
-                .css('opacity', 0.0)
-                .appendTo($(this.getList()))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
-        } else
-            $(this.getNewItemList(episode))
-                .hide()
-                .css('opacity', 0.0)
-                .insertBefore($(this.getAllItemsList().get(0)))
-                .slideDown('slow')
-                .animate({opacity: 1.0});
+    remove(episode) {
+        this.updateItemCount(episode.feedUrl);
+        if(this.checkPageByFeedUrl(episode.feedUrl)) {
+            super.removeByEpisodeUrl(episode.episodeUrl, this.dataObject[episode.feedUrl]);
+        }
     }
 
     updateItemCount(FeedUrl) {
-        let $count = $('.settings-count').get(0);
-        if($count)
+        let $count = this.getHeaderCount().get(0);
+        if($count && this.getFeedUrlByHeader() == FeedUrl)
             $count.innerHTML = allFeeds.getFeedPodcast(FeedUrl).length;
     }
 
@@ -275,8 +295,7 @@ class FeedsUI {
                 '</span>' +
                 '<br>' +
                 '<span style="font-size:15px;">' +
-                    //$descriptionItem.attr('title') +
-                    getEpisodeInfoFromDescription($descriptionItem.attr('description')) +
+                    getInfoFromDescription($obj.attr('description')) +
                 '</span>' +
                 '<br>' +
                 '<span style="font-size:13px;opacity:0.7;">' +
@@ -319,10 +338,13 @@ class FeedsUI {
                     e.preventDefault();
                     return;
                 }
-                playNow(this);
+                playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
             });
 
-            $obj.find('div').removeAttr('style');
+            $obj.find('div')
+                .not('.list-item-flag')
+                .removeAttr('style');
+
             $obj.css('grid-template-columns', '3fr 1fr 1fr 5em 5em 5em');
             
             $obj
@@ -330,7 +352,7 @@ class FeedsUI {
                 .css('height', height)
                 .stop()
                 .animate(
-                    {height: '2.7em'},
+                    {height: '2.86em'}, // 2.7em
                     300,
                     function () {
                         $obj.css('height', '');
@@ -340,9 +362,8 @@ class FeedsUI {
             
             $obj.find('.list-item-description')
                 .html(s_InfoIcon);
-            
-            $obj.find('.list-item-flag')
-                .css('background-color', '#4CAF50')
+                
+            $obj.find('.list-item-flag').css('display', '');
         }
     }
 
@@ -353,31 +374,29 @@ class FeedsUI {
             [
                 getBoldTextPart(episode.episodeTitle),
                 getSubTextPart(new Date(episode.pubDate).toLocaleString()),
-                getSubTextPart(allFeeds.getDurationFromDurationKey(episode)),
+                getSubTextPart(getDurationFromDurationKey(episode)),
                 getFlagPart('Done', 'white', '#4CAF50'),
                 getDescriptionPart(s_InfoIcon, episode.episodeDescription),
-                allNewEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? $('<div></div>').get(0) : getAddEpisodeButtonPart()
+                getAddEpisodeButtonPart(allArchiveEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? 'remove' : 'add')
             ],
             "3fr 1fr 1fr 5em 5em 5em"
         ), eLayout.row)
 
-        if (episodeIsAlreadyInNewEpisodes(episode.episodeUrl))
-            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[5])
 
-        if (player.isPlaying(episode.episodeUrl))
+        if (playerManager.isPlaying(episode.episodeUrl))
             ListElement.classList.add("select-episode")
 
         // NOTE: Set a episode item to "Done" if it is in the History file
-
-        if (getFileValue(getArchivedFilePath(), "episodeUrl", "episodeUrl", episode.episodeUrl) == null)
-            ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
+        
+        if (!allFeeds.getPlaybackDoneByEpisodeUrl(episode.episodeUrl))
+            $(ListElement).find('.list-item-flag').css('opacity', 0);
 
         $(ListElement).click(function(e) {
             if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
                 e.preventDefault();
                 return;
             }
-            playNow(this);
+            playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
         });
         ListElement.setAttribute("channel", episode.channelName);
         ListElement.setAttribute("feedUrl", episode.feedUrl);
@@ -403,64 +422,12 @@ class FeedsUI {
     }
 
     showLastNFeedElements(feed) {
-        if(!feed || !this.checkPageByFeedUrl(this.getFeedUrlByHeader()))
+        if(!feed || feed.length == 0 || !this.checkPageByFeedUrl(this.getFeedUrlByHeader()))
             return;
         
         this.setHeaderCountValue(feed.length);
         
-        let $list = this.getList();
-
-        let length = (feed.length < this.bufferSize ? feed.length : this.bufferSize);
-
-        for (let i = 0; i < length; i++) {
-            let episode = feed[i];
-            $list.append(this.getNewItemList(episode));
-        }
-
-        this.firstEpisodeDisplayed = 0;
-        this.lastEpisodeDisplayed = length - 1;
-        
-        this.appendShowMoreEpisodesButton();
-        this.prependShowMoreEpisodesButton();
-
-        if(length != feed.length)
-            this.getShowMoreEpisodesBottomElement().show();
-
-        setScrollPositionOnTop();
-    }
-
-    lastEpisodeIsDisplayed(feed) {
-        return (this.lastEpisodeDisplayed == feed.length - 1);
-    }
-
-    firstEpisodeIsDisplayed() {
-        return (this.firstEpisodeDisplayed == 0);
-    }
-
-    getShowMoreEpisodesHtml(text, className) {
-        if(!className)
-            className = '';
-        return '<div class="show-more-episodes-row ' + className + '" style="display:none;">' +
-                    '<span class="show-more-episodes-button">' +
-                        i18n.__(text) + 
-                    '</span>' +
-                '</div>';
-    }
-
-    getShowMoreEpisodesBottomHtml() {
-        return this.getShowMoreEpisodesHtml('Show more episodes', 'more-episodes-bottom');
-    }
-
-    getShowMoreEpisodesTopHtml() {
-        return this.getShowMoreEpisodesHtml('Show more recent episodes', 'more-episodes-top');
-    }
-
-    getShowMoreEpisodesBottomElement() {
-        return this.getList().find('.more-episodes-bottom');
-    }
-
-    getShowMoreEpisodesTopElement() {
-        return this.getList().find('.more-episodes-top');
+        this.showList(feed);
     }
 
     showOther10Elements(feed) {
@@ -499,27 +466,6 @@ class FeedsUI {
             i--;
         }
         this.firstEpisodeDisplayed = i + 1;
-    }
-
-    removeExtraPreviousElements() {
-        let nElement = this.getAllItemsList().length - this.bufferSize;
-        this.getAllItemsList()
-            .slice(0, nElement)
-            .remove();
-        this.firstEpisodeDisplayed += nElement;
-
-        this.getShowMoreEpisodesTopElement().show();
-    }
-
-    removeExtraNextElements() {
-        let nElement = this.bufferSize - this.getAllItemsList().length;
-        this.getAllItemsList()
-            .slice(nElement)
-            .remove();
-
-        this.lastEpisodeDisplayed += nElement;
-
-        this.getShowMoreEpisodesBottomElement().show();
     }
 
     appendShowMoreEpisodesButton() {
@@ -615,7 +561,9 @@ class FeedsUI {
 class Feeds {
     constructor() {
         this.load();
-        this.ui = new FeedsUI();
+        this.ui = new FeedsUI(this);
+        this.playback = new Playback();
+        this.lastFeedUrlToReload = null;
     }
 
     load() {
@@ -709,7 +657,15 @@ class Feeds {
     }
 
     getEpisode(feedUrl, i) {
+        if(i < 0 || i >= this.length(feedUrl))
+            return undefined;
         return this[feedUrl][i];
+    }
+
+    getEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
+        let feed = this[feedUrl];
+        let i = feed.map(e => e.episodeUrl).indexOf(episodeUrl);
+        return feed[i];
     }
 
     getLastEpisode(feedUrl) {
@@ -719,13 +675,13 @@ class Feeds {
     add(episode) {
         let indicator = this.unsafeAdd(episode);
         if(indicator) {
-            this.ui.add(episode);
+            //this.ui.add(episode);
             this.updateByIndicator(indicator);
             return true;
         }
         return false;
     }
-
+    
     unsafeAdd(episode) {
         let feedUrl = episode.feedUrl;
         let indicator = this.getIndicatorByFeedUrl(feedUrl);
@@ -741,38 +697,66 @@ class Feeds {
             this.index.push({feedUrl: feedUrl, indicator: indicator});
             this.updateIndex();
         }
-
+        /*
         let lastEpisode = this.getLastEpisode(feedUrl);
-        if(!lastEpisode || compareEpisodeDates(episode.pubDate, lastEpisode.pubDate) >= 0) {
+        if(!lastEpisode || compareEpisodeDates(episode, lastEpisode) >= 0) {
             this[feedUrl].unshift(episode);
-
+            if(checkDateIsInTheLastWeek(episode))
+                allNewEpisodes.add(episode);
             return indicator;
+        }
+        */
+        if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
+            let i = 0;
+            while(i < this.length() && compareEpisodeDates(this[feedUrl][i], episode) > 0)
+                i++;
+            this[feedUrl].splice(i, 0, episode);
+            this.ui.add(episode, i);
+
+            if(checkDateIsInTheLastWeek(episode))
+                allNewEpisodes.add(episode);
+            return indicator;
+        } 
+
+        return false;
+    }
+
+    initFeed(feedUrl) {
+        let indicator = this.getIndicatorByFeedUrl(feedUrl);
+        if(!indicator) {
+            indicator = this.getNewIndicator();
+
+            if (!fs.existsSync(this.getFeedPathByIndicator(indicator)))
+                fs.openSync(this.getFeedPathByIndicator(indicator), 'w');
+
+            let fileContent = ifExistsReadFile(this.getFeedPathByIndicator(indicator));
+            this[feedUrl] = JSON.parse(fileContent == '' || fileContent == 'undefined' ? "[]": fileContent);
+            
+            this.index.push({feedUrl: feedUrl, indicator: indicator});
+            this.updateIndex();
+        }
+        return indicator;
+    }
+
+    unsafeSet(feed) {
+        if(!feed[0])
+            return;
+        let feedUrl = feed[0].feedUrl;
+        if(this[feedUrl]) {
+            this[feedUrl] = feed;
+            return feedUrl;
         }
         return false;
     }
 
-    getDurationFromDurationKey(episode) {
-        let duration = parseFeedEpisodeDuration(episode.durationKey.split(":"));
+    set(feed) {
+        let feedUrl = this.unsafeSet(feed);
 
-        if (duration.hours == 0 && duration.minutes == 0) 
-            duration = "";
-        else
-            duration = duration.hours + "h " + duration.minutes + "min";
-        return duration;
-    }
-
-    toNewEpisodeObj(episode) {
-        return new NewEpisode(
-            episode.channelName,
-            episode.feedUrl,
-            episode.episodeTitle,
-            episode.episodeUrl,
-            episode.episodeType,
-            episode.episodeLength,
-            episode.episodeDescription,
-            this.getDurationFromDurationKey(episode),
-            episode.pubDate
-        )
+        if(feedUrl) {
+            this.updateByFeedUrl(feedUrl);
+            return feedUrl;
+        }
+        return false;
     }
 
     delete(feedUrl) {
@@ -784,6 +768,7 @@ class Feeds {
             this.index.splice(i, 1);
             this.updateIndex();
             console.log('successfully deleted ' + this.getFeedPathByIndicator(indicator));
+            this.playback.removeAllDataPodcast(feedUrl);
         } catch (err) {
             console.log('error in deleting ' + this.getFeedPathByIndicator(indicator));
         }
@@ -795,20 +780,23 @@ class Feeds {
                 return i;
         return -1
     }
-    
+
     setPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl, playbackPosition) {
-        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
-        if(i != -1) {
-            this[feedUrl][i].playbackPosition = playbackPosition;
-            this.updateByFeedUrl(feedUrl);
-        }
+        if(Boolean(this.getIndicatorByFeedUrl(feedUrl)))
+            this.playback.alwaysSetPosition(feedUrl, episodeUrl, playbackPosition);
     }
 
-    getPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl) {
-        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
-        if(i != -1)
-            return this[feedUrl][i].playbackPosition;
-        return undefined;
+    getPlaybackPositionByEpisodeUrl(episodeUrl) {
+        return this.playback.getPosition(episodeUrl);
+    }
+
+    setPlaybackDoneByEpisodeUrl(feedUrl, episodeUrl, done) {
+        if(Boolean(this.getIndicatorByFeedUrl(feedUrl)))
+            this.playback.alwaysSetDone(feedUrl, episodeUrl, done);
+    }
+
+    getPlaybackDoneByEpisodeUrl(episodeUrl) {
+        return this.playback.getDone(episodeUrl);
     }
 }
 

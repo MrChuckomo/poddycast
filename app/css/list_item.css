@@ -1,14 +1,16 @@
+/*
 .list-item-box-layout
 {
 
 }
+*/
 
 .list-item-row-layout
 {
     display: grid;
     grid-template-rows: 1fr;
     font-size: 14px;
-    height: 2.7em;
+    height: 2.86em; /*2.7em;*/
     border-bottom: 1px solid #EEE;
     padding: 0.5em;
     padding-left: 2em;
@@ -91,6 +93,6 @@
     background-color: #e5e5e5;
 }
 
-#list li[info-mode] svg{
+#list li[info-mode] svg {
     fill: #222;
 }
