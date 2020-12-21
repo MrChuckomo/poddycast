@@ -80,7 +80,7 @@
 }
 
 #content-right-player-img {
-    border: .5px solid #f0f0f0;
+    border: .5px solid #ddd;
 }
 
 #content-right-player-img[style] {
@@ -247,7 +247,7 @@ button#content-right-player-speed-indicator {
     {
         background-color: #FFF;
         text-align: center;
-        height: 59px;
+        height: 59.4px;
         display: grid;
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 100px 50px 50px 50px 70px 1fr 70px 100px;

@@ -608,9 +608,17 @@ h1 {
 */
 
 .list-item-row-layout > img {
-    border: .5px solid #f0f0f0;
+    border: .5px solid #ddd;
+}
+
+.select-episode > img {
+    border-color: transparent;
 }
 
 .podcast-entry-header > img {
-    border: .5px solid #f0f0f0;
+    border: .5px solid #ddd;
+}
+
+.grid-layout .podcast-entry-header > img {
+    border: none;
 }
