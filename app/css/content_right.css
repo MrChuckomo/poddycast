@@ -610,3 +610,7 @@ h1 {
 .list-item-row-layout > img {
     border: .5px solid #f0f0f0;
 }
+
+.podcast-entry-header > img {
+    border: .5px solid #f0f0f0;
+}

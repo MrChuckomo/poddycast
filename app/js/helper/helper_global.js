@@ -183,6 +183,7 @@ function init() {
         fs.mkdirSync(getSaveDirPath());
 
     loadPreferences();
+    darkMode();
     loadPlayerManager();
 
     loadFavoritePodcasts();
@@ -190,8 +191,6 @@ function init() {
     loadArchiveEpisodes();
     loadNewEpisodes();
     loadPlaylists();
-
-    darkMode();
 
     setSearchWithoutFocus()
 

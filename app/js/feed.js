@@ -113,13 +113,15 @@ function getDurationFromDurationKey(episode) {
 function readFeeds() {
     // TODO: create a new thread to read the feeds
     // Add animation to notify the user about fetching new episodes
-    $('#menu-refresh svg').addClass('is-refreshing');
-    $('#menu-refresh').off('click');
+    if(!allFavoritePodcasts.isEmpty()) {
+        $('#menu-refresh svg').addClass('is-refreshing');
+        $('#menu-refresh').off('click');
 
-    let podcasts = allFavoritePodcasts.getAll();
-    for (let i in podcasts) {
-        allFeeds.lastFeedUrlToReload = podcasts[i].feedUrl;
-        readFeedByFeedUrl(podcasts[i].feedUrl);
+        let podcasts = allFavoritePodcasts.getAll();
+        for (let i in podcasts) {
+            allFeeds.lastFeedUrlToReload = podcasts[i].feedUrl;
+            readFeedByFeedUrl(podcasts[i].feedUrl);
+        }
     }
 
     // Remove animation to notify the user about fetching new episodes.

@@ -260,6 +260,10 @@ svg.set-favorite
     border: none;
 }
 
+.podcast-entry-header > img {
+    border: none;
+}
+
 #content-right-player-img {
     border: none;
 }
