@@ -328,6 +328,14 @@ h1
         "ptitle";
 }
 
+/* Styles for Podcast Feed with broken URL */
+.grid-layout .podcast-entry .podcast-entry-header .podcast-feed-url-broken {
+    border: 2px solid red;
+}
+
+/* Styles for Podcast Feed with working URL */
+.grid-layout .podcast-entry .podcast-entry-header .podcast-feed-url-working {}
+
 .grid-layout .podcast-entry .podcast-entry-header img
 {
     grid-area: pimage;
