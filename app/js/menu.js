@@ -138,6 +138,29 @@ function showFavorites()
             HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
             HeaderElement.setAttribute("onclick", "showAllEpisodes(this)")
 
+            // Display feedUrlStatus indicator
+            if (JsonContent[i].feedUrlStatus) {
+                if (JsonContent[i].feedUrlStatus === 500) {
+                    // Display broken URL icon
+                    if (HeaderElement.getElementsByTagName("img")[0].classList && !HeaderElement.getElementsByTagName("img")[0].classList.contains('podcast-feed-url-broken')) {
+                        HeaderElement.getElementsByTagName("img")[0].classList.add('podcast-feed-url-broken')
+                    }
+
+                    if (HeaderElement.getElementsByTagName("img")[0].classList && HeaderElement.getElementsByTagName("img")[0].classList.contains('podcast-feed-url-working')) {
+                        HeaderElement.getElementsByTagName("img")[0].classList.remove('podcast-feed-url-working')
+                    }
+                } else {
+                    // Display checked/working icon
+                    if (HeaderElement.getElementsByTagName("img")[0].classList && !HeaderElement.getElementsByTagName("img")[0].classList.contains('podcast-feed-url-working')) {
+                        HeaderElement.getElementsByTagName("img")[0].classList.add('podcast-feed-url-working')
+                    }
+
+                    if (HeaderElement.getElementsByTagName("img")[0].classList && HeaderElement.getElementsByTagName("img")[0].classList.contains('podcast-feed-url-broken')) {
+                        HeaderElement.getElementsByTagName("img")[0].classList.remove('podcast-feed-url-broken')
+                    }
+                }
+            }
+
             List.append(ListElement)
         }
     }
