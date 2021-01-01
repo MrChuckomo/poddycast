@@ -1,3 +1,4 @@
+'use strict'
 
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
@@ -121,7 +122,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     //         getSubTextPart((_TailElement == undefined) ? "" : _TailElement),
     //         getTextPart(_Subtitle),
     //         getIconButtonPart(_IconElement)
-    //     ], 
+    //     ],
     //     "5em 1fr 6em 1fr 5em"
     // ), eLayout.row)
     return ListElement

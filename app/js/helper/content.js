@@ -1,10 +1,12 @@
+'use strict'
+
 function CContentHelper ()
 {
     // ---------------------------------------------------------------------------------------------------------------------
     // RIGHT COLUMN
     // ---------------------------------------------------------------------------------------------------------------------
 
-    this.clearContent = function () 
+    this.clearContent = function ()
     {
         document.getElementById("list").innerHTML = ""
     }
@@ -19,7 +21,7 @@ function CContentHelper ()
         }
     }
 
-    this.setHeader = function (_Title) 
+    this.setHeader = function (_Title)
     {
         var Header = document.getElementById("content-right").getElementsByTagName("h1")[0]
 

@@ -1,3 +1,4 @@
+'use strict'
 
 function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl)
 {

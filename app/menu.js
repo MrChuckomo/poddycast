@@ -1,3 +1,5 @@
+'use strict'
+
 const { app, Menu } = require('electron').remote
 
 const template =

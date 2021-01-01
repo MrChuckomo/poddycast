@@ -1,3 +1,5 @@
+'use strict'
+
 var eLayout =
 {
     row: 'list-item-row-layout',

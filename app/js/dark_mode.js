@@ -1,3 +1,5 @@
+'use strict'
+
 const {app, Menu} = require('electron').remote
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -45,7 +47,7 @@ function getDarkModeMenuItem(_ParentMenu)
 
     for (var i = 0; i < Menu.getApplicationMenu().items.length; i++)
     {
-        appMenuItem = Menu.getApplicationMenu().items[i]
+        var appMenuItem = Menu.getApplicationMenu().items[i]
 
         for (var j = 0; j < appMenuItem.submenu.items.length; j++)
         {

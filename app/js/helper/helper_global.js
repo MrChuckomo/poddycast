@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs')
 const os = require('os')
 
@@ -117,7 +119,7 @@ function upgradeSettingsFile()
 {
     var oldFilePath = getSettingsFilePath()
     var newFilePath = getSaveFilePath()
-    
+
     // sync addToInbox values from old settings file
     if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, "utf-8") != "")
     {
@@ -350,8 +352,8 @@ function isProxySet()
 
 /**
  * @deprecated No longer needed after merging of settings and favorites files.
- * @param {string} _PodcastName 
- * @param {string} _FeedUrl 
+ * @param {string} _PodcastName
+ * @param {string} _FeedUrl
  */
 function addToSettings(_PodcastName, _FeedUrl)
 {
@@ -386,7 +388,7 @@ function addToSettings(_PodcastName, _FeedUrl)
 
 /**
  * @deprecated Replaced with isAddedToInbox to improve usage clarity
- * @param {*} _FeedUrl 
+ * @param {*} _FeedUrl
  */
 function getSettings(_FeedUrl)
 {
@@ -456,8 +458,8 @@ function isInSettings(_FeedUrl)
 
 /**
  * @deprecated Replaced with setIsAddedToInbox to improve usage clarity
- * @param {*} _FeedUrl 
- * @param {*} _ToInbox 
+ * @param {*} _FeedUrl
+ * @param {*} _ToInbox
  */
 function changeSettings(_FeedUrl, _ToInbox)
 {

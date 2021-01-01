@@ -1,3 +1,5 @@
+'use strict'
+
 function translate(){
 
   changeByClass("new-episodes", i18n.__('New Episodes'));

@@ -1,3 +1,5 @@
+'use strict'
+
 const { BrowserWindow } = require('electron').remote
 
 const { systemPreferences } = require('electron')
@@ -364,7 +366,7 @@ function saveSpeed(_Value)
     setPreference('playspeed', _Value)
 }
 
-function setPlaybackVolume(_Self) 
+function setPlaybackVolume(_Self)
 {
     var Player = document.getElementById("player")
     var VolumeFill = document.getElementById("volume-fill")

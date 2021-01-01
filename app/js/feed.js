@@ -1,3 +1,5 @@
+'use strict'
+
 var CContentHelper = require('./js/helper/content')
 var CPlayer        = require('./js/helper/player')
 
@@ -68,8 +70,8 @@ function saveLatestEpisode(_Content, _eRequest, _Options)
             {
                 // NOTE: Parse a real feed and just access the last element
 
-                Parser = new DOMParser();
-                xmlDoc = Parser.parseFromString(_Content,"text/xml");
+                var Parser = new DOMParser();
+                var xmlDoc = Parser.parseFromString(_Content,"text/xml");
 
                 var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
                 var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
@@ -288,8 +290,8 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed)
 
 function processEpisodes(_Content)
 {
-    parser = new DOMParser();
-    xmlDoc = parser.parseFromString(_Content, "text/xml");
+    var parser = new DOMParser();
+    var xmlDoc = parser.parseFromString(_Content, "text/xml");
 
     var ChannelName = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
     var Artwork     = getValueFromFile(getSaveFilePath, "artworkUrl60", "collectionName", ChannelName)
