@@ -52,26 +52,6 @@ class NewEpisodesUI extends ListUI {
             super.removeByEpisodeUrl(episodeUrl);
     }
 
-    /*
-    showAll() {
-        if(this.dataObject.isEmpty())
-            this.showNothingToShow();
-
-        let $list = this.getList();
-        for (let i in this.dataObject.episodes) {
-            try {
-            let episode = this.dataObject.get(i);
-            if(!checkDateIsInTheLastWeek(episode))
-                this.dataObject.removeByEpisodeUrl(episode.episodeUrl);
-            else if(i < this.bufferSize)
-                $list.append(this.getNewItemList(this.dataObject.get(i)));
-            } catch(err) {
-                console.log(err);
-            }
-        }
-    }
-    */
-
     showAll() {
         if(this.dataObject.isEmpty())
             this.showNothingToShow();
@@ -99,6 +79,8 @@ class NewEpisodesUI extends ListUI {
     }
 
     convertItemIntoInfoItemList(obj) {
+        let episode = _(obj);
+
         let $obj = $(obj);
         $obj.attr('info-mode', '');
         let $descriptionItem = $obj.find('.list-item-description');
@@ -107,35 +89,35 @@ class NewEpisodesUI extends ListUI {
         $obj.find('div').not(".list-item-description").css('display', 'none');
         $obj.css('grid-template-columns', '5em 1fr 5em 5em');
         $descriptionItem.before(
-            '<span id="info-item-list" style="opacity: 0;">' + 
-                '<br>' +
-                '<span style="font-size:16px;font-weight:bold;">' +
-                    $obj.attr('title') +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;">' +
-                    $obj.attr('channel') +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    $obj.find('.list-item-sub-text').html() +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:15px;">' +
-                    getInfoFromDescription($obj.attr('description')) +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    new Date($obj.attr('pubdate')).toLocaleString() +
-                '</span>' +
-                '<br>' +
-                '<br>' +
-            '</span>'
+            `<span id="info-item-list" style="opacity: 0;"> 
+                <br>
+                <span class="info-title">
+                    ${episode.episodeTitle}
+                </span>
+                <br>
+                <span class="info-channel">
+                    ${episode.channelName}
+                </span>
+                <br>
+                <span class="info-duration">
+                    ${$obj.find('.list-item-sub-text').html()}
+                </span>
+                <br>
+                <span class="info-description">
+                    ${getInfoFromDescription(episode.episodeDescription)}
+                </span>
+                <br>
+                <span class="info-pubdate">
+                    ${new Date(episode.pubDate).toLocaleString()}
+                </span>
+                <br>
+                <br>
+            </span>`
         )
         
         $obj.find('#info-item-list')
             .stop()
-            .animate({opacity: 1.0}, 500)
+            .animate({opacity: 1.0}, 500);
         
         $descriptionItem.html(s_ArrowUpIcon);
         
@@ -171,11 +153,13 @@ class NewEpisodesUI extends ListUI {
                     e.preventDefault();
                     return;
                 }
-                playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+                playerManager.startsPlaying(_(this));
             });
         
-            $obj.find('div').removeAttr('style');
-            $obj.css('grid-template-columns', '5em 1fr 6em 1fr 5em 5em');
+            $obj.find('div')
+                .not('.list-item-flag')
+                .removeAttr('style');
+            $obj.css('grid-template-columns', '5em 1fr 6em 1fr 6em 5em 5em');
 
             $obj.find('img')
                 .stop()
@@ -199,13 +183,17 @@ class NewEpisodesUI extends ListUI {
             
             $obj.find('.list-item-description')
                 .html(s_InfoIcon);
+
+            
+            $obj.find('.list-item-flag')
+                .css('display', '');
         }
     }
 
     getNewItemList(newEpisode) {
         let episode = getInfoEpisodeByObj(newEpisode);
 
-        let Artwork = getBestArtworkUrl(episode.feedUrl);
+        let Artwork = episode.artwork;
         let duration = getDurationFromDurationKey(episode);
         
         let ListElement = buildListItem(new cListElement (
@@ -214,31 +202,24 @@ class NewEpisodesUI extends ListUI {
                 getBoldTextPart(episode.episodeTitle),
                 getSubTextPart(duration),
                 getTextPart(episode.channelName),
+                getProgressionFlagPart(episode.episodeUrl),
                 getDescriptionPart(s_InfoIcon, episode.episodeDescription),
                 getAddEpisodeButtonPart(allArchiveEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? 'remove' : 'add')
             ],
-            "5em 1fr 6em 1fr 5em 5em"
+            "5em 1fr 6em 1fr 6em 5em 5em"
         ), eLayout.row)
 
         $(ListElement).click(function(e) {
-            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
+            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon') || $(e.target).hasClass('list-item-text')) {
                 e.preventDefault();
                 return;
             }
-            playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+            playerManager.startsPlaying(_(this));
         });
 
-        ListElement.setAttribute("channel", episode.channelName);
-        ListElement.setAttribute("feedUrl", episode.feedUrl);
-        ListElement.setAttribute("title", episode.episodeTitle);
-        ListElement.setAttribute("type", episode.episodeType);
-        ListElement.setAttribute("url", episode.episodeUrl);
-        ListElement.setAttribute("length", episode.episodeLength);
-        ListElement.setAttribute("durationKey", episode.durationKey);
-        ListElement.setAttribute("description", episode.episodeDescription);
-        ListElement.setAttribute("artworkUrl", Artwork);
-        ListElement.setAttribute("pubDate", episode.pubDate);
-
+        $(ListElement).data(episode);
+        $(ListElement).attr('url', episode.episodeUrl);
+        
         if (playerManager.isPlaying(episode.episodeUrl))
             ListElement.classList.add("select-episode")
         

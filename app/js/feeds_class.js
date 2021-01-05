@@ -30,29 +30,43 @@ class FeedsUI extends ListUI {
         return $('.settings .settings-header .description-header');
     }
 
+    setHeaderArtistContent(artistName) {
+        let $headerArtist = allFeeds.ui.getHeaderArtist().get(0);
+        if($headerArtist && $headerArtist.innerHTML.trim() != artistName)
+            $headerArtist.innerHTML = artistName;
+    }
+
+    setHeaderDescriptionContent(description) {
+        let $headerDescription = allFeeds.ui.getHeaderDescription().get(0);
+        if($headerDescription && $headerDescription.innerHTML.trim() != description)
+            $headerDescription.innerHTML = description;
+    }
+
     setHeaderCountValue(n) {
         this.getHeaderCount().get(0).innerHTML = n;
     }
 
-    showHeader(feedUrl) {
-        this.appendHeaderSection(feedUrl);
+    showHeader(podcast) {
+        if(!(podcast instanceof Object))
+            podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
 
-        let Artwork = getBestArtworkUrl(feedUrl);
+        this.appendHeaderSection(podcast);
+
+        let Artwork = podcast.data.artworkUrl; // getBestArtworkUrl(feedUrl);
 
         //let feed = allFeeds.getFeedPodcast(feedUrl);
-        let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
 
         // NOTE: set settings information
         this.getHeaderImage().get(0).src = Artwork;
         this.getHeaderTitle().get(0).innerHTML = (podcast ? podcast.data.collectionName : 'null');
         this.getHeaderArtist().get(0).innerHTML = (podcast ? podcast.data.artistName : 'null');
-        this.getHeaderCount().get(0).innerHTML = (podcast ? '0' : '-1'); //(feed ? feed.length : (podcast ? '0' : '-1'));
+        this.getHeaderCount().get(0).innerHTML = (podcast ? '0' : '-1'); 
         this.getHeaderDescription().get(0).innerHTML = getInfoFromDescription(podcast ? podcast.data.description : '');
     }
 
-    appendHeaderSection(_Feed) {
+    appendHeaderSection(podcast) {
         if(this.getHeader().get(0) == undefined) {
-            // NOTE: settings area in front of a podcast episode list
+            let feedUrl = podcast.feedUrl
 
             var RightContent = document.getElementById("list")
 
@@ -62,22 +76,19 @@ class FeedsUI extends ListUI {
             var PodcastImage = document.createElement("img")
             PodcastImage.classList.add("settings-image")
 
-            //var podcastName = document.createElement("div")
-            //podcastName.classList.add("settings-header")
-
             var $settingsHeader = $(
-                '<div class="settings-header">' +
-                    '<span class="title-header"></span><br>' +
-                    '<span class="artist-header" style="height: 0;"></span>' +
-                    '<span class="count-header">' +
-                        '<span class="settings-count">-</span>' +
-                        ' ' + i18n.__('Episodes').toLowerCase() +
-                    '</span><br>' +
-                    '<span class="description-header" style="height:24px"></span>' +
-                    '<span class="description-other">' +
-                        i18n.__('Other') +
-                    '</span>' +
-                '</div>'
+                `<div class="settings-header">
+                    <span class="title-header"></span><br>
+                    <span class="artist-header" style="height: 0;"></span>
+                    <span class="count-header">
+                        <span class="settings-count">-</span>
+                        ${i18n.__('Episodes').toLowerCase()}
+                    </span><br>
+                    <span class="description-header" style="height:24px"></span>
+                    <span class="description-other">
+                        ${i18n.__('Other')}
+                    </span>
+                </div>`
             );
 
             $settingsHeader.find('.description-other').click(function() {
@@ -89,7 +100,7 @@ class FeedsUI extends ListUI {
                 let initialHeightAH = $artistHeader.css('height');
                 let finalHeightAH = null;
 
-                if($(this).html() == i18n.__('Other')) {
+                if($(this).html().trim() == i18n.__('Other')) {
                     $descriptionHeader.css('height', 'auto');
                     finalHeightDH = $descriptionHeader.css('height');
                     $descriptionHeader.css('height', initialHeightDH);
@@ -98,7 +109,7 @@ class FeedsUI extends ListUI {
                     $artistHeader.css('height', 'auto');
                     finalHeightAH = $artistHeader.css('height');
                     $artistHeader.css('height', initialHeightAH);
-                } else {
+                } else { 
                     finalHeightDH = '24px';
 
                     finalHeightAH = '0';
@@ -120,30 +131,74 @@ class FeedsUI extends ListUI {
                     .stop()
                     .animate(
                         {height: finalHeightAH},
-                        300
+                        300,
+                        () => {
+                            if(!($(this).html() == i18n.__('Other'))) 
+                                $artistHeader.attr('style', '');
+                        }
                     );
             });
 
-            //var EpisodeCount = document.createElement("div")
-            //EpisodeCount.classList.add("settings-count")
+            var Buttons = document.createElement("div")
+            Buttons.classList.add("settings-buttons")
 
             var MoreElement = document.createElement("div")
-            MoreElement.innerHTML = s_MoreOptionIcon
-            MoreElement.classList.add("settings-unsubscribe")
+            MoreElement.innerHTML = s_BackIcon; // s_MoreOptionIcon
 
-            // NOTE: set context menu
+            var FavoriteButton = document.createElement("div")
+            
+            var HeartButton = null;
+            if (isAlreadyFavorite(podcast.feedUrl))
+                HeartButton = getFullHeartButton(podcast);
+            else
+                HeartButton = getHeartButton(podcast);
+            
+            FavoriteButton.append(HeartButton);
 
-            this.setPodcastHeaderMenu(MoreElement, _Feed)
+            Buttons.append(MoreElement)
+            Buttons.append(FavoriteButton)
 
-            // NOTE: build layout
+
+            // this.setPodcastHeaderMenu(MoreElement, feedUrl)
+            $(MoreElement).click(function () {
+                let page = $('#content-right-header').find('h1').html();
+                if(page.includes('<span>'))
+                    page = $(page).html();
+                else {
+                    let $playlistElement = allPlaylist.ui.getByName(page).get(0);
+                    if($playlistElement)
+                        showPlaylistContent($playlistElement);
+                    else
+                        showNewEpisodesPage();
+                    return;
+                }
+                
+                switch(page) {
+                    case i18n.__('New Episodes'):
+                        showNewEpisodesPage();
+                        break;
+                    case i18n.__('Archive'):
+                        showArchivePage();
+                        break;
+                    case i18n.__('Favorites'):
+                        showFavoritesPage();
+                        break;
+                    case i18n.__('Search'):
+                        let results = $('#content-right-header span').data().results;
+                        if(results)
+                            showSearchList(results);
+                        else
+                            showNewEpisodesPage();
+                        break;
+                    default:
+                        showNewEpisodesPage();
+                }
+            })
 
             SettingsDiv.append(PodcastImage)
-            //SettingsDiv.append(podcastName)
             SettingsDiv.append($settingsHeader.get(0))
-            //SettingsDiv.append(EpisodeCount)
-            SettingsDiv.append(MoreElement)
+            SettingsDiv.append(Buttons)
 
-            let podcast = allFavoritePodcasts.getByFeedUrl(_Feed);
             if(podcast)
                 $(SettingsDiv).attr({
                     collectionName: podcast.data.collectionName,
@@ -186,11 +241,6 @@ class FeedsUI extends ListUI {
         ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: !getSettings(_Feed), click(self) {
             changeSettings(_Feed, !self.checked);
         }}))
-        ContextMenu.append(new MenuItem({type: 'separator'}))
-        ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
-            if (_Feed != null)
-                unsubscribeContextMenu(_Feed);
-        }}))
 
         _Object.addEventListener('click', (_Event) => {
             _Event.preventDefault()
@@ -199,13 +249,18 @@ class FeedsUI extends ListUI {
 
     }
 
+    getData() { 
+        return _(this.getHeader()).feed;
+    }
+
+    setData(data) {
+        if(this.checkPageByFeedUrl(data[0].feedUrl))
+            this.getHeader().data({feed: data});
+    }
+
 /*
  * PAGE
  */
-
-    isFavoritesPage() {
-        return (this.getPageType() == 'favorites');
-    }
 
     getInfoFeedView() {
         let $header = this.getHeader();
@@ -240,7 +295,7 @@ class FeedsUI extends ListUI {
 
     checkPageByFeedUrl(feedUrl) {
         let infoFeed = this.getInfoFeedView();
-        return (this.isFavoritesPage() && infoFeed && infoFeed.feedUrl == feedUrl); 
+        return (infoFeed && infoFeed.feedUrl == feedUrl); 
     }   
 
 /*
@@ -257,7 +312,9 @@ class FeedsUI extends ListUI {
         this.updateItemCount(episode.feedUrl);
         if(this.checkPageByFeedUrl(episode.feedUrl)) {
             if(i == undefined)
-                i = this.dataObject[episode.feedUrl].indexOf(episode);
+                i = this.dataObject.findEpisodeByEpisodeUrl(episode.feedUrl, episode.episodeUrl);
+            this.getData().splice(i, 0, episode)
+            
             super.add(episode, i);
         }
     }
@@ -265,6 +322,7 @@ class FeedsUI extends ListUI {
     remove(episode) {
         this.updateItemCount(episode.feedUrl);
         if(this.checkPageByFeedUrl(episode.feedUrl)) {
+            this.setData(this.getData().splice(this.getData().indexOf(episode), 1));
             super.removeByEpisodeUrl(episode.episodeUrl, this.dataObject[episode.feedUrl]);
         }
     }
@@ -276,6 +334,8 @@ class FeedsUI extends ListUI {
     }
 
     convertItemIntoInfoItemList(obj) {
+        let episode = _(obj);
+
         let $obj = $(obj);
         $obj.attr('info-mode', '');
         let $descriptionItem = $obj.find('.list-item-description');
@@ -284,26 +344,26 @@ class FeedsUI extends ListUI {
         $obj.find('div').not(".list-item-description").css('display', 'none');
         $obj.css('grid-template-columns', '1fr 5em 5em');
         $descriptionItem.before(
-            '<span id="info-item-list" style="opacity: 0;">' + 
-                '<br>' +
-                '<span style="font-size:16px;font-weight:bold;">' +
-                    $obj.attr('title') +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    $obj.find('.list-item-sub-text').get(1).innerHTML +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:15px;">' +
-                    getInfoFromDescription($obj.attr('description')) +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    $obj.find('.list-item-sub-text').get(0).innerHTML +
-                '</span>' +
-                '<br>' +
-                '<br>' +
-            '</span>'
+            `<span id="info-item-list" style="opacity: 0;">
+                <br>
+                <span class="info-title">
+                    ${episode.episodeTitle}
+                </span>
+                <br>
+                <span class="info-duration">
+                    ${$obj.find('.list-item-sub-text').get(1).innerHTML}
+                </span>
+                <br>
+                <span class="info-description">
+                    ${getInfoFromDescription(episode.episodeDescription)}
+                </span>
+                <br>
+                <span class="info-pubdate">
+                    ${$obj.find('.list-item-sub-text').get(0).innerHTML}
+                </span>
+                <br>
+                <br>
+            </span>`
         );
         
         $obj.find('#info-item-list')
@@ -338,14 +398,14 @@ class FeedsUI extends ListUI {
                     e.preventDefault();
                     return;
                 }
-                playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+                playerManager.startsPlaying(_(this));
             });
 
             $obj.find('div')
                 .not('.list-item-flag')
                 .removeAttr('style');
 
-            $obj.css('grid-template-columns', '3fr 1fr 1fr 5em 5em 5em');
+            $obj.css('grid-template-columns', '3fr 1fr 1fr 6em 5em 5em');
             
             $obj
                 .css('background-color', '')
@@ -368,18 +428,16 @@ class FeedsUI extends ListUI {
     }
 
     getNewItemList(episode) {
-        let Artwork = this.getArtworkSrcFromView();
-
         let ListElement = buildListItem(new cListElement(
             [
                 getBoldTextPart(episode.episodeTitle),
                 getSubTextPart(new Date(episode.pubDate).toLocaleString()),
                 getSubTextPart(getDurationFromDurationKey(episode)),
-                getFlagPart('Done', 'white', '#4CAF50'),
+                getProgressionFlagPart(episode.episodeUrl), //getFlagPart('Done', 'white', '#4CAF50'),
                 getDescriptionPart(s_InfoIcon, episode.episodeDescription),
                 getAddEpisodeButtonPart(allArchiveEpisodes.findByEpisodeUrl(episode.episodeUrl) != -1 ? 'remove' : 'add')
             ],
-            "3fr 1fr 1fr 5em 5em 5em"
+            "3fr 1fr 1fr 6em 5em 5em"
         ), eLayout.row)
 
 
@@ -388,26 +446,19 @@ class FeedsUI extends ListUI {
 
         // NOTE: Set a episode item to "Done" if it is in the History file
         
-        if (!allFeeds.getPlaybackDoneByEpisodeUrl(episode.episodeUrl))
-            $(ListElement).find('.list-item-flag').css('opacity', 0);
+        // if (!allFeeds.getPlaybackDoneByEpisodeUrl(episode.episodeUrl))
+        //     $(ListElement).find('.list-item-flag').css('opacity', 0);
 
-        $(ListElement).click(function(e) {
-            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
+        $(ListElement).click(function(e) { 
+            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon') || $(e.target).hasClass('list-item-text')) {
                 e.preventDefault();
                 return;
             }
-            playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+            playerManager.startsPlaying(_(this));
         });
-        ListElement.setAttribute("channel", episode.channelName);
-        ListElement.setAttribute("feedUrl", episode.feedUrl);
-        ListElement.setAttribute("title", episode.episodeTitle);
-        ListElement.setAttribute("type", episode.episodeType);
-        ListElement.setAttribute("url", episode.episodeUrl);
-        ListElement.setAttribute("length", episode.episodeLength);
-        ListElement.setAttribute("durationKey", episode.durationKey);
-        ListElement.setAttribute("description", episode.episodeDescription);
-        ListElement.setAttribute("artworkUrl", Artwork);
-        ListElement.setAttribute("pubDate", episode.pubDate);
+
+        $(ListElement).data(episode);
+        $(ListElement).attr('url', episode.episodeUrl);
 
         $(ListElement).find('.list-item-description').click(() => {
             if($(ListElement).is('[info-mode]'))
@@ -422,11 +473,20 @@ class FeedsUI extends ListUI {
     }
 
     showLastNFeedElements(feed) {
-        if(!feed || feed.length == 0 || !this.checkPageByFeedUrl(this.getFeedUrlByHeader()))
+        //if(!feed || feed.length == 0 || !this.checkPageByFeedUrl(this.getFeedUrlByHeader()) || this.getAllItemsList().get(0))
+        if(!feed || 
+            feed.length == 0 || 
+            !this.checkPageByFeedUrl(feed[0].feedUrl) || 
+            this.getAllItemsList().get(0) ||
+            this.getShowMoreEpisodesBottomElement().get(0) ||
+            this.getShowMoreEpisodesTopElement().get(0))
             return;
         
+        clearMenuSelection();
+        //removeContentRightHeader();
         this.setHeaderCountValue(feed.length);
         
+        this.setData(feed);
         this.showList(feed);
     }
 
@@ -476,8 +536,7 @@ class FeedsUI extends ListUI {
             let $button = obj.getList().find('.more-episodes-bottom').find('.show-more-episodes-button');
             $button.off('click');
             
-            let feedUrl = obj.getFeedUrlByHeader();
-            let feed = allFeeds.getFeedPodcast(feedUrl);
+            let feed = obj.getData();
 
             obj.showOther10Elements(feed);
             obj.removeExtraPreviousElements();
@@ -518,8 +577,7 @@ class FeedsUI extends ListUI {
             let $button = obj.getList().find('.more-episodes-top').find('.show-more-episodes-button');
             $button.off('click');
             
-            let feedUrl = obj.getFeedUrlByHeader();
-            let feed = allFeeds.getFeedPodcast(feedUrl);
+            let feed = obj.getData();
 
             obj.showsPrevious10Elements(feed);
             let timeout = 130 * (obj.getAllItemsList().length - obj.bufferSize);
@@ -662,16 +720,26 @@ class Feeds {
         return this[feedUrl][i];
     }
 
-    getEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
+    findEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
         let feed = this[feedUrl];
-        let i = feed.map(e => e.episodeUrl).indexOf(episodeUrl);
-        return feed[i];
+        if(feed != undefined) {
+            let i = feed.map(e => e.episodeUrl).indexOf(episodeUrl);
+            return i;
+        }
+        return -1;
+    }
+
+    getEpisodeByEpisodeUrl(feedUrl, episodeUrl) {
+        let i = this.findEpisodeByEpisodeUrl(feedUrl, episodeUrl);
+        if(i != -1) 
+            return this[feedUrl][i];
+        return undefined;
     }
 
     getLastEpisode(feedUrl) {
         return this.getEpisode(feedUrl, 0);
     }
-
+/*
     add(episode) {
         let indicator = this.unsafeAdd(episode);
         if(indicator) {
@@ -705,7 +773,7 @@ class Feeds {
                 allNewEpisodes.add(episode);
             return indicator;
         }
-        */
+        *//*
         if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
             let i = 0;
             while(i < this.length() && compareEpisodeDates(this[feedUrl][i], episode) > 0)
@@ -720,7 +788,7 @@ class Feeds {
 
         return false;
     }
-
+*/
     initFeed(feedUrl) {
         let indicator = this.getIndicatorByFeedUrl(feedUrl);
         if(!indicator) {
@@ -768,7 +836,7 @@ class Feeds {
             this.index.splice(i, 1);
             this.updateIndex();
             console.log('successfully deleted ' + this.getFeedPathByIndicator(indicator));
-            this.playback.removeAllDataPodcast(feedUrl);
+            //this.playback.removeAllDataPodcast(feedUrl);
         } catch (err) {
             console.log('error in deleting ' + this.getFeedPathByIndicator(indicator));
         }
@@ -781,9 +849,9 @@ class Feeds {
         return -1
     }
 
-    setPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl, playbackPosition) {
-        if(Boolean(this.getIndicatorByFeedUrl(feedUrl)))
-            this.playback.alwaysSetPosition(feedUrl, episodeUrl, playbackPosition);
+    setPlaybackPositionByEpisodeUrl(feedUrl, episodeUrl, playbackPosition, duration) {
+        //if(Boolean(this.getIndicatorByFeedUrl(feedUrl)))
+            this.playback.alwaysSetPositionAndDuration(feedUrl, episodeUrl, playbackPosition, duration);
     }
 
     getPlaybackPositionByEpisodeUrl(episodeUrl) {
@@ -791,7 +859,7 @@ class Feeds {
     }
 
     setPlaybackDoneByEpisodeUrl(feedUrl, episodeUrl, done) {
-        if(Boolean(this.getIndicatorByFeedUrl(feedUrl)))
+        //if(this.playback.exists(episodeUrl) || Boolean(this.getIndicatorByFeedUrl(feedUrl)))
             this.playback.alwaysSetDone(feedUrl, episodeUrl, done);
     }
 

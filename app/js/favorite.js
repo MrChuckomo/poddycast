@@ -1,24 +1,5 @@
 var allFavoritePodcasts = null;
 
-class Podcast {
-    constructor(artistName, collectionName, artworkUrl, feedUrl, description) {
-        this.feedUrl = feedUrl;
-        
-        this.data = {
-            artistName: artistName,
-            collectionName: collectionName,
-            artworkUrl: artworkUrl,
-            description: (description ? description : '')
-        };
-
-        this.excludeFromNewEpisodes = false;
-    }
-
-    isValid() {
-        return (this.data.artistName && this.data.collectionName && this.feedUrl);
-    }
-}
-
 class FavoritePodcastsUI {
     constructor() {
     }
@@ -102,6 +83,10 @@ class FavoritePodcasts {
     getAll() {
         return this.podcasts;
     }
+
+    exists(feedUrl) {
+        return Boolean(this.getByFeedUrl(feedUrl));
+    }
     
     findByFeedUrl(feedUrl) {
         for(let i in this.podcasts)
@@ -115,11 +100,11 @@ class FavoritePodcasts {
         return (i != -1 ? this.podcasts[i] : undefined);
     }
 
-    setData(feedUrl, data) {
-        let i = this.findByFeedUrl(feedUrl);
+    setData(podcast) {
+        let i = this.findByFeedUrl(podcast.feedUrl);
         if(i != -1) {
             let oldArtwork = this.podcasts[i].data.artworkUrl;
-            this.podcasts[i].data = data;
+            this.podcasts[i].data = {...podcast.data};
             this.podcasts[i].data.artworkUrl = oldArtwork;
             this.update();
             return true;
@@ -136,7 +121,14 @@ class FavoritePodcasts {
             this.podcasts.splice(i, 0, podcast);
             this.update();
             this.ui.add();
-            readFeedByFeedUrl(podcast.feedUrl);
+
+            let feed = null;
+            if(allFeeds.ui.checkPageByFeedUrl(podcast.feedUrl) && (feed = allFeeds.ui.getData())) {
+                allFeeds.initFeed(podcast.feedUrl); 
+                allFeeds.set(feed);
+                addEpisodesFromTheLastWeek(podcast.feedUrl, feed);
+            } else
+                readFeedByFeedUrl(podcast.feedUrl);
             return podcast;
         }
         return null;
@@ -148,7 +140,7 @@ class FavoritePodcasts {
             this.podcasts.splice(i, 1);
             this.update();
             allNewEpisodes.removePodcastEpisodes(feedUrl);
-            allArchiveEpisodes.removePodcastEpisodes(feedUrl);
+            //allArchiveEpisodes.removePodcastEpisodes(feedUrl);
             allPlaylist.memory.removePodcastByFeedUrlFromAllPlaylists(feedUrl);
             allFeeds.delete(feedUrl);
 
@@ -194,7 +186,7 @@ function setFavorite(_Self, _ArtistName, _CollectioName, _Artwork, _FeedUrl, des
     let $podcastRow = $(_Self).parent().parent();
     $(_Self).parent().remove();
     $podcastRow.append(getFullHeartButton(podcast));
-
+    console.log(podcast)
     allFavoritePodcasts.add(podcast);
 
 }

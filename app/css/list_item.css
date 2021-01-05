@@ -64,6 +64,25 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+
+    --color-flag: #000;
+    --bk-color1-flag: #bbb;
+    --bk-color2-flag: #ddd;
+    --percentage: 0%;
+
+    background: linear-gradient(to right, var(--bk-color1-flag) 0%, 
+                                          var(--bk-color1-flag) var(--percentage), 
+                                          var(--bk-color2-flag) var(--percentage), 
+                                          var(--bk-color2-flag) 100%);
+    font-weight: bold;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    margin-left: 5px;
+}
+
+.select-episode .list-item-flag {
+    --bk-color1-flag: #296bda; /* rgb(8, 102, 224); */
+    --bk-color2-flag: rgb(29, 75, 228);
 }
 
 .list-item-text,
@@ -77,6 +96,10 @@
     align-self: center;
     padding-right: 0.5em;
     padding-left: 0.5em;
+}
+
+.list-item-text {
+    max-width: fit-content;
 }
 
 .list-item-bold-text
@@ -95,4 +118,10 @@
 
 #list li[info-mode] svg {
     fill: #222;
+}
+
+.list-item-text:hover {
+    text-decoration: underline;
+    padding-top:10px;
+    padding-bottom:10px;
 }

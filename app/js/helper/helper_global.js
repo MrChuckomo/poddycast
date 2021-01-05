@@ -238,7 +238,7 @@ function getFileValue(filePath, _DestinationTag, _ReferenceTag, _Value) {
 }
 
 function getBestArtworkUrl(feedUrl) {
-    let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
+    let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl); 
 
     if(podcast != undefined) {
         let Artwork = podcast.data.artworkUrl;
@@ -246,11 +246,17 @@ function getBestArtworkUrl(feedUrl) {
             return Artwork;
     }
 
+    let $settingsImage = $('.settings-image');
+    if(allFeeds.ui.checkPageByFeedUrl(feedUrl) && 
+        $settingsImage.get(0) && 
+        (Artwork = $settingsImage.attr('src')))
+        return Artwork;
+
     //Set "no Artwork" image
     Artwork = getGenericArtwork();
     return Artwork;
 }
-
+/*
 function getArtworkFromFeed(xmlDoc) {
     if (xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0] !== undefined) 
         return xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("media:thumbnail")[0].getAttribute("url")
@@ -269,7 +275,7 @@ function getArtworkFromFeed(xmlDoc) {
     
     return getGenericArtwork();
 }
-
+*/
 function getGenericArtwork() {
     return 'img/generic_podcast_image.png';
 }

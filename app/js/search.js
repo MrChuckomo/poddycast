@@ -7,6 +7,7 @@ function search(_Self, _Event) {
         if(!$('#search-nothing-to-show').get(0))
             clearBody();
 
+        setContentRightHeader();
         clearMenuSelection();
         setHeader(generateHtmlTitle("Search"), '');
 
@@ -42,41 +43,58 @@ function getResults(_Data, _eRequest, _Options) {
 
     if(obj.results.length == 0)
         showSearchNothingToShow();
-    else if(query == $('#search-input').val()){
-        clearBody();
-        setGridLayout(false);
+    else if(query == $('#search-input').val()) {
+        $('#content-right-header span').data(obj);
+        showSearchList(obj.results);
+    }
+}
 
-        let $list = $('#list');
-        for (let i in obj.results) {
-            let Artwork = obj.results[i].artworkUrl100;
-            if(Artwork == undefined || Artwork == 'undefined') {
-                Artwork = obj.results[i].artworkUrl60;
-                if(Artwork == undefined || Artwork == 'undefined') 
-                    Artwork = getGenericArtwork();
-            }
-            let podcast = new Podcast (
-                obj.results[i].artistName,
-                obj.results[i].collectionName,
-                Artwork,
-                obj.results[i].feedUrl
-            );
+function showSearchList(results) {
+    setContentRightHeader();
+    clearBody();
+    setGridLayout(false);
 
-            var HeartButton = null;
-            if (isAlreadyFavorite(podcast.feedUrl))
-                HeartButton = getFullHeartButton(podcast);
-            else
-                HeartButton = getHeartButton(podcast);
-
-            $list.append(buildListItem(new cListElement(
-                [
-                    getImagePart(obj.results[i].artworkUrl60),
-                    getBoldTextPart(podcast.data.collectionName),
-                    getSubTextPart(podcast.data.artistName),
-                    HeartButton
-                ],
-                "5em 1fr 1fr 5em"
-            ), eLayout.row));
+    let $list = $('#list');
+    for (let i in results) {
+        let Artwork = results[i].artworkUrl100;
+        if(Artwork == undefined || Artwork == 'undefined') {
+            Artwork = results[i].artworkUrl60;
+            if(Artwork == undefined || Artwork == 'undefined') 
+                Artwork = getGenericArtwork();
         }
+        let podcast = new Podcast (
+            results[i].artistName,
+            results[i].collectionName,
+            Artwork,
+            results[i].feedUrl
+        );
+
+        var HeartButton = null;
+        if (isAlreadyFavorite(podcast.feedUrl))
+            HeartButton = getFullHeartButton(podcast);
+        else
+            HeartButton = getHeartButton(podcast);
+
+        let item = buildListItem(new cListElement(
+            [
+                getImagePart(results[i].artworkUrl60),
+                getBoldTextPart(podcast.data.collectionName),
+                getSubTextPart(podcast.data.artistName),
+                HeartButton
+            ],
+            "5em 1fr 1fr 5em"
+        ), eLayout.row);
+
+        $(item).data(podcast);
+        item.onclick = function (e) {
+            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
+                e.preventDefault();
+                return;
+            }
+            showAllEpisodes(this);
+        }
+        $list.append(item);
+        
     }
 }
 
@@ -84,7 +102,7 @@ function showSearchNothingToShow() {
     setNothingToShowBody(s_SearchNothingFoundIcon, 'search-nothing-to-show');
 }
 
-function getHeartButton(_PodcastInfos) {
+function getHeartButton(_PodcastInfos) { 
     let $heartButtonElement = $('<div></div>');
 
     $heartButtonElement.html(s_Heart);

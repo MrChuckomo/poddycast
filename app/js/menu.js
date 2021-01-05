@@ -14,6 +14,7 @@ function selectMenuItem(_MenuId) {
 }
 
 function showNewEpisodesPage() {
+    setContentRightHeader();
     let $newEpisodesEntry = $('#menu-episodes');
     let title = $newEpisodesEntry.find('span').html();
     
@@ -29,6 +30,7 @@ function showNewEpisodesPage() {
 }
 
 function showFavoritesPage() {
+    setContentRightHeader();
     let $favoritesEntry = $('#menu-favorites');
     let title = $favoritesEntry.find('span').html();
 
@@ -58,15 +60,22 @@ function showFavoritesPage() {
         let HeaderElement = ListElement.getElementsByClassName('podcast-entry-header')[0]
 
         HeaderElement.getElementsByTagName("img")[0].setAttribute("draggable", false)
-        HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
-        HeaderElement.onclick = function () {
+        
+        $(ListElement).data(JsonContent[i]);
+        $(HeaderElement).attr("feedUrl", JsonContent[i].feedUrl);
+
+        ListElement.onclick = function (e) {
+            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('podcast-entry-actions') || $(e.target).hasClass('list-item-text')) {
+                e.preventDefault();
+                return;
+            }
             showAllEpisodes(this);
         }
 
         let $heartButton = $(ListElement).find('.podcast-entry-actions');
         $heartButton.click(function () {
             $(this).stop();
-            unsubscribeListElement($(this).find('svg').get(0));
+            unsubscribeListElement(this);
         });
         
         $heartButton.hoverIntent(function () {
@@ -84,6 +93,7 @@ function showFavoritesPage() {
 }
 
 function showArchivePage() {
+    setContentRightHeader();
     let $archiveEntry = $('#menu-archive');
     let title = $archiveEntry.find('span').html();
     
@@ -99,6 +109,7 @@ function showArchivePage() {
 }
 
 function showStatisticsPage() {
+    setContentRightHeader();
     let $statisticsEntry = $('#menu-statistics');
     let title = $statisticsEntry.find('span').html();
 

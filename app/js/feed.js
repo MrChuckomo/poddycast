@@ -13,7 +13,6 @@ function checkDateIsInTheLastWeek(episode) {
     var day = new Date();
     var previousweek = day.getTime() - 7 * 24 * 60 * 60 * 1000;
 
-    //return (compareEpisodeDates(dateStr, previousweek) > 0);
     return (compareEpisodeDates(episode, {pubDate: previousweek}) > 0);
 }
 
@@ -39,40 +38,8 @@ function getInfoEpisodeByObj(episode) {
     return undefined;
 }
 
-/*
-function urlify(inputText) {
-    var replacedText, replacePattern1, replacePattern2, replacePattern3;
-
-    //URLs starting with http://, https://, or ftp://
-    replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
-    replacedText = inputText.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
-
-    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
-    replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
-    replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
-
-    //Change email addresses to mailto:: links.
-    replacePattern3 = /(([a-zA-Z0-9\-\_\.])+@[a-zA-Z\_]+?(\.[a-zA-Z]{2,6})+)/gim;
-    replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
-
-    return replacedText;
-}
-*/
-
-/*
 function urlify(text) {
-    let urlRegex = /(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
-    return text.replace(urlRegex, function (url) {
-        return '<a href="' + (url.indexOf('http') == -1 ? 'http://' + url : url) + '">' + url + '</a>';
-    })
-}
-*/
-
-function urlify(text) {
-    //let urlRegex = /(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
-    //let urlRegex = /[a-z0-9-\.@:/]+(https?:\/\/)?[\w\-~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
     let urlRegex = /(https?:\/\/)?[\w\-@~]+(\.[\w\-~]+)+(\/[\w\-~@:%]*)*(#[\w\-]*)?(\?[^\s]*)?/gi;
-    //let urlRegex = /[a-z0-9-\.]+\.[a-z]{2,4}\/?([^\s<>\#%"\,\{\}\\|\\\^\[\]`]+)?$/;
     return text.replace(urlRegex, function (url) {
         if(url.length <= 3)
             return url;
@@ -87,14 +54,6 @@ function urlify(text) {
 
 function getInfoFromDescription(episodeDescription) {
     return (episodeDescription.indexOf('</a>') == -1 ? urlify(episodeDescription) : episodeDescription);
-/*
-    let $div = $('<div></div>');
-    $div.html(episodeDescription.indexOf('</a>') == -1 ? urlify(episodeDescription) : episodeDescription);
-    $div.find('h1, h2, h3').replaceWith(function () { 
-        return $('<b>' + this.innerHTML + '</b>')
-    });
-    return $div.html();
-*/
 }
 
 function getDurationFromDurationKey(episode) {
@@ -111,8 +70,6 @@ function getDurationFromDurationKey(episode) {
 }
 
 function readFeeds() {
-    // TODO: create a new thread to read the feeds
-    // Add animation to notify the user about fetching new episodes
     $('#menu-refresh svg').addClass('is-refreshing');
     $('#menu-refresh').off('click');
 
@@ -127,15 +84,6 @@ function readFeeds() {
             $('#menu-refresh svg').removeClass('is-refreshing');
             $('#menu-refresh').click(readFeeds);
         }, 2000); 
-
-    // Remove animation to notify the user about fetching new episodes.
-    // Let the animation take at least 2 seconds. Otherwise user may not notice it.
-    /*
-    setTimeout(() => {
-        $('#menu-refresh svg').removeClass('is-refreshing');
-        $('#menu-refresh').click(readFeeds);
-    }, 2000);
-    */
 }
 
 function readFeedByFeedUrl(feedUrl) {
@@ -148,76 +96,36 @@ function readFeedByFeedUrl(feedUrl) {
 function updateFeed(_Content, _eRequest, _Options) {
     let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
     allFeeds.initFeed(FeedUrl)
-    // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
     if (isContent302NotFound(_Content))
         makeFeedRequest(getChangedFeed(_Options, _eRequest), updateFeed);
     else {
         if (_Content.includes("<html>")) {
-            // TODO: Check strange result content
-
-            // console.log(_Options);
-            // console.log(_Content);
+            // Nothing
         } else  {
-            // NOTE: Parse a real feed and just access the last element
             xmlParserWorker.postMessage({
                 xml: _Content,
-                feedUrl: FeedUrl
+                feedUrl: FeedUrl,
+                artwork: getBestArtworkUrl(FeedUrl)
             })
         }
     }
 }
-/*
-function getFeedFromWorkerResponse(json, feedUrl) {
-    let itemCount = json.length;
-    if(itemCount == 0)
-        return 0;
-    let newEpisodesCount = itemCount - allFeeds.length(feedUrl);
-    let indicatorChannel = false;
-    for(let i = newEpisodesCount - 1; i >= 0; i--) {
-        let episode = json[i];
-        indicatorChannel = allFeeds.unsafeAdd(episode);
-    }
-
-    if(indicatorChannel)
-        allFeeds.updateByIndicator(indicatorChannel); 
-
-    return (newEpisodesCount % itemCount);
-}
-*/
-
-/*
-xmlParserWorker.onmessage = function(ev) {
-    let json = ev.data.json;
-    let feedUrl = ev.data.feedUrl;
-
-    let initialFeedLength = allFeeds.length(feedUrl);
-    let numberNewEpisode = getFeedFromWorkerResponse(json, feedUrl);
-
-    if(initialFeedLength == 0 && numberNewEpisode == 0) {
-        allFeeds.ui.showLastNFeedElements(json);
-        return;
-    }
-
-    for(let i = numberNewEpisode - 1; i >= 0; i--) {
-        let episode = json[i]
-        allFeeds.ui.add(episode);
-    }
-
-    updateFeedAndNewEpisode(feedUrl, numberNewEpisode);
-}
-*/
 
 xmlParserWorker.onmessage = function(ev) {
     let newFeed = ev.data.json;
-    let feedUrl = ev.data.feedUrl;
-    let podcastData = ev.data.podcastData;
-    let oldFeed = allFeeds.getFeedPodcast(feedUrl);
-    oldFeed = !oldFeed ? [] : oldFeed;
+    let podcastData = ev.data.podcastData; 
+    let feedUrl = podcastData.feedUrl;
+    let oldFeed =  allFeeds.getFeedPodcast(feedUrl);
+    oldFeed = (!oldFeed ? [] : oldFeed);
 
-    allFavoritePodcasts.setData(feedUrl, podcastData);
-    if(!allFeeds.set(newFeed))
-        return;
+    allFavoritePodcasts.setData(podcastData); 
+    allFeeds.set(newFeed);
+    
+    if(allFeeds.ui.checkPageByFeedUrl(feedUrl)) {
+        allFeeds.ui.setHeaderArtistContent(podcastData.data.artistName);
+        allFeeds.ui.setHeaderDescriptionContent(getInfoFromDescription(podcastData ? podcastData.data.description : ''));
+    }
 
     updateFeedWorker.postMessage({
         oldFeed: oldFeed,
@@ -236,18 +144,19 @@ updateFeedWorker.onmessage = function(ev) {
     let new_episodes = ev.data.new_episodes;
     let deleted_episodes = ev.data.deleted_episodes;
     let initialLength = ev.data.initialLength;
-
-    if(initialLength == 0 && new_episodes.length == allFeeds.length(feedUrl)) {
-        let $headerDescription = allFeeds.ui.getHeaderDescription().get(0);
-        if($headerDescription) {
-            let podcast = allFavoritePodcasts.getByFeedUrl(feedUrl);
-            $headerDescription.innerHTML = getInfoFromDescription(podcast ? podcast.data.description : '');
-        }
-        allFeeds.ui.showLastNFeedElements(allFeeds.getFeedPodcast(feedUrl));
+    let feed = ev.data.feed;
+    
+    if(initialLength == 0 && new_episodes.length == feed.length) {
+        allFeeds.ui.showLastNFeedElements(feed);
+        addEpisodesFromTheLastWeek(feedUrl, feed);
     } else {
-        for(let i = new_episodes.length - 1; i >= 0; i--) {
-            let episode = allFeeds.getEpisode(feedUrl, i);
-            allFeeds.ui.add(episode);
+        for(let i in new_episodes) {
+            let index = allFeeds.findEpisodeByEpisodeUrl(feedUrl, new_episodes[i])
+            let episode = feed[index];
+            
+            allFeeds.ui.add(episode, index);
+            if(!getSettings(feedUrl) && checkDateIsInTheLastWeek(episode))
+                allNewEpisodes.add(episode);
         }
     }
 
@@ -259,14 +168,12 @@ updateFeedWorker.onmessage = function(ev) {
         allNewEpisodes.removeByEpisodeUrl(episodeUrl);
         allArchiveEpisodes.removeByEpisodeUrl(episodeUrl);
     } 
-    
-    updateFeedAndNewEpisode(feedUrl, new_episodes.length);
 }
 
-function updateFeedAndNewEpisode(feedUrl, numberNewEpisode) {
+function addEpisodesFromTheLastWeek(feedUrl, feed) {
     if(!getSettings(feedUrl)) {
-        for(let i = 0; i < numberNewEpisode; i++) {
-            let episode = allFeeds.getEpisode(feedUrl, i);
+        for(let i in feed) {
+            let episode = feed[i];
             if(checkDateIsInTheLastWeek(episode)) 
                 allNewEpisodes.add(episode);
             else 
@@ -276,17 +183,28 @@ function updateFeedAndNewEpisode(feedUrl, numberNewEpisode) {
     }
 }
 
-function showAllEpisodes(_Self) {
+function showAllEpisodes(obj) {
+    let podcast = _(obj);
+
+    let tmpPodcast = allFavoritePodcasts.getByFeedUrl(podcast.feedUrl);
+    if(tmpPodcast)
+        podcast = tmpPodcast;
+    if(!podcast.data)
+        podcast = getPodcastFromEpisode(podcast);
+
     setGridLayout(false);
 
     clearBody();
     setHeaderViewAction();
-
-    getAllEpisodesFromFeed(_Self.getAttribute("feedurl"));
+    removeContentRightHeader();
+    
+    getAllEpisodesFromFeed(podcast);
 }
 
-function getAllEpisodesFromFeed(_Feed) {
-    allFeeds.ui.showHeader(_Feed);
+function getAllEpisodesFromFeed(podcast) {
+    let _Feed = podcast.feedUrl;
+
+    allFeeds.ui.showHeader(podcast);
 
     let feed = allFeeds.getFeedPodcast(_Feed);
     allFeeds.ui.showLastNFeedElements(feed);
@@ -337,35 +255,23 @@ function getChangedFeed(_Feed, _eRequest) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 function processEpisodes(_Content, _Options) {
-    let FeedUrl = (_Options instanceof Object ? _Options.path: _Options);
-    
+    let feedUrl = (_Options instanceof Object ? _Options.path: _Options);
     xmlParserWorker.postMessage({
         xml: _Content,
-        feedUrl: FeedUrl
+        feedUrl: feedUrl,
+        artwork: getBestArtworkUrl(feedUrl)
     });
 }
-/*
-function showAllFeedElements(feed) {
-    let list = $('#list');
-    for (let i in feed) {
-        let episode = feed[i];
-        list.append(allFeeds.ui.getNewItemList(episode));
-    }
-}
-*/
 
 function addToArchive(_Self) {
     let ListElement = _Self.parentElement.parentElement;
 
-    allArchiveEpisodes.add({
-        feedUrl: ListElement.getAttribute('feedUrl'),
-        episodeUrl: ListElement.getAttribute('url')
-    });
+    allArchiveEpisodes.add(_(ListElement));
 
 }
 
 function removeFromArchive(_Self) {
     let ListElement = _Self.parentElement.parentElement;
 
-    allArchiveEpisodes.removeByEpisodeUrl(ListElement.getAttribute('url'));
+    allArchiveEpisodes.removeByEpisodeUrl(_(ListElement).episodeUrl);
 }

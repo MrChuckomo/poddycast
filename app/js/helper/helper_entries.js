@@ -5,7 +5,7 @@
 
 
 function unsubscribeListElement(self) {
-    let feedUrl = $(self).parent().parent().find('.podcast-entry-header').attr('feedUrl');
+    let feedUrl = $(self).parent().data().feedUrl;
     allFavoritePodcasts.removeByFeedUrl(feedUrl);
 }
 

@@ -43,11 +43,11 @@ class PlayerManager extends UI {
         this.$forwardButton.click(() => this.forward())
     }
 
-    startsPlaying(feedUrl, episodeUrl, dontChangeQueue) {
+    startsPlaying(episode, dontChangeQueue) {
         this.removeInitialOpacityPlayerButtons();
-        this.setEpisodePlaying(feedUrl, episodeUrl);
+        this.setEpisodePlaying(episode);
 
-        this.selectEpisode(episodeUrl);
+        this.selectEpisode(episode.episodeUrl);
         this.setSource();
 
         if(!dontChangeQueue)
@@ -74,6 +74,7 @@ class PlayerManager extends UI {
             else
                 value = 0;
             
+            allFeeds.playback.ui.updatePosition(this.episodePlaying.episodeUrl, value);
             this.slider.setValue(value);
             this.updateCurrentTimeHtml();
             this.updateDurationHtml();
@@ -128,7 +129,7 @@ class PlayerManager extends UI {
             let title = this.episodePlaying.episodeTitle;
             let artist = this.episodePlaying.channelName;
             let album = this.episodePlaying.pubDate;
-            let artwork = this.episodePlaying._artwork;
+            let artwork = this.episodePlaying.artwork;
 
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: title,
@@ -260,7 +261,7 @@ class PlayerManager extends UI {
             case 'newEpisodes':
                 feed = allNewEpisodes.getAll();
                 break;
-            case 'favorites':
+            case 'feed':
                 feed = allFeeds.getFeedPodcast(this.episodePlaying.feedUrl);
                 break;
             case 'archive':
@@ -273,8 +274,10 @@ class PlayerManager extends UI {
 
         if(index && index > 0) {
             index--;
-            this.startsPlaying(feed[index].feedUrl, feed[index].episodeUrl, true);
-            return
+            let episode = (this.queue == 'feed' ? feed[index] : getInfoEpisodeByObj(feed[index]));
+
+            this.startsPlaying(episode, true);
+            return;
         }
 
         this.pause();
@@ -303,7 +306,7 @@ class PlayerManager extends UI {
     }
 
     setArtworkHtml() {
-        this.$artwork.attr('src', this.episodePlaying._artwork);
+        this.$artwork.attr('src', this.episodePlaying.artwork);
     }
 
     setTitleHtml() {
@@ -323,15 +326,14 @@ class PlayerManager extends UI {
             .addClass('select-episode');
     }
 
-    setEpisodePlaying(feedUrl, episodeUrl) {
-        this.episodePlaying = { ...allFeeds.getEpisodeByEpisodeUrl(feedUrl, episodeUrl) };
-        this.episodePlaying._artwork = getBestArtworkUrl(feedUrl);
+    setEpisodePlaying(episode) {
+        this.episodePlaying = { ...episode };
         return this.episodePlaying;
     }
 
     savePlaybackPosition() {
         if(this.episodePlaying)
-            allFeeds.setPlaybackPositionByEpisodeUrl(this.episodePlaying.feedUrl, this.episodePlaying.episodeUrl, this.getCurrentTime());
+            allFeeds.setPlaybackPositionByEpisodeUrl(this.episodePlaying.feedUrl, this.episodePlaying.episodeUrl, this.getCurrentTime(), this.getDuration());
     }
 
     getPlaybackPosition() {

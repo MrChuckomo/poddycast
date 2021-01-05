@@ -1,35 +1,52 @@
-/*
-setTimeout(function() { 
-    alert("Hello"); 
-}, 30 * 1000);
-*/
-
-class PlaybackUI {
-    constructor() {
+class PlaybackUI extends UI {
+    constructor(obj) {
+        super();
+        this.dataObject = obj;
     }
-
-    get(episodeUrl) {
-        return $('li[url="' + episodeUrl + '"]');
-    }
-
+    
     update(episodeUrl) {
         this.updateDone(episodeUrl);
     }
 
     updateDone(episodeUrl) {
-        let obj = allFeeds.playback.data[episodeUrl];
-        let $element = this.get(episodeUrl);
-        if(obj.done)
-            $element.find('.list-item-flag').css('opacity', 1.0);
-        else
-            $element.find('.list-item-flag').css('opacity', 0.0);
+        this.getByEpisodeUrl(episodeUrl).find('.list-item-flag')
+                                        .css('--percentage', '100%')
+                                        .css('--bk-color1-flag', '#798')
+                                        .html('Done');
     }
+
+    getProgressionFlag(episodeUrl) {
+        let done = this.dataObject.getDone(episodeUrl);
+        if(done)
+            return getFlagPart('Done')
+                    .css('--percentage', '100%')
+                    .css('--bk-color1-flag', '#798')
+                    .get(0);
+
+        let duration = this.dataObject.getDuration(episodeUrl);
+        if(duration < 0)
+            return getFlagPart('0%').css('--percentage', '0%').get(0);
+        
+        let position = this.dataObject.getPosition(episodeUrl);
+        let percentage = getPercentage(position, duration) + '%'; 
+        return getFlagPart(percentage).css('--percentage', percentage).get(0); 
+    }
+
+    updatePosition(episodeUrl, position) {
+        if(!Number.isNaN(position) && !this.dataObject.getDone(episodeUrl)) {
+            let percentage = position + '%';
+            this.getByEpisodeUrl(episodeUrl).find('.list-item-flag')
+                                            .css('--percentage', percentage)
+                                            .html(percentage);
+        }
+    }
+
 }
 
 class Playback {
     constructor() {
         this.load();
-        this.ui = new PlaybackUI();
+        this.ui = new PlaybackUI(this);
         this.bufferSize = -1000;
     }
 
@@ -67,6 +84,7 @@ class Playback {
             this.data[episodeUrl] = {
                 feedUrl: feedUrl, 
                 position: 0,
+                duration: -1,
                 done: false
             };
             if(this.length() > this.bufferSize)  // limitation canceled, buffer size is a negative number
@@ -85,6 +103,13 @@ class Playback {
         if(!playback)
             return 0;
         return playback.position;
+    }
+
+    getDuration(episodeUrl) {
+        let playback = this.get(episodeUrl);
+        if(!playback)
+            return -1;
+        return playback.duration;
     }
 
     getDone(episodeUrl) {
@@ -126,6 +151,15 @@ class Playback {
         return false;
     }
 
+    setDuration(episodeUrl, duration) {
+        if(this.exists(episodeUrl)) {
+            this.data[episodeUrl].duration = duration;
+            this.update();
+            return true;
+        }
+        return false;
+    }
+
     setDone(episodeUrl, done) {
         if(this.exists(episodeUrl)) {
             this.data[episodeUrl].done = done;
@@ -142,11 +176,14 @@ class Playback {
         this.ui.update(episodeUrl);
     }
 
-    alwaysSetPosition(feedUrl, episodeUrl, position) {
+    alwaysSetPositionAndDuration(feedUrl, episodeUrl, position, duration) {
         if(!this.exists(episodeUrl))
             this.unsafeAdd(feedUrl, episodeUrl)
         this.data[episodeUrl].position = position;
+        this.data[episodeUrl].duration = duration;
         this.update();
+        //if(!this.data[episodeUrl].done)
+        this.ui.updatePosition(episodeUrl, getPercentage(position, duration));
     }
 
     alwaysSetDone(feedUrl, episodeUrl, done) {
@@ -194,4 +231,8 @@ class Playback {
         if(updated)
             this.update();
     }
+}
+
+function getPercentage(position, duration) {
+    return Math.floor((position / duration) * 100);
 }

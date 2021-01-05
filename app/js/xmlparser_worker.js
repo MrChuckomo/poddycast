@@ -1,7 +1,8 @@
 importScripts('./lib/jsdom.js')
+importScripts('./podcast_class.js')
 importScripts('./episode_class.js')
 
-function xmlParser(xml, feedUrl) {
+function xmlParser(xml, feedUrl, artwork) {
     let xmlDoc = new JSDOM(xml, {contentType: "text/xml"}).window.document;
 
     let channel = xmlDoc.getElementsByTagName("channel")[0];
@@ -42,12 +43,13 @@ function xmlParser(xml, feedUrl) {
     if(podcastSubtitle && podcastSubtitle.textContent.length > podcastDescription.length)
         podcastDescription = podcastSubtitle.textContent;
 
-    podcastData = {
-        artistName: artistName,
-        collectionName: channelName,
-        artworkUrl: artworkUrl,
-        description: podcastDescription
-    }
+    let podcastData = new Podcast(
+        artistName,
+        channelName,
+        artworkUrl,
+        feedUrl,
+        podcastDescription
+    );
 
     let json = [];
     let items = xmlDoc.getElementsByTagName("item");
@@ -88,17 +90,18 @@ function xmlParser(xml, feedUrl) {
             (enclosure ? enclosure.getAttribute('length') : ''),
             description, 
             duration,
-            item.getElementsByTagName('pubDate')[0].innerHTML
+            item.getElementsByTagName('pubDate')[0].innerHTML,
+            artwork
         );
         json.push(episode);
     }
     
-    postMessage({json: json, feedUrl: feedUrl, podcastData: podcastData});
+    postMessage({json: json, podcastData: podcastData});
 }
 
 onmessage = function (ev) { 
     try {
-        xmlParser(ev.data.xml, ev.data.feedUrl);
+        xmlParser(ev.data.xml, ev.data.feedUrl, ev.data.artwork);
     } catch(err) {
         console.log(err)
     }

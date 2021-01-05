@@ -3,6 +3,13 @@ function initController() {
     initInput();
 
     enableOpenLinkInDefaultBrowser();
+
+    $('body').on('click', '.list-item-text', (e) => {
+        showAllEpisodes($(e.target).parent().get(0))
+    });
+    $('body').on('click', '.info-channel', (e) => {
+        showAllEpisodes($(e.target).parent().parent().get(0))
+    });
 }
 
 function enableOpenLinkInDefaultBrowser() {
@@ -64,31 +71,6 @@ function initInput() {
     })
 }
 
-/*
- *  Player
- */
-/*
-function initPlayer() {
-    /*
-    $('#content-right-player-progress-bar').click(function (e) {
-        seekProgress(this, e);
-    })
-    */ /*
-
-    $('#content-right-player-speed-down').click(function () {
-        speedDown(this);
-    })
-
-    $('#content-right-player-speed-up').click(function () {
-        speedUp(this);
-    })
-
-    $('.content-right-player-speed-btn').on('wheel', function(event){
-        setSpeedWithWheelMouse(event);
-    });
-     
-    $('#replay-30-sec').click(() => playerManager.reply())
-    $('#play-pause').click(() => playerManager.togglePlayPause())
-    $('#forward-30-sec').click(() => playerManager.forward())
+function _(obj) {
+    return {...$(obj).data()};
 }
-*/

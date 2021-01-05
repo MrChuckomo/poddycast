@@ -48,13 +48,20 @@ function getBoldTextPart(_Text) {
     return TextElement
 }
 
+/*
 function getTextPart(_Text) {
-    var TextElement = document.createElement("div")
+    return $(
+        `<div class="list-item-text" style="height:100%">
+            <div style="-webkit-font-smoothing: subpixel-antialiased;position: relative;top: 50%;transform: translate3d(+50%, -50%, 0) scale(2, 2);zoom: 0.5;">${_Text}</div>
+        </div>`).get(0); 
+}
+*/
 
-    TextElement.innerHTML = _Text
-    TextElement.classList.add("list-item-text")
-
-    return TextElement
+function getTextPart(_Text) {
+    return $(
+        `<div class="list-item-text">
+            ${_Text}
+        </div>`).get(0); 
 }
 
 function getDescriptionPart(_Icon, _Text) {
@@ -78,15 +85,16 @@ function getSubTextPart(_Text) {
     return TextElement
 }
 
-function getFlagPart(_Text, _Color, _BackgroundColor) {
-    var FlagElement = document.createElement("div")
+function getFlagPart(text) {
+    return $(
+        `<div class="list-item-flag">
+            ${text}
+        </div>`
+    );
+}
 
-    FlagElement.innerHTML = '<strong>' + _Text + '</strong>';
-    FlagElement.style.color = _Color
-    FlagElement.style.backgroundColor = _BackgroundColor
-    FlagElement.classList.add("list-item-flag")
-
-    return FlagElement
+function getProgressionFlagPart(episodeUrl) {
+    return allFeeds.playback.ui.getProgressionFlag(episodeUrl);
 }
 
 /*
@@ -183,8 +191,7 @@ function getDeleteButtonPart() {
     let deleteButton = getIconButtonPart(s_DeleteIcon);
     deleteButton.getElementsByTagName('svg')[0].onclick = function (event) {
         event.stopPropagation(); 
-        let episodeUrl = $(this).parent().parent().attr('url');
-        allArchiveEpisodes.removeByEpisodeUrl(episodeUrl);
+        removeFromArchive(this);
     }
     return deleteButton;
 }

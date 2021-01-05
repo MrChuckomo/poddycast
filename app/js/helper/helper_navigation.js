@@ -63,7 +63,7 @@ function toggleList(_View) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 function clearMenuSelection() {
-    $('#menu li, #playlists li').removeClass('selected')
+    $('#menu li, #playlists li').removeClass('selected');
 }
 
 function addToPlaylist(_PlaylistName, _PodcastFeedUrl) {

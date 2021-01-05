@@ -7,6 +7,8 @@ class UI {
  */
 
     getPageType() {
+        if(allFeeds.ui.getHeader().get(0))
+            return 'feed';
         if(!notPlaylistHeader())
             return 'playlist';
         if(getHeader() == generateHtmlTitle('New Episodes'))

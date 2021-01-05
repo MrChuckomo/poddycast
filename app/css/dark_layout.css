@@ -58,7 +58,7 @@ body
 #search
 {
     background: #333;
-    border-color: #000;
+    border-color: #222;
 }
 
 #search svg
@@ -109,13 +109,15 @@ input
 .playlist-edit-input
 {
     background: #444;
-    border-color: #000;
+    border-color: #333;
 }
 
+/*
 .edit-header button
 {
     background: #222;
 }
+*/
 
 .uncheck svg
 {
@@ -137,7 +139,7 @@ input
     background: #222;
 }
 
-.settings-unsubscribe
+.settings-buttons > *
 {
     background: #111;
 }
@@ -185,20 +187,20 @@ svg.set-favorite
 }
 */
 
-.content-right-player-speed-btn,
-.content-right-header-actions svg,
+.content-right-player-speed-btn,/*
+.content-right-header-actions svg,*/
 .list-item-row-layout {
     border-color: #222;
     color: #FFF;
 }
 
-.content-right-player-speed-btn:hover,
-#content-right-header-actions svg:hover {
+.content-right-player-speed-btn:hover/*,
+#content-right-header-actions svg:hover*/ {
     border-color: #111;
 }
 
-.content-right-player-speed-btn:active,
-#content-right-header-actions svg:active {
+.content-right-player-speed-btn:active/*,
+#content-right-header-actions svg:active*/ {
     background: #111;
 }
 
@@ -243,7 +245,6 @@ svg.set-favorite
     border-color: #222;
 }
 
-
 .slider {
   --theme-slider: #222;
 }
@@ -252,7 +253,7 @@ svg.set-favorite
     border: none;
 }
 
-.settings-unsubscribe svg {
+.settings-buttons > * svg {
     fill: #fff;
 }
 
@@ -266,4 +267,37 @@ svg.set-favorite
 
 #content-right-player-img {
     border: none;
+}
+
+
+.list-item-flag {
+    --color-flag: #fff;
+    --bk-color1-flag: #444; /* #4CAF50; */
+    --bk-color2-flag: #191919; /* #222; */ /* #798; */
+}
+
+
+.edit-header button {
+    border-color: #222;
+    background: #222; 
+    color: #FFF;
+}
+
+
+#content-right-header-actions svg {
+    background-color: #222;
+}
+
+#content-right-header-actions svg:hover {
+    /*border-color: #bbb;/*#CCC;*/
+    background-color: #111;
+}
+
+#content-right-header-actions svg:active {
+    background-color: #444;
+}
+
+
+.content-right-player-speed-btn {
+    background-color: #272727; /* inherit; */
 }

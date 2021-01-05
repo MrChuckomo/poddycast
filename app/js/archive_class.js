@@ -26,6 +26,7 @@ class ArchiveEpisodesUI extends ListUI {
 
     showAll() {
         this.showList(this.dataObject.episodes);
+        this.dataObject.update();
     }
 
     getShowMoreEpisodesTopHtml() {
@@ -33,6 +34,8 @@ class ArchiveEpisodesUI extends ListUI {
     }
 
     convertItemIntoInfoItemList(obj) {
+        let episode = _(obj);
+
         let $obj = $(obj);
         $obj.attr('info-mode', '');
         let $descriptionItem = $obj.find('.list-item-description');
@@ -41,30 +44,30 @@ class ArchiveEpisodesUI extends ListUI {
         $obj.find('div').not(".list-item-description").css('display', 'none');
         $obj.css('grid-template-columns', '5em 1fr 5em 5em');
         $descriptionItem.before(
-            '<span id="info-item-list" style="opacity: 0;">' + 
-                '<br>' +
-                '<span style="font-size:16px;font-weight:bold;">' +
-                    $obj.attr('title') +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;">' +
-                    $obj.attr('channel') +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    getDurationFromDurationKey({durationKey: $obj.attr('durationKey')}) +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:15px;">' +
-                    getInfoFromDescription($obj.attr('description')) +
-                '</span>' +
-                '<br>' +
-                '<span style="font-size:13px;opacity:0.7;">' +
-                    new Date($obj.attr('pubdate')).toLocaleString() +
-                '</span>' +
-                '<br>' +
-                '<br>' +
-            '</span>'
+            `<span id="info-item-list" style="opacity: 0;">
+                <br>
+                <span class="info-title">
+                    ${episode.episodeTitle}
+                </span>
+                <br>
+                <span class="info-channel">
+                    ${episode.channelName}
+                </span>
+                <br>
+                <span class="info-duration">
+                    ${getDurationFromDurationKey({durationKey: episode.durationKey})}
+                </span>
+                <br>
+                <span class="info-description">
+                    ${getInfoFromDescription(episode.episodeDescription)}
+                </span>
+                <br>
+                <span class="info-pubdate">
+                    ${new Date(episode.pubDate).toLocaleString()}
+                </span>
+                <br>
+                <br>
+            </span>`
         )
         
         $obj.find('#info-item-list')
@@ -105,7 +108,7 @@ class ArchiveEpisodesUI extends ListUI {
                     e.preventDefault();
                     return;
                 }
-                playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+                playerManager.startsPlaying(_(this));
             });
         
             $obj.find('div')
@@ -143,42 +146,36 @@ class ArchiveEpisodesUI extends ListUI {
     }
 
     getNewItemList(archiveEpisode) {
-        let episode = getInfoEpisodeByObj(archiveEpisode);
+        //let episode = getInfoEpisodeByObj(archiveEpisode);
+        let episode = getEpisodeFromArchiveEpisode(archiveEpisode);
 
-        let Artwork = getBestArtworkUrl(episode.feedUrl);
+        let Artwork = episode.artwork; //getBestArtworkUrl(episode.feedUrl);
         
         let ListElement = buildListItem(new cListElement (
             [
                 getImagePart(Artwork),
                 getBoldTextPart(episode.episodeTitle),
                 getTextPart(episode.channelName),
-                getFlagPart('Done', 'white', '#4CAF50'),
+                getProgressionFlagPart(episode.episodeUrl),// getFlagPart('Done', 'white', '#4CAF50'),
                 getDescriptionPart(s_InfoIcon, episode.episodeDescription),
                 getDeleteButtonPart()
             ],
             "5em 1fr 1fr 6em 5em 5em"
         ), eLayout.row)
 
-        if (!allFeeds.getPlaybackDoneByEpisodeUrl(episode.episodeUrl))
-            $(ListElement).find('.list-item-flag').css('opacity', 0);//ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3]);
+        // if (!allFeeds.getPlaybackDoneByEpisodeUrl(episode.episodeUrl))
+        //    $(ListElement).find('.list-item-flag').css('opacity', 0);//ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3]);
         
         $(ListElement).click(function(e) {
-            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon')) {
+            if($(e.target).is('svg') || $(e.target).is('path') || $(e.target).hasClass('list-item-icon') || $(e.target).hasClass('list-item-text')) {
                 e.preventDefault();
                 return;
             }
-            playerManager.startsPlaying($(this).attr('feedUrl'), $(this).attr('url'));
+            playerManager.startsPlaying(_(this));
         });
-        ListElement.setAttribute("channel", episode.channelName);
-        ListElement.setAttribute("feedUrl", episode.feedUrl);
-        ListElement.setAttribute("title", episode.episodeTitle);
-        ListElement.setAttribute("type", episode.episodeType);
-        ListElement.setAttribute("url", episode.episodeUrl);
-        ListElement.setAttribute("length", episode.episodeLength);
-        ListElement.setAttribute("durationKey", episode.durationKey);
-        ListElement.setAttribute("description", episode.episodeDescription);
-        ListElement.setAttribute("artworkUrl", Artwork);
-        ListElement.setAttribute("pubDate", episode.pubDate);
+
+        $(ListElement).data(episode);
+        $(ListElement).attr('url', episode.episodeUrl);
 
         if (playerManager.isPlaying(episode.episodeUrl))
             ListElement.classList.add("select-episode")
@@ -243,22 +240,18 @@ class ArchiveEpisodes {
         let i = this.findByEpisodeUrl(episodeUrl);
         return (i != -1 ? this.episodes[i] : undefined);
     }
+
+    setByEpisode(episode) {
+        let i = this.findByEpisodeUrl(episode.episodeUrl);
+        if(i != -1) 
+            this.episodes[i] = episode;
+        return i;
+    }
     
     add(episode) {
-        episode = {
-            feedUrl: episode.feedUrl,
-            episodeUrl: episode.episodeUrl
-        }
         if(this.findByEpisodeUrl(episode.episodeUrl) == -1) {
-            /*
-            let i = 0;
-            while(i < this.length() && compareEpisodeDates(this.episodes[i], episode) > 0)
-                i++;
-            this.episodes.splice(i, 0, episode);
-            */
             this.episodes.unshift(episode);
             this.update();
-            //this.ui.add(episode, i);
             this.ui.add(episode, 0);
             return episode;
         } 
@@ -288,4 +281,27 @@ class ArchiveEpisodes {
 
 function loadArchiveEpisodes() {
     allArchiveEpisodes = new ArchiveEpisodes();
+}
+
+function getPodcastFromEpisode(episode) {
+    let podcast = allFavoritePodcasts.getByFeedUrl(episode.feedUrl);
+    if(podcast)
+        return podcast;
+    else 
+        return new Podcast(
+            '',
+            episode.channelName,
+            episode.artwork,
+            episode.feedUrl,
+            ''
+        );
+}
+
+function getEpisodeFromArchiveEpisode(archiveEpisode) {
+    let episode = getInfoEpisodeByObj(archiveEpisode);
+    if(episode) {
+        allArchiveEpisodes.setByEpisode(episode);
+        return episode;
+    } else 
+        return archiveEpisode;
 }

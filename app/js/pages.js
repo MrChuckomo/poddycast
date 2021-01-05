@@ -73,3 +73,11 @@ function showPage(headerHtml, bodyHtml) {
 function setScrollPositionOnTop() {
     $('#content-right-body').scrollTop(0);
 }
+
+function removeContentRightHeader() {
+    $('#content-right').css('grid-template-rows', '0px 1fr 60px');
+}
+
+function setContentRightHeader() {
+    $('#content-right').removeAttr('style');
+}

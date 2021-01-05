@@ -28,7 +28,7 @@
     padding-left: 0.5em;
     background: #FFF;
     border-radius: 4px;
-    border: 1px solid #E0E0E0;
+    border: 1px solid #e5e5e5; /* #E0E0E0; */
 }
 
 #search svg
@@ -187,13 +187,14 @@
 
 #playlists ul li.over
 {
-    background: #039BE5;
+    background: #448AFF; /* #039BE5; */
     color: #FFF;
 }
 
 #playlists ul li.over input
 {
    color: #FFF;
+    font-weight: bold;
 }
 
 #playlists ul li input
