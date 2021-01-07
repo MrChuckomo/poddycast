@@ -1,3 +1,5 @@
+'use strict'
+
 var CContentHelper = require('./js/helper/content')
 var CPlayer        = require('./js/helper/player')
 
@@ -137,6 +139,36 @@ function showFavorites()
             HeaderElement.getElementsByTagName("img")[0].setAttribute("draggable", false)
             HeaderElement.setAttribute("feedUrl", JsonContent[i].feedUrl)
             HeaderElement.setAttribute("onclick", "showAllEpisodes(this)")
+
+            // Display feedUrlStatus indicator
+            if (JsonContent[i].feedUrlStatus) {
+                if (JsonContent[i].feedUrlStatus === 500) {
+                    var brokenLinkIcon = document.createElement("span")
+                    brokenLinkIcon.innerHTML = s_BrokenLinkIcon
+                    brokenLinkIcon.classList.add('icon-link-broken-wrapper')
+                    brokenLinkIcon.setAttribute('title', 'Podcast feed URL is broken.')
+
+                    HeaderElement.append(brokenLinkIcon)
+
+                    // Display broken URL icon
+                    if (HeaderElement.classList && !HeaderElement.classList.contains('podcast-feed-url-broken')) {
+                        HeaderElement.classList.add('podcast-feed-url-broken')
+                    }
+
+                    if (HeaderElement.classList && HeaderElement.classList.contains('podcast-feed-url-working')) {
+                        HeaderElement.classList.remove('podcast-feed-url-working')
+                    }
+                } else {
+                    // Display checked/working icon
+                    if (HeaderElement.classList && !HeaderElement.classList.contains('podcast-feed-url-working')) {
+                        HeaderElement.classList.add('podcast-feed-url-working')
+                    }
+
+                    if (HeaderElement.classList && HeaderElement.classList.contains('podcast-feed-url-broken')) {
+                        HeaderElement.classList.remove('podcast-feed-url-broken')
+                    }
+                }
+            }
 
             List.append(ListElement)
         }

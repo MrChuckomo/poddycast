@@ -25,6 +25,9 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
                 _Res.on("data", function (_Chunk) { Chunks.push(_Chunk); });
                 _Res.on("end",  function ()       { _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options) });
             });
+
+            updateFeedURLStatus(true, _Options);
+
             break;
 
         case eRequest.https:
@@ -36,6 +39,9 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
                 _Res.on("data", function (_Chunk) { Chunks.push(_Chunk); });
                 _Res.on("end",  function ()       { _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options) });
             });
+
+            // updateFeedURLStatus(true, _Options);
+
             break;
     }
 
@@ -47,11 +53,15 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
         {
             console.log('Problem with request: ' + _Error.message);
 
+            updateFeedURLStatus(false, _Options);
+
             if (_FallbackOptions != null)
             {
                 console.log('Use fallback options: ' + _FallbackOptions);
 
-                makeRequest(_FallbackOptions, null, _Callback, _eRequest)
+                makeRequest(_FallbackOptions, null, _Callback, _eRequest);
+
+                updateFeedURLStatus(false, _Options);
             }
         });
 
@@ -117,4 +127,39 @@ function getFeedProxyOptions(_Url)
     };
 
     return Options
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+function updateFeedURLStatus(isURLWorking, _Options) {
+    if (_Options) {
+        var feedURL = null
+
+        if (typeof _Options === 'object' && _Options.path) {
+            feedURL = _Options.path
+        } else {
+            feedURL = _Options
+        }
+
+        feedURL = feedURL.replace(/(http|https):\/\//, '').replace('.xml', '')
+
+        // Check if JSON with feeds exists
+        if (fs.readFileSync(getSaveFilePath(), "utf-8") != "") {
+            var JsonContentOld = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+            var JsonContentNew = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+            for (var i = 0; i < JsonContentNew.length; i++) {
+                // Find feed item that's returning error
+                if (feedURL === JsonContentNew[i].feedUrl.replace(/(http|https):\/\//, '').replace('.xml', '')) {
+                    // Update feedUrlStatus prop
+                    JsonContentNew[i].feedUrlStatus = !isURLWorking ? 500 : 200
+                }
+            }
+
+            // Update JSON with feeds if there are changes
+            if (JsonContentOld !== JsonContentNew) {
+                fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContentNew))
+            }
+        }
+    }
 }
