@@ -1,7 +1,7 @@
 {
     "main": "main.js",
     "description": "Podcast client to listen to all you favorite podcasts",
-    "name": "Poddycast",
+    "name": "poddycast",
     "version": "0.9.0",
     "license": "MIT",
     "author": "paologiuaa <paologiuaa@gmail.com>",
@@ -19,6 +19,7 @@
     },
     "build": {
         "appId": "com.electron.poddycast",
+        "productName": "Poddycast",
         "icon": "./img/poddycast-app_icon512x512.png",
         "mac": {
             "target": [
@@ -39,7 +40,8 @@
                 "zip"
             ],
             "icon": "./img/",
-            "category": "Utility"
+            "category": "Utility",
+            "executableName": "poddycast"
         },
         "win": {
             "target": [
