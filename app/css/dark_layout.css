@@ -177,7 +177,7 @@ input
 svg.set-favorite
 {
     fill: #E91E63;
-    opacity: 0.7;
+    /* opacity: 1; */
 }
 
 /*

@@ -75,9 +75,9 @@ function setScrollPositionOnTop() {
 }
 
 function removeContentRightHeader() {
-    $('#content-right').css('grid-template-rows', '0px 1fr 60px');
+    $('#content-right').addClass('header-null'); // css('grid-template-rows', '0px 1fr 60px');
 }
 
 function setContentRightHeader() {
-    $('#content-right').removeAttr('style');
+    $('#content-right').removeClass('header-null'); // Attr('style');
 }

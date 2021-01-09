@@ -24,7 +24,7 @@ class PlaybackUI extends UI {
                     .get(0);
 
         let duration = this.dataObject.getDuration(episodeUrl);
-        if(duration < 0)
+        if(duration == null || duration == undefined || duration < 0)
             return getFlagPart('0%').css('--percentage', '0%').get(0);
         
         let position = this.dataObject.getPosition(episodeUrl);
@@ -180,7 +180,8 @@ class Playback {
         if(!this.exists(episodeUrl))
             this.unsafeAdd(feedUrl, episodeUrl)
         this.data[episodeUrl].position = position;
-        this.data[episodeUrl].duration = duration;
+        if(!this.data[episodeUrl].duration || duration)
+            this.data[episodeUrl].duration = duration;
         this.update();
         //if(!this.data[episodeUrl].done)
         this.ui.updatePosition(episodeUrl, getPercentage(position, duration));

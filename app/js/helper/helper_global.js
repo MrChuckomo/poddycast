@@ -134,8 +134,11 @@ function setTitlebarOnWin() {
         titlebar = new customTitlebar.Titlebar({
             backgroundColor: customTitlebar.Color.fromHex('#ccc')
         });
-        $( '#content-left' ).height('calc(100% - 30px)');
-        $( '#content-right' ).height('calc(100% - 30px)');
+        $(':root').css('--titlebar-height', '35px');
+        $('.titlebar').height('var(--titlebar-height)');
+        $('.container-after-titlebar').css('top', 'var(--titlebar-height)');
+        $( '#content-left' ).height('calc(100% - var(--titlebar-height))');
+        $( '#content-right' ).height('calc(100% - var(--titlebar-height))');
         
         function setMenuBarVisibility(visibility) {
             if(visibility)

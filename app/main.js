@@ -41,7 +41,7 @@ function createWindow()
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
-            zoomFactor: (process.platform === 'win32' ? 1.0 : 0.9)
+            zoomFactor: 0.9 // (process.platform === 'win32' ? 1.0 : 0.9)
         }
     });
     

@@ -36,7 +36,7 @@
 
 .list-item-icon
 {
-    opacity: 0.5;
+    opacity: 0.6;
     align-self: center;
     text-align: center;
     height: 100%;
@@ -51,7 +51,7 @@
 
 .list-item-icon:hover
 {
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .list-item-flag
