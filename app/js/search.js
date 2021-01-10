@@ -1,3 +1,4 @@
+const { systemPreferences } = require('electron')
 var CContentHelper = require('./js/helper/content')
 
 var helper = new CContentHelper()
@@ -57,31 +58,12 @@ function getFeedResults(_Data)
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(_Data, "text/xml");
 
-    var AllImageTags = xmlDoc.getElementsByTagName("image")
-    var Image = null
+    var Image = xmlDoc.getElementsByTagName("itunes:image")[0].getAttribute("href")
+    var Author = xmlDoc.getElementsByTagName("itunes:author")[0].innerHTML
 
-    if (AllImageTags.length > 0)
+    if (Image == null || Author == null)
     {
-        if(AllImageTags[0].nodeName == "itunes:image")
-        {
-            Image = AllImageTags[0].getAttribute("href")
-        }
-        else if (AllImageTags[0].nodeName == "image")
-        {
-            Image = AllImageTags[0].getElementsByTagName("url")[0].innerHTML
-        }
-    }
-
-    var AllAuthorTags = xmlDoc.getElementsByTagName("author")
-    var Author = null
-
-    if (AllAuthorTags.length > 0)
-    {
-        Author = AllAuthorTags[0].innerHTML
-    }
-    else
-    {
-        Author = xmlDoc.getElementsByTagName("creator")[0].childNodes[0].data
+        console.log("ERROR: invalid itunes feed")
     }
 
     helper.clearContent()

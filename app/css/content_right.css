@@ -17,7 +17,7 @@ h1
     left: 300px;
     right: 0em;
     overflow: auto;
-    height: 100%;
+    height: calc(100% - 59px);
     bottom: 59px;
     border-left: 1px solid #E7E7E7;
     display: grid;
@@ -37,12 +37,11 @@ h1
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 85px;
+    border-bottom: 1px solid #EEE;
 }
 
 #content-right-header h1
 {
-    padding-left: 0;
-    margin-left: 1em;
 }
 
 #content-right-header-actions
@@ -92,7 +91,7 @@ h1
 #list
 {
     margin: 0;
-    padding: 0;
+    padding-left: 0;
 }
 
 .statistics-header
@@ -263,6 +262,7 @@ h1
 .grid-layout
 {
     display: grid;
+    padding-top: 1em;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
