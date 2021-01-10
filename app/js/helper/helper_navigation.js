@@ -67,7 +67,7 @@ function renamePlaylistInEdit(_Self) {
 
 function setPlaylistName(_OldName, _NewName) {
     if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), 'utf-8') !== '') {
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+        let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].playlistName === _OldName) {
