@@ -1,11 +1,11 @@
 'use strict'
 
-var http  = require('http');
-var https = require('https');
+const http = require('http');
+const https = require('https');
 
-var eRequest = {
+const eRequest = {
     http: 1,
-    https: 2,
+    https: 2
 }
 
 function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
@@ -24,8 +24,8 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
             });
 
             updateFeedURLStatus(true, _Options);
-
-            break;
+        })
+        break;
 
     case eRequest.https:
     default:
@@ -41,7 +41,8 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
 
             // updateFeedURLStatus(true, _Options);
 
-            break;
+        })
+        break;
     }
 
     // NOTE: In case of any error try the given fallback options (can be proxy settings)
@@ -52,8 +53,7 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
 
             updateFeedURLStatus(false, _Options);
 
-            if (_FallbackOptions != null)
-            {
+            if (_FallbackOptions != null) {
                 console.log('Use fallback options: ' + _FallbackOptions);
 
                 makeRequest(_FallbackOptions, null, _Callback, _eRequest);
