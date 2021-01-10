@@ -1,24 +1,21 @@
-var eLayout =
-{
+'use strict'
+
+var eLayout = {
     row: 'list-item-row-layout',
     box: 'list-item-box-layout'
 }
 
-class cListElement
-{
-    constructor(_Parts, _LayoutRatio)
-    {
+class cListElement {
+    constructor(_Parts, _LayoutRatio) {
         this.Parts = _Parts
         this.LayoutRatio = _LayoutRatio
     }
 }
 
-function buildListItem(_JsonObject, _Layout)
-{
-    var Container = document.createElement("li")
+function buildListItem(_JsonObject, _Layout) {
+    let Container = document.createElement('li')
 
-    for (var i = 0; i < _JsonObject.Parts.length; i ++)
-    {
+    for (let i = 0; i < _JsonObject.Parts.length; i ++) {
         Container.append(_JsonObject.Parts[i])
     }
 
@@ -28,96 +25,79 @@ function buildListItem(_JsonObject, _Layout)
     return Container
 }
 
-function getListItemPart(_Container, _Position)
-{
+function getListItemPart(_Container, _Position) {
     return _Container.children[_Position]
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getImagePart(_Artwork)
-{
-    var ImageElement = document.createElement("img")
+function getImagePart(_Artwork) {
+    let ImageElement = document.createElement('img')
 
     ImageElement.src = _Artwork
 
     return ImageElement
 }
 
-function getBoldTextPart(_Text)
-{
-    var TextElement = document.createElement("div")
+function getBoldTextPart(_Text) {
+    let TextElement = document.createElement('div')
 
     TextElement.innerHTML = _Text
-    TextElement.classList.add("list-item-bold-text")
+    TextElement.classList.add('list-item-bold-text')
 
     return TextElement
 }
 
-function getTextPart(_Text)
-{
-    var TextElement = document.createElement("div")
+function getTextPart(_Text) {
+    let TextElement = document.createElement('div')
 
     TextElement.innerHTML = _Text
-    TextElement.classList.add("list-item-text")
+    TextElement.classList.add('list-item-text')
 
     return TextElement
 }
 
-function getDescriptionPart(_Icon, _Text)
-{
-    var TextElement = document.createElement("div")
+function getDescriptionPart(_Icon, _Text) {
+    let TextElement = document.createElement('div')
 
     TextElement.innerHTML = _Icon
     TextElement.title = _Text
-    TextElement.classList.add("list-item-description")
+    TextElement.classList.add('list-item-description')
     TextElement.classList.add('list-item-icon')
 
     return TextElement
 }
 
-function getSubTextPart(_Text)
-{
-    var TextElement = document.createElement("div")
+function getSubTextPart(_Text) {
+    let TextElement = document.createElement('div')
 
     TextElement.innerHTML = _Text
-    TextElement.classList.add("list-item-sub-text")
+    TextElement.classList.add('list-item-sub-text')
 
     return TextElement
 }
 
-function getFlagPart(_Text, _Color, _BackgroundColor)
-{
-    var FlagElement = document.createElement("div")
+function getFlagPart(_Text, _Color, _BackgroundColor) {
+    let FlagElement = document.createElement('div')
 
     FlagElement.innerHTML = _Text
     FlagElement.style.color = _Color
     FlagElement.style.backgroundColor = _BackgroundColor
-    FlagElement.classList.add("list-item-flag")
+    FlagElement.classList.add('list-item-flag')
 
     return FlagElement
 }
 
-function getTextButtonPart(_Text)
-{
-    var ButtonElement = document.createElement("button")
+function getTextButtonPart(_Text) {
+    let ButtonElement = document.createElement('button')
 
     ButtonElement.text = _Text
 
     return ButtonElement
 }
 
-function getIconButtonPart(_Icon)
-{
-    var IconButtonElement = document.createElement("div")
-
-    // fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"
-
-    // IconButtonElement.setAttribute('fill', '#000000')
-    // IconButtonElement.setAttribute('height', '24')
-    // IconButtonElement.setAttribute('viewBox', '0 0 24 24')
-    // IconButtonElement.setAttribute('width', '24')
-    // IconButtonElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+function getIconButtonPart(_Icon) {
+    let IconButtonElement = document.createElement('div')
 
     IconButtonElement.innerHTML = _Icon
     IconButtonElement.classList.add('list-item-icon')

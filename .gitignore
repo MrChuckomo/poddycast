@@ -1,3 +1,4 @@
+.vscode
 app/node_modules/
 app/package-lock.json
 builds/
