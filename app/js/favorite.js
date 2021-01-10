@@ -9,7 +9,8 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
         "artworkUrl60": _Artwork60,
         "artworkUrl100": _Artwork100,
         "feedUrl": _FeedUrl,
-        "addToInbox": true
+        "addToInbox": true,
+        "feedUrlStatus": 200 // Set default URL status to 200
     }
 
     _Self.innerHTML = s_HeartFilled
