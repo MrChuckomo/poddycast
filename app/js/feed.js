@@ -47,10 +47,8 @@ function saveLatestEpisode(_Content, _eRequest, _Options) {
 
     // NOTE: Fetch the new episode only if it is not disabled in the podcast settings
 
-    if (isAddedToInbox(FeedUrl))
-    {
-        if (isContent302NotFound(_Content))
-        {
+    if (isAddedToInbox(FeedUrl)) {
+        if (isContent302NotFound(_Content)) {
             makeFeedRequest(getChangedFeed(_Options, _eRequest), saveLatestEpisode)
         } else {
             if (_Content.includes('<html>')) {
@@ -61,16 +59,16 @@ function saveLatestEpisode(_Content, _eRequest, _Options) {
             } else {
                 // NOTE: Parse a real feed and just access the last element
 
-                Parser = new DOMParser();
-                xmlDoc = Parser.parseFromString(_Content,"text/xml");
+                let Parser = new DOMParser();
+                let xmlDoc = Parser.parseFromString(_Content, 'text/xml');
 
-                var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
-                var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length") : ''
-                var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type") : ''
-                var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url") : ''
-                var EpisodeDescription = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0].textContent : xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('description')[0].textContent
-                var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
+                let ChannelName = xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('title')[0].childNodes[0].nodeValue
+                let EpisodeTitle = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('title')[0].childNodes[0].nodeValue
+                let EpisodeLength = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('length') : ''
+                let EpisodeType = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('type') : ''
+                let EpisodeUrl = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('url') : ''
+                let EpisodeDescription = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('itunes:subtitle')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('itunes:subtitle')[0].textContent : xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('description')[0].textContent
+                let DurationKey = ((xmlDoc.getElementsByTagName('itunes:duration').length === 0) ? 'duration' : 'itunes:duration')
 
 
                 var Duration = ""
