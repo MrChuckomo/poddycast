@@ -2,7 +2,6 @@
 
 const { BrowserWindow } = require('electron').remote
 
-const { systemPreferences } = require('electron')
 var CCOntentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 

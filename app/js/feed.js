@@ -61,28 +61,28 @@ function saveLatestEpisode(_Content, _eRequest, _Options) {
             } else {
                 // NOTE: Parse a real feed and just access the last element
 
-                let Parser = new DOMParser();
-                let xmlDoc = Parser.parseFromString(_Content, 'text/xml');
+                Parser = new DOMParser();
+                xmlDoc = Parser.parseFromString(_Content,"text/xml");
 
-                let ChannelName = xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('title')[0].childNodes[0].nodeValue
-                let EpisodeTitle = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('title')[0].childNodes[0].nodeValue
-                let EpisodeLength = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('length') : ''
-                let EpisodeType = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('type') : ''
-                let EpisodeUrl = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('enclosure')[0].getAttribute('url') : ''
-                let EpisodeDescription = xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('itunes:subtitle')[0] !== undefined ? xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('itunes:subtitle')[0].textContent : xmlDoc.getElementsByTagName('item')[0].getElementsByTagName('description')[0].textContent
-                let DurationKey = ((xmlDoc.getElementsByTagName('itunes:duration').length === 0) ? 'duration' : 'itunes:duration')
-                let Duration = ''
+                var ChannelName   = xmlDoc.getElementsByTagName("channel")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                var EpisodeTitle  = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("title")[0].childNodes[0].nodeValue
+                var EpisodeLength = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("length") : ''
+                var EpisodeType   = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("type") : ''
+                var EpisodeUrl    = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName("enclosure")[0].getAttribute("url") : ''
+                var EpisodeDescription = xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0] !== undefined ? xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('itunes:subtitle')[0].textContent : xmlDoc.getElementsByTagName("item")[0].getElementsByTagName('description')[0].textContent
+                var DurationKey   = ((xmlDoc.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
-                if (xmlDoc.getElementsByTagName(DurationKey).length > 0) {
-                    Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName(DurationKey)[0].innerHTML.split(':'))
 
-                    if (Duration.hours === 0 && Duration.minutes === 0) {
-                        Duration = ''
-                    } else {
-                        Duration = Duration.hours + 'h ' + Duration.minutes + 'min'
+                var Duration = ""
+                if (xmlDoc.getElementsByTagName(DurationKey).length > 0)
+                {
+                    var Duration = parseFeedEpisodeDuration(xmlDoc.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
+
+                    if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
+                    else if (Duration != null)
+                    {                        
+                        Duration = (Duration.hours != "0" ? Duration.hours + "h " : "") + Duration.minutes + "min"
                     }
-                } else {
-                    Duration = ''
                 }
 
                 // NOTE: save latest episode if not already in History
@@ -294,26 +294,26 @@ function processEpisodes(_Content) {
 
         // NOTE: Just enter if the current item contains an enclosure tag
 
-        if (Item.getElementsByTagName('enclosure').length > 0) {
-            let EpisodeTitle = Item.getElementsByTagName('title')[0].childNodes[0].nodeValue
-            let EpisodeLength = Item.getElementsByTagName('enclosure')[0].getAttribute('length')
-            let EpisodeType = Item.getElementsByTagName('enclosure')[0].getAttribute('type')
-            let EpisodeUrl = Item.getElementsByTagName('enclosure')[0].getAttribute('url')
-            let EpisodeDescription = Item.getElementsByTagName('itunes:subtitle')[0] !== undefined ? Item.getElementsByTagName('itunes:subtitle')[0].textContent : Item.getElementsByTagName('description')[0].textContent
-            let PubDate = Item.getElementsByTagName('pubDate')[0].childNodes[0].nodeValue
-            let DurationKey = ((Item.getElementsByTagName('itunes:duration').length === 0) ? 'duration' : 'itunes:duration')
-            let Duration = ''
+        if (Item.getElementsByTagName("enclosure").length > 0)
+        {
+            var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
+            var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
+            var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
+            var EpisodeUrl    = Item.getElementsByTagName("enclosure")[0].getAttribute("url")
+            var EpisodeDescription = Item.getElementsByTagName('itunes:subtitle')[0] !== undefined ? Item.getElementsByTagName('itunes:subtitle')[0].textContent : Item.getElementsByTagName('description')[0].textContent
+            var PubDate       = Item.getElementsByTagName("pubDate")[0].childNodes[0].nodeValue
+            var DurationKey   = ((Item.getElementsByTagName("itunes:duration").length == 0) ? "duration" : "itunes:duration")
 
-            if ((Item.getElementsByTagName(DurationKey).length > 0)) {
-                Duration = parseFeedEpisodeDuration(Item.getElementsByTagName(DurationKey)[0].innerHTML.split(':'))
+            var Duration = ""
+            if (Item.getElementsByTagName(DurationKey).length > 0)
+            {
+                var Duration = parseFeedEpisodeDuration(Item.getElementsByTagName(DurationKey)[0].innerHTML.split(":"))
 
-                if (Duration.hours === 0 && Duration.minutes === 0) {
-                    Duration = ''
-                } else {
-                    Duration = Duration.hours + 'h ' + Duration.minutes + 'min'
+                if (Duration.hours == 0 && Duration.minutes == 0) { Duration = "" }
+                else if (Duration != null)
+                {
+                    Duration = (Duration.hours != "0" ? Duration.hours + "h " : "") + Duration.minutes + "min"
                 }
-            } else {
-                Duration = ''
             }
 
             let ListElement = buildListItem(new cListElement(
