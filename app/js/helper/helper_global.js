@@ -139,6 +139,9 @@ function setTitlebarOnWin() {
         $('.container-after-titlebar').css('top', 'var(--titlebar-height)');
         $( '#content-left' ).height('calc(100% - var(--titlebar-height))');
         $( '#content-right' ).height('calc(100% - var(--titlebar-height))');
+        $('.window-controls-container').height('var(--titlebar-height)');
+        
+        $('.window-title').css('font-size', 'inherit');
         
         function setMenuBarVisibility(visibility) {
             if(visibility)
