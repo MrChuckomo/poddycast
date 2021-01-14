@@ -39,7 +39,7 @@ function darkMode()
 
         if(titlebar != null) {
             const customTitlebar = require('custom-electron-titlebar');
-            titlebar.updateBackground(customTitlebar.Color.fromHex('#ccc'));
+            titlebar.updateBackground(customTitlebar.Color.fromHex('#bbb'));
         }
     }
 }
