@@ -132,7 +132,7 @@ function setTitlebarOnWin() {
     if(isWindows()) {
         const customTitlebar = require('custom-electron-titlebar');
         titlebar = new customTitlebar.Titlebar({
-            backgroundColor: customTitlebar.Color.fromHex('#ccc')
+            backgroundColor: customTitlebar.Color.fromHex('#bbb')
         });
         $(':root').css('--titlebar-height', '35px');
         $('.titlebar').height('var(--titlebar-height)');
@@ -141,7 +141,9 @@ function setTitlebarOnWin() {
         $( '#content-right' ).height('calc(100% - var(--titlebar-height))');
         $('.window-controls-container').height('var(--titlebar-height)');
         
-        $('.window-title').css('font-size', 'inherit');
+        $('.window-title').css('font-size', 'inherit')
+                          .css('margin', 'auto')
+                          .css('line-height', 'normal');
         
         function setMenuBarVisibility(visibility) {
             if(visibility)
