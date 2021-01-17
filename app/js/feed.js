@@ -17,16 +17,18 @@ function checkDateIsInTheLastWeek(episode) {
 }
 
 function compareEpisodeDates(episode1, episode2) {
-    
-    let pubDate1 = (episode1.pubDate ? episode1.pubDate : getInfoEpisodeByObj(episode1).pubDate);
-    let pubDate2 = (episode2.pubDate ? episode2.pubDate : getInfoEpisodeByObj(episode2).pubDate);
-    let date1 = new Date(pubDate1);
-    let date2 = new Date(pubDate2);
-    if(date1.getTime() < date2.getTime())
-        return -1;
-    if(date1.getTime() > date2.getTime())
-        return 1;
-    return 0;
+    if(episode1 && episode2) {
+      let pubDate1 = (episode1.pubDate ? episode1.pubDate : getInfoEpisodeByObj(episode1).pubDate);
+      let pubDate2 = (episode2.pubDate ? episode2.pubDate : getInfoEpisodeByObj(episode2).pubDate);
+      let date1 = new Date(pubDate1);
+      let date2 = new Date(pubDate2);
+      if(date1.getTime() < date2.getTime())
+          return -1;
+      if(date1.getTime() > date2.getTime())
+          return 1;
+      return 0;
+      }
+    return undefined;
 }
 
 
