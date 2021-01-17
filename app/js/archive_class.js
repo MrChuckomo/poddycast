@@ -11,17 +11,17 @@ class ArchiveEpisodesUI extends ListUI {
     }
 
     add(episode, i) {
-        setItemCounts();
         if(this.isArchivePage()) {
             super.add(episode, i);
         }
+        setItemCounts();
     }
 
     removeByEpisodeUrl(episodeUrl) {
-        setItemCounts();
         if(this.isArchivePage()) {
             super.removeByEpisodeUrl(episodeUrl, this.dataObject.episodes);
         }
+        setItemCounts();
     }
 
     showAll() {
