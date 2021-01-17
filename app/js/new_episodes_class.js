@@ -18,9 +18,10 @@ class NewEpisodesUI extends ListUI {
     }
 
     add(episode, i) {
-        setItemCounts();
         if(this.isNewEpisodesPage() || this.isPlaylistPage())
             super.add(episode, i);
+        
+        setItemCounts();
     }
 
 
@@ -47,9 +48,10 @@ class NewEpisodesUI extends ListUI {
     }
 
     removeByEpisodeUrl(episodeUrl) {
-        setItemCounts();
         if(this.isNewEpisodesPage() || this.isPlaylistPage()) 
             super.removeByEpisodeUrl(episodeUrl);
+        
+        setItemCounts();
     }
 
     showAll() {
@@ -67,6 +69,8 @@ class NewEpisodesUI extends ListUI {
                 epShownCounter++;
             }
         }
+        setItemCounts();
+        
         let length = this.length()
 
         this.firstEpisodeDisplayed = 0;
