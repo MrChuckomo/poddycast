@@ -20,7 +20,8 @@ h1 {
     display: grid;
     grid-template-rows: 70px 1fr 60px;
     grid-template-columns: 100%;
-    grid-template-areas: "right-header" "list" "audio-player"
+    grid-template-areas: "right-header" "list" "audio-player";
+    overflow: hidden;
 }
 
 #content-right-header {
