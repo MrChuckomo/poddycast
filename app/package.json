@@ -1,6 +1,12 @@
 {
     "main": "main.js",
     "name": "Poddycast",
+    "description": "A Podcast app made with Electron because I love Podcasts.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MrChuckomo/poddycast.git"
+    },
+    "license": "GPL-3.0",
     "version": "0.6.1",
     "scripts": {
         "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
@@ -11,7 +17,7 @@
         "start": "electron ."
     },
     "dependencies": {
-        "electron": "^8.2.1"
+        "electron": "^11.2.1"
     },
     "devDependencies": {
         "electron-packager": "^14.2.1",
