@@ -328,6 +328,41 @@ h1
         "ptitle";
 }
 
+/* Styles for Podcast Feed with broken URL */
+.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken {
+    position: relative;
+}
+
+.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken img {
+    border: 2px solid red;
+}
+
+.icon-link-broken-wrapper {
+    position: absolute;
+    top: 0;
+    right: 4px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 8px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+}
+
+.icon-link-broken-wrapper svg {
+    margin-left: 0;
+    opacity: 1;
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+/* Styles for Podcast Feed with working URL */
+.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-working img {}
+
 .grid-layout .podcast-entry .podcast-entry-header img
 {
     grid-area: pimage;

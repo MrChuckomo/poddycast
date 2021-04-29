@@ -1,3 +1,5 @@
+'use strict'
+
 const { app, Menu } = require('electron').remote
 const opml = require('./js/import_export')
 
@@ -18,28 +20,50 @@ const template =
                 click() { opml.export() }
             },
             {type: 'separator'},
-            {role: 'cut', label: i18n.__('Cut')},
-            {role: 'copy', label: i18n.__('Copy')},
-            {role: 'paste', label: i18n.__('Paste')}
+            {
+                label: i18n.__('Cut'),
+                role: 'cut'
+            },
+            {
+                label: i18n.__('Copy'),
+                role: 'copy'
+            },
+            {
+                label: i18n.__('Paste'),
+                role: 'paste'
+            }
         ]
     },
     {
         label: i18n.__('View'),
         submenu:
         [
-            {role: 'reload', label: i18n.__('Reload')},
-            // {role: 'forcereload'},
-            {type: 'separator'},
-            {role: 'resetzoom', label: i18n.__('Reset Zoom')},
-            {role: 'zoomin', label: i18n.__('Zoom In')},
-            {role: 'zoomout', label: i18n.__('Zoom Out')},
+            {
+                label: i18n.__('Reload'),
+                role: 'reload'
+            },
             {type: 'separator'},
             {
-                label: i18n.__('Dark Mode'),
-                type: "checkbox",
-                accelerator: "CommandOrControl+Alt+L",
+                label: i18n.__('Reset Zoom'),
+                role: 'resetzoom'
+            },
+            {
+                label: i18n.__('Zoom In'),
+                role: 'zoomin'
+            },
+            {
+                label: i18n.__('Zoom Out'),
+                role: 'zoomout'
+            },
+            {type: 'separator'},
+            {
+                accelerator: 'CommandOrControl+Alt+L',
                 checked: getPreference('darkmode'),
-                click() { darkMode() }
+                click() {
+                    darkMode()
+                },
+                label: i18n.__('Dark Mode'),
+                type: 'checkbox',
             },
             {role: 'togglefullscreen', label: i18n.__('Toggle Full Screen')}
         ]
@@ -49,30 +73,32 @@ const template =
         submenu:
         [
             {
+                accelerator: 'Space',
                 label: i18n.__('Play/Pause'),
-                accelerator: "Space",
-                click()
-                {
+                click() {
                     // NOTE: if focus is not in any input field (search, playlist)
-                    if (document.activeElement.type == undefined)
-                    {
+                    if (document.activeElement.type === undefined) {
                         // console.log(document.activeElement);
                         // console.log(document.activeElement.type);
                         // console.log(Object.prototype.toString.call(document.activeElement));
-                        playPause("play-pause")
+                        playPause('play-pause')
                     }
                 }
             },
             {type: 'separator'},
             {
-                label: i18n.__('30sec Reply'),
-                accelerator: "Left",
-                click() { playReply() }
+                accelerator: 'Left',
+                click() {
+                    playReply()
+                },
+                label: i18n.__('30sec Reply')
             },
             {
-                label: i18n.__("30sec Forward"),
-                accelerator: "Right",
-                click() { playForward() }
+                accelerator: 'Right',
+                click() {
+                    playForward()
+                },
+                label: i18n.__('30sec Forward')
             }
         ]
     },
@@ -81,36 +107,48 @@ const template =
         submenu:
         [
             {
-                label: i18n.__("Search"),
-                accelerator: "CommandOrControl+F",
-                click() { focusTextField("search-input") }
+                accelerator: 'CommandOrControl+F',
+                click() {
+                    focusTextField('search-input')
+                },
+                label: i18n.__('Search')
             },
             {type: 'separator'},
             {
-                label: i18n.__("New Episodes"),
-                accelerator: "CommandOrControl+1",
-                click() { selectMenuItem("menu-episodes"); showNewEpisodes() }
+                accelerator: 'CommandOrControl+1',
+                click() {
+                    selectMenuItem('menu-episodes'); showNewEpisodes()
+                },
+                label: i18n.__('New Episodes')
             },
             {
-                label: i18n.__("Favorites"),
-                accelerator: "CommandOrControl+2",
-                click() { selectMenuItem("menu-favorites"); showFavorites() }
+                accelerator: 'CommandOrControl+2',
+                click() {
+                    selectMenuItem('menu-favorites'); showFavorites()
+                },
+                label: i18n.__('Favorites')
             },
             {
-                label: i18n.__("History"),
-                accelerator: "CommandOrControl+3",
-                click() { selectMenuItem("menu-history"); showHistory() }
+                accelerator: 'CommandOrControl+3',
+                click() {
+                    selectMenuItem('menu-history'); showHistory()
+                },
+                label: i18n.__('History')
             },
             {
-                label: i18n.__("Statistics"),
-                accelerator: "CommandOrControl+4",
-                click() { selectMenuItem("menu-statistics"); showStatistics() }
+                accelerator: 'CommandOrControl+4',
+                click() {
+                    selectMenuItem('menu-statistics'); showStatistics()
+                },
+                label: i18n.__('Statistics')
             },
             {type: 'separator'},
             {
-                label: i18n.__("New List"),
-                accelerator: "CommandOrControl+N",
-                click() { focusTextField("new_list-input") }
+                accelerator: 'CommandOrControl+N',
+                click() {
+                    focusTextField('new_list-input')
+                },
+                label: i18n.__('New List')
             }
         ]
     },
@@ -119,17 +157,22 @@ const template =
         submenu:
         [
             {
-                label: i18n.__("Proxy Mode"),
-                type: "checkbox",
+                accelerator: 'CommandOrControl+Alt+P',
                 checked: getPreference('proxymode'),
-                accelerator: "CommandOrControl+Alt+P",
-                click() { setProxyMode() }
-            },{
-                label: i18n.__("Minimize"),
-                type: "checkbox",
+                click() {
+                    setProxyMode()
+                },
+                label: i18n.__('Proxy Mode'),
+                type: 'checkbox'
+            },
+            {
+                accelerator: 'CommandOrControl+Alt+M',
                 checked: getPreference('minimize'),
-                accelerator: "CommandOrControl+Alt+M",
-                click() { setMinimize() }
+                click() {
+                    setMinimize()
+                },
+                label: i18n.__('Minimize'),
+                type: 'checkbox'
             },
             {type: 'separator'},
             {role: 'toggledevtools'}
@@ -137,10 +180,8 @@ const template =
     }
 ]
 
-if (process.platform === 'darwin')
-{
-    template.unshift
-    ({
+if (process.platform === 'darwin') {
+    template.unshift({
         label: app.getName(),
         submenu:
         [

@@ -9,7 +9,8 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
         "artworkUrl60": _Artwork60,
         "artworkUrl100": _Artwork100,
         "feedUrl": _FeedUrl,
-        "addToInbox": true
+        "addToInbox": true,
+        "feedUrlStatus": 200 // Set default URL status to 200
     }
 
     if (_Self !== null) {
@@ -17,7 +18,7 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
         _Self.classList.add("set-favorite")
     }
 
-    var JsonContent = []
+    let JsonContent = []
 
     if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
@@ -28,8 +29,7 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
         fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
     }
 
-    if (!isAlreadySaved(_FeedUrl))
-    {
+    if (!isAlreadySaved(_FeedUrl)) {
         JsonContent.push(Feed)
     }
 

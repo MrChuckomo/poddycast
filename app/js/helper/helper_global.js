@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs')
 const os = require('os')
 
@@ -50,8 +52,7 @@ function init()
         upgradeSettingsFile()
     }
 
-    if (!fs.existsSync(preferencesFilePath))
-    {
+    if (!fs.existsSync(preferencesFilePath)) {
         fs.openSync(preferencesFilePath, 'w');
 
         setPreference('darkmode', false)
@@ -70,9 +71,8 @@ function init()
     document.getElementById("player").defaultPlaybackRate = parseFloat(getPreference('playspeed'))
 }
 
-function fileExistsAndIsNotEmpty(_File)
-{
-    return (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
+function fileExistsAndIsNotEmpty(_File) {
+    return (fs.existsSync(_File) && fs.readFileSync(_File, 'utf-8') !== '')
 }
 
 function upgradeSettingsFile()
@@ -113,14 +113,11 @@ function isAlreadySaved(_FeedUrl)
 {
     var FeedExists  = false;
 
-    if (fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    if (fs.readFileSync(saveFilePath, "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i ++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i ++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 FeedExists = true
                 break
             }
@@ -130,18 +127,14 @@ function isAlreadySaved(_FeedUrl)
     return FeedExists
 }
 
-function isEpisodeAlreadySaved(_EpisodeTitle)
-{
-    var FeedExists  = false;
+function isEpisodeAlreadySaved(_EpisodeTitle) {
+    let FeedExists = false;
 
-    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
-    {
+    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
         var JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i ++)
-        {
-            if (JsonContent[i].episodeTitle == _EpisodeTitle)
-            {
+        for (let i = 0; i < JsonContent.length; i ++) {
+            if (JsonContent[i].episodeTitle === _EpisodeTitle) {
                 FeedExists = true
                 break
             }
@@ -151,19 +144,15 @@ function isEpisodeAlreadySaved(_EpisodeTitle)
     return FeedExists
 }
 
-function isAlreadyInPlaylist(_ListName, _PodcastName)
-{
-    var JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
-    var Result      = false
+function isAlreadyInPlaylist(_ListName, _PodcastName) {
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
+    let Result = false
 
-    for (var i = 0; i < JsonContent.length; i++)
-    {
-        if (JsonContent[i].playlistName == _ListName)
-        {
-            for (var j = 0; j < JsonContent[i].podcastList.length; j++)
-            {
-                if (JsonContent[i].podcastList[j] == _PodcastName)
-                {
+
+    for (let i = 0; i < JsonContent.length; i++) {
+        if (JsonContent[i].playlistName === _ListName) {
+            for (let j = 0; j < JsonContent[i].podcastList.length; j++) {
+                if (JsonContent[i].podcastList[j] === _PodcastName) {
                     Result = true
                     break
                 }
@@ -174,20 +163,15 @@ function isAlreadyInPlaylist(_ListName, _PodcastName)
     return Result
 }
 
-function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
-{
-    var DestinationValue = null
+function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value) {
+    let DestinationValue = null
 
-    if (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(_File, "utf-8"))
+    if (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(_File, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i][_ReferenceTag] == _Value)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i][_ReferenceTag] === _Value) {
                 DestinationValue = JsonContent[i][_DestinationTag]
-
                 break
             }
         }
@@ -196,31 +180,26 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value)
     return DestinationValue
 }
 
-function clearTextField(_InputField)
-{
-    _InputField.value = ""
+function clearTextField(_InputField) {
+    _InputField.value = ''
 }
 
-function focusTextField(_InputField)
-{
+function focusTextField(_InputField) {
     document.getElementById(_InputField).focus()
 }
 
-function loseFocusTextField(_InputField)
-{
+function loseFocusTextField(_InputField) {
     document.getElementById(_InputField).blur()
 }
 
-function getFullTime(_TimeInSeconds)
-{
-    var FullTime = {}
-
-    var Hours = Math.floor(_TimeInSeconds / 3600)
+function getFullTime(_TimeInSeconds) {
+    let FullTime = {}
+    let Hours = Math.floor(_TimeInSeconds / 3600)
 
     _TimeInSeconds = _TimeInSeconds - (Hours * 3600)
 
-    var Minutes = Math.floor(_TimeInSeconds / 60)
-    var Seconds = Math.floor(_TimeInSeconds - (Minutes * 60))
+    let Minutes = Math.floor(_TimeInSeconds / 60)
+    let Seconds = Math.floor(_TimeInSeconds - (Minutes * 60))
 
     FullTime.hours = Hours
     FullTime.minutes = Minutes
@@ -229,32 +208,28 @@ function getFullTime(_TimeInSeconds)
     return FullTime
 }
 
-function parseFeedEpisodeDuration(_Duration)
-{
-    var Time = {}
+function parseFeedEpisodeDuration(_Duration) {
+    let Time = {}
+    let Hours = '0'
+    let Minutes = '0'
 
-    if (_Duration.length == 1)
-    {
-        var Time    = getFullTime(_Duration[0] * 60)
-        var Hours   = "0"
-        var Minutes = Time.hours.toString()
-    }
-    else if (_Duration.length == 2)
-    {
-        var Time    = getFullTime(_Duration[0] * 60)
-        var Hours   = Time.hours.toString()
-        var Minutes = Time.minutes.toString()
-    }
-    else
-    {
-        var Hours   = _Duration[0]
-        var Minutes = _Duration[1]
+    if (_Duration.length === 1) {
+        Time = getFullTime(_Duration[0] * 60)
+        Hours = '0'
+        Minutes = Time.hours.toString()
+    } else if (_Duration.length === 2) {
+        Time = getFullTime(_Duration[0] * 60)
+        Hours = Time.hours.toString()
+        Minutes = Time.minutes.toString()
+    } else {
+        Hours = _Duration[0]
+        Minutes = _Duration[1]
     }
 
-    Hours   = Hours.replace(/^0/, "")
-    Minutes = Minutes.replace(/^0/, "")
+    Hours = Hours.replace(/^0/, '')
+    Minutes = Minutes.replace(/^0/, '')
 
-    Time.hours = ((Hours == "") ? "0" : Hours)
+    Time.hours = ((Hours === '') ? '0' : Hours)
     Time.minutes = Minutes
 
     return Time
@@ -264,43 +239,36 @@ function parseFeedEpisodeDuration(_Duration)
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setProxyMode()
-{
+function setProxyMode() {
     const { app, Menu } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    let MenuItems = Menu.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0; i--)
-    {
-        if (MenuItems[i].label == i18n.__('Settings'))
-        {
+    for (let i = MenuItems.length - 1; i >= 0; i--) {
+        if (MenuItems[i].label === i18n.__('Settings')) {
+
             // NOTE: Item 0 is "Use Proxy" for now
 
             ProxySettings = MenuItems[i].submenu.items[0].checked
 
-            if (ProxySettings)
-            {
+            if (ProxySettings) {
                 setPreference('proxymode', true)
-            }
-            else
-            {
+            } else {
                 setPreference('proxymode', false)
             }
         }
     }
 }
 
-function isProxySet()
-{
-    var ProxySettings = false;
+function isProxySet() {
+    let ProxySettings = false
     const { app, Menu } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    let MenuItems = Menu.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0; i --)
-    {
-        if (MenuItems[i].label == i18n.__('Settings'))
-        {
+    for (let i = MenuItems.length - 1; i >= 0; i --) {
+        if (MenuItems[i].label === i18n.__('Settings')) {
+
             // NOTE: Item 0 is "Use Proxy" for now
 
             ProxySettings = MenuItems[i].submenu.items[0].checked
@@ -326,19 +294,15 @@ function addToSettings(_PodcastName, _FeedUrl)
             "addToInbox": true,
         }
 
-        var JsonContent = []
+        let JsonContent = []
 
-        if (fs.existsSync(settingsFilePath) && fs.readFileSync(settingsFilePath, "utf-8") != "")
-        {
+        if (fs.existsSync(settingsFilePath) && fs.readFileSync(settingsFilePath, "utf-8") != "") {
             JsonContent = JSON.parse(fs.readFileSync(settingsFilePath, "utf-8"))
-        }
-        else
-        {
+        } else {
             fs.writeFileSync(settingsFilePath, JSON.stringify(JsonContent))
         }
 
-        if (!isInSettings(_FeedUrl))
-        {
+        if (!isInSettings(_FeedUrl)) {
             JsonContent.push(SettingsObject)
         }
 
@@ -380,12 +344,9 @@ function isAddedToInbox(_FeedUrl)
     {
         var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 ToInbox = JsonContent[i].addToInbox
-
                 break
             }
         }
@@ -394,20 +355,16 @@ function isAddedToInbox(_FeedUrl)
     return ToInbox
 }
 
-function isInSettings(_FeedUrl)
-{
-    var Result = false
+function isInSettings(_FeedUrl) {
+    let Result = false
 
     if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
     {
         var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 Result = true
-
                 break
             }
         }
@@ -427,12 +384,9 @@ function changeSettings(_FeedUrl, _ToInbox)
     {
         var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 JsonContent[i].addToInbox = _ToInbox
-
                 break
             }
         }
@@ -467,26 +421,21 @@ function isFeedUrlSaved(_FeedUrl)
     return false
 }
 
-function setMinimize()
-{
+function setMinimize() {
     const { app, Menu } = require('electron').remote
 
-    var MenuItems = Menu.getApplicationMenu().items
+    let MenuItems = Menu.getApplicationMenu().items
 
-    for (var i = MenuItems.length - 1; i >= 0; i--)
-    {
-        if (MenuItems[i].label == i18n.__('Settings'))
-        {
+    for (let i = MenuItems.length - 1; i >= 0; i--) {
+        if (MenuItems[i].label === i18n.__('Settings')) {
+
             // NOTE: Item 0 is "Use Proxy" for now
 
             MinimizeSettings = MenuItems[i].submenu.items[1].checked
 
-            if (MinimizeSettings)
-            {
+            if (MinimizeSettings) {
                 setPreference('minimize', true)
-            }
-            else
-            {
+            } else {
                 setPreference('minimize', false)
             }
         }
@@ -497,17 +446,14 @@ function setMinimize()
 // PREFERENCES
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setPreference(_Key, _Value)
-{
-    if (fs.existsSync(preferencesFilePath))
-    {
-        if (fs.readFileSync(preferencesFilePath, "utf-8") == "")
-        {
-            var JsonContent = {}
-        }
-        else
-        {
-            var JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, "utf-8"))
+function setPreference(_Key, _Value) {
+    if (fs.existsSync(preferencesFilePath)) {
+        let JsonContent = {}
+
+        if (fs.readFileSync(preferencesFilePath, 'utf-8') === '') {
+            JsonContent = {}
+        } else {
+            JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, 'utf-8'))
         }
 
         JsonContent[_Key] = _Value
@@ -516,12 +462,9 @@ function setPreference(_Key, _Value)
     }
 }
 
-
-function getPreference(_Key)
-{
-    if (fs.existsSync(preferencesFilePath) && fs.readFileSync(preferencesFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, "utf-8"))
+function getPreference(_Key) {
+    if (fs.existsSync(preferencesFilePath) && fs.readFileSync(preferencesFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, 'utf-8'))
 
         return JsonContent[_Key]
     }

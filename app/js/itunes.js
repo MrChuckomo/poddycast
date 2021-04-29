@@ -1,86 +1,73 @@
-var CContentHelper = require('./js/helper/content')
+'use strict'
 
+var CContentHelper = require('./js/helper/content')
 var helper = new CContentHelper()
 
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
 
 
-function getPodcasts(_SearchTerm)
-{
+function getPodcasts(_SearchTerm) {
     _SearchTerm = encodeURIComponent(_SearchTerm)
 
-    if (isProxySet())
-    {
+    if (isProxySet()) {
         makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
-    }
-    else
-    {
+    } else {
         makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https)
     }
 }
 
-function getResults(_Data)
-{
-    var obj = JSON.parse(_Data);
+function getResults(_Data) {
+    let obj = JSON.parse(_Data);
 
     helper.clearContent()
 
-    var List = document.getElementById("list")
+    let List = document.getElementById('list')
 
     setGridLayout(List, false)
 
-    for (var i = 0; i < obj.results.length; i++)
-    {
-        var PodcastInfos = {
-            "feedUrl": obj.results[i].feedUrl,
-            "artistName": obj.results[i].artistName,
-            "collectionName": obj.results[i].collectionName,
-            "artworkUrl30": obj.results[i].artworkUrl30,
-            "artworkUrl60": obj.results[i].artworkUrl60,
-            "artworkUrl100": obj.results[i].artworkUrl100,
+    for (let i = 0; i < obj.results.length; i++) {
+        let PodcastInfos = {
+            'artistName': obj.results[i].artistName,
+            'artworkUrl100': obj.results[i].artworkUrl100,
+            'artworkUrl30': obj.results[i].artworkUrl30,
+            'artworkUrl60': obj.results[i].artworkUrl60,
+            'collectionName': obj.results[i].collectionName,
+            'feedUrl': obj.results[i].feedUrl
         }
 
-        var Icon = getIcon(PodcastInfos)
+        let Icon = getIcon(PodcastInfos)
 
-        if (isAlreadySaved(PodcastInfos.feedUrl))
-        {
+        if (isAlreadySaved(PodcastInfos.feedUrl)) {
             Icon = getFullIcon(PodcastInfos)
         }
 
-        List.append(buildListItem(new cListElement
-        (
+        List.append(buildListItem(new cListElement (
             [
                 getImagePart(obj.results[i].artworkUrl60),
                 getBoldTextPart(obj.results[i].collectionName),
                 getSubTextPart(obj.results[i].artistName),
                 getIconButtonPart(Icon)
             ],
-            "5em 1fr 1fr 5em"
+            '5em 1fr 1fr 5em'
         ), eLayout.row))
     }
 }
 
-function getCollectionName()
-{
-    chunk = document.getElementById("res").innerHTML
+function getCollectionName() {
+    let chunk = document.getElementById('res').innerHTML
+    let obj = JSON.parse(chunk);
 
-    var obj = JSON.parse(chunk);
-
-    for (var i = 0; i < obj.results.length; i++)
-    {
+    for (let i = 0; i < obj.results.length; i++) {
         console.log(obj.results[i].collectionName)
     }
 }
 
-function getArtWork()
-{
-    chunk = document.getElementById("res").innerHTML
+function getArtWork() {
+    let chunk = document.getElementById('res').innerHTML
+    let obj = JSON.parse(chunk);
 
-    var obj = JSON.parse(chunk);
-
-    for (var i = 0; i < obj.results.length; i++)
-    {
+    for (let i = 0; i < obj.results.length; i++) {
         console.log(obj.results[i].artworkUrl30)
         console.log(obj.results[i].artworkUrl60)
         console.log(obj.results[i].artworkUrl100)
@@ -91,16 +78,15 @@ function getArtWork()
 // IMAGE ICONS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getIcon(_PodcastInfos)
-{
-    var artists = _PodcastInfos.artistName.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-    var collection = _PodcastInfos.collectionName.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
-    var artwork30 = _PodcastInfos.artworkUrl30
-    var artwork60 = _PodcastInfos.artworkUrl60
-    var artwork100 = _PodcastInfos.artworkUrl100
-    var feedUrl = _PodcastInfos.feedUrl
+function getIcon(_PodcastInfos) {
+    let artists = _PodcastInfos.artistName.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+    let collection = _PodcastInfos.collectionName.replace(/([\'])/g, "\\'").replace(/([\"])/g, '&quot;')
+    let artwork30 = _PodcastInfos.artworkUrl30
+    let artwork60 = _PodcastInfos.artworkUrl60
+    let artwork100 = _PodcastInfos.artworkUrl100
+    let feedUrl = _PodcastInfos.feedUrl
 
-    var Icon =
+    let Icon =
     `
         <svg onclick="setFavorite(this, '` + artists + `', '` + collection + `', '` + artwork30 + `', '` + artwork60 + `', '` + artwork100 + `', '` + feedUrl + `')" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0h24v24H0z" fill="none"/>
@@ -111,9 +97,8 @@ function getIcon(_PodcastInfos)
     return Icon
 }
 
-function getFullIcon(_PodcastInfos)
-{
-    var Icon =
+function getFullIcon(_PodcastInfos) {
+    let Icon =
     `
         <svg class="set-favorite" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0h24v24H0z" fill="none"/>

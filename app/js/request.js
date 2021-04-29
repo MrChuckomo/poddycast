@@ -1,59 +1,66 @@
+'use strict'
 
-var http  = require('http')
-var https = require('https')
+const http  = require('http')
+const https = require('https')
 const axios = require('axios')
 const xml = require('xml2json')
 
-var eRequest =
-{
+const eRequest = {
     http: 1,
-    https: 2,
+    https: 2
 }
 
-function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest)
-{
+function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     // NOTE: Give the result JSON string to the given _Callback methode
     // NOTE: The _Callback methode need one argument to catch the JSON result string
 
-    var Req = undefined
+    let Req = undefined
 
-    switch (_eRequest)
-    {
-        case eRequest.http:
-            Req = http.request(_Options, function (_Res)
-            {
-                var Chunks = []
+    switch (_eRequest) {
+    case eRequest.http:
+        Req = http.request(_Options, function (_Res) {
+            let Chunks = [];
 
-                _Res.on("data", function (_Chunk) { Chunks.push(_Chunk) })
-                _Res.on("end",  function ()       { _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options) })
-            })
-            break
+            _Res.on('data', function (_Chunk) {
+                Chunks.push(_Chunk);
+            });
 
-        case eRequest.https:
-        default:
-            Req = https.request(_Options, function (_Res)
-            {
-                var Chunks = []
+            updateFeedURLStatus(true, _Options);
+        })
+        break;
 
-                _Res.on("data", function (_Chunk) { Chunks.push(_Chunk) })
-                _Res.on("end",  function ()       { _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options) })
-            })
-            break
+    case eRequest.https:
+    default:
+        Req = https.request(_Options, function (_Res) {
+            let Chunks = [];
+
+            _Res.on('data', function (_Chunk) {
+                Chunks.push(_Chunk);
+            });
+            _Res.on('end', function () {
+                _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options)
+            });
+
+            // updateFeedURLStatus(true, _Options);
+
+        })
+        break;
     }
 
     // NOTE: In case of any error try the given fallback options (can be proxy settings)
 
-    if (Req != undefined)
-    {
-        Req.on('error', function(_Error)
-        {
-            console.log('Problem with request: ' + _Error.message)
+    if (Req !== undefined) {
+        Req.on('error', function(_Error) {
+            console.log('Problem with request: ' + _Error.message);
 
-            if (_FallbackOptions != null)
-            {
-                console.log('Use fallback options: ' + _FallbackOptions)
+            updateFeedURLStatus(false, _Options);
 
-                makeRequest(_FallbackOptions, null, _Callback, _eRequest)
+            if (_FallbackOptions != null) {
+                console.log('Use fallback options: ' + _FallbackOptions);
+
+                makeRequest(_FallbackOptions, null, _Callback, _eRequest);
+
+                updateFeedURLStatus(false, _Options);
             }
         })
 
@@ -77,20 +84,14 @@ function makeFeedRssRequest(_FeedUrl)
 }
 module.exports.makeFeedRssRequest = makeFeedRssRequest
 
-function makeFeedRequest(_Feed, _Callback)
-{
-    if (_Feed instanceof Object)
-    {
+
+function makeFeedRequest(_Feed, _Callback) {
+    if (_Feed instanceof Object) {
         makeRequest(_Feed, null, _Callback, eRequest.http)
-    }
-    else
-    {
-        if (_Feed.includes("https"))
-        {
+    } else {
+        if (_Feed.includes('https')) {
             makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.https)
-        }
-        else
-        {
+        } else {
             makeRequest(_Feed, getFeedProxyOptions(_Feed), _Callback, eRequest.http)
         }
     }
@@ -98,44 +99,40 @@ function makeFeedRequest(_Feed, _Callback)
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getITunesOptions(_SearchTerm)
-{
-    var Options =
-    {
-        method: 'GET',
+function getITunesOptions(_SearchTerm) {
+    let Options = {
         host: 'itunes.apple.com',
-        port: 443,
-        path: '/search?term=' + _SearchTerm + '&media=podcast'
-    }
-
-    return Options
-}
-
-function getITunesProxyOptions(_SearchTerm)
-{
-    var Options =
-    {
         method: 'GET',
-        host: 'proxy',
-        port: 8080,
-        path: 'http://itunes.apple.com/search?term=' + _SearchTerm + '&media=podcast'
+        path: '/search?term=' + _SearchTerm + '&media=podcast',
+        port: 443
     }
 
     return Options
 }
 
-function getFeedProxyOptions(_Url)
-{
-    var Options =
-    {
+function getITunesProxyOptions(_SearchTerm) {
+    let Options = {
+        host: 'proxy',
         method: 'GET',
-        host: 'proxy',
-        port: 8080,
-        path: _Url
+        path: 'http://itunes.apple.com/search?term=' + _SearchTerm + '&media=podcast',
+        port: 8080
     }
 
     return Options
 }
+
+function getFeedProxyOptions(_Url) {
+    let Options = {
+        host: 'proxy',
+        method: 'GET',
+        path: _Url,
+        port: 8080
+    }
+
+    return Options
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 
 // Using rss-to-json source https://github.com/nasa8x/rss-to-json/blob/master/src/rss.js
 function parseXmlToJson(_Xml) {
@@ -259,4 +256,37 @@ function parseXmlToJson(_Xml) {
     }
 
     return rss
+}
+
+function updateFeedURLStatus(isURLWorking, _Options) {
+    if (_Options) {
+        var feedURL = null
+
+        if (typeof _Options === 'object' && _Options.path) {
+            feedURL = _Options.path
+        } else {
+            feedURL = _Options
+        }
+
+        feedURL = feedURL.replace(/(http|https):\/\//, '').replace('.xml', '')
+
+        // Check if JSON with feeds exists
+        if (fs.readFileSync(getSaveFilePath(), "utf-8") != "") {
+            var JsonContentOld = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+            var JsonContentNew = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+
+            for (var i = 0; i < JsonContentNew.length; i++) {
+                // Find feed item that's returning error
+                if (feedURL === JsonContentNew[i].feedUrl.replace(/(http|https):\/\//, '').replace('.xml', '')) {
+                    // Update feedUrlStatus prop
+                    JsonContentNew[i].feedUrlStatus = !isURLWorking ? 500 : 200
+                }
+            }
+
+            // Update JSON with feeds if there are changes
+            if (JsonContentOld !== JsonContentNew) {
+                fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContentNew))
+            }
+        }
+    }
 }

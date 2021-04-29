@@ -1,19 +1,31 @@
 {
     "main": "main.js",
     "name": "Poddycast",
-    "version": "0.6.1",
+    "description": "A Podcast app made with Electron because I love Podcasts.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MrChuckomo/poddycast.git"
+    },
+    "license": "GPL-3.0",
+    "version": "0.8.0",
     "scripts": {
-        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --icon=img/poddycast-app_icon",
+        "package:all": "electron-packager ./ --out=./builds --overwrite --platform=all --arch=all --icon=img/poddycast-app_icon",
         "package:linux": "electron-packager ./ --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
+        "package:linux32": "electron-packager ./ --out=./builds --overwrite --platform=linux --arch=ia32 --icon=img/poddycast-app_icon",
+        "package:linuxArm": "electron-packager ./ --out=./builds --overwrite --platform=linux --arch=armv7l --icon=img/poddycast-app_icon",
+        "package:linuxArm64": "electron-packager ./ --out=./builds --overwrite --platform=linux --arch=armv64 --icon=img/poddycast-app_icon",
+        "package:linuxMips64": "electron-packager ./ --out=./builds --overwrite --platform=linux --arch=mips64el --icon=img/poddycast-app_icon",
         "package:macappstore": "electron-packager ./ --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
         "package:osx": "electron-packager ./ --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
-        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --icon=img/poddycast-app_icon",
+        "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=x64 --icon=img/poddycast-app_icon",
+        "package:win32": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=ia32 --icon=img/poddycast-app_icon",
+        "package:winArm64": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=arm64 --icon=img/poddycast-app_icon",
         "start": "electron ."
     },
     "dependencies": {
         "axios": "0.21.1",
-        "electron": "^8.2.1",
-        "xml2json": "0.12.0"
+        "xml2json": "0.12.0",
+        "electron": "^11.2.1"
     },
     "devDependencies": {
         "electron-packager": "^14.2.1",
