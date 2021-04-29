@@ -460,10 +460,10 @@ function setIsAddedToInbox(_FeedUrl, _ToInbox)
         fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
     }
 }
+module.exports.setIsAddedToInbox = setIsAddedToInbox
 
 function isFeedUrlSaved(_FeedUrl)
 {
-
     return false
 }
 
@@ -526,5 +526,4 @@ function getPreference(_Key)
         return JsonContent[_Key]
     }
 }
-
-module.exports = getPreference
+module.exports.getPreference = getPreference
