@@ -1,4 +1,5 @@
 const { app, Menu } = require('electron').remote
+const opml = require('./js/import_export')
 
 const template =
 [
@@ -6,6 +7,17 @@ const template =
         label: i18n.__('Edit'),
         submenu:
         [
+            {
+                role: 'import',
+                label: i18n.__('Import'),
+                click() { opml.import() }
+            },
+            {
+                role: 'export',
+                label: i18n.__('Export'),
+                click() { opml.export() }
+            },
+            {type: 'separator'},
             {role: 'cut', label: i18n.__('Cut')},
             {role: 'copy', label: i18n.__('Copy')},
             {role: 'paste', label: i18n.__('Paste')}
