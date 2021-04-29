@@ -12,8 +12,10 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
         "addToInbox": true
     }
 
-    _Self.innerHTML = s_HeartFilled
-    _Self.classList.add("set-favorite")
+    if (_Self !== null) {
+        _Self.innerHTML = s_HeartFilled
+        _Self.classList.add("set-favorite")
+    }
 
     var JsonContent = []
 
@@ -35,3 +37,4 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
 
     setItemCounts()
 }
+module.exports.setFavorite = setFavorite
