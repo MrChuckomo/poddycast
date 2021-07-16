@@ -42,7 +42,7 @@ function getImagePart(_Artwork) {
 function getBoldTextPart(_Text) {
     let TextElement = document.createElement('div')
 
-    TextElement.innerHTML = _Text
+    TextElement.innerHTML = sanitizeString(_Text)
     TextElement.classList.add('list-item-bold-text')
 
     return TextElement
@@ -51,7 +51,7 @@ function getBoldTextPart(_Text) {
 function getTextPart(_Text) {
     let TextElement = document.createElement('div')
 
-    TextElement.innerHTML = _Text
+    TextElement.innerHTML = sanitizeString(_Text)
     TextElement.classList.add('list-item-text')
 
     return TextElement
@@ -61,7 +61,7 @@ function getDescriptionPart(_Icon, _Text) {
     let TextElement = document.createElement('div')
 
     TextElement.innerHTML = _Icon
-    TextElement.title = _Text
+    TextElement.title = sanitizeString(_Text)
     TextElement.classList.add('list-item-description')
     TextElement.classList.add('list-item-icon')
 
@@ -71,7 +71,7 @@ function getDescriptionPart(_Icon, _Text) {
 function getSubTextPart(_Text) {
     let TextElement = document.createElement('div')
 
-    TextElement.innerHTML = _Text
+    TextElement.innerHTML = sanitizeString(_Text)
     TextElement.classList.add('list-item-sub-text')
 
     return TextElement
@@ -80,7 +80,7 @@ function getSubTextPart(_Text) {
 function getFlagPart(_Text, _Color, _BackgroundColor) {
     let FlagElement = document.createElement('div')
 
-    FlagElement.innerHTML = _Text
+    FlagElement.innerHTML = sanitizeString(_Text)
     FlagElement.style.color = _Color
     FlagElement.style.backgroundColor = _BackgroundColor
     FlagElement.classList.add('list-item-flag')
@@ -91,7 +91,7 @@ function getFlagPart(_Text, _Color, _BackgroundColor) {
 function getTextButtonPart(_Text) {
     let ButtonElement = document.createElement('button')
 
-    ButtonElement.text = _Text
+    ButtonElement.text = sanitizeString(_Text)
 
     return ButtonElement
 }

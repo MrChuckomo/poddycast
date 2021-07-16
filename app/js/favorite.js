@@ -1,14 +1,12 @@
 'use strict'
 
 function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl) {
-    // TODO: Clean feed information before pushing to save file
-
     let Feed = {
-        'artistName': _ArtistName,
-        'collectionName': _CollectionName,
-        'artworkUrl30': _Artwork30,
-        'artworkUrl60': _Artwork60,
-        'artworkUrl100': _Artwork100,
+        'artistName': sanitizeString(_ArtistName),
+        'collectionName': sanitizeString(_CollectionName),
+        'artworkUrl30': sanitizeString(_Artwork30),
+        'artworkUrl60': sanitizeString(_Artwork60),
+        'artworkUrl100': sanitizeString(_Artwork100),
         'feedUrl': _FeedUrl,
         'addToInbox': true,
         'feedUrlStatus': 200 // Set default URL status to 200

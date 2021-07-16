@@ -281,8 +281,8 @@ function processEpisodes(_Content) {
 
     // NOTE: set settings information
 
-    document.getElementsByClassName('settings-image')[0].src = Artwork
-    document.getElementsByClassName('settings-header')[0].innerHTML = ChannelName
+    document.getElementsByClassName('settings-image')[0].src = sanitizeString(Artwork)
+    document.getElementsByClassName('settings-header')[0].innerHTML = sanitizeString(ChannelName)
     document.getElementsByClassName('settings-count')[0].innerHTML = xmlDoc.getElementsByTagName('item').length
 
     let List = document.getElementById('list')
@@ -292,8 +292,7 @@ function processEpisodes(_Content) {
 
         // NOTE: Just enter if the current item contains an enclosure tag
 
-        if (Item.getElementsByTagName("enclosure").length > 0)
-        {
+        if (Item.getElementsByTagName("enclosure").length > 0) {
             var EpisodeTitle  = Item.getElementsByTagName("title")[0].childNodes[0].nodeValue
             var EpisodeLength = Item.getElementsByTagName("enclosure")[0].getAttribute("length")
             var EpisodeType   = Item.getElementsByTagName("enclosure")[0].getAttribute("type")
@@ -341,13 +340,13 @@ function processEpisodes(_Content) {
             }
 
             ListElement.setAttribute('onclick', 'playNow(this)')
-            ListElement.setAttribute('channel', ChannelName)
-            ListElement.setAttribute('title', EpisodeTitle)
+            ListElement.setAttribute('channel', sanitizeString(ChannelName))
+            ListElement.setAttribute('title', sanitizeString(EpisodeTitle))
             ListElement.setAttribute('type', EpisodeType)
-            ListElement.setAttribute('url', EpisodeUrl)
+            ListElement.setAttribute('url', sanitizeString(EpisodeUrl))
             ListElement.setAttribute('length', EpisodeLength)
             ListElement.setAttribute('duration', Duration)
-            ListElement.setAttribute('description', EpisodeDescription)
+            ListElement.setAttribute('description', sanitizeString(EpisodeDescription))
             ListElement.setAttribute('artworkUrl', Artwork)
 
             List.append(ListElement)
