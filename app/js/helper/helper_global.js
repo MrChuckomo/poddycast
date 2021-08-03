@@ -47,8 +47,7 @@ function init()
     }
 
     // check if user has old settings file
-    if (fs.existsSync(settingsFilePath))
-    {
+    if (fs.existsSync(settingsFilePath)) {
         upgradeSettingsFile()
     }
 
@@ -64,49 +63,68 @@ function init()
 
     darkMode()
 
-    document.getElementById("volume").value = getPreference('volume')
-    document.getElementById("volume").dispatchEvent(new Event("input"))
+    document.getElementById('volume').value = getPreference('volume')
+    document.getElementById('volume').dispatchEvent(new Event('input'))
     document.querySelector('#content-right-player-speed-indicator').innerHTML = getPreference('playspeed').toFixed(1) + "x"
-    document.getElementById("player").playbackRate = parseFloat(getPreference('playspeed'))
-    document.getElementById("player").defaultPlaybackRate = parseFloat(getPreference('playspeed'))
+    document.getElementById('player').playbackRate = parseFloat(getPreference('playspeed'))
+    document.getElementById('player').defaultPlaybackRate = parseFloat(getPreference('playspeed'))
 }
 
 function fileExistsAndIsNotEmpty(_File) {
     return (fs.existsSync(_File) && fs.readFileSync(_File, 'utf-8') !== '')
 }
 
-function upgradeSettingsFile()
-{
+function sanitizeString(input) {
+    // https://owasp.org/www-community/xss-filter-evasion-cheatsheet
+    // TODO: Whitelist malicious code
+    // TODO: remove and cleanup code (using regex)
+    // TODO: return clean string
+
+    // const patterns = [
+    //     /img/im,
+    //     /src=/im,
+    //     /sript/im
+    // ]
+
+    // for (let index = 0; index < patterns.length; index++) {
+    //     const pattern = patterns[index];
+
+    //     console.log(input.match(pattern))
+    // }
+
+    let temp = document.createElement('div');
+    temp.innerHTML = input;
+    let sanitized = temp.textContent || temp.innerText;
+
+    return sanitized
+}
+
+function upgradeSettingsFile() {
     var oldFilePath = settingsFilePath
     var newFilePath = saveFilePath
-    
-    // sync addToInbox values from old settings file
-    if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(oldFilePath, "utf-8"))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
+    // sync addToInbox values from old settings file
+    if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, 'utf-8') != '') {
+        var JsonContent = JSON.parse(fs.readFileSync(oldFilePath, 'utf-8'))
+
+        for (let i = 0; i < JsonContent.length; i++) {
             setIsAddedToInbox(JsonContent[i].feedUrl, JsonContent[i].addToInbox)
         }
     }
 
     // create addToInbox value to any remaining items in the favorites file
-    if (fs.existsSync(newFilePath) && fs.readFileSync(newFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(newFilePath, "utf-8"))
+    if (fs.existsSync(newFilePath) && fs.readFileSync(newFilePath, 'utf-8') != '') {
+        var JsonContent = JSON.parse(fs.readFileSync(newFilePath, 'utf-8'))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (!JsonContent[i].hasOwnProperty('addToInbox'))
-            {
+        for (var i = 0; i < JsonContent.length; i++) {
+            if (!JsonContent[i].hasOwnProperty('addToInbox')) {
                 setIsAddedToInbox(JsonContent[i].feedUrl, true)
             }
         }
     }
 
     // rename old settings file so that it is not processed again in the future
-    fs.renameSync(oldFilePath, oldFilePath + ".old")
+    fs.renameSync(oldFilePath, oldFilePath + '.old')
 }
 
 function isAlreadySaved(_FeedUrl)
