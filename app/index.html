@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="./css/player.css">
         <link rel="stylesheet" href="./css/list_item.css">
         <!-- <script type="text/javascript" src="./js/rest.js"></script> -->
+        <script type="text/javascript" src="./js/slider_class.js"></script>
         <script type="text/javascript" src="./js/icons.js"></script>
         <script type="text/javascript" src="./js/helper/helper_global.js"></script>
         <script type="text/javascript" src="./js/helper/helper_navigation.js"></script>
@@ -118,9 +119,8 @@
                         <source src="" type="audio/mpeg">
                     </audio>
                     <div id="content-right-player">
-                        <div id="content-right-player-progress-bar" onclick="seekProgress(this, event)">
-                            <div id="content-right-player-progress-bar-progress">
-                            </div>
+                        <div id="slider-container">
+                            <input type= "range" class = "slider" id = "slider" value = "0" maxlength ="100" >
                         </div>
                         <img id="content-right-player-img" src="./img/podcast_07prct.png" alt="">
                         <div id="content-right-player-title">No episode selected</div>

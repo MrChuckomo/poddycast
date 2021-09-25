@@ -7,6 +7,8 @@ const os = require('os')
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
 
+var slider = null;
+
 function getSaveDirPath() {
     return os.homedir() + '/poddycast-data'
 }
@@ -48,6 +50,8 @@ function getPreferencesFilePath() {
 }
 
 function init() {
+    slider = new Slider();
+
     if (!fs.existsSync(getSaveDirPath())) {
         fs.mkdirSync(getSaveDirPath());
     }
