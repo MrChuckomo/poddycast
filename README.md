@@ -28,6 +28,19 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 - Proxy mode for company environments
 - Internatialization
 
+## Contact
+
+I'm always happy to help, and discuss new features.
+Please use any of these contact options to get in touch.   
+You'll also find more useful stuff about the app, like tutorial and blogposts. 🍀
+
+I'd be happy to hear from you guys 💕
+
+- [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
+- [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
+- [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
+
+
 ## Tutorial
 
 ### Subscribe
@@ -46,7 +59,3 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 
 ![gif_4](img/tutorial-04-darkmode.gif)
 
-
-## Contact
-
-:bird: [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
