@@ -23,7 +23,7 @@
         "start": "electron ."
     },
     "dependencies": {
-        "electron": "11.2.1"
+        "electron": "11.5.0"
     },
     "devDependencies": {
         "electron-packager": "^14.2.1",
