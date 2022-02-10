@@ -23,7 +23,7 @@ module.exports = {
     var promises = []
     Array.from(xmlDoc.getElementsByTagName("outline")).forEach((element) => {
       var feedUrl = element.getAttribute("xmlUrl")
-
+      
       if (feedUrl) {
         promises.push(request.makeFeedRssRequest(feedUrl))        
       }
@@ -74,9 +74,9 @@ module.exports = {
     var title = xmlDoc.createElement("title")
     title.innerHTML = "Poddycast Export"
     var dateCreated = xmlDoc.createElement("dateCreated")
-    dateCreated.innerHTML = Date.now()
+    dateCreated.innerHTML = new Date(Date.now())
     var dateModified = xmlDoc.createElement("dateModified")
-    dateModified.innerHTML = Date.now()
+    dateModified.innerHTML = new Date(Date.now())
     head.appendChild(title)
     head.appendChild(dateCreated)
     head.appendChild(dateModified)
@@ -104,7 +104,6 @@ module.exports = {
 
     var serializer = new XMLSerializer()
     var xmlString = serializer.serializeToString(xmlDoc)
-    console.log(filePath)
     fs.writeFileSync(filePath, xmlString)
     fs.close()
   },

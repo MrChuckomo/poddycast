@@ -3,7 +3,7 @@
 const http  = require('http')
 const https = require('https')
 const axios = require('axios')
-const xml = require('xml2json')
+const { XMLParser } = require('fast-xml-parser')
 
 const eRequest = {
     http: 1,
@@ -75,8 +75,7 @@ function makeFeedRssRequest(_FeedUrl)
             method: 'get',
             port: 443
         }).then(function (response) {
-            var result = parseXmlToJson(response.data)
-            resolve(result)
+            resolve(parseXmlToJson(response.data))
         }).catch(function (error) {
             reject(error)
         })
@@ -134,11 +133,10 @@ function getFeedProxyOptions(_Url) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-// Using rss-to-json source https://github.com/nasa8x/rss-to-json/blob/master/src/rss.js
-function parseXmlToJson(_Xml) {
+async function parseXmlToJson(_Xml) {
     var rss = { items: [] }
-    var result = xml.toJson(_Xml, { object: true })
-
+    const parser = new XMLParser()
+    var result = parser.parse(_Xml)
     var channel = result.rss && result.rss.channel ? result.rss.channel : result.feed
     if (Array.isArray(channel)) channel = channel[0]
 
@@ -254,7 +252,7 @@ function parseXmlToJson(_Xml) {
         rss.items.push(obj)
       }
     }
-
+    
     return rss
 }
 
