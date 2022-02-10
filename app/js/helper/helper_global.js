@@ -19,8 +19,12 @@ const isWindows = process.platform == "win32"
 const isDarwin = process.platform == "darwin"
 const isLinux = process.platform == "linux"
 
+var slider = null;
+
 function init()
 {
+    slider = new Slider();
+
     if (!fs.existsSync(saveDirPath))
     {
         fs.mkdirSync(saveDirPath);

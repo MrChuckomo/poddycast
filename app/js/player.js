@@ -165,12 +165,13 @@ function updateProgress() {
     let Value = 0;
 
     if (Player.currentTime > 0) {
-        Value = Math.floor((100 / Player.duration) * Player.currentTime)
+        Value = Math.floor((100 * Player.currentTime) / Player.duration)
     }
+    
+    slider.setValue(Value);
+    // let Progress = document.getElementById('content-right-player-progress-bar-progress')
 
-    let Progress = document.getElementById('content-right-player-progress-bar-progress')
-
-    Progress.style.width = Value + '%'
+    // Progress.style.width = Value + '%'
 
     // NOTE: Update player time in extended layout
 
@@ -183,15 +184,10 @@ function updateProgress() {
     mainAppWindow.setProgressBar(Value / 100)
 }
 
-function seekProgress(_Self, _Event) {
-    // NOTE: Click position / div element whole width
-
+function seekProgress(value) {
     let Player = document.getElementById('player')
     let PlayerSource = Player.getElementsByTagName('source')[0]
-    let percent = _Event.offsetX / _Self.offsetWidth;
-
-    Player.currentTime = percent * Player.duration;
-
+    Player.currentTime = (value / 100) * Player.duration;
     savePlaybackPosition(PlayerSource.getAttribute('src'), Player.currentTime)
 }
 
