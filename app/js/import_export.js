@@ -74,9 +74,9 @@ module.exports = {
     var title = xmlDoc.createElement("title")
     title.innerHTML = "Poddycast Export"
     var dateCreated = xmlDoc.createElement("dateCreated")
-    dateCreated.innerHTML = new Date(Date.now())
+    dateCreated.innerHTML = (new Date(Date.now())).toUTCString()
     var dateModified = xmlDoc.createElement("dateModified")
-    dateModified.innerHTML = new Date(Date.now())
+    dateModified.innerHTML = (new Date(Date.now())).toUTCString()
     head.appendChild(title)
     head.appendChild(dateCreated)
     head.appendChild(dateModified)
