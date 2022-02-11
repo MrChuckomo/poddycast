@@ -34,8 +34,8 @@ function unsubscribeContextMenu(_PodcastName, _FeedUrl) {
 }
 
 function removeFromFile(_File, _ContentReference, _Value, _Break) {
-    if (fs.readFileSync(_File(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(_File(), 'utf-8'))
+    if (fs.readFileSync(_File, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(_File, 'utf-8'))
 
         for (let i = JsonContent.length - 1; i >= 0 ; i--) {
             if (_Value === JsonContent[i][_ContentReference]) {
