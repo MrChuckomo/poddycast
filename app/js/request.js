@@ -269,9 +269,9 @@ function updateFeedURLStatus(isURLWorking, _Options) {
         feedURL = feedURL.replace(/(http|https):\/\//, '').replace('.xml', '')
 
         // Check if JSON with feeds exists
-        if (fs.readFileSync(getSaveFilePath(), "utf-8") != "") {
-            var JsonContentOld = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
-            var JsonContentNew = JSON.parse(fs.readFileSync(getSaveFilePath(), "utf-8"))
+        if (fs.readFileSync(saveFilePath, "utf-8") != "") {
+            var JsonContentOld = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+            var JsonContentNew = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
             for (var i = 0; i < JsonContentNew.length; i++) {
                 // Find feed item that's returning error
@@ -283,7 +283,7 @@ function updateFeedURLStatus(isURLWorking, _Options) {
 
             // Update JSON with feeds if there are changes
             if (JsonContentOld !== JsonContentNew) {
-                fs.writeFileSync(getSaveFilePath(), JSON.stringify(JsonContentNew))
+                fs.writeFileSync(saveFilePath, JSON.stringify(JsonContentNew))
             }
         }
     }

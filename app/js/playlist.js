@@ -291,7 +291,7 @@ function showPlaylistContent(_Self) {
                 for (let a = 0; a < NewEpisodesJsonContent.length; a++) {
                     let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', NewEpisodesJsonContent[a].channelName)
 
-                    if (getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
+                    if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
                         Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName)
                     }
 
