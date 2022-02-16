@@ -23,7 +23,7 @@
         "start": "electron ."
     },
     "dependencies": {
-        "axios": "0.21.1",
+        "axios": "0.21.2",
         "electron": "11.5.0",
         "fast-xml-parser": "4.0.2"
     },
