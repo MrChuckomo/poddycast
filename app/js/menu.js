@@ -28,17 +28,17 @@ function showNewEpisodes() {
     helper.clearContent()
     setHeaderViewAction()
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
         let List = document.getElementById('list')
 
         setGridLayout(List, false)
 
         for (let i = 0; i < JsonContent.length; i++) {
-            let Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl60', 'collectionName', JsonContent[i].channelName)
+            let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', JsonContent[i].channelName)
 
-            if (getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== undefined && getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== 'undefined') {
-                Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName)
+            if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== 'undefined') {
+                Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName)
             }
 
             if (/*Artwork !== null*/ true) { // Allow to show episodes without thumbnail
@@ -79,8 +79,8 @@ function showFavorites() {
     helper.clearContent()
     setHeaderViewAction('list')
 
-    if (fs.existsSync(getSaveFilePath()) && fs.readFileSync(getSaveFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), 'utf-8'))
+    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         JsonContent = sortByName(JsonContent)
 
@@ -145,8 +145,8 @@ function showHistory() {
     helper.clearContent()
     setHeaderViewAction()
 
-    if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), 'utf-8'))
+    if (fs.existsSync(archivedFilePath) && fs.readFileSync(archivedFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(archivedFilePath, 'utf-8'))
         let List = document.getElementById('list')
 
         setGridLayout(List, false)
@@ -159,10 +159,10 @@ function showHistory() {
         for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
             let ChannelName = JsonContent[i].channelName
             let EpisodeTitle = JsonContent[i].episodeTitle
-            let Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl60', 'collectionName', ChannelName)
+            let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', ChannelName)
 
-            if (getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
-                Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName)
+            if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
+                Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName)
             }
 
             if (Artwork !== null) {
@@ -193,16 +193,16 @@ function showStatistics() {
 
     List.append(getStatisticsElement('statistics-header', 'Podcasts', null))
 
-    if (fileExistsAndIsNotEmpty(getSaveFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), 'utf-8'))
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         List.append(getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), JsonContent.length))
     } else {
         List.append(getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), 0))
     }
 
-    if (fileExistsAndIsNotEmpty(getArchivedFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), 'utf-8'))
+    if (fileExistsAndIsNotEmpty(archivedFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(archivedFilePath, "utf-8"))
 
         List.append(getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), JsonContent[JsonContent.length - 1].channelName))
     } else {
@@ -211,14 +211,14 @@ function showStatistics() {
 
     List.append(getStatisticsElement('statistics-header', i18n.__('Episodes'), null))
 
-    if (fileExistsAndIsNotEmpty(getArchivedFilePath())) {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('History Items'), JsonContent.length))
+    if (fileExistsAndIsNotEmpty(archivedFilePath)) {
+        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  JsonContent.length))
     } else {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('History Items'), 0))
+        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  0))
     }
 
-    if (fileExistsAndIsNotEmpty(getNewEpisodesSaveFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+    if (fileExistsAndIsNotEmpty(newEpisodesSaveFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         List.append(getStatisticsElement('statistics-entry', i18n.__('New Episodes'), JsonContent.length))
     } else {
@@ -227,8 +227,8 @@ function showStatistics() {
 
     List.append(getStatisticsElement('statistics-header', i18n.__('Playlists'), null))
 
-    if (fileExistsAndIsNotEmpty(getPlaylistFilePath())) {
-        JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    if (fileExistsAndIsNotEmpty(playlistFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
 
         List.append(getStatisticsElement('statistics-entry', i18n.__('Playlists'), JsonContent.length))
     } else {

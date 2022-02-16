@@ -46,15 +46,15 @@ function createPlaylist(_Self, _Event) {
 
         let JsonContent = []
 
-        if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), 'utf-8') !== '') {
-            JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+        if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, "utf-8") != "") {
+            JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
         } else {
-            fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+            fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
         }
 
         JsonContent.push(Playlist)
 
-        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
 
         clearTextField(_Self)
 
@@ -66,8 +66,8 @@ function createPlaylist(_Self, _Event) {
 function loadPlaylists() {
     let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0]
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
 
         for (let i = 0; i < JsonContent.length; i++) {
             let PlaylistEntry = document.createElement('li')
@@ -148,7 +148,7 @@ function getPlaylist(_Name) {
 
 function isInPlaylist(_PlaylistName, _PodcastName) {
     let Result = false
-    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (_PlaylistName === JsonContent[i].playlistName) {
@@ -252,7 +252,7 @@ function showEditPage(_Self) {
 
     List.append(getStatisticsElement('statistics-header', 'Linked Podcasts', null))
 
-    let JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
     JsonContent = sortByName(JsonContent)
 
@@ -277,22 +277,22 @@ function showPlaylistContent(_Self) {
 
     _Self.classList.add('selected')
 
-    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         // if (_Self.innerHTML === JsonContent[i].playlistName)
         if (PlaylistName === JsonContent[i].playlistName) {
-            if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-                let NewEpisodesJsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+            if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
+                let NewEpisodesJsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
                 let List = document.getElementById('list')
 
                 setGridLayout(List, false)
 
                 for (let a = 0; a < NewEpisodesJsonContent.length; a++) {
-                    let Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl60', 'collectionName', NewEpisodesJsonContent[a].channelName)
+                    let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', NewEpisodesJsonContent[a].channelName)
 
-                    if (getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
-                        Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName)
+                    if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
+                        Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName)
                     }
 
                     if (Artwork !== null) {

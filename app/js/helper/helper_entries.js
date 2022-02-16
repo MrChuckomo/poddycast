@@ -16,8 +16,8 @@ function unsubscribeListElement(_Self) {
 
     // NOTE: Remove from files
 
-    removeFromFile(getNewEpisodesSaveFilePath, 'channelName', PodcastName, false)
-    removeFromFile(getSaveFilePath, 'feedUrl', FeedUrl, true)
+    removeFromFile(newEpisodesSaveFilePath, "channelName", PodcastName, false)
+    removeFromFile(saveFilePath, "feedUrl", FeedUrl, true)
 
     setItemCounts()
 }
@@ -25,8 +25,8 @@ function unsubscribeListElement(_Self) {
 function unsubscribeContextMenu(_PodcastName, _FeedUrl) {
     // NOTE: Support context menu unsubscribe
 
-    removeFromFile(getNewEpisodesSaveFilePath, 'channelName', _PodcastName, false)
-    removeFromFile(getSaveFilePath, 'feedUrl', _FeedUrl, true)
+    removeFromFile(newEpisodesSaveFilePath, "channelName", _PodcastName, false)
+    removeFromFile(saveFilePath, "feedUrl", _FeedUrl, true)
 
     selectMenuItem('menu-favorites')
     showFavorites()
@@ -34,8 +34,8 @@ function unsubscribeContextMenu(_PodcastName, _FeedUrl) {
 }
 
 function removeFromFile(_File, _ContentReference, _Value, _Break) {
-    if (fs.readFileSync(_File(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(_File(), 'utf-8'))
+    if (fs.readFileSync(_File, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(_File, 'utf-8'))
 
         for (let i = JsonContent.length - 1; i >= 0 ; i--) {
             if (_Value === JsonContent[i][_ContentReference]) {
@@ -47,7 +47,7 @@ function removeFromFile(_File, _ContentReference, _Value, _Break) {
             }
         }
 
-        fs.writeFileSync(_File(), JSON.stringify(JsonContent))
+        fs.writeFileSync(_File, JSON.stringify(JsonContent))
     }
 }
 
@@ -148,9 +148,9 @@ function deleteEntryWithAudioPlayer(_FeedUrl) {
     let AllListElements = document.getElementById('list').getElementsByTagName('li')
 }
 
-function deleteEntry(_ListElement) {
-    if (fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-
+function deleteEntry(_ListElement)
+{
+    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
         // NOTE: Remove optically
 
         deleteFromListView(_ListElement)
@@ -168,7 +168,7 @@ function deleteFromListView(_ListElement) {
 }
 
 function deleteFromFile(_FeedUrl) {
-    let JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (_FeedUrl === JsonContent[i].episodeUrl) {
@@ -182,22 +182,22 @@ function deleteFromFile(_FeedUrl) {
 
             let ArchiveJsonContent = []
 
-            if (fs.existsSync(getArchivedFilePath()) && fs.readFileSync(getArchivedFilePath(), 'utf-8') !== '') {
-                ArchiveJsonContent = JSON.parse(fs.readFileSync(getArchivedFilePath(), 'utf-8'))
+            if (fs.existsSync(archivedFilePath) && fs.readFileSync(archivedFilePath, "utf-8") != "") {
+                ArchiveJsonContent = JSON.parse(fs.readFileSync(archivedFilePath, "utf-8"))
             } else {
-                fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+                fs.writeFileSync(archivedFilePath, JSON.stringify(ArchiveJsonContent))
             }
 
             ArchiveJsonContent.push(Feed)
 
-            fs.writeFileSync(getArchivedFilePath(), JSON.stringify(ArchiveJsonContent))
+            fs.writeFileSync(archivedFilePath, JSON.stringify(ArchiveJsonContent))
 
             JsonContent.splice(i, 1)
             break
         }
     }
 
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

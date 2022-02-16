@@ -2,10 +2,10 @@
 
 const { BrowserWindow } = require('electron').remote
 
-var CCOntentHelper = require('./js/helper/content')
+var CContentHelper = require('./js/helper/content')
 var CPlayer = require('./js/helper/player')
 
-var helper = new CCOntentHelper()
+var helper = new CContentHelper()
 var player = new CPlayer()
 var playerVolume = 0.75
 var volumeOff = false
@@ -243,15 +243,14 @@ function setPlaybackTime(_Time, _ElementName) {
         TimeElement.innerHTML = player.getPrettyTime(FullTime.hours) + ':' + player.getPrettyTime(FullTime.minutes) + ':' + player.getPrettyTime(FullTime.seconds)
     }
 }
-
 function savePlaybackPosition(_Source, _CurrentTime) {
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].episodeUrl === _Source) {
                 JsonContent[i].playbackPosition = _CurrentTime
-                fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+                fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
                 break
             }
         }
@@ -292,8 +291,8 @@ function pausePlayer() {
 function getPlaybackPosition(_Source) {
     let PlaybackPosition = 0
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== ''){
-        let JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
+        let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].episodeUrl === _Source) {

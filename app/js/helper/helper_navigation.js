@@ -7,16 +7,16 @@
 function setItemCounts() {
     let NewEpisodesCount = document.getElementById('menu-episodes').getElementsByClassName('menu-count')[0]
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-        NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8')).length
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
+        NewEpisodesCount.innerHTML = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8')).length
     } else {
         NewEpisodesCount.innerHTML = 0
     }
 
     let FavoritesCount = document.getElementById('menu-favorites').getElementsByClassName('menu-count')[0]
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getSaveFilePath(), 'utf-8') !== '') {
-        FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(getSaveFilePath(), 'utf-8')).length
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(saveFilePath, 'utf-8') !== '') {
+        FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8')).length
     } else {
         FavoritesCount.innerHTML = 0
     }
@@ -66,8 +66,8 @@ function renamePlaylistInEdit(_Self) {
 }
 
 function setPlaylistName(_OldName, _NewName) {
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].playlistName === _OldName) {
@@ -76,7 +76,7 @@ function setPlaylistName(_OldName, _NewName) {
             }
         }
 
-        fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+        fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
     }
 }
 
@@ -149,7 +149,7 @@ function dragToPlaylist(_PlaylistName, _PodcastName) {
 }
 
 function addToPlaylist(_PlaylistName, _PodcastName) {
-    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (JsonContent[i].playlistName === _PlaylistName) {
@@ -162,11 +162,11 @@ function addToPlaylist(_PlaylistName, _PodcastName) {
         }
     }
 
-    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
 }
 
 function removeFromPlaylist(_PlaylistName, _PodcastName) {
-    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (JsonContent[i].playlistName === _PlaylistName) {
@@ -184,11 +184,11 @@ function removeFromPlaylist(_PlaylistName, _PodcastName) {
         }
     }
 
-    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
 }
 
 function deletePlaylist(_PlaylistName) {
-    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (_PlaylistName === JsonContent[i].playlistName) {
@@ -197,7 +197,7 @@ function deletePlaylist(_PlaylistName) {
         }
     }
 
-    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
 
     // TODO: clean remove
     // TODO: do not simply reload the whole app

@@ -13,8 +13,9 @@ function readFeeds() {
     // Add animation to notify the user about fetching new episodes
     document.querySelector('#menu-refresh svg').classList.add('is-refreshing')
 
-    if (fs.readFileSync(getSaveFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getSaveFilePath(), 'utf-8'))
+    if (fs.readFileSync(saveFilePath, "utf-8") != "")
+    {
+        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (isProxySet()) {
@@ -85,7 +86,8 @@ function saveLatestEpisode(_Content, _eRequest, _Options) {
 
                 // NOTE: save latest episode if not already in History
 
-                if (getValueFromFile(getArchivedFilePath, 'episodeUrl', 'episodeUrl', EpisodeUrl) === null) {
+                if (getValueFromFile(archivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+                {
                     saveEpisode(ChannelName, EpisodeTitle, EpisodeUrl, EpisodeType, EpisodeLength, EpisodeDescription, Duration)
                 }
             }
@@ -102,8 +104,9 @@ function showAllEpisodes(_Self) {
     getAllEpisodesFromFeed(_Self.getAttribute('feedurl'))
 }
 
-function getAllEpisodesFromFeed(_Feed) {
-    let PodcastName = getValueFromFile(getSaveFilePath, 'collectionName', 'feedUrl', _Feed)
+function getAllEpisodesFromFeed(_Feed)
+{
+    var PodcastName = getValueFromFile(saveFilePath, "collectionName", "feedUrl", _Feed)
 
     appendSettingsSection(PodcastName, _Feed)
 
@@ -197,8 +200,8 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
     const {Menu, MenuItem} = remote
     const PlaylistMenu = new Menu()
 
-    if (fs.existsSync(getPlaylistFilePath()) && fs.readFileSync(getPlaylistFilePath(), 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+    if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             let IsInPlaylist = isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName)
@@ -206,7 +209,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
             PlaylistMenu.append(new MenuItem({
                 checked: IsInPlaylist,
                 click(self) {
-                    let JsonContent = JSON.parse(fs.readFileSync(getPlaylistFilePath(), 'utf-8'))
+                    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
 
                     for (let i = 0; i < JsonContent.length; i++) {
                         if (self.label === JsonContent[i].playlistName) {
@@ -227,7 +230,7 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
                         }
                     }
 
-                    fs.writeFileSync(getPlaylistFilePath(), JSON.stringify(JsonContent))
+                    fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
                 },
                 label: JsonContent[i].playlistName,
                 type: 'checkbox'
@@ -260,10 +263,10 @@ function processEpisodes(_Content) {
     let parser = new DOMParser();
     let xmlDoc = parser.parseFromString(_Content, 'text/xml');
     let ChannelName = xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('title')[0].childNodes[0].nodeValue
-    let Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl60', 'collectionName', ChannelName)
+    let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', ChannelName)
 
-    if (getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
-        Artwork = getValueFromFile(getSaveFilePath, 'artworkUrl100', 'collectionName', ChannelName)
+    if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
+        Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName)
     } else if (xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('media:thumbnail')[0] !== undefined) {
         Artwork = xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('media:thumbnail')[0].getAttribute('url')
     } else if (xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('itunes:image')[0] !== undefined) {
@@ -335,7 +338,8 @@ function processEpisodes(_Content) {
 
             // NOTE: Set a episode item to "Done" if it is in the History file
 
-            if (getValueFromFile(getArchivedFilePath, 'episodeUrl', 'episodeUrl', EpisodeUrl) === null) {
+            if (getValueFromFile(archivedFilePath, "episodeUrl", "episodeUrl", EpisodeUrl) == null)
+            {
                 ListElement.replaceChild(getIconButtonPart(''), ListElement.children[3])
             }
 
@@ -376,17 +380,20 @@ function saveEpisode(_ChannelName, _EpisodeTitle, _EpisodeUrl, _EpisodeType, _Ep
 
     let JsonContent = []
 
-    if (fs.existsSync(getNewEpisodesSaveFilePath()) && fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8') !== '') {
-        JsonContent = JSON.parse(fs.readFileSync(getNewEpisodesSaveFilePath(), 'utf-8'))
-    } else {
-        fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "")
+    {
+        JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
+    }
+    else
+    {
+        fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
     }
 
     if (!isEpisodeAlreadySaved(_EpisodeTitle)) {
         JsonContent.push(Feed)
     }
 
-    fs.writeFileSync(getNewEpisodesSaveFilePath(), JSON.stringify(JsonContent))
+    fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
 
     setItemCounts()
 }

@@ -5,7 +5,7 @@ const path = require('path')
 const url = require('url')
 
 // Import getPreference() helper function
-const getPreference = require('./js/helper/helper_global')
+const getPreference = require('./js/helper/helper_global').getPreference
 
 // Modules to create app tray icon
 const Menu = require('electron').Menu
