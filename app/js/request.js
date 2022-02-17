@@ -4,12 +4,14 @@ const http  = require('http')
 const https = require('https')
 const axios = require('axios')
 const { XMLParser } = require('fast-xml-parser')
+//const { getPreference } = require('./helper/helper_global')
 
 const eRequest = {
     http: 1,
     https: 2
 }
 
+/** @deprecated */
 function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     // NOTE: Give the result JSON string to the given _Callback methode
     // NOTE: The _Callback methode need one argument to catch the JSON result string
@@ -68,22 +70,52 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     }
 }
 
-function makeFeedRssRequest(_FeedUrl)
-{
-    return new Promise((resolve, reject) => {
-        axios.get(_FeedUrl, {
-            method: 'get',
-            port: 443
-        }).then(function (response) {
-            resolve(parseXmlToJson(response.data))
-        }).catch(function (error) {
-            reject(error)
-        })
-    })
+/**
+ * Request the entire RSS feed for a given podcast URL.
+ * @param {string} feedUrl RSS URL of the podcast feed.
+ * @param {boolean} returnRawXml Whether the response should be returned as xml.
+ * @returns RSS feed in JSON format. If returnRawXml is true, returns unparsed feed as xml.
+ */
+function requestPodcastFeed(feedUrl, returnRawXml) {
+  return new Promise((resolve, reject) => {
+
+    // TODO: finish this section when fixing proxy issues
+    // default value for axios proxy is false to disable
+    //let proxy = false
+
+    // if set, build a proxy object used within axios request
+    // if (isProxySet()) {
+    //   proxy = {
+    //     protocol: getPreference('proxy_protocol', 'http'),
+    //     host: getPreference('proxy_host', 'localhost'),
+    //     port: getPreference('proxy_port', 8080)
+    //   }
+    // }
+
+    axios
+      .request({
+        url: feedUrl,
+        method: "get",
+        headers: {
+          'Accept': 'application/xml, text/xml'
+        },
+        //proxy: proxy
+      })
+      .then(function (response) {
+        if (returnRawXml === undefined || returnRawXml === false) {
+          resolve(parseXmlToJson(response.data));
+        } else {
+          resolve(response.data);
+        }
+      })
+      .catch(function (error) {
+        reject(error);
+      });
+  });
 }
-module.exports.makeFeedRssRequest = makeFeedRssRequest
+module.exports.requestPodcastFeed = requestPodcastFeed
 
-
+/** @deprecated */
 function makeFeedRequest(_Feed, _Callback) {
     if (_Feed instanceof Object) {
         makeRequest(_Feed, null, _Callback, eRequest.http)
@@ -131,16 +163,13 @@ function getFeedProxyOptions(_Url) {
     return Options
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-
-async function parseXmlToJson(_Xml) {
+function parseXmlToJson(xml) {
     var rss = { items: [] }
     const parser = new XMLParser()
-    var result = parser.parse(_Xml)
+    const result = parser.parse(xml)
     var channel = result.rss && result.rss.channel ? result.rss.channel : result.feed
     if (Array.isArray(channel)) channel = channel[0]
-
-    var items = channel.item || channel.entry
+    var items = channel.item ?? channel.entry
 
     if (channel.title) {
       rss.title = channel.title
@@ -222,6 +251,9 @@ async function parseXmlToJson(_Xml) {
         if (val['itunes:image']) {
           obj.itunes_image = val['itunes:image'].href
         }
+
+        obj.duration = obj.itunes_duration ?? val['duration']
+        obj.description = obj.itunes_subtitle ?? val['description']
 
         obj.enclosures = val.enclosure ? Array.isArray(val.enclosure) ? val.enclosure : [val.enclosure] : []
 
