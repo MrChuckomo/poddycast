@@ -104,7 +104,7 @@ function showFavorites() {
 
             HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false)
             HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl)
-            HeaderElement.setAttribute('onclick', 'showAllEpisodes(this)')
+            HeaderElement.setAttribute('onclick', 'feed.showAllEpisodes(this)')
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {
