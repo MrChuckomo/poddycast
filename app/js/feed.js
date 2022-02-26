@@ -196,7 +196,7 @@ function displayEpisodesInList(podcastObject) {
             [
                 getBoldTextPart(episode.title),
                 getSubTextPart(new Date(episode.published).toLocaleString()),
-                getSubTextPart(episode.duration),
+                getSubTextPart(episode.duration_formatted),
                 getFlagPart('Done', 'white', '#4CAF50'),
                 getDescriptionPart(s_InfoIcon, episode.description),
                 getIconButtonPart(s_AddEpisodeIcon)
@@ -224,7 +224,7 @@ function displayEpisodesInList(podcastObject) {
         listElement.setAttribute('title', sanitizeString(episode.title))
         listElement.setAttribute('type', episode.type)
         listElement.setAttribute('url', sanitizeString(episode.url))
-        listElement.setAttribute('length', episode.duration)
+        listElement.setAttribute('length', episode.duration_formatted)
         listElement.setAttribute('duration', episode.duration)
         listElement.setAttribute('description', sanitizeString(episode.description))
         listElement.setAttribute('artworkUrl', artwork)
@@ -274,24 +274,11 @@ function saveLatestEpisodeJson(content) {
         'episodeTitle': content.items[0].title,
         'episodeDescription': content.items[0].description,
         'episodeLength': content.items[0].duration,
-        'episodeType': content.items[0].type ?? '',
+        'episodeType': content.items[0].type,
         'episodeUrl': content.items[0].link,
-        'duration': '',
+        'duration': content.items[0].duration_formatted,
         'playbackPosition': 0
     }
-
-    let duration = ""
-    if (episodeObject['episodeLength'] !== "" && typeof episodeObject['episodeLength'] === "string")
-    {
-        var timeObject = parseFeedEpisodeDuration(episodeObject['episodeLength'].split(":"))
-
-        if (timeObject.hours == 0 && timeObject.minutes == 0) {
-            duration = "" 
-        } else if (timeObject != null) {                        
-            duration = (timeObject.hours != "0" ? timeObject.hours + "h " : "") + timeObject.minutes + "min"
-        }
-    }
-    episodeObject['duration'] = duration
     
     // NOTE: save latest episode if not already in History
     if (getValueFromFile(archivedFilePath, "episodeUrl", "episodeUrl", episodeObject['episodeUrl']) == null)

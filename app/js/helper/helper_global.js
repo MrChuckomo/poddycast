@@ -256,6 +256,7 @@ function parseFeedEpisodeDuration(_Duration) {
 
     return Time
 }
+module.exports.parseFeedEpisodeDuration = parseFeedEpisodeDuration
 
 // ---------------------------------------------------------------------------------------------------------------------
 // SETTINGS

@@ -108,7 +108,7 @@ function showFavorites() {
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {
-                if (JsonContent[i].feedUrlStatus === 500) {
+                if (JsonContent[i].feedUrlStatus >= 400) {
                     var brokenLinkIcon = document.createElement("span")
                     brokenLinkIcon.innerHTML = s_BrokenLinkIcon
                     brokenLinkIcon.classList.add('icon-link-broken-wrapper')

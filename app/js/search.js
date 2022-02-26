@@ -1,9 +1,9 @@
 'use strict'
-const { systemPreferences } = require('electron')
-var CContentHelper = require('./js/helper/content')
 
-var CContentHelper = require('./js/helper/content')
+var CContentHelper = require('./helper/content')
 var helper = new CContentHelper()
+const itunes = require('./itunes')
+const request = require('./request')
 
 
 function search(_Self, _Event) {
@@ -18,39 +18,32 @@ function search(_Self, _Event) {
         if (_Self.value.includes('http') && _Self.value.includes(':') && _Self.value.includes('//')) {
             getPodcastsFromFeed(_Self.value)
         } else {
-            getPodcasts(_Self.value)
+            itunes.getPodcasts(_Self.value)
         }
     } else if (_Event.code == 'Escape') {
         clearTextField(_Self)
     }
 }
+module.exports.search = search
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastsFromFeed(_SearchTerm) {
-    // http://feeds.feedburner.com/ICO-Radio
-
-    if (isProxySet()) {
-        makeRequest(getFeedProxyOptions(_SearchTerm), null, getFeedResults, eRequest.http)
-    } else {
-        if (_SearchTerm.includes('https')) {
-            makeRequest(_SearchTerm, null, getFeedResults, eRequest.https)
-        } else {
-            makeRequest(_SearchTerm, null, getFeedResults, eRequest.http)
-        }
-    }
+function getPodcastsFromFeed(feedUrl) {
+    request.requestPodcastFeed(feedUrl).then(result => {
+        getFeedResults(result)
+    })
 }
 
-function getFeedResults(_Data) {
-    let parser = new DOMParser();
-    let xmlDoc = parser.parseFromString(_Data, 'text/xml');
+function getFeedResults(podcastObject) {
 
-    var Image = xmlDoc.getElementsByTagName("itunes:image")[0].getAttribute("href")
-    var Author = xmlDoc.getElementsByTagName("itunes:author")[0].innerHTML
+    const Image = podcastObject.image
+    // this is a catch for Patreon feeds which do not have an author value
+    const Author = podcastObject.items[0].author === undefined ? podcastObject.title : podcastObject.items[0].author
 
-    if (Image == null || Author == null)
+    if (Image === undefined || Author === undefined)
     {
-        console.log("ERROR: invalid itunes feed")
+        console.log(podcastObject)
+        console.error("Invalid RSS podcast feed")
     }
 
     helper.clearContent()
@@ -60,18 +53,18 @@ function getFeedResults(_Data) {
     setGridLayout(List, false)
 
     let PodcastInfos = {
-        'feedUrl': document.getElementById('search-input').value,
+        'feedUrl': podcastObject.link,
         'artistName': Author,
-        'collectionName': xmlDoc.getElementsByTagName('channel')[0].getElementsByTagName('title')[0].innerHTML,
+        'collectionName': podcastObject.title,
         'artworkUrl30': Image,
         'artworkUrl60': Image,
         'artworkUrl100': Image,
     }
 
-    let Icon = getIcon(PodcastInfos)
+    let Icon = itunes.getIcon(PodcastInfos)
 
     if (isAlreadySaved(PodcastInfos.feedUrl)) {
-        Icon = getFullIcon(PodcastInfos)
+        Icon = itunes.getFullIcon(PodcastInfos)
     }
 
     List.append(getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon))
