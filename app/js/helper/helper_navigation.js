@@ -70,7 +70,7 @@ function renamePlaylistInEdit(_Self) {
 
         setPlaylistName(SelectionName, NewName);
         document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value = NewName;
-        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'playlist.deletePlaylist("' + NewName + '")');
+        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'navigation.deletePlaylist("' + NewName + '")');
     }
 }
 module.exports.renamePlaylistInEdit = renamePlaylistInEdit;

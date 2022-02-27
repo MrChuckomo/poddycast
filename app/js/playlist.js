@@ -14,13 +14,14 @@ const listItem = require('./list_item');
 const { heartFilled, checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
 const i18n = window.i18n;
 
+/** @private */
 function getInputEntry(_Name) {
     let InputItem = document.createElement('input');
 
     InputItem.value = _Name;
     InputItem.type = 'text';
     InputItem.disabled = true;
-    InputItem.setAttribute('onfocusout', 'clearRenameFocus(this)');
+    InputItem.setAttribute('onfocusout', 'navigation.clearRenameFocus(this)');
     InputItem.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
     return InputItem;
@@ -96,6 +97,7 @@ function loadPlaylists() {
 }
 module.exports.loadPlaylists = loadPlaylists;
 
+/** @private */
 function setContextMenu(_Object) {
     const {remote} = require('electron');
     const {Menu, MenuItem} = remote;
@@ -140,8 +142,8 @@ function enableRename(_Self) {
     InputField.focus();
     InputField.select();
 }
+module.exports.enableRename = enableRename;
 
-// eslint-disable-next-line no-unused-vars
 function renamePlaylist(_Self, _Event) {
 
     if (_Event.code === 'Enter') {
@@ -152,6 +154,7 @@ function renamePlaylist(_Self, _Event) {
         }
     }
 }
+module.exports.renamePlaylist = renamePlaylist;
 
 /** @deprecated */
 // eslint-disable-next-line no-unused-vars
@@ -159,6 +162,7 @@ function getPlaylist(_Name) {
     // TODO: load podcasts associated with this playlist
 }
 
+/** @private */
 function isInPlaylist(_PlaylistName, _PodcastName) {
     let Result = false;
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
@@ -177,6 +181,7 @@ function isInPlaylist(_PlaylistName, _PodcastName) {
     return Result;
 }
 
+/** @private */
 function getPodcastEditItem(_Name, _Artwork, _IsSet) {
     let Container = document.createElement('li');
     let CheckBox = ((_IsSet) ? checkBox : checkBoxOutline);
@@ -231,9 +236,11 @@ function togglePodcast(_Self) {
         }
     }
 }
+module.exports.togglePodcast = togglePodcast;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+/** @private */
 function showEditPage(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
     let List = document.getElementById('list');
@@ -255,7 +262,7 @@ function showEditPage(_Self) {
 
     let DeleteButton = document.createElement('button');
     DeleteButton.innerHTML = i18n.__('Delete');
-    DeleteButton.setAttribute('onclick', 'deletePlaylist("' + PlaylistName + '")');
+    DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
 
     let HeaderSection = document.createElement('div');
     HeaderSection.classList.add('edit-header');
@@ -350,3 +357,4 @@ function showPlaylistContent(_Self) {
         }
     }
 }
+module.exports.showPlaylistContent = showPlaylistContent;
