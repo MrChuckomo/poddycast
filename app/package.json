@@ -1,6 +1,6 @@
 {
     "main": "main.js",
-    "name": "Poddycast",
+    "name": "poddycast",
     "description": "A Podcast app made with Electron because I love Podcasts.",
     "repository": {
         "type": "git",
