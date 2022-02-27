@@ -1,6 +1,7 @@
-'use strict'
+'use strict';
 
 function translate() {
+    const i18n = window.i18n;
     changeByClass('new-episodes', i18n.__('New Episodes'));
     changeByClass('favorites', i18n.__('Favorites'));
     changeByClass('history', i18n.__('History'));
@@ -11,6 +12,7 @@ function translate() {
     document.getElementsByName('new_list')[0].placeholder = i18n.__('New List');
     document.getElementById('content-right-player-title').innerHTML = i18n.__('No episode selected');
 }
+module.exports.translate = translate;
 
 function changeByClass(className, value) {
     let els = document.getElementsByClassName(className);

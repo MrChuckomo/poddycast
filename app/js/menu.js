@@ -1,237 +1,246 @@
-'use strict'
+'use strict';
 
-var CContentHelper = require('./js/helper/content')
-var CPlayer = require('./js/helper/player')
+const CContentHelper = require('./helper/content');
+const CPlayer = require('./helper/player');
+const fs = require('fs');
+const global = require('./helper/helper_global');
+const navigation = require('./helper/helper_navigation');
+const entries = require('./helper/helper_entries');
+const listItem = require('./list_item');
+const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./icons');
+const { handleDragStart } = require('./drag_handler');
 
-var helper = new CContentHelper()
-var player = new CPlayer()
+const helper = new CContentHelper();
+const player = new CPlayer();
 
 
 function selectMenuItem(_MenuId) {
-    let MenuItem = document.getElementById(_MenuId)
+    let MenuItem = document.getElementById(_MenuId);
 
-    clearTextField(document.getElementById('search-input'))
-    clearTextField(document.getElementById('new_list-input'))
+    global.clearTextField(document.getElementById('search-input'));
+    global.clearTextField(document.getElementById('new_list-input'));
 
-    loseFocusTextField('search-input')
-    loseFocusTextField('new_list-input')
+    global.loseFocusTextField('search-input');
+    global.loseFocusTextField('new_list-input');
 
-    clearPlaylists()
-    clearMenuSelection()
+    navigation.clearPlaylists();
+    navigation.clearMenuSelection();
 
-    MenuItem.classList.add('selected')
+    MenuItem.classList.add('selected');
 
-    helper.setHeader(MenuItem.getElementsByTagName('span')[0].innerHTML)
+    helper.setHeader(MenuItem.getElementsByTagName('span')[0].innerHTML);
 }
+module.exports.selectMenuItem = selectMenuItem;
 
 function showNewEpisodes() {
-    helper.clearContent()
-    setHeaderViewAction()
+    helper.clearContent();
+    navigation.setHeaderViewAction();
 
-    if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
-        let List = document.getElementById('list')
+    if (fs.existsSync(global.newEpisodesSaveFilePath) && fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
+        let List = document.getElementById('list');
 
-        setGridLayout(List, false)
+        navigation.setGridLayout(List, false);
 
         for (let i = 0; i < JsonContent.length; i++) {
-            let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', JsonContent[i].channelName)
+            let Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl60', 'collectionName', JsonContent[i].channelName);
 
-            if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== 'undefined') {
-                Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName)
+            if (global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== undefined && global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName) !== 'undefined') {
+                Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName);
             }
 
-            if (/*Artwork !== null*/ true) { // Allow to show episodes without thumbnail
-                let ListElement = buildListItem(new cListElement (
-                    [
-                        getImagePart(Artwork),
-                        getBoldTextPart(JsonContent[i].episodeTitle),
-                        getSubTextPart((JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration),
-                        getTextPart(JsonContent[i].channelName),
-                        getDescriptionPart(s_InfoIcon, JsonContent[i].episodeDescription),
-                        getIconButtonPart(s_DeleteIcon)
-                    ],
-                    '5em 1fr 6em 1fr 5em 5em'
-                ), eLayout.row)
+            let ListElement = listItem.buildListItem(new listItem.cListElement (
+                [
+                    listItem.getImagePart(Artwork),
+                    listItem.getBoldTextPart(JsonContent[i].episodeTitle),
+                    listItem.getSubTextPart((JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration),
+                    listItem.getTextPart(JsonContent[i].channelName),
+                    listItem.getDescriptionPart(infoIcon, JsonContent[i].episodeDescription),
+                    listItem.getIconButtonPart(deleteIcon)
+                ],
+                '5em 1fr 6em 1fr 5em 5em'
+            ), listItem.eLayout.row);
 
-                ListElement.setAttribute('onclick', 'playNow(this)')
-                ListElement.setAttribute('channel', JsonContent[i].channelName)
-                ListElement.setAttribute('title', JsonContent[i].episodeTitle)
-                ListElement.setAttribute('type', JsonContent[i].episodeType)
-                ListElement.setAttribute('url', JsonContent[i].episodeUrl)
-                ListElement.setAttribute('length', JsonContent[i].episodeLength)
-                ListElement.setAttribute('artworkUrl', Artwork)
+            ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
+            ListElement.setAttribute('channel', JsonContent[i].channelName);
+            ListElement.setAttribute('title', JsonContent[i].episodeTitle);
+            ListElement.setAttribute('type', JsonContent[i].episodeType);
+            ListElement.setAttribute('url', JsonContent[i].episodeUrl);
+            ListElement.setAttribute('length', JsonContent[i].episodeLength);
+            ListElement.setAttribute('artworkUrl', Artwork);
 
 
-                if (player.isPlaying(JsonContent[i].episodeUrl)) {
-                    ListElement.classList.add('select-episode')
-                }
-
-                let HeaderElement = ListElement.getElementsByClassName('podcast-entry-header')[0]
-
-                List.append(ListElement)
+            if (player.isPlaying(JsonContent[i].episodeUrl)) {
+                ListElement.classList.add('select-episode');
             }
+
+            List.append(ListElement);
         }
     }
 }
+module.exports.showNewEpisodes = showNewEpisodes;
 
 function showFavorites() {
-    helper.clearContent()
-    setHeaderViewAction('list')
+    helper.clearContent();
+    navigation.setHeaderViewAction('list');
 
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
+    if (fs.existsSync(global.saveFilePath) && fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
 
-        JsonContent = sortByName(JsonContent)
+        JsonContent = entries.sortByName(JsonContent);
 
-        let List = document.getElementById('list')
+        let List = document.getElementById('list');
 
-        setGridLayout(List, true)
+        navigation.setGridLayout(List, true);
 
         for (let i = 0; i < JsonContent.length; i++) {
-            let Artwork = JsonContent[i].artworkUrl60
+            let Artwork = JsonContent[i].artworkUrl60;
 
             if (JsonContent[i].artworkUrl100 !== undefined && JsonContent[i].artworkUrl100 !== 'undefined') {
-                Artwork = JsonContent[i].artworkUrl100
+                Artwork = JsonContent[i].artworkUrl100;
             }
 
-            let ListElement = getPodcastElement('podcast-entry', Artwork, null, JsonContent[i].collectionName, s_Favorite)
+            let ListElement = entries.getPodcastElement('podcast-entry', Artwork, null, JsonContent[i].collectionName, favorite);
 
-            ListElement.setAttribute('draggable', true)
+            ListElement.setAttribute('draggable', true);
             ListElement.addEventListener('dragstart', handleDragStart, false);
 
-            let HeaderElement = ListElement.getElementsByClassName('podcast-entry-header')[0]
+            let HeaderElement = ListElement.getElementsByClassName('podcast-entry-header')[0];
 
-            HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false)
-            HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl)
-            HeaderElement.setAttribute('onclick', 'feed.showAllEpisodes(this)')
+            HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false);
+            HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl);
+            HeaderElement.setAttribute('onclick', 'feed.showAllEpisodes(this)');
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {
                 if (JsonContent[i].feedUrlStatus >= 400) {
-                    var brokenLinkIcon = document.createElement("span")
-                    brokenLinkIcon.innerHTML = s_BrokenLinkIcon
-                    brokenLinkIcon.classList.add('icon-link-broken-wrapper')
-                    brokenLinkIcon.setAttribute('title', 'Podcast feed URL is broken.')
+                    let brokenLinkIconElement = document.createElement('span');
+                    brokenLinkIconElement.innerHTML = brokenLinkIcon;
+                    brokenLinkIconElement.classList.add('icon-link-broken-wrapper');
+                    brokenLinkIconElement.setAttribute('title', 'Podcast feed URL is broken.');
 
-                    HeaderElement.append(brokenLinkIcon)
+                    HeaderElement.append(brokenLinkIconElement);
 
                     // Display broken URL icon
                     if (HeaderElement.classList && !HeaderElement.classList.contains('podcast-feed-url-broken')) {
-                        HeaderElement.classList.add('podcast-feed-url-broken')
+                        HeaderElement.classList.add('podcast-feed-url-broken');
                     }
 
                     if (HeaderElement.classList && HeaderElement.classList.contains('podcast-feed-url-working')) {
-                        HeaderElement.classList.remove('podcast-feed-url-working')
+                        HeaderElement.classList.remove('podcast-feed-url-working');
                     }
                 } else {
                     // Display checked/working icon
                     if (HeaderElement.classList && !HeaderElement.classList.contains('podcast-feed-url-working')) {
-                        HeaderElement.classList.add('podcast-feed-url-working')
+                        HeaderElement.classList.add('podcast-feed-url-working');
                     }
 
                     if (HeaderElement.classList && HeaderElement.classList.contains('podcast-feed-url-broken')) {
-                        HeaderElement.classList.remove('podcast-feed-url-broken')
+                        HeaderElement.classList.remove('podcast-feed-url-broken');
                     }
                 }
             }
 
-            List.append(ListElement)
+            List.append(ListElement);
         }
     }
 }
+module.exports.showFavorites = showFavorites;
 
 function showHistory() {
-    helper.clearContent()
-    setHeaderViewAction()
+    helper.clearContent();
+    navigation.setHeaderViewAction();
 
-    if (fs.existsSync(archivedFilePath) && fs.readFileSync(archivedFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(archivedFilePath, 'utf-8'))
-        let List = document.getElementById('list')
+    if (fs.existsSync(global.archivedFilePath) && fs.readFileSync(global.archivedFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
+        let List = document.getElementById('list');
 
-        setGridLayout(List, false)
+        navigation.setGridLayout(List, false);
 
         // NOTE: Show just the last 100 entries in History
         // TODO: The can be loaded after user interaction
 
-        let Count = ((JsonContent.length <= 100) ? JsonContent.length : 100)
+        let Count = ((JsonContent.length <= 100) ? JsonContent.length : 100);
 
         for (let i = JsonContent.length - Count; i < JsonContent.length; i++) {
-            let ChannelName = JsonContent[i].channelName
-            let EpisodeTitle = JsonContent[i].episodeTitle
-            let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', ChannelName)
+            let ChannelName = JsonContent[i].channelName;
+            let EpisodeTitle = JsonContent[i].episodeTitle;
+            let Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl60', 'collectionName', ChannelName);
 
-            if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
-                Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', ChannelName)
+            if (global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== undefined && global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', ChannelName) !== 'undefined') {
+                Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', ChannelName);
             }
 
             if (Artwork !== null) {
-                let DateTime = new Date(JsonContent[i].date)
-                let ListElement = buildListItem(new cListElement (
+                let DateTime = new Date(JsonContent[i].date);
+                let ListElement = listItem.buildListItem(new listItem.cListElement (
                     [
-                        getImagePart(Artwork),
-                        getBoldTextPart(EpisodeTitle),
-                        getSubTextPart(DateTime.toLocaleString())
+                        listItem.getImagePart(Artwork),
+                        listItem.getBoldTextPart(EpisodeTitle),
+                        listItem.getSubTextPart(DateTime.toLocaleString())
                     ],
                     '5em 3fr 1fr'
-                ), eLayout.row)
+                ), listItem.eLayout.row);
 
-                List.insertBefore(ListElement, List.childNodes[0])
+                List.insertBefore(ListElement, List.childNodes[0]);
             }
         }
     }
 }
+module.exports.showHistory = showHistory;
 
 function showStatistics() {
-    helper.clearContent()
-    setHeaderViewAction()
+    helper.clearContent();
+    navigation.setHeaderViewAction();
 
-    let JsonContent = null
-    let List = document.getElementById('list')
+    let JsonContent = null;
+    let List = document.getElementById('list');
+    const i18n = window.i18n;
 
-    setGridLayout(List, false)
+    navigation.setGridLayout(List, false);
 
-    List.append(getStatisticsElement('statistics-header', 'Podcasts', null))
+    List.append(entries.getStatisticsElement('statistics-header', 'Podcasts', null));
 
-    if (fileExistsAndIsNotEmpty(saveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
+    if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
 
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), JsonContent.length))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), JsonContent.length));
     } else {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), 0))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), 0));
     }
 
-    if (fileExistsAndIsNotEmpty(archivedFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(archivedFilePath, "utf-8"))
+    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
 
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), JsonContent[JsonContent.length - 1].channelName))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), JsonContent[JsonContent.length - 1].channelName));
     } else {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), 'None'))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), 'None'));
     }
 
-    List.append(getStatisticsElement('statistics-header', i18n.__('Episodes'), null))
+    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Episodes'), null));
 
-    if (fileExistsAndIsNotEmpty(archivedFilePath)) {
-        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  JsonContent.length))
+    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), JsonContent.length));
     } else {
-        List.append(getStatisticsElement("statistics-entry", i18n.__("History Items"),  0))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), 0));
     }
 
-    if (fileExistsAndIsNotEmpty(newEpisodesSaveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
+    if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
 
-        List.append(getStatisticsElement('statistics-entry', i18n.__('New Episodes'), JsonContent.length))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), JsonContent.length));
     } else {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('New Episodes'), 0))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), 0));
     }
 
-    List.append(getStatisticsElement('statistics-header', i18n.__('Playlists'), null))
+    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Playlists'), null));
 
-    if (fileExistsAndIsNotEmpty(playlistFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
+    if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Playlists'), JsonContent.length))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), JsonContent.length));
     } else {
-        List.append(getStatisticsElement('statistics-entry', i18n.__('Playlists'), 0))
+        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), 0));
     }
 }
+module.exports.showStatistics = showStatistics;

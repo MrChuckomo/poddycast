@@ -1,39 +1,41 @@
-'use strict'
+'use strict';
+
+const global = require('./helper/helper_global');
+const { setItemCounts } = require('./helper/helper_navigation');
+const { heartFilled } = require('./icons');
+const fs = require('fs');
 
 function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl) {
     let Feed = {
-        'artistName': sanitizeString(_ArtistName),
-        'collectionName': sanitizeString(_CollectionName),
-        'artworkUrl30': sanitizeString(_Artwork30),
-        'artworkUrl60': sanitizeString(_Artwork60),
-        'artworkUrl100': sanitizeString(_Artwork100),
+        'artistName': global.sanitizeString(_ArtistName),
+        'collectionName': global.sanitizeString(_CollectionName),
+        'artworkUrl30': global.sanitizeString(_Artwork30),
+        'artworkUrl60': global.sanitizeString(_Artwork60),
+        'artworkUrl100': global.sanitizeString(_Artwork100),
         'feedUrl': _FeedUrl,
         'addToInbox': true,
         'feedUrlStatus': 200 // Set default URL status to 200
-    }
+    };
 
     if (_Self !== null) {
-        _Self.innerHTML = s_HeartFilled
-        _Self.classList.add("set-favorite")
+        _Self.innerHTML = heartFilled;
+        _Self.classList.add('set-favorite');
     }
 
-    let JsonContent = []
+    let JsonContent = [];
 
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
-    }
-    else
-    {
-        fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
+    if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
+        JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
+    } else {
+        fs.writeFileSync(global.saveFilePath, JSON.stringify(JsonContent));
     }
 
-    if (!isAlreadySaved(_FeedUrl)) {
-        JsonContent.push(Feed)
+    if (!global.isAlreadySaved(_FeedUrl)) {
+        JsonContent.push(Feed);
     }
 
-    fs.writeFileSync(saveFilePath, JSON.stringify(JsonContent))
+    fs.writeFileSync(global.saveFilePath, JSON.stringify(JsonContent));
 
-    setItemCounts()
+    setItemCounts();
 }
-module.exports.setFavorite = setFavorite
+module.exports.setFavorite = setFavorite;
