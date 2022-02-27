@@ -1,9 +1,13 @@
 'use strict'
 
+const global = require('./helper_global')
+const navigation = require('./helper_navigation')
+const menujs = require('../menu')
+const fs = require('fs')
+
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
-
 
 function unsubscribeListElement(_Self) {
     let ListElement = _Self.parentElement.parentElement;
@@ -16,22 +20,24 @@ function unsubscribeListElement(_Self) {
 
     // NOTE: Remove from files
 
-    removeFromFile(newEpisodesSaveFilePath, "channelName", PodcastName, false)
-    removeFromFile(saveFilePath, "feedUrl", FeedUrl, true)
+    removeFromFile(global.newEpisodesSaveFilePath, 'channelName', PodcastName, false)
+    removeFromFile(global.saveFilePath, 'feedUrl', FeedUrl, true)
 
-    setItemCounts()
+    navigation.setItemCounts()
 }
+module.exports.unsubscribeListElement = unsubscribeListElement
 
 function unsubscribeContextMenu(_PodcastName, _FeedUrl) {
     // NOTE: Support context menu unsubscribe
 
-    removeFromFile(newEpisodesSaveFilePath, "channelName", _PodcastName, false)
-    removeFromFile(saveFilePath, "feedUrl", _FeedUrl, true)
+    removeFromFile(global.newEpisodesSaveFilePath, 'channelName', _PodcastName, false)
+    removeFromFile(global.saveFilePath, 'feedUrl', _FeedUrl, true)
 
-    selectMenuItem('menu-favorites')
-    showFavorites()
-    setItemCounts()
+    menujs.selectMenuItem('menu-favorites')
+    menujs.showFavorites()
+    navigation.setItemCounts()
 }
+module.exports.unsubscribeContextMenu = unsubscribeContextMenu
 
 function removeFromFile(_File, _ContentReference, _Value, _Break) {
     if (fs.readFileSync(_File, 'utf-8') !== '') {
@@ -110,6 +116,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
 
     return ListElement
 }
+module.exports.getPodcastElement = getPodcastElement
 
 function getStatisticsElement(_Class, _Title, _Value) {
     let ListElement = document.createElement('li')
@@ -133,24 +140,15 @@ function getStatisticsElement(_Class, _Title, _Value) {
 
     return ListElement
 }
-
-function setPodcastElementToDone(_ListElement) {
-    _ListElement.getElementsByClassName('podcast-entry-title')[0].classList.add('done')
-}
+module.exports.getStatisticsElement = getStatisticsElement
 
 function deleteEntryWithIcon(_Self) {
     deleteEntry(_Self.parentElement.parentElement)
 }
+module.exports.deleteEntryWithIcon = deleteEntryWithIcon
 
-function deleteEntryWithAudioPlayer(_FeedUrl) {
-    // TODO: just catch list element if new episodes menu is open
-
-    let AllListElements = document.getElementById('list').getElementsByTagName('li')
-}
-
-function deleteEntry(_ListElement)
-{
-    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
+function deleteEntry(_ListElement) {
+    if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
         // NOTE: Remove optically
 
         deleteFromListView(_ListElement)
@@ -159,16 +157,17 @@ function deleteEntry(_ListElement)
 
         deleteFromFile(_ListElement.getAttribute('url'))
 
-        setItemCounts()
+        navigation.setItemCounts()
     }
 }
 
 function deleteFromListView(_ListElement) {
     _ListElement.parentElement.removeChild(_ListElement)
 }
+module.exports.deleteFromListView = deleteFromListView
 
 function deleteFromFile(_FeedUrl) {
-    let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'))
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (_FeedUrl === JsonContent[i].episodeUrl) {
@@ -182,23 +181,24 @@ function deleteFromFile(_FeedUrl) {
 
             let ArchiveJsonContent = []
 
-            if (fs.existsSync(archivedFilePath) && fs.readFileSync(archivedFilePath, "utf-8") != "") {
-                ArchiveJsonContent = JSON.parse(fs.readFileSync(archivedFilePath, "utf-8"))
+            if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+                ArchiveJsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'))
             } else {
-                fs.writeFileSync(archivedFilePath, JSON.stringify(ArchiveJsonContent))
+                fs.writeFileSync(global.archivedFilePath, JSON.stringify(ArchiveJsonContent))
             }
 
             ArchiveJsonContent.push(Feed)
 
-            fs.writeFileSync(archivedFilePath, JSON.stringify(ArchiveJsonContent))
+            fs.writeFileSync(global.archivedFilePath, JSON.stringify(ArchiveJsonContent))
 
             JsonContent.splice(i, 1)
             break
         }
     }
 
-    fs.writeFileSync(newEpisodesSaveFilePath, JSON.stringify(JsonContent))
+    fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent))
 }
+module.exports.deleteFromFile = deleteFromFile
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Sort And Filter
@@ -225,3 +225,4 @@ function sortByName(_Json) {
 
     return SortJson
 }
+module.exports.sortByName = sortByName

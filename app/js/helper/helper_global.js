@@ -2,51 +2,50 @@
 
 const fs = require('fs')
 const os = require('os')
+const darkMode = require('../dark_mode')
 
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
 // ---------------------------------------------------------------------------------------------------------------------
 
-const saveDirPath = os.homedir() + "/poddycast-data"
-const saveFilePath = saveDirPath + "/poddycast-favorite_podcasts.json"
-const newEpisodesSaveFilePath = saveDirPath + "/poddycast-new_episodes.json"
-const archivedFilePath = saveDirPath + "/poddycast-archived_episodes.json"
-const playlistFilePath = saveDirPath + "/poddycast-playlists.json"
-const settingsFilePath = saveDirPath + "/poddycast-podcast_settings.json"
-const preferencesFilePath = saveDirPath + "/poddycast-app_preferences.json"
+const saveDirPath = os.homedir() + '/poddycast-data'
+const saveFilePath = saveDirPath + '/poddycast-favorite_podcasts.json'
+const newEpisodesSaveFilePath = saveDirPath + '/poddycast-new_episodes.json'
+const archivedFilePath = saveDirPath + '/poddycast-archived_episodes.json'
+const playlistFilePath = saveDirPath + '/poddycast-playlists.json'
+const settingsFilePath = saveDirPath + '/poddycast-podcast_settings.json'
+const preferencesFilePath = saveDirPath + '/poddycast-app_preferences.json'
 
-const isWindows = process.platform == "win32"
-const isDarwin = process.platform == "darwin"
-const isLinux = process.platform == "linux"
+module.exports.saveDirPath = saveDirPath
+module.exports.saveFilePath = saveFilePath
+module.exports.newEpisodesSaveFilePath = newEpisodesSaveFilePath
+module.exports.archivedFilePath = archivedFilePath
+module.exports.playlistFilePath = playlistFilePath
+module.exports.settingsFilePath = settingsFilePath
+module.exports.preferencesFilePath = preferencesFilePath
 
-var slider = null;
+module.exports.isWindows = process.platform === 'win32'
+module.exports.isDarwin = process.platform === 'darwin'
+module.exports.isLinux = process.platform === 'linux'
 
-function init()
-{
-    slider = new Slider();
-
-    if (!fs.existsSync(saveDirPath))
-    {
+function init() {
+    if (!fs.existsSync(saveDirPath)) {
         fs.mkdirSync(saveDirPath);
     }
 
-    if (!fs.existsSync(saveFilePath))
-    {
+    if (!fs.existsSync(saveFilePath)) {
         fs.openSync(saveFilePath, 'w');
     }
 
-    if (!fs.existsSync(newEpisodesSaveFilePath))
-    {
+    if (!fs.existsSync(newEpisodesSaveFilePath)) {
         fs.openSync(newEpisodesSaveFilePath, 'w');
     }
 
-    if (!fs.existsSync(archivedFilePath))
-    {
+    if (!fs.existsSync(archivedFilePath)) {
         fs.openSync(archivedFilePath, 'w');
     }
 
-    if (!fs.existsSync(playlistFilePath))
-    {
+    if (!fs.existsSync(playlistFilePath)) {
         fs.openSync(playlistFilePath, 'w');
     }
 
@@ -65,18 +64,20 @@ function init()
         setPreference('volume', 0.75)
     }
 
-    darkMode()
+    darkMode.darkMode()
 
     document.getElementById('volume').value = getPreference('volume')
     document.getElementById('volume').dispatchEvent(new Event('input'))
-    document.querySelector('#content-right-player-speed-indicator').innerHTML = getPreference('playspeed').toFixed(1) + "x"
+    document.querySelector('#content-right-player-speed-indicator').innerHTML = getPreference('playspeed').toFixed(1) + 'x'
     document.getElementById('player').playbackRate = parseFloat(getPreference('playspeed'))
     document.getElementById('player').defaultPlaybackRate = parseFloat(getPreference('playspeed'))
 }
+module.exports.init = init
 
-function fileExistsAndIsNotEmpty(_File) {
-    return (fs.existsSync(_File) && fs.readFileSync(_File, 'utf-8') !== '')
+function fileExistsAndIsNotEmpty(filePath) {
+    return fs.existsSync(filePath) && fs.readFileSync(filePath, 'utf-8') !== ''
 }
+module.exports.fileExistsAndIsNotEmpty = fileExistsAndIsNotEmpty
 
 function sanitizeString(input) {
     // https://owasp.org/www-community/xss-filter-evasion-cheatsheet
@@ -102,14 +103,15 @@ function sanitizeString(input) {
 
     return sanitized
 }
+module.exports.sanitizeString = sanitizeString
 
 function upgradeSettingsFile() {
-    var oldFilePath = settingsFilePath
-    var newFilePath = saveFilePath
+    let oldFilePath = settingsFilePath
+    let newFilePath = saveFilePath
 
     // sync addToInbox values from old settings file
-    if (fs.existsSync(oldFilePath) && fs.readFileSync(oldFilePath, 'utf-8') != '') {
-        var JsonContent = JSON.parse(fs.readFileSync(oldFilePath, 'utf-8'))
+    if (fileExistsAndIsNotEmpty(oldFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(oldFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             setIsAddedToInbox(JsonContent[i].feedUrl, JsonContent[i].addToInbox)
@@ -117,10 +119,11 @@ function upgradeSettingsFile() {
     }
 
     // create addToInbox value to any remaining items in the favorites file
-    if (fs.existsSync(newFilePath) && fs.readFileSync(newFilePath, 'utf-8') != '') {
-        var JsonContent = JSON.parse(fs.readFileSync(newFilePath, 'utf-8'))
+    if (fileExistsAndIsNotEmpty(newFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(newFilePath, 'utf-8'))
 
-        for (var i = 0; i < JsonContent.length; i++) {
+        for (let i = 0; i < JsonContent.length; i++) {
+            // eslint-disable-next-line no-prototype-builtins
             if (!JsonContent[i].hasOwnProperty('addToInbox')) {
                 setIsAddedToInbox(JsonContent[i].feedUrl, true)
             }
@@ -131,12 +134,11 @@ function upgradeSettingsFile() {
     fs.renameSync(oldFilePath, oldFilePath + '.old')
 }
 
-function isAlreadySaved(_FeedUrl)
-{
-    var FeedExists  = false;
+function isAlreadySaved(_FeedUrl) {
+    let FeedExists = false;
 
-    if (fs.readFileSync(saveFilePath, "utf-8") != "") {
-        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    if (fs.readFileSync(saveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i ++) {
             if (JsonContent[i].feedUrl === _FeedUrl) {
@@ -148,12 +150,13 @@ function isAlreadySaved(_FeedUrl)
 
     return FeedExists
 }
+module.exports.isAlreadySaved = isAlreadySaved
 
 function isEpisodeAlreadySaved(_EpisodeTitle) {
     let FeedExists = false;
 
-    if (fs.readFileSync(newEpisodesSaveFilePath, "utf-8") != "") {
-        var JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, "utf-8"))
+    if (fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i ++) {
             if (JsonContent[i].episodeTitle === _EpisodeTitle) {
@@ -165,9 +168,10 @@ function isEpisodeAlreadySaved(_EpisodeTitle) {
 
     return FeedExists
 }
+module.exports.isEpisodeAlreadySaved = isEpisodeAlreadySaved
 
 function isAlreadyInPlaylist(_ListName, _PodcastName) {
-    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
+    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
     let Result = false
 
 
@@ -184,12 +188,13 @@ function isAlreadyInPlaylist(_ListName, _PodcastName) {
 
     return Result
 }
+module.exports.isAlreadyInPlaylist = isAlreadyInPlaylist
 
 function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value) {
     let DestinationValue = null
 
-    if (fs.existsSync(_File) && fs.readFileSync(_File, "utf-8") != "") {
-        let JsonContent = JSON.parse(fs.readFileSync(_File, "utf-8"))
+    if (fileExistsAndIsNotEmpty(_File)) {
+        let JsonContent = JSON.parse(fs.readFileSync(_File, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i][_ReferenceTag] === _Value) {
@@ -201,18 +206,22 @@ function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value) {
 
     return DestinationValue
 }
+module.exports.getValueFromFile = getValueFromFile
 
 function clearTextField(_InputField) {
     _InputField.value = ''
 }
+module.exports.clearTextField = clearTextField
 
 function focusTextField(_InputField) {
     document.getElementById(_InputField).focus()
 }
+module.exports.focusTextField = focusTextField
 
 function loseFocusTextField(_InputField) {
     document.getElementById(_InputField).blur()
 }
+module.exports.loseFocusTextField = loseFocusTextField
 
 function getFullTime(_TimeInSeconds) {
     let FullTime = {}
@@ -229,6 +238,7 @@ function getFullTime(_TimeInSeconds) {
 
     return FullTime
 }
+module.exports.getFullTime = getFullTime
 
 function parseFeedEpisodeDuration(_Duration) {
     let Time = {}
@@ -271,30 +281,29 @@ function toggleProxyMode() {
 module.exports.toggleProxyMode = toggleProxyMode
 
 function isProxySet() {
-    return getPreference('proxy_enabled')
+    return getPreference('proxy_enabled', false)
 }
 module.exports.isProxySet = isProxySet
 
 /**
  * @deprecated No longer needed after merging of settings and favorites files.
- * @param {string} _PodcastName 
- * @param {string} _FeedUrl 
+ * @param {string} _PodcastName
+ * @param {string} _FeedUrl
  */
-function addToSettings(_PodcastName, _FeedUrl)
-{
-    if (fs.existsSync(settingsFilePath))
-    {
-        var SettingsObject =
+// eslint-disable-next-line no-unused-vars
+function addToSettings(_PodcastName, _FeedUrl) {
+    if (fs.existsSync(settingsFilePath)) {
+        let SettingsObject =
         {
-            "podcastName": _PodcastName,
-            "feedUrl": _FeedUrl,
-            "addToInbox": true,
+            'podcastName': _PodcastName,
+            'feedUrl': _FeedUrl,
+            'addToInbox': true
         }
 
         let JsonContent = []
 
-        if (fs.existsSync(settingsFilePath) && fs.readFileSync(settingsFilePath, "utf-8") != "") {
-            JsonContent = JSON.parse(fs.readFileSync(settingsFilePath, "utf-8"))
+        if (fileExistsAndIsNotEmpty(settingsFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(settingsFilePath, 'utf-8'))
         } else {
             fs.writeFileSync(settingsFilePath, JSON.stringify(JsonContent))
         }
@@ -309,20 +318,17 @@ function addToSettings(_PodcastName, _FeedUrl)
 
 /**
  * @deprecated Replaced with isAddedToInbox to improve usage clarity
- * @param {*} _FeedUrl 
+ * @param {*} _FeedUrl
  */
-function getSettings(_FeedUrl)
-{
-    var ToInbox = true
+// eslint-disable-next-line no-unused-vars
+function getSettings(_FeedUrl) {
+    let ToInbox = true
 
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 ToInbox = JsonContent[i].addToInbox
 
                 break
@@ -333,13 +339,11 @@ function getSettings(_FeedUrl)
     return ToInbox
 }
 
-function isAddedToInbox(_FeedUrl)
-{
-    var ToInbox = true
+function isAddedToInbox(_FeedUrl) {
+    let ToInbox = true
 
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].feedUrl === _FeedUrl) {
@@ -351,13 +355,14 @@ function isAddedToInbox(_FeedUrl)
 
     return ToInbox
 }
+module.exports.isAddedToInbox = isAddedToInbox
 
+/** @private */
 function isInSettings(_FeedUrl) {
     let Result = false
 
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].feedUrl === _FeedUrl) {
@@ -372,14 +377,13 @@ function isInSettings(_FeedUrl) {
 
 /**
  * @deprecated Replaced with setIsAddedToInbox to improve usage clarity
- * @param {*} _FeedUrl 
- * @param {*} _ToInbox 
+ * @param {*} _FeedUrl
+ * @param {*} _ToInbox
  */
-function changeSettings(_FeedUrl, _ToInbox)
-{
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+// eslint-disable-next-line no-unused-vars
+function changeSettings(_FeedUrl, _ToInbox) {
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
         for (let i = 0; i < JsonContent.length; i++) {
             if (JsonContent[i].feedUrl === _FeedUrl) {
@@ -392,18 +396,13 @@ function changeSettings(_FeedUrl, _ToInbox)
     }
 }
 
-function setIsAddedToInbox(_FeedUrl, _ToInbox)
-{
-    if (fs.existsSync(saveFilePath) && fs.readFileSync(saveFilePath, "utf-8") != "")
-    {
-        var JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+function setIsAddedToInbox(_FeedUrl, _ToInbox) {
+    if (fileExistsAndIsNotEmpty(saveFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'))
 
-        for (var i = 0; i < JsonContent.length; i++)
-        {
-            if (JsonContent[i].feedUrl == _FeedUrl)
-            {
+        for (let i = 0; i < JsonContent.length; i++) {
+            if (JsonContent[i].feedUrl === _FeedUrl) {
                 JsonContent[i].addToInbox = _ToInbox
-
                 break
             }
         }
@@ -437,13 +436,12 @@ function setPreference(key, value) {
 
         JsonContent[key] = value
 
-        fs.writeFileSync(preferencesFilePath, JSON.stringify(JsonContent))
+        fs.writeFileSync(preferencesFilePath, JSON.stringify(JsonContent, null, 4))
     }
 }
 module.exports.setPreference = setPreference
 
 /**
- * 
  * @param {string} key - JSON key to search for in preferences file.
  * @param {any | undefined} defaultReturnValue - [optional] Value returned if key does not exist.
  * @returns {any | undefined} Value stored at key.
@@ -451,10 +449,14 @@ module.exports.setPreference = setPreference
  * Otherwise returns undefined.
  */
 function getPreference(key, defaultReturnValue) {
-    if (fs.existsSync(preferencesFilePath) && fs.readFileSync(preferencesFilePath, 'utf-8') !== '') {
+    if (fileExistsAndIsNotEmpty(preferencesFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, 'utf-8'))
 
-        return JsonContent[key] ?? defaultReturnValue
+        if (JsonContent[key] === undefined && defaultReturnValue !== undefined) {
+            return defaultReturnValue
+        } else {
+            return JsonContent[key]
+        }
     }
 }
 module.exports.getPreference = getPreference
