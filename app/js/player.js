@@ -7,8 +7,8 @@ var CPlayer = require('./js/helper/player')
 
 var helper = new CContentHelper()
 var player = new CPlayer()
-var playerVolume = 0.75
-var volumeOff = false
+let playerVolume = 0.75
+let volumeOff = false
 const MIN_PLAYER_SPEED = 0.2
 const MAX_PLAYER_SPEED = 4.0
 const PLAYER_SPEED_INCREMENT = 0.1
@@ -86,17 +86,6 @@ function selectItem(_Self) {
     helper.clearListSelection()
 
     _Self.classList.add('select-episode')
-}
-
-
-/*
-    Pause or continue the playback.
-    Function can be called to toggle between play and pause.
-*/
-function playPause() {
-    document.getElementById('play-pause')
-
-    togglePlayPauseButton()
 }
 
 

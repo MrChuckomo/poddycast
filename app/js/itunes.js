@@ -1,39 +1,44 @@
 'use strict'
 
-var CContentHelper = require('./js/helper/content')
-var helper = new CContentHelper()
+const CContentHelper = require('./helper/content')
+const helper = new CContentHelper()
+const request = require('./request')
 
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast
 
 
-function getPodcasts(_SearchTerm) {
-    _SearchTerm = encodeURIComponent(_SearchTerm)
+function getPodcasts(searchTerm) {
+    searchTerm = encodeURIComponent(searchTerm)
 
-    if (isProxySet()) {
-        makeRequest(getITunesProxyOptions(_SearchTerm), null, getResults, eRequest.http)
-    } else {
-        makeRequest(getITunesOptions(_SearchTerm), null, getResults, eRequest.https)
-    }
+    const searchUrl = `https://itunes.apple.com/search?term=${searchTerm}&media=podcast`
+
+    request
+      .requestPodcastFeed(searchUrl, true)
+      .then((xml) => {
+        getResults(xml);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 }
+module.exports.getPodcasts = getPodcasts
 
-function getResults(_Data) {
-    let obj = JSON.parse(_Data);
-
+function getResults(searchData) {
     helper.clearContent()
 
     let List = document.getElementById('list')
 
     setGridLayout(List, false)
 
-    for (let i = 0; i < obj.results.length; i++) {
+    searchData.results.forEach(episode => {
         let PodcastInfos = {
-            'artistName': obj.results[i].artistName,
-            'artworkUrl100': obj.results[i].artworkUrl100,
-            'artworkUrl30': obj.results[i].artworkUrl30,
-            'artworkUrl60': obj.results[i].artworkUrl60,
-            'collectionName': obj.results[i].collectionName,
-            'feedUrl': obj.results[i].feedUrl
+            'artistName': episode.artistName,
+            'artworkUrl100': episode.artworkUrl100,
+            'artworkUrl30': episode.artworkUrl30,
+            'artworkUrl60': episode.artworkUrl60,
+            'collectionName': episode.collectionName,
+            'feedUrl': episode.feedUrl
         }
 
         let Icon = getIcon(PodcastInfos)
@@ -44,14 +49,14 @@ function getResults(_Data) {
 
         List.append(buildListItem(new cListElement (
             [
-                getImagePart(obj.results[i].artworkUrl60),
-                getBoldTextPart(obj.results[i].collectionName),
-                getSubTextPart(obj.results[i].artistName),
+                getImagePart(episode.artworkUrl60),
+                getBoldTextPart(episode.collectionName),
+                getSubTextPart(episode.artistName),
                 getIconButtonPart(Icon)
             ],
             '5em 1fr 1fr 5em'
         ), eLayout.row))
-    }
+    })
 }
 
 function getCollectionName() {
@@ -96,6 +101,7 @@ function getIcon(_PodcastInfos) {
 
     return Icon
 }
+module.exports.getIcon = getIcon
 
 function getFullIcon(_PodcastInfos) {
     let Icon =
@@ -108,3 +114,4 @@ function getFullIcon(_PodcastInfos) {
 
     return Icon
 }
+module.exports.getFullIcon = getFullIcon

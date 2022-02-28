@@ -4,12 +4,14 @@ const http  = require('http')
 const https = require('https')
 const axios = require('axios')
 const { XMLParser } = require('fast-xml-parser')
+const global = require('./helper/helper_global')
 
 const eRequest = {
     http: 1,
     https: 2
 }
 
+/** @deprecated */
 function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     // NOTE: Give the result JSON string to the given _Callback methode
     // NOTE: The _Callback methode need one argument to catch the JSON result string
@@ -68,22 +70,59 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     }
 }
 
-function makeFeedRssRequest(_FeedUrl)
-{
-    return new Promise((resolve, reject) => {
-        axios.get(_FeedUrl, {
-            method: 'get',
-            port: 443
-        }).then(function (response) {
-            resolve(parseXmlToJson(response.data))
-        }).catch(function (error) {
-            reject(error)
-        })
-    })
+/**
+ * Request the entire RSS feed for a given podcast URL.
+ * @param {string} feedUrl RSS URL of the podcast feed.
+ * @param {boolean} returnRawData Whether the response should be parsed from xml into a podcast JSON object.
+ * @returns RSS feed in JSON format. If returnRawData is true, returns unparsed data.
+ */
+function requestPodcastFeed(feedUrl, returnRawData) {
+  return new Promise((resolve, reject) => {
+
+    // TODO: finish this section when fixing proxy issues
+    // default value for axios proxy is false to disable
+    //let proxy = false
+
+    // if set, build a proxy object used within axios request
+    // if (isProxySet()) {
+    //   proxy = {
+    //     protocol: getPreference('proxy_protocol', 'http'),
+    //     host: getPreference('proxy_host', 'localhost'),
+    //     port: getPreference('proxy_port', 8080)
+    //   }
+    // }
+
+    axios
+      .request({
+        url: feedUrl,
+        method: "get",
+        headers: {
+          'Accept': 'application/xml, text/xml'
+        },
+        //proxy: proxy
+      })
+      .then(function (response) {
+        updateFeedStatus(feedUrl, response.status)
+
+        if (response.status >= 400) {
+          reject(`Feed request to ${feedUrl} failed with status code ${response.status}.`)
+        }
+
+        if (returnRawData === undefined || returnRawData === false) {
+          resolve(parseXmlToJson(response.data));
+        } else {
+          resolve(response.data);
+        }
+      })
+      .catch(function (error) {
+        updateFeedStatus(feedUrl, 503)
+        reject(error);
+      });
+  });
 }
-module.exports.makeFeedRssRequest = makeFeedRssRequest
+module.exports.requestPodcastFeed = requestPodcastFeed
 
-
+/** @deprecated */
 function makeFeedRequest(_Feed, _Callback) {
     if (_Feed instanceof Object) {
         makeRequest(_Feed, null, _Callback, eRequest.http)
@@ -131,16 +170,16 @@ function getFeedProxyOptions(_Url) {
     return Options
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
+function parseXmlToJson(xml) {
+    let rss = { items: [] }
 
-async function parseXmlToJson(_Xml) {
-    var rss = { items: [] }
-    const parser = new XMLParser()
-    var result = parser.parse(_Xml)
+    const parser = new XMLParser({
+      ignoreAttributes: false
+    })
+
+    const result = parser.parse(xml)
     var channel = result.rss && result.rss.channel ? result.rss.channel : result.feed
     if (Array.isArray(channel)) channel = channel[0]
-
-    var items = channel.item || channel.entry
 
     if (channel.title) {
       rss.title = channel.title
@@ -161,6 +200,8 @@ async function parseXmlToJson(_Xml) {
       rss.image = channel['itunes:image'].href
     }
 
+    
+    let items = channel.item !== undefined ? channel.item : channel.entry
     if (items && !Array.isArray(items)) {
       // the main 'items' code block below expects the items variable to be an Array of Objects
       // but if in the originating XML the channel element contains only a single item, the items
@@ -169,16 +210,20 @@ async function parseXmlToJson(_Xml) {
       items = [items]
     }
 
-    if (items && items.length > 0) {
-
-      for (let i = 0; i < items.length; i++) {
-        var val = items[i]
-
-        var obj = {}
-        obj.title = val.title && val.title.$t ? val.title.$t : val.title
+    if (Array.isArray(items)) {
+      items.forEach(val => {
+        let obj = {}
+        obj.title = val['itunes:title'] !== undefined ? val['itunes:title'] : val.title
         obj.id = val.guid && val.guid.$t ? val.guid.$t : val.id
         obj.description = val.summary && val.summary.$t ? val.summary.$t : val.description
-        obj.url = val.link && val.link.href ? val.link.href : val.link
+
+        if (val.enclosure === undefined) {
+          // skip processing this episode because it is missing a link
+          return
+        }
+        obj.url = val.enclosure['@_url']
+
+        obj.type = val.enclosure['@_type']
         obj.link = obj.url
         obj.author = val.author && val.author.name ? val.author.name : val['dc:creator']
         obj.published = val.created ? Date.parse(val.created) : val.pubDate ? Date.parse(val.pubDate) : Date.now()
@@ -223,6 +268,23 @@ async function parseXmlToJson(_Xml) {
           obj.itunes_image = val['itunes:image'].href
         }
 
+        obj.duration = obj.itunes_duration || ""
+        obj.duration = String(obj.duration) // duration is sometimes a number instead of string
+
+        let duration_formatted = ""
+        if (obj.duration !== "" && typeof obj.duration === "string")
+        {
+            const timeObject = parseFeedEpisodeDuration(obj.duration.split(":"))
+            if (timeObject.hours == 0 && timeObject.minutes == 0) {
+                duration_formatted = "" 
+            } else if (timeObject != null) {
+                duration_formatted = (timeObject.hours != "0" ? timeObject.hours + "h " : "") + timeObject.minutes + "min"
+            }
+        }
+        obj.duration_formatted = obj.duration === "" ? "unknown" : duration_formatted
+
+        obj.description = obj.itunes_subtitle || val['description']
+
         obj.enclosures = val.enclosure ? Array.isArray(val.enclosure) ? val.enclosure : [val.enclosure] : []
 
         if (val['media:thumbnail']) {
@@ -250,12 +312,37 @@ async function parseXmlToJson(_Xml) {
         }
 
         rss.items.push(obj)
-      }
+      })
+
     }
     
     return rss
 }
 
+function updateFeedStatus(feedUrl, status) {
+  // Check if JSON with feeds exists
+  if (fs.readFileSync(saveFilePath, "utf-8") != "") {
+    const JsonContentOld = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"));
+    let JsonContentNew = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"));
+
+    for (var i = 0; i < JsonContentNew.length; i++) {
+      // Find feed item that's returning error
+      if (feedUrl === JsonContentNew[i].feedUrl) {
+        // Update feedUrlStatus prop
+        JsonContentNew[i].feedUrlStatus = status;
+        // don't continue loop (assumes no duplicate urls)
+        break;
+      }
+    }
+
+    // Update JSON with feeds if there are changes
+    if (JsonContentOld !== JsonContentNew) {
+      fs.writeFileSync(saveFilePath, JSON.stringify(JsonContentNew));
+    }
+  }
+}
+
+/** @deprecated */
 function updateFeedURLStatus(isURLWorking, _Options) {
     if (_Options) {
         var feedURL = null

@@ -25,7 +25,7 @@ module.exports = {
       var feedUrl = element.getAttribute("xmlUrl")
       
       if (feedUrl) {
-        promises.push(request.makeFeedRssRequest(feedUrl))        
+        promises.push(request.requestPodcastFeed(feedUrl))        
       }
     });
 

@@ -256,49 +256,24 @@ function parseFeedEpisodeDuration(_Duration) {
 
     return Time
 }
+module.exports.parseFeedEpisodeDuration = parseFeedEpisodeDuration
 
 // ---------------------------------------------------------------------------------------------------------------------
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setProxyMode() {
-    const { app, Menu } = require('electron').remote
+function toggleProxyMode() {
+    const proxyValue = isProxySet()
 
-    let MenuItems = Menu.getApplicationMenu().items
-
-    for (let i = MenuItems.length - 1; i >= 0; i--) {
-        if (MenuItems[i].label === i18n.__('Settings')) {
-
-            // NOTE: Item 0 is "Use Proxy" for now
-
-            ProxySettings = MenuItems[i].submenu.items[0].checked
-
-            if (ProxySettings) {
-                setPreference('proxymode', true)
-            } else {
-                setPreference('proxymode', false)
-            }
-        }
-    }
+    // set to true if value is undefined, otherwise use the opposite of the current value
+    setPreference('proxy_enabled', proxyValue === undefined ? true : !proxyValue)
 }
+module.exports.toggleProxyMode = toggleProxyMode
 
 function isProxySet() {
-    let ProxySettings = false
-    const { app, Menu } = require('electron').remote
-
-    let MenuItems = Menu.getApplicationMenu().items
-
-    for (let i = MenuItems.length - 1; i >= 0; i --) {
-        if (MenuItems[i].label === i18n.__('Settings')) {
-
-            // NOTE: Item 0 is "Use Proxy" for now
-
-            ProxySettings = MenuItems[i].submenu.items[0].checked
-        }
-    }
-
-    return ProxySettings
+    return getPreference('proxy_enabled')
 }
+module.exports.isProxySet = isProxySet
 
 /**
  * @deprecated No longer needed after merging of settings and favorites files.
@@ -438,37 +413,19 @@ function setIsAddedToInbox(_FeedUrl, _ToInbox)
 }
 module.exports.setIsAddedToInbox = setIsAddedToInbox
 
-function isFeedUrlSaved(_FeedUrl)
-{
-    return false
+function toggleMinimize() {
+    const minimizeValue = getPreference('minimize')
+
+    // set to true if value is undefined, otherwise use the opposite of the current value
+    setPreference('minimize', minimizeValue === undefined ? true : !minimizeValue)
 }
-
-function setMinimize() {
-    const { app, Menu } = require('electron').remote
-
-    let MenuItems = Menu.getApplicationMenu().items
-
-    for (let i = MenuItems.length - 1; i >= 0; i--) {
-        if (MenuItems[i].label === i18n.__('Settings')) {
-
-            // NOTE: Item 0 is "Use Proxy" for now
-
-            MinimizeSettings = MenuItems[i].submenu.items[1].checked
-
-            if (MinimizeSettings) {
-                setPreference('minimize', true)
-            } else {
-                setPreference('minimize', false)
-            }
-        }
-    }
-}
+module.exports.toggleMinimize = toggleMinimize
 
 // ---------------------------------------------------------------------------------------------------------------------
 // PREFERENCES
 // ---------------------------------------------------------------------------------------------------------------------
 
-function setPreference(_Key, _Value) {
+function setPreference(key, value) {
     if (fs.existsSync(preferencesFilePath)) {
         let JsonContent = {}
 
@@ -478,17 +435,26 @@ function setPreference(_Key, _Value) {
             JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, 'utf-8'))
         }
 
-        JsonContent[_Key] = _Value
+        JsonContent[key] = value
 
         fs.writeFileSync(preferencesFilePath, JSON.stringify(JsonContent))
     }
 }
+module.exports.setPreference = setPreference
 
-function getPreference(_Key) {
+/**
+ * 
+ * @param {string} key - JSON key to search for in preferences file.
+ * @param {any | undefined} defaultReturnValue - [optional] Value returned if key does not exist.
+ * @returns {any | undefined} Value stored at key.
+ * If defaultReturnValue is specified, that will be returned if the key is not found.
+ * Otherwise returns undefined.
+ */
+function getPreference(key, defaultReturnValue) {
     if (fs.existsSync(preferencesFilePath) && fs.readFileSync(preferencesFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(preferencesFilePath, 'utf-8'))
 
-        return JsonContent[_Key]
+        return JsonContent[key] ?? defaultReturnValue
     }
 }
 module.exports.getPreference = getPreference

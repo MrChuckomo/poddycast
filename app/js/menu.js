@@ -104,11 +104,11 @@ function showFavorites() {
 
             HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false)
             HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl)
-            HeaderElement.setAttribute('onclick', 'showAllEpisodes(this)')
+            HeaderElement.setAttribute('onclick', 'feed.showAllEpisodes(this)')
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {
-                if (JsonContent[i].feedUrlStatus === 500) {
+                if (JsonContent[i].feedUrlStatus >= 400) {
                     var brokenLinkIcon = document.createElement("span")
                     brokenLinkIcon.innerHTML = s_BrokenLinkIcon
                     brokenLinkIcon.classList.add('icon-link-broken-wrapper')
