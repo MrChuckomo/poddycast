@@ -1,161 +1,178 @@
-'use strict'
+'use strict';
 
-var CContentHelper = require('./js/helper/content')
-var helper = new CContentHelper()
+let CContentHelper = require('./helper/content');
+let helper = new CContentHelper();
 
-var CPlayer = require('./js/helper/player')
-var player = new CPlayer()
+let CPlayer = require('./helper/player');
+let player = new CPlayer();
+const fs = require('fs');
+const global = require('./helper/helper_global');
+const navigation = require('./helper/helper_navigation');
+const entries = require('./helper/helper_entries');
+const dragHandler = require('./drag_handler');
+const listItem = require('./list_item');
+const { heartFilled, checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
+const i18n = window.i18n;
 
+/** @private */
 function getInputEntry(_Name) {
-    let InputItem = document.createElement('input')
+    let InputItem = document.createElement('input');
 
-    InputItem.value = _Name
-    InputItem.type = 'text'
-    InputItem.disabled = true
-    InputItem.setAttribute('onfocusout', 'clearRenameFocus(this)')
-    InputItem.setAttribute('onkeyup', 'renamePlaylist(this, event)')
+    InputItem.value = _Name;
+    InputItem.type = 'text';
+    InputItem.disabled = true;
+    InputItem.setAttribute('onfocusout', 'navigation.clearRenameFocus(this)');
+    InputItem.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
-    return InputItem
+    return InputItem;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 function createPlaylist(_Self, _Event) {
     if (_Event.code === 'Enter') {
-        let NewPlaylist = document.createElement('li')
-        NewPlaylist.setAttribute('onclick', 'showPlaylistContent(this)')
-        NewPlaylist.setAttribute('ondblclick', 'enableRename(this)')
-        NewPlaylist.addEventListener('dragenter', handleDragEnter, false);
-        NewPlaylist.addEventListener('dragover', handleDragOver, false);
-        NewPlaylist.addEventListener('dragleave', handleDragLeave, false);
-        NewPlaylist.addEventListener('drop', handleDrop, false);
-        NewPlaylist.append(getInputEntry(_Self.value))
+        let NewPlaylist = document.createElement('li');
+        NewPlaylist.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
+        NewPlaylist.setAttribute('ondblclick', 'playlist.enableRename(this)');
+        NewPlaylist.addEventListener('dragenter', dragHandler.handleDragEnter, false);
+        NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
+        NewPlaylist.addEventListener('dragleave', dragHandler.handleDragLeave, false);
+        NewPlaylist.addEventListener('drop', dragHandler.handleDrop, false);
+        NewPlaylist.append(getInputEntry(_Self.value));
 
-        let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0]
-        PlaylistList.append(NewPlaylist)
+        let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
+        PlaylistList.append(NewPlaylist);
 
-        setContextMenu(NewPlaylist)
+        setContextMenu(NewPlaylist);
 
         let Playlist = {
             'playlistName': _Self.value,
             'podcastList': []
-        }
+        };
 
-        _Self.innerHTML = s_HeartFilled
-        _Self.classList.add('set-favorite')
+        _Self.innerHTML = heartFilled;
+        _Self.classList.add('set-favorite');
 
-        let JsonContent = []
+        let JsonContent = [];
 
-        if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, "utf-8") != "") {
-            JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
+        if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
         } else {
-            fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
+            fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
         }
 
-        JsonContent.push(Playlist)
+        JsonContent.push(Playlist);
 
-        fs.writeFileSync(playlistFilePath, JSON.stringify(JsonContent))
+        fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
 
-        clearTextField(_Self)
+        global.clearTextField(_Self);
 
     } else if (_Event.code === 'Escape') {
-        clearTextField(_Self)
+        global.clearTextField(_Self);
     }
 }
+module.exports.createPlaylist = createPlaylist;
 
 function loadPlaylists() {
-    let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0]
+    let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
 
-    if (fs.existsSync(playlistFilePath) && fs.readFileSync(playlistFilePath, "utf-8") != "") {
-        let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, "utf-8"))
+    if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
+        let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
         for (let i = 0; i < JsonContent.length; i++) {
-            let PlaylistEntry = document.createElement('li')
-            PlaylistEntry.setAttribute('onclick', 'showPlaylistContent(this)')
-            PlaylistEntry.setAttribute('ondblclick', 'enableRename(this)')
-            PlaylistEntry.addEventListener('dragenter', handleDragEnter, false);
-            PlaylistEntry.addEventListener('dragover', handleDragOver, false);
-            PlaylistEntry.addEventListener('dragleave', handleDragLeave, false);
-            PlaylistEntry.addEventListener('drop', handleDrop, false);
-            PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName))
+            let PlaylistEntry = document.createElement('li');
+            PlaylistEntry.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
+            PlaylistEntry.setAttribute('ondblclick', 'playlist.enableRename(this)');
+            PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
+            PlaylistEntry.addEventListener('dragover', dragHandler.handleDragOver, false);
+            PlaylistEntry.addEventListener('dragleave', dragHandler.handleDragLeave, false);
+            PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
+            PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
 
-            setContextMenu(PlaylistEntry)
+            setContextMenu(PlaylistEntry);
 
-            PlaylistList.append(PlaylistEntry)
+            PlaylistList.append(PlaylistEntry);
         }
     }
 }
+module.exports.loadPlaylists = loadPlaylists;
 
+/** @private */
 function setContextMenu(_Object) {
-    const {remote} = require('electron')
-    const {Menu, MenuItem} = remote
-    const ContextMenu = new Menu()
+    const {remote} = require('electron');
+    const {Menu, MenuItem} = remote;
+    const ContextMenu = new Menu();
 
     // NOTE: Access input field inside the playlist item to get the name.
 
     ContextMenu.append(new MenuItem({
         click() {
-            showEditPage(_Object)
+            showEditPage(_Object);
         },
         label: i18n.__('Edit')
-    }))
-    ContextMenu.append(new MenuItem({type: 'separator'}))
+    }));
+    ContextMenu.append(new MenuItem({type: 'separator'}));
     ContextMenu.append(new MenuItem({
         click() {
-            enableRename(_Object)
+            enableRename(_Object);
         },
         label: i18n.__('Rename')
-    }))
+    }));
     ContextMenu.append(new MenuItem({
         click() {
-            deletePlaylist(_Object.getElementsByTagName('input')[0].value)
+            navigation.deletePlaylist(_Object.getElementsByTagName('input')[0].value);
         },
         label: i18n.__('Delete')
-    }))
+    }));
 
     _Object.addEventListener('contextmenu', (_Event) => {
-        _Event.preventDefault()
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true })
-    }, false)
+        _Event.preventDefault();
+        ContextMenu.popup(remote.getCurrentWindow(), { async:true });
+    }, false);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 function enableRename(_Self) {
-    var InputField = _Self.getElementsByTagName('input')[0]
+    let InputField = _Self.getElementsByTagName('input')[0];
 
-    showPlaylistContent(_Self)
+    showPlaylistContent(_Self);
 
-    InputField.disabled = false
-    InputField.focus()
-    InputField.select()
+    InputField.disabled = false;
+    InputField.focus();
+    InputField.select();
 }
+module.exports.enableRename = enableRename;
 
 function renamePlaylist(_Self, _Event) {
 
     if (_Event.code === 'Enter') {
         if (_Self.classList[0] === 'playlist-edit-input') {
-            renamePlaylistInEdit(_Self)
+            navigation.renamePlaylistInEdit(_Self);
         } else {
-            renamePlaylistInline(_Self)
+            navigation.renamePlaylistInline(_Self);
         }
     }
 }
+module.exports.renamePlaylist = renamePlaylist;
 
+/** @deprecated */
+// eslint-disable-next-line no-unused-vars
 function getPlaylist(_Name) {
     // TODO: load podcasts associated with this playlist
 }
 
+/** @private */
 function isInPlaylist(_PlaylistName, _PodcastName) {
-    let Result = false
-    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
+    let Result = false;
+    let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (_PlaylistName === JsonContent[i].playlistName) {
             for (let j = 0; j < JsonContent[i].podcastList.length; j++) {
                 if (JsonContent[i].podcastList[j] === _PodcastName) {
-                    Result = true
-                    break
+                    Result = true;
+                    break;
                 }
             }
         }
@@ -164,52 +181,54 @@ function isInPlaylist(_PlaylistName, _PodcastName) {
     return Result;
 }
 
+/** @private */
 function getPodcastEditItem(_Name, _Artwork, _IsSet) {
-    let Container = document.createElement('li')
-    let CheckBox = ((_IsSet) ? s_CheckBox : s_CheckBoxOutline)
-    let Artwork = document.createElement('img')
-    let Name = document.createElement('span')
+    let Container = document.createElement('li');
+    let CheckBox = ((_IsSet) ? checkBox : checkBoxOutline);
+    let Artwork = document.createElement('img');
+    let Name = document.createElement('span');
 
     // Artwork.src = _Artwork
-    Name.innerHTML = _Name
+    Name.innerHTML = _Name;
 
-    Container.setAttribute('onclick', 'togglePodcast(this)')
-    Container.classList.add('podcast-edit-entry')
-    Container.innerHTML = CheckBox
-    Container.append(Artwork)
-    Container.append(Name)
+    Container.setAttribute('onclick', 'playlist.togglePodcast(this)');
+    Container.classList.add('podcast-edit-entry');
+    Container.innerHTML = CheckBox;
+    Container.append(Artwork);
+    Container.append(Name);
 
     if (_IsSet) {
-        Container.classList.add('check')
+        Container.classList.add('check');
     } else {
-        Container.classList.add('uncheck')
+        Container.classList.add('uncheck');
     }
 
-    return Container
+    return Container;
 }
 
+// eslint-disable-next-line no-unused-vars
 function togglePodcast(_Self) {
-    let CheckBox = document.createElement('img')
-    CheckBox.innerHTML = s_CheckBox
+    let CheckBox = document.createElement('img');
+    CheckBox.innerHTML = checkBox;
 
-    let CheckBoxOutline = document.createElement('img')
-    CheckBoxOutline.innerHTML = s_CheckBoxOutline
+    let CheckBoxOutline = document.createElement('img');
+    CheckBoxOutline.innerHTML = checkBoxOutline;
 
     for (let i = 0; i < _Self.classList.length; i++) {
         switch (_Self.classList[i]) {
         case 'check':
-            _Self.classList.remove('check')
-            _Self.classList.add('uncheck')
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML
-            removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML)
+            _Self.classList.remove('check');
+            _Self.classList.add('uncheck');
+            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML;
+            navigation.removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
 
             break;
 
         case 'uncheck':
-            _Self.classList.remove('uncheck')
-            _Self.classList.add('check')
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML
-            addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML)
+            _Self.classList.remove('uncheck');
+            _Self.classList.add('check');
+            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML;
+            navigation.addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
 
             break;
 
@@ -217,122 +236,125 @@ function togglePodcast(_Self) {
         }
     }
 }
+module.exports.togglePodcast = togglePodcast;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+/** @private */
 function showEditPage(_Self) {
-    let PlaylistName = _Self.getElementsByTagName('input')[0].value
-    let List = document.getElementById('list')
+    let PlaylistName = _Self.getElementsByTagName('input')[0].value;
+    let List = document.getElementById('list');
 
-    setGridLayout(List, false)
-    helper.clearContent()
-    setHeaderViewAction()
-    clearMenuSelection()
-    clearTextField(document.getElementById('search-input'))
-    clearTextField(document.getElementById('new_list-input'))
-    helper.setHeader('Edit Playlist')
+    navigation.setGridLayout(List, false);
+    helper.clearContent();
+    navigation.setHeaderViewAction();
+    navigation.clearMenuSelection();
+    global.clearTextField(document.getElementById('search-input'));
+    global.clearTextField(document.getElementById('new_list-input'));
+    helper.setHeader('Edit Playlist');
 
-    _Self.classList.add('selected')
+    _Self.classList.add('selected');
 
-    let NameInput = document.createElement('input')
-    NameInput.value = PlaylistName
-    NameInput.classList.add('playlist-edit-input')
-    NameInput.setAttribute('onkeyup', 'renamePlaylist(this, event)')
+    let NameInput = document.createElement('input');
+    NameInput.value = PlaylistName;
+    NameInput.classList.add('playlist-edit-input');
+    NameInput.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
-    let DeleteButton = document.createElement('button')
-    DeleteButton.innerHTML = i18n.__('Delete')
-    DeleteButton.setAttribute('onclick', 'deletePlaylist("' + PlaylistName + '")')
+    let DeleteButton = document.createElement('button');
+    DeleteButton.innerHTML = i18n.__('Delete');
+    DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
 
-    let HeaderSection = document.createElement('div')
-    HeaderSection.classList.add('edit-header')
-    HeaderSection.append(NameInput)
-    HeaderSection.append(DeleteButton)
+    let HeaderSection = document.createElement('div');
+    HeaderSection.classList.add('edit-header');
+    HeaderSection.append(NameInput);
+    HeaderSection.append(DeleteButton);
 
-    List.append(HeaderSection)
+    List.append(HeaderSection);
 
-    List.append(getStatisticsElement('statistics-header', 'Linked Podcasts', null))
+    List.append(entries.getStatisticsElement('statistics-header', 'Linked Podcasts', null));
 
-    let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, "utf-8"))
+    let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
 
-    JsonContent = sortByName(JsonContent)
+    JsonContent = entries.sortByName(JsonContent);
 
     for (let i = 0; i < JsonContent.length; i++) {
-        List.append(getPodcastEditItem(JsonContent[i].collectionName, JsonContent[i].artworkUrl30, isInPlaylist(PlaylistName, JsonContent[i].collectionName)))
+        List.append(getPodcastEditItem(JsonContent[i].collectionName, JsonContent[i].artworkUrl30, isInPlaylist(PlaylistName, JsonContent[i].collectionName)));
     }
 }
 
 function showPlaylistContent(_Self) {
-    let PlaylistName = _Self.getElementsByTagName('input')[0].value
+    let PlaylistName = _Self.getElementsByTagName('input')[0].value;
 
-    helper.clearContent()
-    setHeaderViewAction()
-    clearMenuSelection()
-    clearTextField(document.getElementById('search-input'))
-    clearTextField(document.getElementById('new_list-input'))
+    helper.clearContent();
+    navigation.setHeaderViewAction();
+    navigation.clearMenuSelection();
+    global.clearTextField(document.getElementById('search-input'));
+    global.clearTextField(document.getElementById('new_list-input'));
 
     // TODO: header can be a input field as well for playlists
     // TODO: allow inline editing for playlist header
 
-    helper.setHeader(PlaylistName)
+    helper.setHeader(PlaylistName);
 
-    _Self.classList.add('selected')
+    _Self.classList.add('selected');
 
-    let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'))
+    let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
     for (let i = 0; i < JsonContent.length; i++) {
         // if (_Self.innerHTML === JsonContent[i].playlistName)
         if (PlaylistName === JsonContent[i].playlistName) {
-            if (fs.existsSync(newEpisodesSaveFilePath) && fs.readFileSync(newEpisodesSaveFilePath, 'utf-8') !== '') {
-                let NewEpisodesJsonContent = JSON.parse(fs.readFileSync(newEpisodesSaveFilePath, 'utf-8'))
-                let List = document.getElementById('list')
+            if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
+                let NewEpisodesJsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
+                let List = document.getElementById('list');
 
-                setGridLayout(List, false)
+                navigation.setGridLayout(List, false);
 
                 for (let a = 0; a < NewEpisodesJsonContent.length; a++) {
-                    let Artwork = getValueFromFile(saveFilePath, 'artworkUrl60', 'collectionName', NewEpisodesJsonContent[a].channelName)
+                    let Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl60', 'collectionName', NewEpisodesJsonContent[a].channelName);
 
-                    if (getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
-                        Artwork = getValueFromFile(saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName)
+                    if (global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== undefined && global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName) !== 'undefined') {
+                        Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', NewEpisodesJsonContent[a].channelName);
                     }
 
                     if (Artwork !== null) {
-                        let ListElement = buildListItem(new cListElement (
+                        let ListElement = listItem.buildListItem(new listItem.cListElement (
                             [
-                                getImagePart(Artwork),
-                                getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
-                                getSubTextPart((NewEpisodesJsonContent[a].duration === undefined) ? '' : NewEpisodesJsonContent[a].duration),
-                                getTextPart(NewEpisodesJsonContent[a].channelName),
-                                getDescriptionPart(s_InfoIcon, NewEpisodesJsonContent[a].EpisodeDescription),
-                                getIconButtonPart(s_DeleteIcon)
+                                listItem.getImagePart(Artwork),
+                                listItem.getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
+                                listItem.getSubTextPart((NewEpisodesJsonContent[a].duration === undefined) ? '' : NewEpisodesJsonContent[a].duration),
+                                listItem.getTextPart(NewEpisodesJsonContent[a].channelName),
+                                listItem.getDescriptionPart(infoIcon, NewEpisodesJsonContent[a].EpisodeDescription),
+                                listItem.getIconButtonPart(deleteIcon)
                             ],
                             '5em 1fr 6em 1fr 5em 5em'
-                        ), eLayout.row)
+                        ), listItem.eLayout.row);
 
                         if (player.isPlaying(NewEpisodesJsonContent[a].episodeUrl)) {
-                            ListElement.classList.add('select-episode')
+                            ListElement.classList.add('select-episode');
                         }
 
-                        ListElement.setAttribute('onclick', 'playNow(this)')
-                        ListElement.setAttribute('channel', NewEpisodesJsonContent[a].channelName)
-                        ListElement.setAttribute('title', NewEpisodesJsonContent[a].episodeTitle)
-                        ListElement.setAttribute('type', NewEpisodesJsonContent[a].episodeType)
-                        ListElement.setAttribute('url', NewEpisodesJsonContent[a].episodeUrl)
-                        ListElement.setAttribute('length', NewEpisodesJsonContent[a].episodeLength)
-                        ListElement.setAttribute('artworkUrl', Artwork)
+                        ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
+                        ListElement.setAttribute('channel', NewEpisodesJsonContent[a].channelName);
+                        ListElement.setAttribute('title', NewEpisodesJsonContent[a].episodeTitle);
+                        ListElement.setAttribute('type', NewEpisodesJsonContent[a].episodeType);
+                        ListElement.setAttribute('url', NewEpisodesJsonContent[a].episodeUrl);
+                        ListElement.setAttribute('length', NewEpisodesJsonContent[a].episodeLength);
+                        ListElement.setAttribute('artworkUrl', Artwork);
 
                         // NOTE: show just episodes of the playlist saved podcast
 
                         for (let j = 0; j < JsonContent[i].podcastList.length; j++) {
                             if (NewEpisodesJsonContent[a].channelName === JsonContent[i].podcastList[j]) {
-                                List.append(ListElement)
-                                break
+                                List.append(ListElement);
+                                break;
                             }
                         }
                     }
                 }
             }
 
-            break
+            break;
         }
     }
 }
+module.exports.showPlaylistContent = showPlaylistContent;

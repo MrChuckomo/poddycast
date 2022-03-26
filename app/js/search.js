@@ -1,56 +1,59 @@
-'use strict'
+'use strict';
 
-var CContentHelper = require('./helper/content')
-var helper = new CContentHelper()
-const itunes = require('./itunes')
-const request = require('./request')
+let CContentHelper = require('./helper/content');
+let helper = new CContentHelper();
+const itunes = require('./itunes');
+const request = require('./request');
+const navigation = require('./helper/helper_navigation');
+const global = require('./helper/helper_global');
+const entries = require('./helper/helper_entries');
+const i18n = window.i18n;
 
 
 function search(_Self, _Event) {
-    if (_Event.code == 'Enter') {
-        helper.clearContent()
-        setHeaderViewAction()
-        clearMenuSelection()
-        helper.setHeader(i18n.__('Search'))
+    if (_Event.code === 'Enter') {
+        helper.clearContent();
+        navigation.setHeaderViewAction();
+        navigation.clearMenuSelection();
+        helper.setHeader(i18n.__('Search'));
 
-        document.getElementById('res').setAttribute('return-value', '')
+        document.getElementById('res').setAttribute('return-value', '');
 
         if (_Self.value.includes('http') && _Self.value.includes(':') && _Self.value.includes('//')) {
-            getPodcastsFromFeed(_Self.value)
+            getPodcastsFromFeed(_Self.value);
         } else {
-            itunes.getPodcasts(_Self.value)
+            itunes.getPodcasts(_Self.value);
         }
-    } else if (_Event.code == 'Escape') {
-        clearTextField(_Self)
+    } else if (_Event.code === 'Escape') {
+        global.clearTextField(_Self);
     }
 }
-module.exports.search = search
+module.exports.search = search;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 function getPodcastsFromFeed(feedUrl) {
     request.requestPodcastFeed(feedUrl).then(result => {
-        getFeedResults(result)
-    })
+        getFeedResults(result);
+    });
 }
 
 function getFeedResults(podcastObject) {
 
-    const Image = podcastObject.image
+    const Image = podcastObject.image;
     // this is a catch for Patreon feeds which do not have an author value
-    const Author = podcastObject.items[0].author === undefined ? podcastObject.title : podcastObject.items[0].author
+    const Author = podcastObject.items[0].author === undefined ? podcastObject.title : podcastObject.items[0].author;
 
-    if (Image === undefined || Author === undefined)
-    {
-        console.log(podcastObject)
-        console.error("Invalid RSS podcast feed")
+    if (Image === undefined || Author === undefined) {
+        console.log(podcastObject);
+        console.error('Invalid RSS podcast feed');
     }
 
-    helper.clearContent()
+    helper.clearContent();
 
-    let List = document.getElementById('list')
+    let List = document.getElementById('list');
 
-    setGridLayout(List, false)
+    navigation.setGridLayout(List, false);
 
     let PodcastInfos = {
         'feedUrl': podcastObject.link,
@@ -58,14 +61,14 @@ function getFeedResults(podcastObject) {
         'collectionName': podcastObject.title,
         'artworkUrl30': Image,
         'artworkUrl60': Image,
-        'artworkUrl100': Image,
+        'artworkUrl100': Image
+    };
+
+    let Icon = itunes.getIcon(PodcastInfos);
+
+    if (global.isAlreadySaved(PodcastInfos.feedUrl)) {
+        Icon = itunes.getFullIcon(PodcastInfos);
     }
 
-    let Icon = itunes.getIcon(PodcastInfos)
-
-    if (isAlreadySaved(PodcastInfos.feedUrl)) {
-        Icon = itunes.getFullIcon(PodcastInfos)
-    }
-
-    List.append(getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon))
+    List.append(entries.getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon));
 }

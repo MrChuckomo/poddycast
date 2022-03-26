@@ -1,6 +1,6 @@
 {
     "main": "main.js",
-    "name": "Poddycast",
+    "name": "poddycast",
     "description": "A Podcast app made with Electron because I love Podcasts.",
     "repository": {
         "type": "git",
@@ -20,7 +20,8 @@
         "package:win": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=x64 --icon=img/poddycast-app_icon",
         "package:win32": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=ia32 --icon=img/poddycast-app_icon",
         "package:winArm64": "electron-packager ./ --out=./builds --overwrite --platform=win32 --arch=arm64 --icon=img/poddycast-app_icon",
-        "start": "electron ."
+        "start": "electron .",
+        "lint": "eslint \"*/**.js\""
     },
     "dependencies": {
         "axios": "0.21.2",
@@ -30,6 +31,6 @@
     "devDependencies": {
         "electron-packager": "^14.2.1",
         "electron-rebuild": "2.3.4",
-        "eslint": "^6.8.0"
+        "eslint": "8.10.0"
     }
 }

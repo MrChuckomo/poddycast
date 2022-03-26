@@ -9,28 +9,32 @@
         <link rel="stylesheet" href="./css/content_bottom.css">
         <link rel="stylesheet" href="./css/player.css">
         <link rel="stylesheet" href="./css/list_item.css">
-        <script type="text/javascript" src="./js/slider_class.js"></script>
-        <script type="text/javascript" src="./js/icons.js"></script>
-        <script type="text/javascript" src="./js/helper/helper_global.js"></script>
-        <script type="text/javascript" src="./js/helper/helper_navigation.js"></script>
-        <script type="text/javascript" src="./js/helper/helper_entries.js"></script>
-        <script type="text/javascript" src="./js/list_item.js"></script>
-        <script type="text/javascript" src="./js/drag_handler.js"></script>
-        <script type="text/javascript" src="./js/favorite.js"></script>
-        <script type="text/javascript" src="./js/playlist.js"></script>
-        <script type="text/javascript" src="./js/menu.js"></script>
-        <script type="text/javascript" src="./js/player.js"></script>
-        <script type="text/javascript" src="./js/dark_mode.js"></script>
-        <script type="text/javascript" src="./js/translations.js"></script>
         <script>
-            window.i18n = new(require('./translations/i18n'));
+            window.i18n = new (require('./translations/i18n'));
             const feed = require('./js/feed');
-            const search = require('./js/search')
-            require('./menu.js');
+            const search = require('./js/search');
+            const global = require('./js/helper/helper_global');
+            const navigation = require('./js/helper/helper_navigation');
+            const entries = require('./js/helper/helper_entries');
+            const audioPlayer = require('./js/player');
+            const playlist = require('./js/playlist');
+            const favorite = require('./js/favorite');
+            const menu = require('./menu');
+            const menujs = require('./js/menu');
+            const translations = require('./js/translations');
+
+            function onBodyLoad() {
+                global.init();
+                playlist.loadPlaylists();
+                feed.readFeeds();
+                menujs.showNewEpisodes();
+                navigation.setItemCounts();
+                translations.translate();
+                audioPlayer.init();
+            }
         </script>
     </head>
-    <body onload="init(); loadPlaylists(); feed.readFeeds(); showNewEpisodes(); setItemCounts(); translate()">
-
+    <body onload="onBodyLoad()">
         <div id="content">
             <div id="content-left">
                 <div id="search">
@@ -42,7 +46,7 @@
                 </div>
                 <div id="menu">
                     <ul>
-                        <li id="menu-episodes" class="selected" onclick="selectMenuItem('menu-episodes'); showNewEpisodes()">
+                        <li id="menu-episodes" class="selected" onclick="menujs.selectMenuItem('menu-episodes'); menujs.showNewEpisodes()">
                             <svg class="blue" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/>
@@ -50,7 +54,7 @@
                             <span class="new-episodes">New Episodes</span>
                             <div class="menu-count">0</div>
                         </li>
-                        <li id="menu-favorites" onclick="selectMenuItem('menu-favorites'); showFavorites()">
+                        <li id="menu-favorites" onclick="menujs.selectMenuItem('menu-favorites'); menujs.showFavorites()">
                             <svg class="pink" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -65,7 +69,7 @@
                                 </svg>
                             <span class="refresh">Refresh</span>
                         </li>
-                        <li id="menu-history" onclick="selectMenuItem('menu-history'); showHistory()">
+                        <li id="menu-history" onclick="menujs.selectMenuItem('menu-history'); menujs.showHistory()">
                             <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
@@ -74,7 +78,7 @@
                                 History
                             </span>
                         </li>
-                        <li id="menu-statistics" onclick="selectMenuItem('menu-statistics'); showStatistics()">
+                        <li id="menu-statistics" onclick="menujs.selectMenuItem('menu-statistics'); menujs.showStatistics()">
                             <svg class="teal" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -96,7 +100,7 @@
                         <path d="M0 0h24v24H0z" fill="none"/>
                     </svg>
                     <!-- <button type="button" name="button">New List</button> -->
-                    <input id="new_list-input" type="text" name="new_list" placeholder="New List" onkeyup="createPlaylist(this, event)">
+                    <input id="new_list-input" type="text" name="new_list" placeholder="New List" onkeyup="playlist.createPlaylist(this, event)">
                 </footer>
             </div>
             <div id="content-right">
@@ -121,7 +125,7 @@
                         </div>
                         <img id="content-right-player-img" src="./img/podcast_07prct.png" alt="">
                         <div id="content-right-player-title">No episode selected</div>
-                        <svg id="replay-30-sec" onclick="playReply()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg id="replay-30-sec" onclick="audioPlayer.playReply()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <defs>
                                 <path d="M0 0h24v24H0V0z" id="a"/>
                             </defs>
@@ -130,11 +134,11 @@
                             </clipPath>
                             <path clip-path="url(#b)" d="M12 5V1L7 6l5 5V7c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6H4c0 4.4 3.6 8 8 8s8-3.6 8-8-3.6-8-8-8zm-2.4 8.5h.4c.2 0 .4-.1.5-.2s.2-.2.2-.4v-.2s-.1-.1-.1-.2-.1-.1-.2-.1h-.5s-.1.1-.2.1-.1.1-.1.2v.2h-1c0-.2 0-.3.1-.5s.2-.3.3-.4.3-.2.4-.2.4-.1.5-.1c.2 0 .4 0 .6.1s.3.1.5.2.2.2.3.4.1.3.1.5v.3s-.1.2-.1.3-.1.2-.2.2-.2.1-.3.2c.2.1.4.2.5.4s.2.4.2.6c0 .2 0 .4-.1.5s-.2.3-.3.4-.3.2-.5.2-.4.1-.6.1c-.2 0-.4 0-.5-.1s-.3-.1-.5-.2-.2-.2-.3-.4-.1-.4-.1-.6h.8v.2s.1.1.1.2.1.1.2.1h.5s.1-.1.2-.1.1-.1.1-.2v-.5s-.1-.1-.1-.2-.1-.1-.2-.1h-.6v-.7zm5.7.7c0 .3 0 .6-.1.8l-.3.6s-.3.3-.5.3-.4.1-.6.1-.4 0-.6-.1-.3-.2-.5-.3-.2-.3-.3-.6-.1-.5-.1-.8v-.7c0-.3 0-.6.1-.8l.3-.6s.3-.3.5-.3.4-.1.6-.1.4 0 .6.1.3.2.5.3.2.3.3.6.1.5.1.8v.7zm-.8-.8v-.5c0-.1-.1-.2-.1-.3s-.1-.1-.2-.2-.2-.1-.3-.1-.2 0-.3.1l-.2.2s-.1.2-.1.3v2s.1.2.1.3.1.1.2.2.2.1.3.1.2 0 .3-.1l.2-.2s.1-.2.1-.3v-1.5z"/>
                         </svg>
-                        <svg id="play-pause" onclick="togglePlayPauseButton()" mode="pause" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <svg id="play-pause" onclick="audioPlayer.togglePlayPauseButton()" mode="pause" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8 5v14l11-7z"/>
                             <path d="M0 0h24v24H0z" fill="none"/>
                         </svg>
-                        <svg id="forward-30-sec" onclick="playForward()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg id="forward-30-sec" onclick="audioPlayer.playForward()" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <defs>
                                 <path d="M24 24H0V0h24v24z" id="a"/>
                             </defs>
@@ -143,18 +147,18 @@
                             </clipPath>
                             <path clip-path="url(#b)" d="M9.6 13.5h.4c.2 0 .4-.1.5-.2s.2-.2.2-.4v-.2s-.1-.1-.1-.2-.1-.1-.2-.1h-.5s-.1.1-.2.1-.1.1-.1.2v.2h-1c0-.2 0-.3.1-.5s.2-.3.3-.4.3-.2.4-.2.4-.1.5-.1c.2 0 .4 0 .6.1s.3.1.5.2.2.2.3.4.1.3.1.5v.3s-.1.2-.1.3-.1.2-.2.2-.2.1-.3.2c.2.1.4.2.5.4s.2.4.2.6c0 .2 0 .4-.1.5s-.2.3-.3.4-.3.2-.5.2-.4.1-.6.1c-.2 0-.4 0-.5-.1s-.3-.1-.5-.2-.2-.2-.3-.4-.1-.4-.1-.6h.8v.2s.1.1.1.2.1.1.2.1h.5s.1-.1.2-.1.1-.1.1-.2v-.5s-.1-.1-.1-.2-.1-.1-.2-.1h-.6v-.7zm5.7.7c0 .3 0 .6-.1.8l-.3.6s-.3.3-.5.3-.4.1-.6.1-.4 0-.6-.1-.3-.2-.5-.3-.2-.3-.3-.6-.1-.5-.1-.8v-.7c0-.3 0-.6.1-.8l.3-.6s.3-.3.5-.3.4-.1.6-.1.4 0 .6.1.3.2.5.3.2.3.3.6.1.5.1.8v.7zm-.9-.8v-.5s-.1-.2-.1-.3-.1-.1-.2-.2-.2-.1-.3-.1-.2 0-.3.1l-.2.2s-.1.2-.1.3v2s.1.2.1.3.1.1.2.2.2.1.3.1.2 0 .3-.1l.2-.2s.1-.2.1-.3v-1.5zM4 13c0 4.4 3.6 8 8 8s8-3.6 8-8h-2c0 3.3-2.7 6-6 6s-6-2.7-6-6 2.7-6 6-6v4l5-5-5-5v4c-4.4 0-8 3.6-8 8z"/>
                         </svg>
-                        <svg id="volume-button" onclick="volumeToggle()" fill="#000000" xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
+                        <svg id="volume-button" onclick="audioPlayer.volumeToggle()" fill="#000000" xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18">
                             <path d="M0 0h24v24H0z" fill="none" />
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                         </svg>
-                        <input type="range" id="volume" name="volume" min="0.001" max="1" step="0.0001" oninput="setPlaybackVolume(this)">
+                        <input type="range" id="volume" name="volume" min="0.001" max="1" step="0.0001" oninput="audioPlayer.setPlaybackVolume(this)">
                         <div id="volume-fill"></div>
                         <div class="content-right-player-speed-btn">
-                            <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown" onclick="speedDown()">-</button>
+                            <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown" onclick="audioPlayer.speedDown()">-</button>
 
                             <button id="content-right-player-speed-indicator">1.0x</button>
 
-                            <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed" onclick="speedUp()">+</button>
+                            <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed" onclick="audioPlayer.speedUp()">+</button>
                         </div>
 
                         <div id="content-right-player-time">00:00:00</div>

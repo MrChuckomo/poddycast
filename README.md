@@ -4,6 +4,18 @@ A Podcast app made with Electron because I love Podcasts.
 
 ![screenshot_1](img/poddycastapp.png)
 
+## Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Install](#install)
+- [Platform Support](#platform-support)
+- [Features](#features)
+- [Contact](#contact)
+- [Tutorial](#tutorial)
+  - [Subscribe](#subscribe)
+  - [Episodes](#episodes)
+  - [Playlist](#playlist)
+  - [Dark Mode](#dark-mode)
+
 ## Install
 
 Download the latest release from the [release page](https://github.com/MrChuckomo/poddycast/releases).

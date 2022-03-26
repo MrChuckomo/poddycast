@@ -49,6 +49,10 @@
             "warn",
             4
         ],
+        "semi": [
+            "error",
+            "always"
+        ],
         "no-alert": "warn",
         "no-compare-neg-zero": "warn",
         "no-console": "off",
@@ -83,8 +87,6 @@
                 "ignoreCase": true
             }
         ],
-        "sort-keys": "warn",
-        "sort-vars": "warn",
         "spaced-comment": [
             "warn",
             "always"

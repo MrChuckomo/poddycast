@@ -1,16 +1,17 @@
+'use strict';
+
 class Slider {
-    constructor() {
+    constructor(audioPlayer) {
         this.$el = document.getElementById('slider');
         this.value = 0;
         this.mouseup = true;
 
         this.disable();
-        this.init();
-
+        this.init(audioPlayer);
     }
 
-    init() {
-        this.onchange(() => { 
+    init(audioPlayer) {
+        this.onchange(() => {
             this.update();
         });
 
@@ -21,22 +22,21 @@ class Slider {
         this.onmouseup(() => {
             this.mouseup = true;
 
-            seekProgress(this.value);
+            audioPlayer.seekProgress(this.value);
         });
-
     }
 
     disable() {
         if(!this.disableState) {
             this.disableState = true;
-            this.$el.setAttribute( "disabled", '' );
+            this.$el.setAttribute( 'disabled', '' );
         }
     }
 
     enable() {
         if(this.disableState) {
             this.disableState = false;
-            this.$el.removeAttribute( "disabled" );
+            this.$el.removeAttribute( 'disabled' );
         }
     }
 
@@ -46,7 +46,7 @@ class Slider {
     }
 
     updateProgress() {
-        this.$el.style.background = "linear-gradient(to right, #448AFF 0%, #448AFF " + this.value + "%, var(--theme-slider) " + this.value + "%, var(--theme-slider) 100%)";
+        this.$el.style.background = 'linear-gradient(to right, #448AFF 0%, #448AFF ' + this.value + '%, var(--theme-slider) ' + this.value + '%, var(--theme-slider) 100%)';
     }
 
     getValue() {
@@ -64,19 +64,20 @@ class Slider {
     }
 
     onchange(f) {
-        this.$el.addEventListener("input", f, false); 
-        this.$el.addEventListener("change", f, false); 
+        this.$el.addEventListener('input', f, false);
+        this.$el.addEventListener('change', f, false);
     }
 
     onmouseup(f) {
-       this.$el.addEventListener('mouseup', f, false); 
-       this.$el.addEventListener('pointerup', f, false); 
-       this.$el.addEventListener('touchend', f, false);
+        this.$el.addEventListener('mouseup', f, false);
+        this.$el.addEventListener('pointerup', f, false);
+        this.$el.addEventListener('touchend', f, false);
     }
 
     onmousedown(f) {
-       this.$el.addEventListener('mousedown', f, false); 
-       this.$el.addEventListener('pointerdown', f, false); 
-       this.$el.addEventListener('touchstart', f, false);
+        this.$el.addEventListener('mousedown', f, false);
+        this.$el.addEventListener('pointerdown', f, false);
+        this.$el.addEventListener('touchstart', f, false);
     }
 }
+module.exports = Slider;
