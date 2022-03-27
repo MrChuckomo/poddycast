@@ -7,6 +7,14 @@ const { XMLParser } = require('fast-xml-parser');
 const global = require('./helper/helper_global');
 const fs = require('fs');
 
+const axiosInstance = axios.create({
+    // fixes issue with proxy mode due to how electron apps are packaged
+    adapter: require('axios/lib/adapters/http'),
+    headers: {
+        'Accept': 'application/xml, text/xml'
+    }
+});
+
 const eRequest = {
     http: 1,
     https: 2
@@ -80,28 +88,17 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
 function requestPodcastFeed(feedUrl, returnRawData) {
     return new Promise((resolve, reject) => {
 
-        // TODO: finish this section when fixing proxy issues
-        // default value for axios proxy is false to disable
-        // let proxy = false
+        let requestConfig = {};
 
-        // if set, build a proxy object used within axios request
-        // if (isProxySet()) {
-        //   proxy = {
-        //     protocol: getPreference('proxy_protocol', 'http'),
-        //     host: getPreference('proxy_host', 'localhost'),
-        //     port: getPreference('proxy_port', 8080)
-        //   }
-        // }
+        // if proxy is not enabled, explicitly disable for axios
+        if (!global.isProxySet()) {
+            requestConfig = {
+                proxy: false
+            };
+        }
 
-        axios
-            .request({
-                url: feedUrl,
-                method: 'get',
-                headers: {
-                    'Accept': 'application/xml, text/xml'
-                }
-                // proxy: proxy
-            })
+        axiosInstance
+            .get(feedUrl, requestConfig)
             .then(function (response) {
                 updateFeedStatus(feedUrl, response.status);
 
