@@ -64,7 +64,7 @@ function init() {
         setPreference('volume', 0.75);
     }
 
-    darkMode.darkMode();
+    darkMode.initDarkMode();
 
     document.getElementById('volume').value = getPreference('volume');
     document.getElementById('volume').dispatchEvent(new Event('input'));

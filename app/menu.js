@@ -64,9 +64,9 @@ const template = [
             { type: 'separator' },
             {
                 accelerator: 'CommandOrControl+Alt+L',
-                checked: global.getPreference('darkmode'),
+                checked: global.getPreference('darkmode', false),
                 click() {
-                    darkMode.darkMode();
+                    darkMode.toggleDarkMode();
                 },
                 label: i18n.__('Dark Mode'),
                 type: 'checkbox'
