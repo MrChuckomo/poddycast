@@ -30,10 +30,7 @@ function readFeeds() {
 
         let feedUrl = '';
         for (let i = 0; i < JsonContent.length; i++) {
-            // use proxy url if proxy is set
-            feedUrl = global.isProxySet()
-                ? request.getFeedProxyOptions(JsonContent[i].feedUrl)
-                : JsonContent[i].feedUrl;
+            feedUrl = JsonContent[i].feedUrl;
 
             request
                 .requestPodcastFeed(feedUrl, false)
