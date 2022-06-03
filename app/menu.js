@@ -63,13 +63,35 @@ const template = [
             },
             { type: 'separator' },
             {
-                accelerator: 'CommandOrControl+Alt+L',
-                checked: global.getPreference('darkmode', false),
-                click() {
-                    darkMode.toggleDarkMode();
-                },
-                label: i18n.__('Dark Mode'),
-                type: 'checkbox'
+                label: i18n.__('Color Scheme'),
+                submenu: [
+                    {
+                        checked: global.getPreference('systemmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('systemmode');
+                        },
+                        label: i18n.__('Use system defaults'),
+                        type: 'radio'
+                    },
+                    {
+                        accelerator: 'CommandOrControl+Alt+L',
+                        checked: global.getPreference('lightmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('lightmode');
+                        },
+                        label: i18n.__('Light Mode'),
+                        type: 'radio'
+                    },
+                    {
+                        accelerator: 'CommandOrControl+Alt+D',
+                        checked: global.getPreference('darkmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('darkmode');
+                        },
+                        label: i18n.__('Dark Mode'),
+                        type: 'radio'
+                    }
+                ]
             },
             { role: 'togglefullscreen', label: i18n.__('Toggle Full Screen') }
         ]
@@ -101,6 +123,17 @@ const template = [
                     audioPlayer.playForward();
                 },
                 label: i18n.__('30sec Forward')
+            },
+            { type: 'separator' },
+            {
+                accelerator: 'Up',
+                // TODO: impement click function
+                label: i18n.__('Volume Up')
+            },
+            {
+                accelerator: 'Down',
+                // TODO: impement click function
+                label: i18n.__('Volume Down')
             }
         ]
     },
