@@ -1,6 +1,5 @@
-
-#content-left
-{
+#content-left {
+    background-color: #F2F2F2;
     height: auto;
     width: 300px;
     bottom: 59px;
@@ -17,8 +16,7 @@
         "footer";
 }
 
-#search
-{
+#search {
     grid-area: search;
     margin: 0.8em;
     margin-bottom: 2em;
@@ -31,15 +29,13 @@
     border: 1px solid #E0E0E0;
 }
 
-#search svg
-{
+#search svg {
     opacity: 0.6;
     height: 100%;
     vertical-align: middle;
 }
 
-#search input
-{
+#search input {
     font-size: 16px;
     padding: 0.5em;
     margin-right: 0.5em;
@@ -49,81 +45,92 @@
     outline: none;
 }
 
-#menu
-{
+#menu {
     grid-area: menu;
 }
 
-#menu ul
-{
+#menu ul {
     padding: 0;
 }
 
-#menu ul li
-{
+#menu ul li {
     list-style: none;
-    padding-bottom: 0.5em;
-    padding-top: 0.5em;
-    padding-left: 1.2em;
+    padding-bottom: 0.3em;
+    padding-top: 0.3em;
+    padding-left: 1.2rem;
     padding-right: 0.8em;
-    font-size: 16px;
+    font-size: .85rem; /* 16px */
     display: grid;
     grid-template-rows: 100%;
     grid-template-columns: 30px 1fr 30px;
 }
 
 
-#menu ul li span
-{
+#menu ul li span {
     align-self: center;
 }
 
-#menu ul li svg
-{
+#menu ul li svg {
     opacity: 0.6;
     align-self: center;
 }
 
-.menu-count
-{
+.menu-count {
     align-self: center;
     opacity: 0.4;
 }
 
-.pink
-{
+.pink {
     fill: #E91E63;
 }
 
-.yellow
-{
+.text-pink {
+    color: #E91E63;
+}
+
+.yellow {
     fill: #EF6C00;
 }
 
-.blue
-{
+.text-yellow {
+    color: #EF6C00;
+}
+
+.blue {
     fill: #039BE5;
 }
 
-.purple
-{
+.text-blue {
+    color: #039BE5;
+}
+
+.purple {
     fill: #9C27B0;
 }
 
-.teal
-{
+.text-purple {
+    color: #9C27B0;
+}
+
+.teal {
     fill: #009688;
 }
 
-.selected
-{
-    background-color: #E0E0E0;
+.text-teal {
+    color: #009688;
+}
+
+.selected {
+    background-color: #dedcdc;
+    
 }
 
 @keyframes rotation {
     from {
         transform: rotate(0deg);
-    } to {
+    }
+
+    to {
         transform: rotate(-359deg);
     }
 }
@@ -134,13 +141,11 @@
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-#playlist-header
-{
+#playlist-header {
     grid-area: playlist-header;
 }
 
-#playlist-header h3
-{
+#playlist-header h3 {
 
     margin: 0;
     padding: 0.5em;
@@ -151,8 +156,7 @@
     font-style: normal;
 }
 
-#playlists
-{
+#playlists {
     grid-area: playlists;
     /* display: grid; */
     overflow: auto;
@@ -163,33 +167,28 @@
         "playlist-items"; */
 }
 
-#playlists ul
-{
+#playlists ul {
     grid-area: playlist-items;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-#playlists ul li
-{
+#playlists ul li {
     /* padding: 0.5em; */
     padding-left: 0.6em;
 }
 
-#playlists ul li.over
-{
+#playlists ul li.over {
     background: #039BE5;
     color: #FFF;
 }
 
-#playlists ul li.over input
-{
-   color: #FFF;
+#playlists ul li.over input {
+    color: #FFF;
 }
 
-#playlists ul li input
-{
+#playlists ul li input {
     outline: none;
     background: inherit;
     border: none;
@@ -199,13 +198,11 @@
     width: calc(100% - 3em);
 }
 
-#playlists ul li input:disabled
-{
+#playlists ul li input:disabled {
     user-select: none;
 }
 
-#playlists ul li input:enabled
-{
+#playlists ul li input:enabled {
     outline: 1px solid #039BE5;
     background: #FEFEFE;
     color: #000;
@@ -213,8 +210,7 @@
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-footer
-{
+footer {
     grid-area: footer;
     border-top: 1px solid #CCC;
     display: grid;
@@ -223,15 +219,13 @@ footer
     grid-template-areas: "icon input";
 }
 
-footer svg
-{
+footer svg {
     grid-area: icon;
     align-self: center;
     justify-self: center;
 }
 
-footer input
-{
+footer input {
     grid-area: input;
     background: inherit;
     border: 0;

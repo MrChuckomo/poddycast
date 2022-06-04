@@ -81,6 +81,7 @@ function loadPlaylists() {
 
         for (let i = 0; i < JsonContent.length; i++) {
             let PlaylistEntry = document.createElement('li');
+            PlaylistEntry.classList.add('mx-2', 'rounded-3', 'fw-light');
             PlaylistEntry.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
             PlaylistEntry.setAttribute('ondblclick', 'playlist.enableRename(this)');
             PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
