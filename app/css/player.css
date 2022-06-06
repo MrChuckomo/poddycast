@@ -2,8 +2,7 @@
 /* NOTE: Player */
 /* ------------------------------------------------------------------------------------------------------------------ */
 
-#content-right-player
-{
+#content-right-player {
     background-color: #FFF;
     border-top: 1px solid #CCC;
     text-align: center;
@@ -16,8 +15,7 @@
         "image replay play forward speed time duration playback-title";
 }
 
-#content-right-player-title
-{
+#content-right-player-title {
     grid-area: playback-title;
     align-self: flex-end;
     text-align: center;
@@ -29,41 +27,35 @@
     color: #999;
 }
 
-#replay-30-sec
-{
+#replay-30-sec {
     grid-area: replay;
     align-self: center;
     justify-self: center;
 }
 
-#play-pause
-{
+#play-pause {
     grid-area: play;
     align-self: center;
     justify-self: center;
 }
 
-#forward-30-sec
-{
+#forward-30-sec {
     grid-area: forward;
     align-self: center;
     justify-self: center;
 }
 
-#content-right-player svg
-{
+#content-right-player svg {
     width: 36px;
     height: 36px;
     opacity: 0.65;
 }
 
-#content-right-player svg:hover
-{
+#content-right-player svg:hover {
     opacity: 1;
 }
 
-#content-right-player-img
-{
+#content-right-player-img {
     grid-area: image;
     align-self: center;
     /* justify-self: center; */
@@ -73,28 +65,25 @@
     border-radius: 4px;
 }
 
-[data-tooltip]
-{
-	position: relative;
+[data-tooltip] {
+    position: relative;
 }
 
-[data-tooltip]:after
-{
-	content: attr(data-tooltip);
+[data-tooltip]:after {
+    content: attr(data-tooltip);
     position: absolute;
-	color: #333;
-	background: #FFF;
-	padding-top: 0.6em;
-	padding-bottom: 0.6em;
+    color: #333;
+    background: #FFF;
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
     opacity: 0;
-	bottom: 100%;
+    bottom: 100%;
     width: 100%;
-	white-space: nowrap;
+    white-space: nowrap;
 }
 
-[data-tooltip]:hover:after
-{
-	opacity: 0.95;
+[data-tooltip]:hover:after {
+    opacity: 0.95;
 }
 
 .content-right-player-speed-btn {
@@ -138,18 +127,16 @@ button#content-right-player-speed-indicator {
     border-color: #CCC;
 }
 
-.content-right-player-speed-btn:active
-{
+.content-right-player-speed-btn:active {
     background-color: #EEE;
 }
 
-#content-right-player-time, #content-right-player-duration
-{
+#content-right-player-time,
+#content-right-player-duration {
     display: none;
 }
 
-#content-right-player-progress-bar
-{
+#content-right-player-progress-bar {
     grid-area: progress;
     align-self: baseline;
     background-color: #CCC;
@@ -170,41 +157,42 @@ button#content-right-player-speed-indicator {
     position: relative;
     bottom: 3px;
 }
-  
+
 .slider {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  --theme-slider: #d3d3d3;
-  background: linear-gradient(to right, #448AFF 0%, #448AFF 0%, var(--theme-slider) 0%, var(--theme-slider) 100%);
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    --theme-slider: #d3d3d3;
+    background: linear-gradient(to right, #448AFF 0%, #448AFF 0%, var(--theme-slider) 0%, var(--theme-slider) 100%);
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
 }
 
 .slider:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 .slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 0px;
-  height: 0px;
-  border-radius: 50%;
-  background: #448AFF; /*#039BE5*/
-  cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0px;
+    height: 0px;
+    border-radius: 50%;
+    background: #448AFF;
+    /*#039BE5*/
+    cursor: pointer;
 
-  transition: width .2s, height .2s;
+    transition: width .2s, height .2s;
 }
 
 .slider:hover::-webkit-slider-thumb {
-  width: 12px;
-  height: 12px;
-  
-  transition: width .2s, height .2s;
+    width: 12px;
+    height: 12px;
+
+    transition: width .2s, height .2s;
 }
 
 
@@ -215,8 +203,7 @@ button#content-right-player-speed-indicator {
 }
 
 
-#content-right-player-progress-bar-progress
-{
+#content-right-player-progress-bar-progress {
     /* background-color: #039BE5; */
     /* background-color: #2979FF; */
     background-color: #448AFF;
@@ -225,15 +212,13 @@ button#content-right-player-speed-indicator {
     width: 0%;
 }
 
-#volume-button
-{
+#volume-button {
     grid-area: volume-button;
     margin: auto;
     margin-right: 0.5em;
 }
 
-input[id=volume] 
-{
+input[id=volume] {
     grid-area: volume;
     height: 0px;
     -webkit-appearance: none;
@@ -241,67 +226,54 @@ input[id=volume]
     width: 100%;
 }
 
-input[id=volume]:focus 
-{
-  outline: none;
+input[id=volume]:focus {
+    outline: none;
 }
 
-input[id=volume]::-webkit-slider-runnable-track 
-{
-  width: 100%;
-  height: 0.5em;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 1px 1px 1px #222;
-  background: #222;
-  border-radius: 2px;
-  border: 0px solid #000000;
+input[id=volume]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 0.5em;
+    cursor: pointer;
+    background: #d3d3d3;
+    border-radius: 5px;
 }
 
-#volume-fill
-{
+#volume-fill {
     grid-area: volume;
-  width: 50%;
-  margin: auto 0;
-  height: 0.5em;
-  background: #448AFF;
+    width: 50%;
+    margin: auto 0;
+    height: 0.5em;
+    background: #448AFF;
+    border-radius: 5px;
 }
 
-input[id=volume]:hover + #volume-fill
-{
+input[id=volume]:hover+#volume-fill {
     grid-area: volume;
-  width: 50%;
-  margin: auto 0;
-  height: 0.5em;
-  background: #448AFF;
+    width: 50%;
+    margin: auto 0;
+    height: 0.5em;
+    background: #448AFF;
 }
 
-input[id=volume]::-webkit-slider-thumb 
-{
-  height: 0;
-  width: 0;
-  -webkit-appearance: none;
+input[id=volume]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0px;
+    height: 0px;
+    border-radius: 50%;
+    background: #448AFF;
+    cursor: pointer;
 }
 
-input[id=volume]:hover::-webkit-slider-thumb 
-{
-    position: relative;
-  box-shadow: 0px 0px 0px #000000;
-  border: 0px solid #000000;
-  height: 1em;
-  width: 1em;
-  border-radius: 1em;
-  background: #CCC;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -0.25em;
-  z-index: 99 !important;
+input[id=volume]:hover::-webkit-slider-thumb {
+    width: 12px;
+    height: 12px;
+    margin-top: -0.1em;
+    transition: width .2s, height .2s;
 }
 
-@media screen and (min-width: 900px)
-{
-    #content-right-player
-    {
+@media screen and (min-width: 900px) {
+    #content-right-player {
         background-color: #FFF;
         text-align: center;
         height: 58px;
@@ -312,6 +284,7 @@ input[id=volume]:hover::-webkit-slider-thumb
             "image replay play forward playback-title playback-title playback-title volume-button volume speed"
             "image replay play forward time progress duration volume-button volume speed";
     }
+
     /* #content-right-player
     {
         background-color: #FFF;
@@ -325,8 +298,8 @@ input[id=volume]:hover::-webkit-slider-thumb
             "image playback-title time replay play forward duration speed";
     } */
 
-    #content-right-player-time, #content-right-player-duration
-    {
+    #content-right-player-time,
+    #content-right-player-duration {
         align-self: center;
         justify-self: center;
         align-self: center;
@@ -336,8 +309,7 @@ input[id=volume]:hover::-webkit-slider-thumb
         display: block;
     }
 
-    #content-right-player-time
-    {
+    #content-right-player-time {
         grid-area: time;
         align-self: baseline;
         justify-self: right;
@@ -346,8 +318,7 @@ input[id=volume]:hover::-webkit-slider-thumb
         padding-right: 0.5em;
     }
 
-    #content-right-player-duration
-    {
+    #content-right-player-duration {
         grid-area: duration;
         align-self: baseline;
         justify-self: left;

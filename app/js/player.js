@@ -307,15 +307,27 @@ function saveSpeed(_Value) {
 
 function setPlaybackVolume(_Self) {
     let Player = document.getElementById('player');
+    let VolumeIcon = document.getElementById('volume-button');
     let VolumeFill = document.getElementById('volume-fill');
 
     if (_Self.valueAsNumber === 0.001) {
+        VolumeIcon.classList.remove('bi-volume-up');
+        VolumeIcon.classList.add('bi-volume-mute');
         Player.volume = _Self.valueAsNumber;
         VolumeFill.style.width = '0%';
     } else {
         // creates a smooth exponential increase in volume rather than linear [0-1]
         Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000);
         VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + '%';
+
+        if (_Self.valueAsNumber <= 0.6) {
+            VolumeIcon.classList.remove('bi-volume-up');
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-down');
+        } else {
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-up');
+        }
     }
 
     if (volumeOff === false) {
@@ -326,19 +338,20 @@ function setPlaybackVolume(_Self) {
 }
 module.exports.setPlaybackVolume = setPlaybackVolume;
 
-function volumeToggle(_Self) {
+function volumeToggle() {
     let Player = document.getElementById('player');
+    let VolumeIcon = document.getElementById('volume-button');
     let VolumeFill = document.getElementById('volume-fill');
 
     if (volumeOff === true) {
-        _Self.classList.remove('bi-volume-mute');
-        _Self.classList.add('bi-volume-up');
+        VolumeIcon.classList.remove('bi-volume-mute');
+        VolumeIcon.classList.add('bi-volume-up');
         volumeOff = false;
         Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000);
         VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + '%';
     } else {
-        _Self.classList.remove('bi-volume-up');
-        _Self.classList.add('bi-volume-mute');
+        VolumeIcon.classList.remove('bi-volume-up');
+        VolumeIcon.classList.add('bi-volume-mute');
         volumeOff = true;
         Player.volume = 0;
         VolumeFill.style.width = '0%';

@@ -144,6 +144,10 @@ svg.set-favorite {
     background: #222;
 }
 
+input[id=volume]::-webkit-slider-runnable-track {
+    background: #222;
+}
+
 .content-right-player-speed-btn,
 .content-right-header-actions svg,
 .list-item-row-layout {
