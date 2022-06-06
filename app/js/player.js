@@ -326,15 +326,19 @@ function setPlaybackVolume(_Self) {
 }
 module.exports.setPlaybackVolume = setPlaybackVolume;
 
-function volumeToggle() {
+function volumeToggle(_Self) {
     let Player = document.getElementById('player');
     let VolumeFill = document.getElementById('volume-fill');
 
     if (volumeOff === true) {
+        _Self.classList.remove('bi-volume-mute');
+        _Self.classList.add('bi-volume-up');
         volumeOff = false;
         Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000);
         VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + '%';
     } else {
+        _Self.classList.remove('bi-volume-up');
+        _Self.classList.add('bi-volume-mute');
         volumeOff = true;
         Player.volume = 0;
         VolumeFill.style.width = '0%';
