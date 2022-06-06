@@ -3,7 +3,7 @@
 const fs = require('fs');
 const global = require('./helper_global');
 const playlist = require('../playlist');
-const { gridView, listView } = require('../icons');
+
 
 // ---------------------------------------------------------------------------------------------------------------------
 // LEFT COLUMN
@@ -107,13 +107,13 @@ module.exports.setGridLayout = setGridLayout;
 function setHeaderViewAction(_Mode) {
     switch (_Mode) {
     case 'list':
-        document.getElementById('content-right-header-actions').innerHTML = listView;
-        document.getElementById('content-right-header-actions').getElementsByTagName('svg')[0].setAttribute('onclick', 'navigation.toggleList("list")');
+        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-view-list" style="font-size: 1.3rem;"></i>';
+        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("list")');
         break;
 
     case 'grid':
-        document.getElementById('content-right-header-actions').innerHTML = gridView;
-        document.getElementById('content-right-header-actions').getElementsByTagName('svg')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
+        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-grid-3x2-gap" style="font-size: 1.3rem;"></i>';
+        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
         break;
 
     default: document.getElementById('content-right-header-actions').innerHTML = ''; break;

@@ -9,7 +9,6 @@ const global = require('./helper/helper_global');
 const entries = require('./helper/helper_entries');
 const navigation = require('./helper/helper_navigation');
 const Slider = require('./slider_class');
-const { deleteIcon2, playerPlayIcon, playerPauseIcon } = require('./icons');
 
 let helper = new CContentHelper();
 let player = new CPlayer();
@@ -34,18 +33,6 @@ const clamp = (num) => Math.max(Math.min(num, 1), 0);
 function playNow(_Self) {
     let Player = document.getElementById('player');
     let PlayerSource = Player.getElementsByTagName('source')[0];
-
-    // NOTE: Set old played episode to delete icon again
-
-    let FeedUrl = PlayerSource.getAttribute('src');
-    let AllListItems = document.getElementsByClassName('podcast-entry');
-
-    for (let i = 0; i < AllListItems.length; i++) {
-        if (AllListItems[i].getAttribute('url') === FeedUrl) {
-            AllListItems[i].getElementsByTagName('svg')[0].innerHTML = deleteIcon2;
-            break;
-        }
-    }
 
     // NOTE: Set current episode to play
 
