@@ -23,7 +23,7 @@ function readFeeds() {
     // TODO: Save a file for each podcast including all episodes
 
     // Add animation to notify the user about fetching new episodes
-    document.querySelector('#menu-refresh svg').classList.add('is-refreshing');
+    document.querySelector('#menu-refresh i').classList.add('is-refreshing');
 
     if (fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
@@ -45,7 +45,7 @@ function readFeeds() {
                     // includes minimum delay for user feedback
                     setTimeout(() => {
                         document
-                            .querySelector('#menu-refresh svg')
+                            .querySelector('#menu-refresh i')
                             .classList.remove('is-refreshing');
                     }, 1000);
                 });
