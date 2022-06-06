@@ -99,8 +99,8 @@ function appendSettingsSection(_PodcastName, _Feed) {
     EpisodeCount.classList.add('settings-count');
 
     let MoreElement = document.createElement('div');
-    MoreElement.innerHTML = moreOptionIcon;
-    MoreElement.classList.add('settings-unsubscribe');
+    MoreElement.innerHTML = '<i class="bi bi-three-dots"></i>';
+    MoreElement.classList.add('settings-unsubscribe', 'btn', 'btn-secondary');
 
     // NOTE: set context menu
 

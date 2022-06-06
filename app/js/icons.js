@@ -41,29 +41,8 @@ module.exports = {
 <path d="M0 0h24v24H0z" fill="none"></path>
 `,
 
-    deleteIcon:
-`
-<svg class="delete-icon" onclick="event.stopPropagation(); entries.deleteEntryWithIcon(this)" fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
-</svg>
-`,
-
+    deleteIcon: '<i onclick="event.stopPropagation(); entries.deleteEntryWithIcon(this)" class="bi bi-trash3" style="font-size: 1.3rem"></i>',
     addEpisodeIcon: '<i class="bi bi-plus-square" onclick="event.stopPropagation(); feed.addToEpisodes(this)" style="font-size: 1.3rem;"></i>',
-    moreOption:
-`
-<path d="M0 0h24v24H0z" fill="none"/>
-<path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-`,
-
-    moreOptionIcon:
-`
-<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0 0h24v24H0z" fill="none"/>
-    <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-</svg>
-`,
-
     removeIcon:
 `
 <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
