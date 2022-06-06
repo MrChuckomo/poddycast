@@ -9,7 +9,6 @@ const global = require('./helper/helper_global');
 const entries = require('./helper/helper_entries');
 const navigation = require('./helper/helper_navigation');
 const Slider = require('./slider_class');
-const { deleteIcon2, playerPlayIcon, playerPauseIcon } = require('./icons');
 
 let helper = new CContentHelper();
 let player = new CPlayer();
@@ -34,18 +33,6 @@ const clamp = (num) => Math.max(Math.min(num, 1), 0);
 function playNow(_Self) {
     let Player = document.getElementById('player');
     let PlayerSource = Player.getElementsByTagName('source')[0];
-
-    // NOTE: Set old played episode to delete icon again
-
-    let FeedUrl = PlayerSource.getAttribute('src');
-    let AllListItems = document.getElementsByClassName('podcast-entry');
-
-    for (let i = 0; i < AllListItems.length; i++) {
-        if (AllListItems[i].getAttribute('url') === FeedUrl) {
-            AllListItems[i].getElementsByTagName('svg')[0].innerHTML = deleteIcon2;
-            break;
-        }
-    }
 
     // NOTE: Set current episode to play
 
@@ -266,7 +253,8 @@ function playPlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.innerHTML = playerPauseIcon;
+    Button.classList.remove('bi-play-circle-fill');
+    Button.classList.add('bi-pause-circle-fill');
     Button.setAttribute('mode', 'pause');
 
     Player.play();
@@ -276,7 +264,8 @@ function pausePlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.innerHTML = playerPlayIcon;
+    Button.classList.remove('bi-pause-circle-fill');
+    Button.classList.add('bi-play-circle-fill');
     Button.setAttribute('mode', 'play');
 
     Player.pause();
@@ -305,15 +294,27 @@ function saveSpeed(_Value) {
 
 function setPlaybackVolume(_Self) {
     let Player = document.getElementById('player');
+    let VolumeIcon = document.getElementById('volume-button');
     let VolumeFill = document.getElementById('volume-fill');
 
     if (_Self.valueAsNumber === 0.001) {
+        VolumeIcon.classList.remove('bi-volume-up');
+        VolumeIcon.classList.add('bi-volume-mute');
         Player.volume = _Self.valueAsNumber;
         VolumeFill.style.width = '0%';
     } else {
         // creates a smooth exponential increase in volume rather than linear [0-1]
         Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000);
         VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + '%';
+
+        if (_Self.valueAsNumber <= 0.6) {
+            VolumeIcon.classList.remove('bi-volume-up');
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-down');
+        } else {
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-up');
+        }
     }
 
     if (volumeOff === false) {
@@ -326,13 +327,18 @@ module.exports.setPlaybackVolume = setPlaybackVolume;
 
 function volumeToggle() {
     let Player = document.getElementById('player');
+    let VolumeIcon = document.getElementById('volume-button');
     let VolumeFill = document.getElementById('volume-fill');
 
     if (volumeOff === true) {
+        VolumeIcon.classList.remove('bi-volume-mute');
+        VolumeIcon.classList.add('bi-volume-up');
         volumeOff = false;
         Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000);
         VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + '%';
     } else {
+        VolumeIcon.classList.remove('bi-volume-up');
+        VolumeIcon.classList.add('bi-volume-mute');
         volumeOff = true;
         Player.volume = 0;
         VolumeFill.style.width = '0%';

@@ -436,13 +436,6 @@ h1
     opacity: 1;
 }
 
-/* ------------------------------------------------------------------------------------------------------------------ */
-
-.delete-icon
-{
-    /*fill: #F44336;*/
-    /*opacity: 0.3;*/
-}
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
@@ -453,7 +446,7 @@ h1
     padding-left: 2em;
     padding-right: 2em;
     display: grid;
-    grid-template-columns: 60px 1fr 1fr 35px;
+    grid-template-columns: 60px 1fr 1fr 45px;
     grid-template-rows: 1fr;
     grid-template-areas:
         "image name items button";
@@ -464,6 +457,7 @@ h1
     width: 60px;
     height: 60px;
     border-radius: 6px;
+    background: rgb(134, 142, 150);
 }
 
 .settings-header
@@ -493,23 +487,7 @@ h1
 .settings-unsubscribe
 {
     grid-area: button;
-    background: #333;
-    border-radius: 6px;
-    text-align: center;
-    padding-top: 0.2em;
-    /*margin-right: 1em;*/
-    opacity: 0.8;
     align-self: center;
-}
-
-.settings-unsubscribe svg
-{
-    fill: #FFF;
-}
-
-.settings-unsubscribe:hover
-{
-    opacity: 1;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

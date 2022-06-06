@@ -23,7 +23,7 @@ function readFeeds() {
     // TODO: Save a file for each podcast including all episodes
 
     // Add animation to notify the user about fetching new episodes
-    document.querySelector('#menu-refresh svg').classList.add('is-refreshing');
+    document.querySelector('#menu-refresh i').classList.add('is-refreshing');
 
     if (fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
@@ -45,7 +45,7 @@ function readFeeds() {
                     // includes minimum delay for user feedback
                     setTimeout(() => {
                         document
-                            .querySelector('#menu-refresh svg')
+                            .querySelector('#menu-refresh i')
                             .classList.remove('is-refreshing');
                     }, 1000);
                 });
@@ -77,6 +77,10 @@ function showAllEpisodes(element) {
         })
         .catch((error) => {
             console.log(error);
+            let alert = document.createElement('div');
+            alert.classList.add('alert', 'alert-danger', 'm-3');
+            alert.innerHTML = '<i class="bi bi-wifi-off me-2"></i>Unable to fetch data! <b>' + error + '</b>';
+            document.getElementById('list').appendChild(alert);
         });
 }
 module.exports.showAllEpisodes = showAllEpisodes;
@@ -93,14 +97,16 @@ function appendSettingsSection(_PodcastName, _Feed) {
     PodcastImage.classList.add('settings-image');
 
     let podcastName = document.createElement('div');
-    podcastName.classList.add('settings-header');
+    podcastName.classList.add('settings-header', 'placeholder-glow');
+    podcastName.innerHTML = '<span class="placeholder placeholder-lg col-6"></span>';
 
     let EpisodeCount = document.createElement('div');
-    EpisodeCount.classList.add('settings-count');
+    EpisodeCount.classList.add('settings-count', 'placeholder-glow');
+    EpisodeCount.innerHTML = '<span class="placeholder col-1"></span>';
 
     let MoreElement = document.createElement('div');
-    MoreElement.innerHTML = moreOptionIcon;
-    MoreElement.classList.add('settings-unsubscribe');
+    MoreElement.innerHTML = '<i class="bi bi-three-dots"></i>';
+    MoreElement.classList.add('settings-unsubscribe', 'btn', 'btn-secondary');
 
     // NOTE: set context menu
 
@@ -240,9 +246,7 @@ function displayEpisodesInList(podcastObject) {
  * @param {DOM_element} addEpisodeIconElement HTML DOM element used to add episode.
  */
 function addToEpisodes(addEpisodeIconElement) {
-
     const episodeElement = addEpisodeIconElement.parentElement.parentElement;
-
     const episodeObject = {
         'channelName': episodeElement.getAttribute('channel'),
         'episodeTitle': episodeElement.getAttribute('title'),
@@ -255,8 +259,7 @@ function addToEpisodes(addEpisodeIconElement) {
     };
 
     saveEpisodeObject(episodeObject);
-
-    addEpisodeIconElement.innerHTML = '';
+    addEpisodeIconElement.remove();
 }
 module.exports.addToEpisodes = addToEpisodes;
 
