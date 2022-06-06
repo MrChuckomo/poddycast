@@ -457,6 +457,7 @@ h1
     width: 60px;
     height: 60px;
     border-radius: 6px;
+    background: rgb(134, 142, 150);
 }
 
 .settings-header

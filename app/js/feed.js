@@ -77,6 +77,10 @@ function showAllEpisodes(element) {
         })
         .catch((error) => {
             console.log(error);
+            let alert = document.createElement('div');
+            alert.classList.add('alert', 'alert-danger', 'm-3');
+            alert.innerHTML = '<i class="bi bi-wifi-off me-2"></i>Unable to fetch data! <b>' + error + '</b>';
+            document.getElementById('list').appendChild(alert);
         });
 }
 module.exports.showAllEpisodes = showAllEpisodes;
@@ -93,10 +97,12 @@ function appendSettingsSection(_PodcastName, _Feed) {
     PodcastImage.classList.add('settings-image');
 
     let podcastName = document.createElement('div');
-    podcastName.classList.add('settings-header');
+    podcastName.classList.add('settings-header', 'placeholder-glow');
+    podcastName.innerHTML = '<span class="placeholder placeholder-lg col-6"></span>';
 
     let EpisodeCount = document.createElement('div');
-    EpisodeCount.classList.add('settings-count');
+    EpisodeCount.classList.add('settings-count', 'placeholder-glow');
+    EpisodeCount.innerHTML = '<span class="placeholder col-1"></span>';
 
     let MoreElement = document.createElement('div');
     MoreElement.innerHTML = '<i class="bi bi-three-dots"></i>';
