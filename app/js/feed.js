@@ -240,9 +240,7 @@ function displayEpisodesInList(podcastObject) {
  * @param {DOM_element} addEpisodeIconElement HTML DOM element used to add episode.
  */
 function addToEpisodes(addEpisodeIconElement) {
-
     const episodeElement = addEpisodeIconElement.parentElement.parentElement;
-
     const episodeObject = {
         'channelName': episodeElement.getAttribute('channel'),
         'episodeTitle': episodeElement.getAttribute('title'),
@@ -255,8 +253,7 @@ function addToEpisodes(addEpisodeIconElement) {
     };
 
     saveEpisodeObject(episodeObject);
-
-    addEpisodeIconElement.innerHTML = '';
+    addEpisodeIconElement.remove();
 }
 module.exports.addToEpisodes = addToEpisodes;
 
