@@ -266,7 +266,8 @@ function playPlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.innerHTML = playerPauseIcon;
+    Button.classList.remove('bi-play-circle-fill');
+    Button.classList.add('bi-pause-circle-fill');
     Button.setAttribute('mode', 'pause');
 
     Player.play();
@@ -276,7 +277,8 @@ function pausePlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.innerHTML = playerPlayIcon;
+    Button.classList.remove('bi-pause-circle-fill');
+    Button.classList.add('bi-play-circle-fill');
     Button.setAttribute('mode', 'play');
 
     Player.pause();
