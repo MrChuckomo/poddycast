@@ -14,14 +14,14 @@ const template = [
         submenu: [
             {
                 role: 'import',
-                label: i18n.__('Import'),
+                label: i18n.__('Import OPML'),
                 click() {
                     opml.import();
                 }
             },
             {
                 role: 'export',
-                label: i18n.__('Export'),
+                label: i18n.__('Export OPML'),
                 click() {
                     opml.export();
                 }
