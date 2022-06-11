@@ -30,10 +30,6 @@ body {
     background: #333 !important;
 }
 
-#content-right-header {
-    border-bottom: 1px solid #222;
-}
-
 /* ------------------------------------------------------------------------------------------------------------------ */
 /* Left */
 
@@ -153,6 +149,7 @@ input[id=volume]::-webkit-slider-runnable-track {
 .list-item-row-layout {
     border-color: #222;
     color: #FFF;
+    background-color: #11111150;
 }
 
 .content-right-player-speed-btn:hover,

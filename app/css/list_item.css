@@ -1,51 +1,43 @@
-.list-item-box-layout
-{
+.list-item-box-layout {}
 
-}
-
-.list-item-row-layout
-{
+.list-item-row-layout {
     display: grid;
     grid-template-rows: 1fr;
     font-size: 14px;
     min-height: 2.7em;
     height: auto;
-    border-bottom: 1px solid #EEE;
-    padding: 0.5em;
-    padding-left: 2em;
+    background-color: #dedcdc50;
+    border-radius: .5rem;
+    padding: .7rem;
+    padding-left: 1.5em;
+    margin: .5rem;
 }
 
-.list-item-row-layout:hover
-{
+.list-item-row-layout:hover {
     background-color: #F2F2F2;
 }
 
-.select-episode:hover
-{
-    background: #2979FF;
+.select-episode:hover {
+    background-color: #2979FF!important;
 }
 
-.list-item-row-layout img
-{
+.list-item-row-layout img {
     border-radius: 4px;
     width: 40px;
     height: 40px;
 }
 
-.list-item-icon
-{
+.list-item-icon {
     opacity: 0.5;
     align-self: center;
     text-align: center;
 }
 
-.list-item-icon:hover
-{
+.list-item-icon:hover {
     opacity: 0.7;
 }
 
-.list-item-flag
-{
+.list-item-flag {
     border-radius: 4px;
     text-align: center;
     width: 80%;
@@ -59,8 +51,7 @@
 .list-item-text,
 .list-item-bold-text,
 .list-item-description,
-.list-item-sub-text
-{
+.list-item-sub-text {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -69,12 +60,10 @@
     padding-left: 0.5em;
 }
 
-.list-item-bold-text
-{
+.list-item-bold-text {
     font-weight: bold;
 }
 
-.list-item-sub-text
-{
+.list-item-sub-text {
     opacity: 0.4;
 }
