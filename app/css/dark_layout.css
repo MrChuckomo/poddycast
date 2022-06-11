@@ -85,10 +85,6 @@ input {
     border-color: #000;
 }
 
-.edit-header button {
-    background: #222;
-}
-
 .uncheck svg {
     fill: #666;
 }

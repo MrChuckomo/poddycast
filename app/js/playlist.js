@@ -259,12 +259,13 @@ function showEditPage(_Self) {
 
     let NameInput = document.createElement('input');
     NameInput.value = PlaylistName;
-    NameInput.classList.add('playlist-edit-input');
+    NameInput.classList.add('playlist-edit-input', 'rounded-3');
     NameInput.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
     let DeleteButton = document.createElement('button');
     DeleteButton.innerHTML = i18n.__('Delete');
     DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
+    DeleteButton.classList.add('btn', 'btn-danger', 'rounded-3');
 
     let HeaderSection = document.createElement('div');
     HeaderSection.classList.add('edit-header');
