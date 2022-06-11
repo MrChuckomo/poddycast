@@ -50,6 +50,10 @@ body {
     background-color: #111;
 }
 
+#menu ul li:not(.selected):hover {
+    background-color: #11111150;
+}
+
 #menu ul li svg {
     opacity: 0.8;
 }
