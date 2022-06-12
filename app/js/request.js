@@ -97,6 +97,13 @@ function requestPodcastFeed(feedUrl, returnRawData) {
             };
         }
 
+        // NOTE: Allow URLs with expired SSL certificate. Do not reject them.
+        // TODO: Could be a config option for the user to enable/disable more security
+        const agent = new https.Agent({
+            rejectUnauthorized: false
+        });
+        requestConfig['httpsAgent'] = agent;
+
         axiosInstance
             .get(feedUrl, requestConfig)
             .then(function (response) {
@@ -113,6 +120,7 @@ function requestPodcastFeed(feedUrl, returnRawData) {
                 }
             })
             .catch(function (error) {
+                console.log(feedUrl);
                 updateFeedStatus(feedUrl, 503);
                 reject(error);
             });
