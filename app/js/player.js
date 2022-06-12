@@ -292,38 +292,44 @@ function saveSpeed(_Value) {
     global.setPreference('playspeed', _Value);
 }
 
-function setPlaybackVolume(_Self) {
-    let Player = document.getElementById('player');
-    let VolumeIcon = document.getElementById('volume-button');
-    let VolumeFill = document.getElementById('volume-fill');
 
-    if (_Self.valueAsNumber === 0.001) {
-        VolumeIcon.classList.remove('bi-volume-up');
-        VolumeIcon.classList.add('bi-volume-mute');
-        Player.volume = _Self.valueAsNumber;
-        VolumeFill.style.width = '0%';
-    } else {
-        // creates a smooth exponential increase in volume rather than linear [0-1]
-        Player.volume = clamp(Math.exp(6.908 * _Self.valueAsNumber) / 1000);
-        VolumeFill.style.width = parseFloat(_Self.valueAsNumber * 100).toFixed(2) + '%';
+// --------------------------------------------------------------------------------------------------------------------
+// MARK: VOLUME HANDLING
 
-        if (_Self.valueAsNumber <= 0.6) {
-            VolumeIcon.classList.remove('bi-volume-up');
-            VolumeIcon.classList.remove('bi-volume-mute');
-            VolumeIcon.classList.add('bi-volume-down');
-        } else {
-            VolumeIcon.classList.remove('bi-volume-mute');
-            VolumeIcon.classList.add('bi-volume-up');
-        }
-    }
+/**
+ * Increase the playback volume by an offset.
+ * @param {float} _Offset - Offset value for increasing the volume, like 0.05 eq. 5%
+ */
+function increaseVolume(_Offset) {
+    let volumeElement = document.getElementById('volume');
+    let newVolumeValue = volumeElement.valueAsNumber + _Offset;
 
-    if (volumeOff === false) {
-        playerVolume = _Self.valueAsNumber;
-    }
-
-    global.setPreference('volume', _Self.valueAsNumber);
+    volumeElement.value = newVolumeValue;
+    updateVolume(newVolumeValue);
 }
-module.exports.setPlaybackVolume = setPlaybackVolume;
+module.exports.increaseVolume = increaseVolume;
+
+/**
+ * Decrease the playback volume by an offset.
+ * @param {float} _Offset - Offset value for increasing the volume, like 0.05 eq. 5%
+ */
+function decreaseVolume(_Offset) {
+    let volumeElement = document.getElementById('volume');
+    let newVolumeValue = volumeElement.valueAsNumber - _Offset;
+
+    volumeElement.value = newVolumeValue;
+    updateVolume(newVolumeValue);
+}
+module.exports.decreaseVolume = decreaseVolume;
+
+/**
+ * Set the volume by moving the volume slider dynamically.
+ * @param {*} _Self - Volume slider
+ */
+function setVolume(_Self) {
+    updateVolume(_Self.valueAsNumber);
+}
+module.exports.setVolume = setVolume;
 
 function volumeToggle() {
     let Player = document.getElementById('player');
@@ -345,3 +351,35 @@ function volumeToggle() {
     }
 }
 module.exports.volumeToggle = volumeToggle;
+
+function updateVolume(_VolumeValue) {
+    let Player = document.getElementById('player');
+    let VolumeIcon = document.getElementById('volume-button');
+    let VolumeFill = document.getElementById('volume-fill');
+
+    if (_VolumeValue <= 0.001) {
+        VolumeIcon.classList.remove('bi-volume-up');
+        VolumeIcon.classList.add('bi-volume-mute');
+        Player.volume = 0.0;
+        VolumeFill.style.width = '0%';
+    } else {
+        // creates a smooth exponential increase in volume rather than linear [0-1]
+        Player.volume = clamp(Math.exp(6.908 * _VolumeValue) / 1000);
+        VolumeFill.style.width = parseFloat(_VolumeValue * 100).toFixed(2) + '%';
+
+        if (_VolumeValue <= 0.6) {
+            VolumeIcon.classList.remove('bi-volume-up');
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-down');
+        } else {
+            VolumeIcon.classList.remove('bi-volume-mute');
+            VolumeIcon.classList.add('bi-volume-up');
+        }
+    }
+
+    if (volumeOff === false) {
+        playerVolume = _VolumeValue;
+    }
+
+    global.setPreference('volume', _VolumeValue);
+}

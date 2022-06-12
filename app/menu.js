@@ -112,28 +112,32 @@ const template = [
             { type: 'separator' },
             {
                 accelerator: 'Left',
+                label: i18n.__('30sec Reply'),
                 click() {
                     audioPlayer.playReply();
-                },
-                label: i18n.__('30sec Reply')
+                }
             },
             {
                 accelerator: 'Right',
+                label: i18n.__('30sec Forward'),
                 click() {
                     audioPlayer.playForward();
-                },
-                label: i18n.__('30sec Forward')
+                }
             },
             { type: 'separator' },
             {
-                accelerator: 'Up',
-                // TODO: impement click function
-                label: i18n.__('Volume Up')
+                accelerator: 'Plus',
+                label: i18n.__('Volume Up'),
+                click() {
+                    audioPlayer.increaseVolume(0.05);
+                }
             },
             {
-                accelerator: 'Down',
-                // TODO: impement click function
-                label: i18n.__('Volume Down')
+                accelerator: '-',
+                label: i18n.__('Volume Down'),
+                click() {
+                    audioPlayer.decreaseVolume(0.05);
+                }
             }
         ]
     },
