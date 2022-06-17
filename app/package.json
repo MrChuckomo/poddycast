@@ -27,7 +27,7 @@
         "axios": "0.21.2",
         "bootstrap": "5.2.0-beta1",
         "bootstrap-icons": "1.8.3",
-        "electron": "11.5.0",
+        "electron": "15.5.5",
         "fast-xml-parser": "4.0.2"
     },
     "devDependencies": {
