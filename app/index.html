@@ -27,29 +27,29 @@
         <div id="content-left">
             <div id="search" class="bg-light rounded-3">
                 <i class="bi bi-search my-auto text-secondary"></i>
-                <input id="search-input" type="text" name="search" placeholder="Find podcast" onkeyup="search.search(this, event)">
+                <input id="search-input" type="text" name="search" placeholder="Find podcast">
             </div>
             <div id="menu" class="mt-2">
                 <ul>
-                    <li id="menu-episodes" class="mx-2 rounded-3 fw-light selected" onclick="menujs.selectMenuItem('menu-episodes'); menujs.showNewEpisodes()">
+                    <li id="menu-episodes" class="mx-2 rounded-3 fw-light selected">
                         <i class="bi bi-music-note-list text-blue my-auto" style="font-size: 1.3rem;"></i>
                         <span class="new-episodes">New Episodes</span>
                         <div class="menu-count">0</div>
                     </li>
-                    <li id="menu-favorites" class="mx-2 rounded-3 fw-light" onclick="menujs.selectMenuItem('menu-favorites'); menujs.showFavorites()">
+                    <li id="menu-favorites" class="mx-2 rounded-3 fw-light">
                         <i class="bi bi-heart-fill text-pink my-auto" style="font-size: 1.3rem;"></i>
                         <span class="favorites">Favorites</span>
                         <div class="menu-count">0</div>
                     </li>
-                    <li id="menu-history" class="mx-2 rounded-3 fw-light" onclick="menujs.selectMenuItem('menu-history'); menujs.showHistory()">
+                    <li id="menu-history" class="mx-2 rounded-3 fw-light">
                         <i class="bi bi-clock-history text-secondary my-auto" style="font-size: 1.3rem;"></i>
                         <span class="history">History</span>
                     </li>
-                    <li id="menu-statistics" class="mx-2 rounded-3 fw-light" onclick="menujs.selectMenuItem('menu-statistics'); menujs.showStatistics()">
+                    <li id="menu-statistics" class="mx-2 rounded-3 fw-light">
                         <i class="bi bi-clipboard-data-fill text-teal my-auto" style="font-size: 1.3rem;"></i>
                         <span class="statistics">Statistics</span>
                     </li>
-                    <li id="menu-refresh" class="mx-2 px-2 rounded-3 fw-light mt-4 btn btn-outline-secondary border-secondary" onclick="feed.readFeeds()">
+                    <li id="menu-refresh" class="mx-2 px-2 rounded-3 fw-light mt-4 btn btn-outline-secondary border-secondary">
                         <i class="bi bi-arrow-repeat" style="font-size: 1rem;"></i>
                         <span class="refresh">Refresh</span>
                     </li>

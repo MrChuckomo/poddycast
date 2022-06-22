@@ -10,22 +10,23 @@ const entries = require('./helper/helper_entries');
 const i18n = window.i18n;
 
 
-function search(_Self, _Event) {
-    if (_Event.code === 'Enter') {
+// function search(_Self, _Event) {
+function search(_Value, _Key) {
+    if (_Key === 'Enter') {
         helper.clearContent();
         navigation.setHeaderViewAction();
         navigation.clearMenuSelection();
-        helper.setHeader(i18n.__('Search'));
-
+        // TODO: needs solution for i18n for IPC concept
+        // helper.setHeader(i18n.__('Search'));
         document.getElementById('res').setAttribute('return-value', '');
 
-        if (_Self.value.includes('http') && _Self.value.includes(':') && _Self.value.includes('//')) {
-            getPodcastsFromFeed(_Self.value);
+        if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {
+            getPodcastsFromFeed(_Value);
         } else {
-            itunes.getPodcasts(_Self.value);
+            itunes.getPodcasts(_Value);
         }
-    } else if (_Event.code === 'Escape') {
-        global.clearTextField(_Self);
+    } else if (_Key === 'Escape') {
+        document.getElementById('search-input').value = '';
     }
 }
 module.exports.search = search;

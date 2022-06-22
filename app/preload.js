@@ -3,7 +3,7 @@
 const { ipcRenderer, contextBridge } = require('electron');
 // window.i18n = new (require('./translations/i18n'));
 const feed = require('./js/feed');
-// const search = require('./js/search');
+const search = require('./js/search');
 const global = require('./js/helper/helper_global');
 // const navigation = require('./js/helper/helper_navigation');
 // const entries = require('./js/helper/helper_entries');
@@ -23,6 +23,39 @@ window.addEventListener('DOMContentLoaded', () => {
     // translations.translate();
     // audioPlayer.init();
 });
+
+
+/**
+ * IPCs to handle actions on the left side navigation
+ */
+contextBridge.exposeInMainWorld('navAPI', {
+    searchInput: (value, key) => {
+        search.search(value, key);
+    },
+    clickEpisodes: () => {
+        menujs.selectMenuItem('menu-episodes');
+        menujs.showNewEpisodes();
+    },
+    clickFavorites: () => {
+        menujs.selectMenuItem('menu-favorites');
+        menujs.showFavorites();
+    },
+    clickHistory: () => {
+        menujs.selectMenuItem('menu-history');
+        menujs.showHistory();
+    },
+    clickStatistics: () => {
+        menujs.selectMenuItem('menu-statistics');
+        menujs.showStatistics();
+    },
+    clickRefresh: () => {
+        feed.readFeeds();
+    }
+});
+
+
+
+
 
 
 // NOTE: Definition of IPC APIs - might be usefull for the other tasks
