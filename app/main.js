@@ -1,6 +1,6 @@
 'use strict';
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
@@ -31,14 +31,15 @@ if (isDarwin) {
 function createWindow() {
     win = new BrowserWindow ({
         height: 600,
+        width: 1000,
         icon: trayIcon,
         minHeight: 600,
         minWidth: 1000,
         webPreferences: {
-            enableRemoteModule: true,
-            nodeIntegration: true
-        },
-        width: 1000
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
+        }
     });
 
     win.loadURL(url.format({
@@ -46,6 +47,11 @@ function createWindow() {
         protocol: 'file:',
         slashed: true
     }));
+
+    ipcMain.handle('dark-mode:toggle', () => {
+        console.log('dark mode toogle');
+        return true;
+    });
 
     // Create tray icon
     appIcon = new Tray(trayIcon);

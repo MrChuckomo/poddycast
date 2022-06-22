@@ -6,7 +6,8 @@
         default-src 'self' 'unsafe-inline';
         script-src 'self' 'unsafe-inline';
         style-src-elem 'self' https://fonts.googleapis.com/css;
-        font-src 'self' https://fonts.gstatic.com
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: http:
     ">
     <title>Poddycast</title>
     <link rel="stylesheet" href="./css/main.css">
@@ -18,32 +19,8 @@
     <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        window.i18n = new (require('./translations/i18n'));
-        const feed = require('./js/feed');
-        const search = require('./js/search');
-        const global = require('./js/helper/helper_global');
-        const navigation = require('./js/helper/helper_navigation');
-        const entries = require('./js/helper/helper_entries');
-        const audioPlayer = require('./js/player');
-        const playlist = require('./js/playlist');
-        const favorite = require('./js/favorite');
-        const menu = require('./menu');
-        const menujs = require('./js/menu');
-        const translations = require('./js/translations');
-
-        function onBodyLoad() {
-            global.init();
-            playlist.loadPlaylists();
-            feed.readFeeds();
-            menujs.showNewEpisodes();
-            navigation.setItemCounts();
-            translations.translate();
-            audioPlayer.init();
-        }
-    </script>
 </head>
-<body onload="onBodyLoad()">
+<body>
     <div id="content">
 
         <!-- Left pane -->
@@ -134,5 +111,7 @@
             </div>
         </div>
     </div>
+
+    <script src="js/render.js"></script>
 </body>
 </html>
