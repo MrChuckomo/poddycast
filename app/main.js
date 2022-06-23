@@ -3,6 +3,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
 
 // Modules to create app tray icon
@@ -47,6 +48,19 @@ function createWindow() {
         protocol: 'file:',
         slashed: true
     }));
+
+    let loadedLanguage;
+    const file = path.join(__dirname, 'translations/' + app.getLocale() + '.json');
+
+    if (fs.existsSync(file)) {
+        loadedLanguage = JSON.parse(fs.readFileSync(file), 'utf8');
+    } else {
+        loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, 'translations/en.json'), 'utf8'));
+    }
+
+    ipcMain.handle('sys-language', () => {
+        return loadedLanguage;
+    });
 
     ipcMain.handle('dark-mode:toggle', () => {
         console.log('dark mode toogle');
