@@ -123,65 +123,69 @@ function appendSettingsSection(_PodcastName, _Feed) {
 }
 
 function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
-    const {remote} = require('electron');
-    const {Menu, MenuItem} = remote;
-    const PlaylistMenu = new Menu();
+    // TODO: Needs new solution cause to IPC
+    // TODO: There is new way of handling context menu (righ-clicks)
+    // TODO: https://www.electronjs.org/docs/latest/api/menu#render-process
 
-    if (fs.existsSync(global.playlistFilePath) && fs.readFileSync(global.playlistFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+    // const {remote} = require('electron');
+    // const {Menu, MenuItem} = remote;
+    // const PlaylistMenu = new Menu();
 
-        for (let i = 0; i < JsonContent.length; i++) {
-            let IsInPlaylist = global.isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName);
+    // if (fs.existsSync(global.playlistFilePath) && fs.readFileSync(global.playlistFilePath, 'utf-8') !== '') {
+    //     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
-            PlaylistMenu.append(new MenuItem({
-                checked: IsInPlaylist,
-                click(self) {
-                    let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+    //     for (let i = 0; i < JsonContent.length; i++) {
+    //         let IsInPlaylist = global.isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName);
 
-                    for (let i = 0; i < JsonContent.length; i++) {
-                        if (self.label === JsonContent[i].playlistName) {
-                            let PodcastList = JsonContent[i].podcastList;
-                            let PodcastName = document.getElementsByClassName('settings-header')[0].innerHTML;
+    //         PlaylistMenu.append(new MenuItem({
+    //             checked: IsInPlaylist,
+    //             click(self) {
+    //                 let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
-                            if (global.isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName)) {
-                                for (let j = PodcastList.length - 1; j >= 0; j--) {
-                                    if (PodcastList[j] === PodcastName) {
-                                        PodcastList.splice(j, 1);
-                                    }
-                                }
-                            } else {
-                                PodcastList.push(PodcastName);
-                            }
+    //                 for (let i = 0; i < JsonContent.length; i++) {
+    //                     if (self.label === JsonContent[i].playlistName) {
+    //                         let PodcastList = JsonContent[i].podcastList;
+    //                         let PodcastName = document.getElementsByClassName('settings-header')[0].innerHTML;
 
-                            break;
-                        }
-                    }
+    //                         if (global.isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName)) {
+    //                             for (let j = PodcastList.length - 1; j >= 0; j--) {
+    //                                 if (PodcastList[j] === PodcastName) {
+    //                                     PodcastList.splice(j, 1);
+    //                                 }
+    //                             }
+    //                         } else {
+    //                             PodcastList.push(PodcastName);
+    //                         }
 
-                    fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
-                },
-                label: JsonContent[i].playlistName,
-                type: 'checkbox'
-            }));
-        }
-    }
+    //                         break;
+    //                     }
+    //                 }
 
-    const ContextMenu = new Menu();
-    ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: global.isAddedToInbox(_Feed), click(self) {
-        global.setIsAddedToInbox(_Feed, self.checked);
-    }}));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
-        if (_PodcastName !== null && _PodcastName !== undefined) {
-            entries.unsubscribeContextMenu(_PodcastName, _Feed);
-        }
-    }}));
+    //                 fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
+    //             },
+    //             label: JsonContent[i].playlistName,
+    //             type: 'checkbox'
+    //         }));
+    //     }
+    // }
 
-    _Object.addEventListener('click', (_Event) => {
-        _Event.preventDefault();
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true });
-    }, false);
+    // const ContextMenu = new Menu();
+    // ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}));
+    // ContextMenu.append(new MenuItem({type: 'separator'}));
+    // ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: global.isAddedToInbox(_Feed), click(self) {
+    //     global.setIsAddedToInbox(_Feed, self.checked);
+    // }}));
+    // ContextMenu.append(new MenuItem({type: 'separator'}));
+    // ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
+    //     if (_PodcastName !== null && _PodcastName !== undefined) {
+    //         entries.unsubscribeContextMenu(_PodcastName, _Feed);
+    //     }
+    // }}));
+
+    // _Object.addEventListener('click', (_Event) => {
+    //     _Event.preventDefault();
+    //     ContextMenu.popup(remote.getCurrentWindow(), { async:true });
+    // }, false);
 
 }
 

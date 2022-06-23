@@ -6,8 +6,8 @@ const feed = require('./js/feed');
 const search = require('./js/search');
 const global = require('./js/helper/helper_global');
 // const navigation = require('./js/helper/helper_navigation');
-// const entries = require('./js/helper/helper_entries');
-// const audioPlayer = require('./js/player');
+const entries = require('./js/helper/helper_entries');
+const audioPlayer = require('./js/player');
 // const playlist = require('./js/playlist');
 // const favorite = require('./js/favorite');
 // const menu = require('./menu');
@@ -39,6 +39,10 @@ contextBridge.exposeInMainWorld('navAPI', {
     clickFavorites: () => {
         menujs.selectMenuItem('menu-favorites');
         menujs.showFavorites();
+    },
+    clickPodcast: (element) => {
+        console.log(element);
+        feed.showAllEpisodes(element);
     },
     clickHistory: () => {
         menujs.selectMenuItem('menu-history');

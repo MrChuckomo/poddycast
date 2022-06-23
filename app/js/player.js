@@ -1,6 +1,6 @@
 'use strict';
 
-const { BrowserWindow } = require('electron').remote;
+// const { BrowserWindow } = require('electron').remote;
 const fs = require('fs');
 
 let CContentHelper = require('./helper/content');
@@ -57,9 +57,9 @@ function playNow(_Self) {
         togglePlayPauseButton();
     }
 
-    const mainAppWindow = BrowserWindow.getAllWindows()[0];
-
-    mainAppWindow.setTitle(_Self.getAttribute('title'));
+    // TODO: needs new solution cause of IPC
+    // const mainAppWindow = BrowserWindow.getAllWindows()[0];
+    // mainAppWindow.setTitle(_Self.getAttribute('title'));
 }
 module.exports.playNow = playNow;
 
@@ -127,7 +127,6 @@ module.exports.speedDown = speedDown;
 function updateProgress() {
     let Player = document.getElementById('player');
     let PlayerSource = Player.getElementsByTagName('source')[0];
-    const mainAppWindow = BrowserWindow.getAllWindows()[0];
 
     // NOTE: just save every 10 sec.
 
@@ -162,7 +161,9 @@ function updateProgress() {
     setPlaybackTime(Player.duration, 'content-right-player-duration');
 
     // Update progress bar in taskbar
-    mainAppWindow.setProgressBar(Value / 100);
+    // TODO: Needs new solution cause of IPC
+    // const mainAppWindow = BrowserWindow.getAllWindows()[0];
+    // mainAppWindow.setProgressBar(Value / 100);
 }
 
 function seekProgress(value) {
