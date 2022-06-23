@@ -70,6 +70,7 @@ contextBridge.exposeInMainWorld('myAPI', {
     },
     doAThing: () => console.log('do a thing'),
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
+    sysLanguage : () => ipcRenderer.invoke('sys-language')
 });
 
 contextBridge.exposeInMainWorld('msgAPI', {

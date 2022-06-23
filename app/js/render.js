@@ -45,3 +45,10 @@ function openPodcastEpisodes(element) {
 //     let dark = await window.myAPI.toggle();
 //     console.log(dark);
 // });
+
+async function geti18n() {
+    let lang = await window.myAPI.sysLanguage('New Episodes');
+    console.log(lang);
+}
+
+geti18n();
