@@ -18,7 +18,7 @@ let slider = undefined;
 const MIN_PLAYER_SPEED = 0.2;
 const MAX_PLAYER_SPEED = 4.0;
 const PLAYER_SPEED_INCREMENT = 0.1;
-const i18n = window.i18n;
+// const i18n = window.i18n;
 
 function init() {
     slider = new Slider(this);

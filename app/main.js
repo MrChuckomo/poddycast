@@ -1,20 +1,253 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
-const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
 
-// Modules to create app tray icon
-const Menu = require('electron').Menu;
-const Tray = require('electron').Tray;
+const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
+const opml = require('./js/import_export');
+const global = require('./js/helper/helper_global');
+const darkMode = require('./js/dark_mode');
+const audioPlayer = require('./js/player');
+const nav = require('./js/nav');
 
 // Create variables for appIcon, trayIcon, win
 // to prevent their removal by garbage collection
 let appIcon = null;
 let trayIcon = null;
 let win;
+
+// Define menu template
+const template = [
+    {
+        label: 'Edit',
+        submenu: [
+            {
+                role: 'import',
+                label: 'Import OPML',
+                click() {
+                    opml.import();
+                }
+            },
+            {
+                role: 'export',
+                label: 'Export OPML',
+                click() {
+                    opml.export();
+                }
+            },
+            { type: 'separator' },
+            {
+                label: 'Cut',
+                role: 'cut'
+            },
+            {
+                label: 'Copy',
+                role: 'copy'
+            },
+            {
+                label: 'Paste',
+                role: 'paste'
+            }
+        ]
+    },
+    {
+        label: 'View',
+        submenu: [
+            {
+                label: 'Reload',
+                role: 'reload'
+            },
+            { type: 'separator' },
+            {
+                label: 'Reset Zoom',
+                role: 'resetzoom'
+            },
+            {
+                label: 'Zoom In',
+                role: 'zoomin'
+            },
+            {
+                label: 'Zoom Out',
+                role: 'zoomout'
+            },
+            { type: 'separator' },
+            {
+                label: 'Color Scheme',
+                submenu: [
+                    {
+                        checked: global.getPreference('systemmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('systemmode');
+                        },
+                        label: 'Use system defaults',
+                        type: 'radio'
+                    },
+                    {
+                        accelerator: 'CommandOrControl+Alt+L',
+                        checked: global.getPreference('lightmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('lightmode');
+                        },
+                        label: 'Light Mode',
+                        type: 'radio'
+                    },
+                    {
+                        accelerator: 'CommandOrControl+Alt+D',
+                        checked: global.getPreference('darkmode', false),
+                        click() {
+                            darkMode.toggleDarkMode('darkmode');
+                        },
+                        label: 'Dark Mode',
+                        type: 'radio'
+                    }
+                ]
+            },
+            { role: 'togglefullscreen', label: 'Toggle Full Screen' }
+        ]
+    },
+    {
+        label: 'Player',
+        submenu: [
+            {
+                accelerator: 'Space',
+                label: 'Play/Pause',
+                click() {
+                    // NOTE: if focus is not in any input field (search, playlist)
+                    if (document.activeElement.type === undefined) {
+                        audioPlayer.togglePlayPauseButton();
+                    }
+                }
+            },
+            { type: 'separator' },
+            {
+                accelerator: 'Left',
+                label: '30sec Reply',
+                click() {
+                    audioPlayer.playReply();
+                }
+            },
+            {
+                accelerator: 'Right',
+                label: '30sec Forward',
+                click() {
+                    audioPlayer.playForward();
+                }
+            },
+            { type: 'separator' },
+            {
+                accelerator: 'Plus',
+                label: 'Volume Up',
+                click() {
+                    audioPlayer.increaseVolume(0.05);
+                }
+            },
+            {
+                accelerator: '-',
+                label: 'Volume Down',
+                click() {
+                    audioPlayer.decreaseVolume(0.05);
+                }
+            }
+        ]
+    },
+    {
+        label: 'Go To',
+        submenu: [
+            {
+                accelerator: 'CommandOrControl+F',
+                click() {
+                    global.focusTextField('search-input');
+                },
+                label: 'Search'
+            },
+            { type: 'separator' },
+            {
+                accelerator: 'CommandOrControl+1',
+                click() {
+                    nav.selectMenuItem('menu-episodes');
+                    nav.showNewEpisodes();
+                },
+                label: 'New Episodes'
+            },
+            {
+                accelerator: 'CommandOrControl+2',
+                click() {
+                    nav.selectMenuItem('menu-favorites');
+                    nav.showFavorites();
+                },
+                label: 'Favorites'
+            },
+            {
+                accelerator: 'CommandOrControl+3',
+                click() {
+                    nav.selectMenuItem('menu-history');
+                    nav.showHistory();
+                },
+                label: 'History'
+            },
+            {
+                accelerator: 'CommandOrControl+4',
+                click() {
+                    nav.selectMenuItem('menu-statistics');
+                    nav.showStatistics();
+                },
+                label: 'Statistics'
+            },
+            { type: 'separator' },
+            {
+                accelerator: 'CommandOrControl+N',
+                click() {
+                    global.focusTextField('new_list-input');
+                },
+                label: 'New List'
+            }
+        ]
+    },
+    {
+        label: 'Settings',
+        submenu: [
+            {
+                accelerator: 'CommandOrControl+Alt+P',
+                checked: global.getPreference('proxy_enabled', false),
+                click() {
+                    global.toggleProxyMode();
+                },
+                label: 'Proxy Mode',
+                type: 'checkbox'
+            },
+            {
+                accelerator: 'CommandOrControl+Alt+M',
+                checked: global.getPreference('minimize', false),
+                click() {
+                    global.toggleMinimize();
+                },
+                label: 'Minimize',
+                type: 'checkbox'
+            },
+            { type: 'separator' },
+            { role: 'toggledevtools' }
+        ]
+    }
+];
+
+if (process.platform === 'darwin') {
+    template.unshift({
+        label: app.getName(),
+        submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services', submenu: [] },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideothers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' }
+        ]
+    });
+}
 
 // Request lock to allow only one instance
 // of the app running at the time.
@@ -49,6 +282,7 @@ function createWindow() {
         slashed: true
     }));
 
+    // Register some IPC handler
     let loadedLanguage;
     const file = path.join(__dirname, 'translations/' + app.getLocale() + '.json');
 
@@ -76,6 +310,10 @@ function createWindow() {
         console.log('dark mode toogle');
         return true;
     });
+
+    // Create main menu
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
 
     // Create tray icon
     appIcon = new Tray(trayIcon);
@@ -161,3 +399,4 @@ if (!gotTheLock) {
     // Create win, load the rest of the app, etc...
     app.on('ready', createWindow);
 }
+

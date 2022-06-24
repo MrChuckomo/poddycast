@@ -1,7 +1,6 @@
 'use strict';
 
-const { remote, BrowserWindow }= require('electron');
-const dialog = remote.dialog;
+const { dialog, BrowserWindow } = require('electron');
 const fs = require('fs');
 const request = require('./request');
 const setFavorite = require('./favorite').setFavorite;
