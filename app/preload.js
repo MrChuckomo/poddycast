@@ -1,7 +1,6 @@
 'use strict';
 
 const { ipcRenderer, contextBridge } = require('electron');
-// window.i18n = new (require('./translations/i18n'));
 const feed = require('./js/feed');
 const search = require('./js/search');
 const global = require('./js/helper/helper_global');

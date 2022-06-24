@@ -7,17 +7,15 @@ const request = require('./request');
 const navigation = require('./helper/helper_navigation');
 const global = require('./helper/helper_global');
 const entries = require('./helper/helper_entries');
-const i18n = window.i18n;
+const { ipcRenderer } = require('electron');
 
 
-// function search(_Self, _Event) {
 function search(_Value, _Key) {
     if (_Key === 'Enter') {
         helper.clearContent();
         navigation.setHeaderViewAction();
         navigation.clearMenuSelection();
-        // TODO: needs solution for i18n for IPC concept
-        // helper.setHeader(i18n.__('Search'));
+        ipcRenderer.invoke('i18n', 'Search').then((title) => helper.setHeader(title));
         document.getElementById('res').setAttribute('return-value', '');
 
         if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {

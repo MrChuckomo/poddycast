@@ -24,7 +24,7 @@ function initLocalization() {
     ipcRenderer.invoke('i18n', 'Statistics').then((title) => translateByClass('statistics', title));
     ipcRenderer.invoke('i18n', 'Search').then((title) => document.getElementsByName('search')[0].placeholder = title);
     ipcRenderer.invoke('i18n', 'New List').then((title) => document.getElementsByName('new_list')[0].placeholder = title);
-    ipcRenderer.invoke('i18n', 'No episode selected').then((title) => document.getElementsByName('content-right-player-title')[0].placeholder = title);
+    ipcRenderer.invoke('i18n', 'No episode selected').then((title) => document.getElementById('content-right-player-title').innerText = title);
 }
 module.exports.initLocalization = initLocalization;
 
