@@ -62,6 +62,16 @@ function createWindow() {
         return loadedLanguage;
     });
 
+    ipcMain.handle('i18n', async (event, phrase) => {
+        let translation = loadedLanguage[phrase];
+
+        if (translation === undefined) {
+            translation = phrase;
+        }
+
+        return translation;
+    });
+
     ipcMain.handle('dark-mode:toggle', () => {
         console.log('dark mode toogle');
         return true;

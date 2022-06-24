@@ -9,6 +9,7 @@ const entries = require('./helper/helper_entries');
 const listItem = require('./list_item');
 const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./icons');
 const { handleDragStart } = require('./drag_handler');
+const { ipcRenderer } = require('electron');
 
 const helper = new CContentHelper();
 const player = new CPlayer();
@@ -194,52 +195,61 @@ function showStatistics() {
 
     let JsonContent = null;
     let List = document.getElementById('list');
-    const i18n = window.i18n;
 
     navigation.setGridLayout(List, false);
 
     List.append(entries.getStatisticsElement('statistics-header', 'Podcasts', null));
 
-    if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
+    ipcRenderer.invoke('i18n', 'Favorite Podcasts').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Last Podcast').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent[JsonContent.length - 1].channelName));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 'None'));
+        }
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
+    ipcRenderer.invoke('i18n', 'Episodes').then((title) => {
+        List.append(entries.getStatisticsElement('statistics-header', title, null));
+    });
 
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), JsonContent[JsonContent.length - 1].channelName));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), 'None'));
-    }
+    ipcRenderer.invoke('i18n', 'History Items').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Episodes'), null));
+    ipcRenderer.invoke('i18n', 'New Episodes').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => {
+        List.append(entries.getStatisticsElement('statistics-header', title, null));
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
-
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), 0));
-    }
-
-    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Playlists'), null));
-
-    if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
-
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 }
 module.exports.showStatistics = showStatistics;
