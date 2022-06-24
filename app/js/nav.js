@@ -15,6 +15,27 @@ const helper = new CContentHelper();
 const player = new CPlayer();
 
 
+function initLocalization() {
+    ipcRenderer.invoke('i18n', 'New Episodes').then((title) => translateByClass('new-episodes', title));
+    ipcRenderer.invoke('i18n', 'Favorites').then((title) => translateByClass('favorites', title));
+    ipcRenderer.invoke('i18n', 'History').then((title) => translateByClass('history', title));
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => translateByClass('playlists', title));
+    ipcRenderer.invoke('i18n', 'Refresh').then((title) => translateByClass('refresh', title));
+    ipcRenderer.invoke('i18n', 'Statistics').then((title) => translateByClass('statistics', title));
+    ipcRenderer.invoke('i18n', 'Search').then((title) => document.getElementsByName('search')[0].placeholder = title);
+    ipcRenderer.invoke('i18n', 'New List').then((title) => document.getElementsByName('new_list')[0].placeholder = title);
+    ipcRenderer.invoke('i18n', 'No episode selected').then((title) => document.getElementsByName('content-right-player-title')[0].placeholder = title);
+}
+module.exports.initLocalization = initLocalization;
+
+function translateByClass(className, value) {
+    let els = document.getElementsByClassName(className);
+
+    Array.prototype.forEach.call(els, function (el) {
+        el.innerHTML = value;
+    });
+}
+
 function selectMenuItem(_MenuId) {
     let MenuItem = document.getElementById(_MenuId);
 

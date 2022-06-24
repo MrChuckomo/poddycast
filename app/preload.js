@@ -12,15 +12,14 @@ const audioPlayer = require('./js/player');
 // const favorite = require('./js/favorite');
 // const menu = require('./menu');
 const nav = require('./js/nav');
-// const translations = require('./js/translations');
 
 window.addEventListener('DOMContentLoaded', () => {
     global.init();
     // playlist.loadPlaylists();
     feed.readFeeds();
+    nav.initLocalization();
     nav.showNewEpisodes();
     // navigation.setItemCounts();
-    // translations.translate();
     // audioPlayer.init();
 });
 
