@@ -7,14 +7,14 @@ const global = require('./js/helper/helper_global');
 // const navigation = require('./js/helper/helper_navigation');
 const entries = require('./js/helper/helper_entries');
 const audioPlayer = require('./js/player');
-// const playlist = require('./js/playlist');
+const playlist = require('./js/playlist');
 // const favorite = require('./js/favorite');
 // const menu = require('./menu');
 const nav = require('./js/nav');
 
 window.addEventListener('DOMContentLoaded', () => {
     global.init();
-    // playlist.loadPlaylists();
+    playlist.loadPlaylists();
     feed.readFeeds();
     nav.initLocalization();
     nav.showNewEpisodes();

@@ -44,7 +44,8 @@ function createPlaylist(_Self, _Event) {
         let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
         PlaylistList.append(NewPlaylist);
 
-        setContextMenu(NewPlaylist);
+        // TODO
+        // setContextMenu(NewPlaylist);
 
         let Playlist = {
             'playlistName': _Self.value,
@@ -91,7 +92,8 @@ function loadPlaylists() {
             PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
             PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
 
-            setContextMenu(PlaylistEntry);
+            // TODO
+            // setContextMenu(PlaylistEntry);
 
             PlaylistList.append(PlaylistEntry);
         }
@@ -100,38 +102,39 @@ function loadPlaylists() {
 module.exports.loadPlaylists = loadPlaylists;
 
 /** @private */
-function setContextMenu(_Object) {
-    const {remote} = require('electron');
-    const {Menu, MenuItem} = remote;
-    const ContextMenu = new Menu();
+// TODO: needs new solution cause of IPC
+// function setContextMenu(_Object) {
+//     const {remote} = require('electron');
+//     const {Menu, MenuItem} = remote;
+//     const ContextMenu = new Menu();
 
-    // NOTE: Access input field inside the playlist item to get the name.
+//     // NOTE: Access input field inside the playlist item to get the name.
 
-    ContextMenu.append(new MenuItem({
-        click() {
-            showEditPage(_Object);
-        },
-        label: i18n.__('Edit')
-    }));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({
-        click() {
-            enableRename(_Object);
-        },
-        label: i18n.__('Rename')
-    }));
-    ContextMenu.append(new MenuItem({
-        click() {
-            navigation.deletePlaylist(_Object.getElementsByTagName('input')[0].value);
-        },
-        label: i18n.__('Delete')
-    }));
+//     ContextMenu.append(new MenuItem({
+//         click() {
+//             showEditPage(_Object);
+//         },
+//         label: i18n.__('Edit')
+//     }));
+//     ContextMenu.append(new MenuItem({type: 'separator'}));
+//     ContextMenu.append(new MenuItem({
+//         click() {
+//             enableRename(_Object);
+//         },
+//         label: i18n.__('Rename')
+//     }));
+//     ContextMenu.append(new MenuItem({
+//         click() {
+//             navigation.deletePlaylist(_Object.getElementsByTagName('input')[0].value);
+//         },
+//         label: i18n.__('Delete')
+//     }));
 
-    _Object.addEventListener('contextmenu', (_Event) => {
-        _Event.preventDefault();
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true });
-    }, false);
-}
+//     _Object.addEventListener('contextmenu', (_Event) => {
+//         _Event.preventDefault();
+//         ContextMenu.popup(remote.getCurrentWindow(), { async:true });
+//     }, false);
+// }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
