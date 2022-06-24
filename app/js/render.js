@@ -25,9 +25,7 @@ document.getElementById('menu-refresh').addEventListener('click', () => {
 
 // NOTE: Bundle listern for all list items on the right content side
 document.getElementById('list').addEventListener('click', function (event) {
-    const pageHeader = document.getElementById('content-right-header').getElementsByTagName('h1')[0];
-
-    if (pageHeader.innerText === 'Favorites'){
+    if (document.getElementById('menu-favorites').classList.contains('selected')) {
         openPodcastEpisodes(event.target);
     }
 });
@@ -46,9 +44,9 @@ function openPodcastEpisodes(element) {
 //     console.log(dark);
 // });
 
-async function geti18n() {
-    let lang = await window.myAPI.sysLanguage('New Episodes');
-    console.log(lang);
-}
+// async function geti18n() {
+//     let lang = await window.myAPI.sysLanguage('New Episodes');
+//     console.log(lang);
+// }
 
-geti18n();
+// geti18n();
