@@ -11,14 +11,14 @@ const audioPlayer = require('./js/player');
 // const playlist = require('./js/playlist');
 // const favorite = require('./js/favorite');
 // const menu = require('./menu');
-const menujs = require('./js/menu');
+const nav = require('./js/nav');
 // const translations = require('./js/translations');
 
 window.addEventListener('DOMContentLoaded', () => {
     global.init();
     // playlist.loadPlaylists();
     feed.readFeeds();
-    menujs.showNewEpisodes();
+    nav.showNewEpisodes();
     // navigation.setItemCounts();
     // translations.translate();
     // audioPlayer.init();
@@ -33,24 +33,24 @@ contextBridge.exposeInMainWorld('navAPI', {
         search.search(value, key);
     },
     clickEpisodes: () => {
-        menujs.selectMenuItem('menu-episodes');
-        menujs.showNewEpisodes();
+        nav.selectMenuItem('menu-episodes');
+        nav.showNewEpisodes();
     },
     clickFavorites: () => {
-        menujs.selectMenuItem('menu-favorites');
-        menujs.showFavorites();
+        nav.selectMenuItem('menu-favorites');
+        nav.showFavorites();
     },
     clickPodcast: (element) => {
         console.log(element);
         feed.showAllEpisodes(element);
     },
     clickHistory: () => {
-        menujs.selectMenuItem('menu-history');
-        menujs.showHistory();
+        nav.selectMenuItem('menu-history');
+        nav.showHistory();
     },
     clickStatistics: () => {
-        menujs.selectMenuItem('menu-statistics');
-        menujs.showStatistics();
+        nav.selectMenuItem('menu-statistics');
+        nav.showStatistics();
     },
     clickRefresh: () => {
         feed.readFeeds();
