@@ -52,6 +52,9 @@ contextBridge.exposeInMainWorld('navAPI', {
     },
     clickRefresh: () => {
         feed.readFeeds();
+    },
+    loseFocus: (element) => {
+        navigation.clearRenameFocus(element);
     }
 });
 
@@ -62,7 +65,7 @@ contextBridge.exposeInMainWorld('navAPI', {
 contextBridge.exposeInMainWorld('playlistAPI', {
     clickItem: (self) => playlist.showPlaylistContent(self),
     dblclickItem: (self) => playlist.enableRename(self),
-    rename: (event, self) => playlist.renamePlaylist(self, event)
+    rename: (element, key) => playlist.renamePlaylist(element, key)
 });
 
 

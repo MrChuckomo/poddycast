@@ -21,8 +21,6 @@ function getInputEntry(_Name) {
     InputItem.value = _Name;
     InputItem.type = 'text';
     InputItem.disabled = true;
-    InputItem.setAttribute('onfocusout', 'navigation.clearRenameFocus(this)');
-    InputItem.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
     return InputItem;
 }
@@ -145,9 +143,8 @@ function enableRename(_Self) {
 }
 module.exports.enableRename = enableRename;
 
-function renamePlaylist(_Self, _Event) {
-
-    if (_Event.code === 'Enter') {
+function renamePlaylist(_Self, _KeyCode) {
+    if (_KeyCode === 'Enter') {
         if (_Self.classList[0] === 'playlist-edit-input') {
             navigation.renamePlaylistInEdit(_Self);
         } else {
@@ -217,23 +214,23 @@ function togglePodcast(_Self) {
 
     for (let i = 0; i < _Self.classList.length; i++) {
         switch (_Self.classList[i]) {
-        case 'check':
-            _Self.classList.remove('check');
-            _Self.classList.add('uncheck');
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML;
-            navigation.removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
+            case 'check':
+                _Self.classList.remove('check');
+                _Self.classList.add('uncheck');
+                _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML;
+                navigation.removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
 
-            break;
+                break;
 
-        case 'uncheck':
-            _Self.classList.remove('uncheck');
-            _Self.classList.add('check');
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML;
-            navigation.addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
+            case 'uncheck':
+                _Self.classList.remove('uncheck');
+                _Self.classList.add('check');
+                _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML;
+                navigation.addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
 
-            break;
+                break;
 
-        default: break;
+            default: break;
         }
     }
 }
@@ -259,10 +256,10 @@ function showEditPage(_Self) {
     let NameInput = document.createElement('input');
     NameInput.value = PlaylistName;
     NameInput.classList.add('playlist-edit-input', 'rounded-3');
-    NameInput.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
     let DeleteButton = document.createElement('button');
-    DeleteButton.innerHTML = i18n.__('Delete');
+    // DeleteButton.innerHTML = i18n.__('Delete');
+    DeleteButton.innerHTML = 'Delete';
     DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
     DeleteButton.classList.add('btn', 'btn-danger', 'rounded-3');
 

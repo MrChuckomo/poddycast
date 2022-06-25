@@ -30,15 +30,20 @@ document.getElementById('content-right-player-speed-up').addEventListener('click
  * Playlist actions
  */
 document.getElementById('playlists').addEventListener('click', function (event) {
-    console.log('click');
-    console.log(event.target.parentElement);
     window.playlistAPI.clickItem(event.target.parentElement);
 });
 
 document.getElementById('playlists').addEventListener('dblclick', function (event) {
-    console.log('dblclick');
-    console.log(event.target.parentElement);
     window.playlistAPI.dblclickItem(event.target.parentElement);
+
+    if (event.target.tagName === 'INPUT') {
+        event.target.addEventListener('keyup', (event) => {
+            window.playlistAPI.rename(event.target, event.code);
+        });
+        event.target.addEventListener('focusout', () => {
+            window.navAPI.loseFocus(event.target);
+        });
+    }
 });
 
 
