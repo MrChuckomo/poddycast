@@ -1,18 +1,23 @@
 'use strict';
 
-
 document.getElementById('search-input').addEventListener('keyup', (event) => {
     const value = document.getElementById('search-input').value;
     const key = event.code;
     window.navAPI.searchInput(value, key);
 });
+
+/**
+ * Main navigation item actions
+ */
 document.getElementById('menu-episodes').addEventListener('click', () => window.navAPI.clickEpisodes());
 document.getElementById('menu-favorites').addEventListener('click', () => window.navAPI.clickFavorites());
 document.getElementById('menu-history').addEventListener('click', () => window.navAPI.clickHistory());
 document.getElementById('menu-statistics').addEventListener('click', () => window.navAPI.clickStatistics());
 document.getElementById('menu-refresh').addEventListener('click', () => window.navAPI.clickRefresh());
 
-// NOTE: Audio player actions
+/**
+ * Audio player actions
+ */
 document.getElementById('replay-30-sec').addEventListener('click', () => window.audioAPI.clickReply());
 document.getElementById('play-pause').addEventListener('click', () => window.audioAPI.clickPlayPause());
 document.getElementById('forward-30-sec').addEventListener('click', () => window.audioAPI.clickForward());
@@ -21,7 +26,25 @@ document.getElementById('volume').addEventListener('input', () => window.audioAP
 document.getElementById('content-right-player-speed-down').addEventListener('click', () => window.audioAPI.clickSpeedDown());
 document.getElementById('content-right-player-speed-up').addEventListener('click', () => window.audioAPI.clickSpeedUp());
 
-// NOTE: Bundle listern for all list items on the right content side
+/**
+ * Playlist actions
+ */
+document.getElementById('playlists').addEventListener('click', function (event) {
+    console.log('click');
+    console.log(event.target.parentElement);
+    window.playlistAPI.clickItem(event.target.parentElement);
+});
+
+document.getElementById('playlists').addEventListener('dblclick', function (event) {
+    console.log('dblclick');
+    console.log(event.target.parentElement);
+    window.playlistAPI.dblclickItem(event.target.parentElement);
+});
+
+
+/**
+ * Bundle listern for all list items on the right content side
+ */
 document.getElementById('list').addEventListener('click', function (event) {
     if (document.getElementById('menu-favorites').classList.contains('selected')) {
         openPodcastAllEpisodes(event.target);

@@ -33,8 +33,6 @@ function createPlaylist(_Self, _Event) {
     if (_Event.code === 'Enter') {
         let NewPlaylist = document.createElement('li');
         NewPlaylist.classList.add('mx-2', 'rounded-3', 'fw-light');
-        NewPlaylist.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
-        NewPlaylist.setAttribute('ondblclick', 'playlist.enableRename(this)');
         NewPlaylist.addEventListener('dragenter', dragHandler.handleDragEnter, false);
         NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
         NewPlaylist.addEventListener('dragleave', dragHandler.handleDragLeave, false);
@@ -84,8 +82,6 @@ function loadPlaylists() {
         for (let i = 0; i < JsonContent.length; i++) {
             let PlaylistEntry = document.createElement('li');
             PlaylistEntry.classList.add('mx-2', 'rounded-3', 'fw-light');
-            PlaylistEntry.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
-            PlaylistEntry.setAttribute('ondblclick', 'playlist.enableRename(this)');
             PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
             PlaylistEntry.addEventListener('dragover', dragHandler.handleDragOver, false);
             PlaylistEntry.addEventListener('dragleave', dragHandler.handleDragLeave, false);

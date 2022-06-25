@@ -57,6 +57,16 @@ contextBridge.exposeInMainWorld('navAPI', {
 
 
 /**
+ * IPCs to handle playlist actions
+ */
+contextBridge.exposeInMainWorld('playlistAPI', {
+    clickItem: (self) => playlist.showPlaylistContent(self),
+    dblclickItem: (self) => playlist.enableRename(self),
+    rename: (event, self) => playlist.renamePlaylist(self, event)
+});
+
+
+/**
  * IPCs to handle audio player actions
  */
 contextBridge.exposeInMainWorld('audioAPI', {
