@@ -18,237 +18,6 @@ let appIcon = null;
 let trayIcon = null;
 let win;
 
-// Define menu template
-const template = [
-    {
-        label: 'Edit',
-        submenu: [
-            {
-                role: 'import',
-                label: 'Import OPML',
-                click() {
-                    opml.import();
-                }
-            },
-            {
-                role: 'export',
-                label: 'Export OPML',
-                click() {
-                    opml.export();
-                }
-            },
-            { type: 'separator' },
-            {
-                label: 'Cut',
-                role: 'cut'
-            },
-            {
-                label: 'Copy',
-                role: 'copy'
-            },
-            {
-                label: 'Paste',
-                role: 'paste'
-            }
-        ]
-    },
-    {
-        label: 'View',
-        submenu: [
-            {
-                label: 'Reload',
-                role: 'reload'
-            },
-            { type: 'separator' },
-            {
-                label: 'Reset Zoom',
-                role: 'resetzoom'
-            },
-            {
-                label: 'Zoom In',
-                role: 'zoomin'
-            },
-            {
-                label: 'Zoom Out',
-                role: 'zoomout'
-            },
-            { type: 'separator' },
-            {
-                label: 'Color Scheme',
-                submenu: [
-                    {
-                        checked: global.getPreference('systemmode', false),
-                        click() {
-                            darkMode.toggleDarkMode('systemmode');
-                        },
-                        label: 'Use system defaults',
-                        type: 'radio'
-                    },
-                    {
-                        accelerator: 'CommandOrControl+Alt+L',
-                        checked: global.getPreference('lightmode', false),
-                        click() {
-                            darkMode.toggleDarkMode('lightmode');
-                        },
-                        label: 'Light Mode',
-                        type: 'radio'
-                    },
-                    {
-                        accelerator: 'CommandOrControl+Alt+D',
-                        checked: global.getPreference('darkmode', false),
-                        click() {
-                            darkMode.toggleDarkMode('darkmode');
-                        },
-                        label: 'Dark Mode',
-                        type: 'radio'
-                    }
-                ]
-            },
-            { role: 'togglefullscreen', label: 'Toggle Full Screen' }
-        ]
-    },
-    {
-        label: 'Player',
-        submenu: [
-            {
-                accelerator: 'Space',
-                label: 'Play/Pause',
-                click() {
-                    // NOTE: if focus is not in any input field (search, playlist)
-                    if (document.activeElement.type === undefined) {
-                        audioPlayer.togglePlayPauseButton();
-                    }
-                }
-            },
-            { type: 'separator' },
-            {
-                accelerator: 'Left',
-                label: '30sec Reply',
-                click() {
-                    audioPlayer.playReply();
-                }
-            },
-            {
-                accelerator: 'Right',
-                label: '30sec Forward',
-                click() {
-                    audioPlayer.playForward();
-                }
-            },
-            { type: 'separator' },
-            {
-                accelerator: 'Plus',
-                label: 'Volume Up',
-                click() {
-                    audioPlayer.increaseVolume(0.05);
-                }
-            },
-            {
-                accelerator: '-',
-                label: 'Volume Down',
-                click() {
-                    audioPlayer.decreaseVolume(0.05);
-                }
-            }
-        ]
-    },
-    {
-        label: 'Go To',
-        submenu: [
-            {
-                accelerator: 'CommandOrControl+F',
-                click() {
-                    global.focusTextField('search-input');
-                },
-                label: 'Search'
-            },
-            { type: 'separator' },
-            {
-                accelerator: 'CommandOrControl+1',
-                click() {
-                    nav.selectMenuItem('menu-episodes');
-                    nav.showNewEpisodes();
-                },
-                label: 'New Episodes'
-            },
-            {
-                accelerator: 'CommandOrControl+2',
-                click() {
-                    nav.selectMenuItem('menu-favorites');
-                    nav.showFavorites();
-                },
-                label: 'Favorites'
-            },
-            {
-                accelerator: 'CommandOrControl+3',
-                click() {
-                    nav.selectMenuItem('menu-history');
-                    nav.showHistory();
-                },
-                label: 'History'
-            },
-            {
-                accelerator: 'CommandOrControl+4',
-                click() {
-                    nav.selectMenuItem('menu-statistics');
-                    nav.showStatistics();
-                },
-                label: 'Statistics'
-            },
-            { type: 'separator' },
-            {
-                accelerator: 'CommandOrControl+N',
-                click() {
-                    global.focusTextField('new_list-input');
-                },
-                label: 'New List'
-            }
-        ]
-    },
-    {
-        label: 'Settings',
-        submenu: [
-            {
-                accelerator: 'CommandOrControl+Alt+P',
-                checked: global.getPreference('proxy_enabled', false),
-                click() {
-                    global.toggleProxyMode();
-                },
-                label: 'Proxy Mode',
-                type: 'checkbox'
-            },
-            {
-                accelerator: 'CommandOrControl+Alt+M',
-                checked: global.getPreference('minimize', false),
-                click() {
-                    global.toggleMinimize();
-                },
-                label: 'Minimize',
-                type: 'checkbox'
-            },
-            { type: 'separator' },
-            { role: 'toggledevtools' }
-        ]
-    }
-];
-
-if (process.platform === 'darwin') {
-    template.unshift({
-        label: app.getName(),
-        submenu: [
-            { role: 'about' },
-            { type: 'separator' },
-            { role: 'services', submenu: [] },
-            { type: 'separator' },
-            { role: 'hide' },
-            { role: 'hideothers' },
-            { role: 'unhide' },
-            { type: 'separator' },
-            { role: 'quit' }
-        ]
-    });
-}
-
 // Request lock to allow only one instance
 // of the app running at the time.
 const gotTheLock = app.requestSingleInstanceLock();
@@ -282,28 +51,256 @@ function createWindow() {
         slashed: true
     }));
 
-    // Register some IPC handler
-    let loadedLanguage;
+    // Load language file
     const file = path.join(__dirname, 'translations/' + app.getLocale() + '.json');
+    const defaultFile = path.join(__dirname, 'translations/en.json');
+    const loadedLanguage = JSON.parse(fs.readFileSync((fs.existsSync(file)) ? file : defaultFile), 'utf8');
 
-    if (fs.existsSync(file)) {
-        loadedLanguage = JSON.parse(fs.readFileSync(file), 'utf8');
-    } else {
-        loadedLanguage = JSON.parse(fs.readFileSync(path.join(__dirname, 'translations/en.json'), 'utf8'));
+    function translate(_Phrase) {
+        return ((loadedLanguage[_Phrase] === undefined) ? _Phrase : loadedLanguage[_Phrase]);
     }
 
+    console.log(loadedLanguage);
+
+    // Define menu template
+    const template = [
+        {
+            label: translate('Edit'),
+            submenu: [
+                {
+                    role: 'import',
+                    label: translate('Import OPML'),
+                    click() {
+                        opml.import();
+                    }
+                },
+                {
+                    role: 'export',
+                    label: translate('Export OPML'),
+                    click() {
+                        opml.export();
+                    }
+                },
+                { type: 'separator' },
+                {
+                    label: translate('Cut'),
+                    role: 'cut'
+                },
+                {
+                    label: translate('Copy'),
+                    role: 'copy'
+                },
+                {
+                    label: translate('Paste'),
+                    role: 'paste'
+                }
+            ]
+        },
+        {
+            label: translate('View'),
+            submenu: [
+                {
+                    label: translate('Reload'),
+                    role: 'reload'
+                },
+                { type: 'separator' },
+                {
+                    label: translate('Reset Zoom'),
+                    role: 'resetzoom'
+                },
+                {
+                    label: translate('Zoom In'),
+                    role: 'zoomin'
+                },
+                {
+                    label: translate('Zoom Out'),
+                    role: 'zoomout'
+                },
+                { type: 'separator' },
+                {
+                    label: translate('Color Scheme'),
+                    submenu: [
+                        {
+                            checked: global.getPreference('systemmode', false),
+                            click() {
+                                darkMode.toggleDarkMode('systemmode');
+                            },
+                            label: translate('Use system defaults'),
+                            type: 'radio'
+                        },
+                        {
+                            accelerator: 'CommandOrControl+Alt+L',
+                            checked: global.getPreference('lightmode', false),
+                            click() {
+                                darkMode.toggleDarkMode('lightmode');
+                            },
+                            label: translate('Light Mode'),
+                            type: 'radio'
+                        },
+                        {
+                            accelerator: 'CommandOrControl+Alt+D',
+                            checked: global.getPreference('darkmode', false),
+                            click() {
+                                darkMode.toggleDarkMode('darkmode');
+                            },
+                            label: translate('Dark Mode'),
+                            type: 'radio'
+                        }
+                    ]
+                },
+                { role: 'togglefullscreen', label: translate('Toggle Full Screen') }
+            ]
+        },
+        {
+            label: translate('Player'),
+            submenu: [
+                {
+                    accelerator: 'Space',
+                    label: translate('Play/Pause'),
+                    click() {
+                        // NOTE: if focus is not in any input field (search, playlist)
+                        if (document.activeElement.type === undefined) {
+                            audioPlayer.togglePlayPauseButton();
+                        }
+                    }
+                },
+                { type: 'separator' },
+                {
+                    accelerator: 'Left',
+                    label: translate('30sec Reply'),
+                    click() {
+                        audioPlayer.playReply();
+                    }
+                },
+                {
+                    accelerator: 'Right',
+                    label: translate('30sec Forward'),
+                    click() {
+                        audioPlayer.playForward();
+                    }
+                },
+                { type: 'separator' },
+                {
+                    accelerator: 'Plus',
+                    label: translate('Volume Up'),
+                    click() {
+                        audioPlayer.increaseVolume(0.05);
+                    }
+                },
+                {
+                    accelerator: '-',
+                    label: translate('Volume Down'),
+                    click() {
+                        audioPlayer.decreaseVolume(0.05);
+                    }
+                }
+            ]
+        },
+        {
+            label: translate('Go To'),
+            submenu: [
+                {
+                    accelerator: 'CommandOrControl+F',
+                    click() {
+                        global.focusTextField('search-input');
+                    },
+                    label: translate('Search')
+                },
+                { type: 'separator' },
+                {
+                    accelerator: 'CommandOrControl+1',
+                    click() {
+                        nav.selectMenuItem('menu-episodes');
+                        nav.showNewEpisodes();
+                    },
+                    label: translate('New Episodes')
+                },
+                {
+                    accelerator: 'CommandOrControl+2',
+                    click() {
+                        nav.selectMenuItem('menu-favorites');
+                        nav.showFavorites();
+                    },
+                    label: translate('Favorites')
+                },
+                {
+                    accelerator: 'CommandOrControl+3',
+                    click() {
+                        nav.selectMenuItem('menu-history');
+                        nav.showHistory();
+                    },
+                    label: translate('History')
+                },
+                {
+                    accelerator: 'CommandOrControl+4',
+                    click() {
+                        nav.selectMenuItem('menu-statistics');
+                        nav.showStatistics();
+                    },
+                    label: translate('Statistics')
+                },
+                { type: 'separator' },
+                {
+                    accelerator: 'CommandOrControl+N',
+                    click() {
+                        global.focusTextField('new_list-input');
+                    },
+                    label: translate('New List')
+                }
+            ]
+        },
+        {
+            label: translate('Settings'),
+            submenu: [
+                {
+                    accelerator: 'CommandOrControl+Alt+P',
+                    checked: global.getPreference('proxy_enabled', false),
+                    click() {
+                        global.toggleProxyMode();
+                    },
+                    label: translate('Proxy Mode'),
+                    type: 'checkbox'
+                },
+                {
+                    accelerator: 'CommandOrControl+Alt+M',
+                    checked: global.getPreference('minimize', false),
+                    click() {
+                        global.toggleMinimize();
+                    },
+                    label: translate('Minimize'),
+                    type: 'checkbox'
+                },
+                { type: 'separator' },
+                { role: 'toggledevtools' }
+            ]
+        }
+    ];
+
+    if (process.platform === 'darwin') {
+        template.unshift({
+            label: app.getName(),
+            submenu: [
+                { role: 'about' },
+                { type: 'separator' },
+                { role: 'services', submenu: [] },
+                { type: 'separator' },
+                { role: 'hide' },
+                { role: 'hideothers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                { role: 'quit' }
+            ]
+        });
+    }
+
+
+    // Register some IPC handler
     ipcMain.handle('sys-language', () => {
         return loadedLanguage;
     });
 
     ipcMain.handle('i18n', async (event, phrase) => {
-        let translation = loadedLanguage[phrase];
-
-        if (translation === undefined) {
-            translation = phrase;
-        }
-
-        return translation;
+        return translate(phrase);
     });
 
     ipcMain.handle('dark-mode:toggle', () => {
