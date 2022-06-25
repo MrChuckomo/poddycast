@@ -94,16 +94,16 @@
                     </div>
                     <img id="content-right-player-img" src="./img/podcast_07prct.png" alt="">
                     <div id="content-right-player-title">No episode selected</div>
-                    <i id="replay-30-sec" onclick="audioPlayer.playReply()" class="btn btn-link link-secondary bi bi-skip-backward-circle" style="font-size: 1.8rem;"></i>
-                    <i id="play-pause" onclick="audioPlayer.togglePlayPauseButton()" mode="pause" class="btn btn-link link-secondary bi bi-play-circle-fill" style="font-size: 1.8rem;"></i>
-                    <i id="forward-30-sec" onclick="audioPlayer.playForward()" class="btn btn-link link-secondary bi bi-skip-forward-circle" style="font-size: 1.8rem;"></i>
-                    <i id="volume-button" onclick="audioPlayer.volumeToggle()" class="btn btn-link link-secondary bi bi-volume-up" style="font-size: 1.8rem;"></i>
-                    <input type="range" id="volume" name="volume" min="0.001" max="1" step="0.0001" oninput="audioPlayer.setVolume(this)">
+                    <i id="replay-30-sec" class="btn btn-link link-secondary bi bi-skip-backward-circle" style="font-size: 1.8rem;"></i>
+                    <i id="play-pause" mode="pause" class="btn btn-link link-secondary bi bi-play-circle-fill" style="font-size: 1.8rem;"></i>
+                    <i id="forward-30-sec" class="btn btn-link link-secondary bi bi-skip-forward-circle" style="font-size: 1.8rem;"></i>
+                    <i id="volume-button" class="btn btn-link link-secondary bi bi-volume-up" style="font-size: 1.8rem;"></i>
+                    <input id="volume" type="range" name="volume" min="0.001" max="1" step="0.0001">
                     <div id="volume-fill"></div>
                     <div class="content-right-player-speed-btn">
-                        <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown" onclick="audioPlayer.speedDown()">-</button>
+                        <button class="content-right-player-speed" id="content-right-player-speed-down" type="button" name="speedDown">-</button>
                         <button id="content-right-player-speed-indicator">1.0x</button>
-                        <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed" onclick="audioPlayer.speedUp()">+</button>
+                        <button class="content-right-player-speed" id="content-right-player-speed-up" type="button" name="speed">+</button>
                     </div>
                     <div id="content-right-player-time">00:00:00</div>
                     <div id="content-right-player-duration">00:00:00</div>

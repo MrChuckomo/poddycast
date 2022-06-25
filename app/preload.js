@@ -56,6 +56,18 @@ contextBridge.exposeInMainWorld('navAPI', {
 });
 
 
+/**
+ * IPCs to handle audio player actions
+ */
+contextBridge.exposeInMainWorld('audioAPI', {
+    clickReply: () => audioPlayer.playReply(),
+    clickPlayPause: () => audioPlayer.togglePlayPauseButton(),
+    clickForward: () => audioPlayer.playForward(),
+    clickVolumeToggle: () => audioPlayer.volumeToggle(),
+    clickVolume: (self) => audioPlayer.setVolume(self),
+    clickSpeedDown: () => audioPlayer.speedDown(),
+    clickSpeedUp: () => audioPlayer.speedUp()
+});
 
 
 
