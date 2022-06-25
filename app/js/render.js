@@ -21,20 +21,28 @@ document.getElementById('volume').addEventListener('input', () => window.audioAP
 document.getElementById('content-right-player-speed-down').addEventListener('click', () => window.audioAPI.clickSpeedDown());
 document.getElementById('content-right-player-speed-up').addEventListener('click', () => window.audioAPI.clickSpeedUp());
 
-
-
 // NOTE: Bundle listern for all list items on the right content side
 document.getElementById('list').addEventListener('click', function (event) {
     if (document.getElementById('menu-favorites').classList.contains('selected')) {
-        openPodcastEpisodes(event.target);
+        openPodcastAllEpisodes(event.target);
+    } else if (document.getElementById('menu-episodes').classList.contains('selected')) {
+        playEpisode(event.target);
     }
 });
 
-function openPodcastEpisodes(element) {
+function openPodcastAllEpisodes(element) {
     switch (element.tagName) {
-    case 'IMG': window.navAPI.clickPodcast(element.parentElement); break;
-    case 'DIV': window.navAPI.clickPodcast(element.parentElement); break;
-    default: break;
+        case 'IMG': window.navAPI.clickPodcast(element.parentElement); break;
+        case 'DIV': window.navAPI.clickPodcast(element.parentElement); break;
+        default: break;
+    }
+}
+
+function playEpisode(element) {
+    switch (element.tagName) {
+        case 'IMG': window.audioAPI.clickEpisode(element.parentElement); break;
+        case 'DIV': window.audioAPI.clickEpisode(element.parentElement); break;
+        default: window.audioAPI.clickEpisode(element); break;
     }
 }
 

@@ -66,10 +66,9 @@ contextBridge.exposeInMainWorld('audioAPI', {
     clickVolumeToggle: () => audioPlayer.volumeToggle(),
     clickVolume: (self) => audioPlayer.setVolume(self),
     clickSpeedDown: () => audioPlayer.speedDown(),
-    clickSpeedUp: () => audioPlayer.speedUp()
+    clickSpeedUp: () => audioPlayer.speedUp(),
+    clickEpisode: (self) => audioPlayer.playNow(self)
 });
-
-
 
 
 // NOTE: Definition of IPC APIs - might be usefull for the other tasks

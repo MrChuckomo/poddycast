@@ -83,7 +83,6 @@ function showNewEpisodes() {
                 '5em 1fr 6em 1fr 5em 5em'
             ), listItem.eLayout.row);
 
-            ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
             ListElement.setAttribute('channel', JsonContent[i].channelName);
             ListElement.setAttribute('title', JsonContent[i].episodeTitle);
             ListElement.setAttribute('type', JsonContent[i].episodeType);

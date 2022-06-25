@@ -231,7 +231,6 @@ function displayEpisodesInList(podcastObject) {
             listElement.replaceChild(listItem.getIconButtonPart(''), listElement.children[3]);
         }
 
-        listElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
         listElement.setAttribute('channel', global.sanitizeString(channelName));
         listElement.setAttribute('title', global.sanitizeString(episode.title));
         listElement.setAttribute('type', episode.type);
