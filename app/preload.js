@@ -4,12 +4,12 @@ const { ipcRenderer, contextBridge } = require('electron');
 const feed = require('./js/feed');
 const search = require('./js/search');
 const global = require('./js/helper/helper_global');
-// const navigation = require('./js/helper/helper_navigation');
+const navigation = require('./js/helper/helper_navigation');
 const entries = require('./js/helper/helper_entries');
 const audioPlayer = require('./js/player');
 const playlist = require('./js/playlist');
-// const favorite = require('./js/favorite');
-// const menu = require('./menu');
+const favorite = require('./js/favorite');
+// const menu = require('./menu'); // DEPRECATED
 const nav = require('./js/nav');
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -18,7 +18,7 @@ window.addEventListener('DOMContentLoaded', () => {
     feed.readFeeds();
     nav.initLocalization();
     nav.showNewEpisodes();
-    // navigation.setItemCounts();
+    navigation.setItemCounts();
     audioPlayer.init();
 });
 
@@ -71,17 +71,14 @@ contextBridge.exposeInMainWorld('audioAPI', {
 });
 
 
-// NOTE: Definition of IPC APIs - might be usefull for the other tasks
+/**
+ * NOTE: Used for further implementations
+ */
 contextBridge.exposeInMainWorld('myAPI', {
     setTitle: (title) => {
         console.log('settitle');
         return { title: title };
     },
-    doAThing: () => console.log('do a thing'),
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     sysLanguage : () => ipcRenderer.invoke('sys-language')
-});
-
-contextBridge.exposeInMainWorld('msgAPI', {
-    readFeeds: () => feed.readFeeds()
 });
