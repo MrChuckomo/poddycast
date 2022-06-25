@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
     nav.initLocalization();
     nav.showNewEpisodes();
     // navigation.setItemCounts();
-    // audioPlayer.init();
+    audioPlayer.init();
 });
 
 
