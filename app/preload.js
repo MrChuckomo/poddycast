@@ -9,7 +9,7 @@ const entries = require('./js/helper/helper_entries');
 const audioPlayer = require('./js/player');
 const playlist = require('./js/playlist');
 const favorite = require('./js/favorite');
-// const menu = require('./menu'); // DEPRECATED
+const darkMode = require('./js/dark_mode');
 const nav = require('./js/nav');
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -24,9 +24,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 /**
+ * Menu trigger from main to renderer process
+ */
+contextBridge.exposeInMainWorld('electronAPI', {
+    onTriggerMenu: (callback) => ipcRenderer.on('trigger-menu', (callback))
+});
+
+
+/**
  * IPCs to handle actions on the left side navigation
  */
 contextBridge.exposeInMainWorld('navAPI', {
+    clickSearch: () => {
+        global.focusTextField('search-input');
+    },
     searchInput: (value, key) => {
         search.search(value, key);
     },
@@ -53,9 +64,22 @@ contextBridge.exposeInMainWorld('navAPI', {
     clickRefresh: () => {
         feed.readFeeds();
     },
+    clickNewList: () => {
+        global.focusTextField('new_list-input');
+    },
     loseFocus: (element) => {
         navigation.clearRenameFocus(element);
     }
+});
+
+
+/**
+ * IPCs for color scheme handling
+ */
+contextBridge.exposeInMainWorld('colorAPI', {
+    system: () => darkMode.toggleDarkMode('systemmode'),
+    light: () => darkMode.toggleDarkMode('lightmode'),
+    dark: () => darkMode.toggleDarkMode('darkmode')
 });
 
 
@@ -78,6 +102,8 @@ contextBridge.exposeInMainWorld('audioAPI', {
     clickForward: () => audioPlayer.playForward(),
     clickVolumeToggle: () => audioPlayer.volumeToggle(),
     clickVolume: (self) => audioPlayer.setVolume(self),
+    clickVolumeUp: () => audioPlayer.increaseVolume(0.05),
+    clickVolumeDown: () => audioPlayer.decreaseVolume(0.05),
     clickSpeedDown: () => audioPlayer.speedDown(),
     clickSpeedUp: () => audioPlayer.speedUp(),
     clickEpisode: (self) => audioPlayer.playNow(self)

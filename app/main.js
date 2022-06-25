@@ -8,9 +8,6 @@ const fs = require('fs');
 const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
 const opml = require('./js/import_export');
 const global = require('./js/helper/helper_global');
-const darkMode = require('./js/dark_mode');
-const audioPlayer = require('./js/player');
-const nav = require('./js/nav');
 
 // Create variables for appIcon, trayIcon, win
 // to prevent their removal by garbage collection
@@ -60,26 +57,20 @@ function createWindow() {
         return ((loadedLanguage[_Phrase] === undefined) ? _Phrase : loadedLanguage[_Phrase]);
     }
 
-    console.log(loadedLanguage);
-
     // Define menu template
     const template = [
         {
             label: translate('Edit'),
             submenu: [
                 {
-                    role: 'import',
                     label: translate('Import OPML'),
-                    click() {
-                        opml.import();
-                    }
+                    role: 'import',
+                    click: () => opml.import()
                 },
                 {
-                    role: 'export',
                     label: translate('Export OPML'),
-                    click() {
-                        opml.export();
-                    }
+                    role: 'export',
+                    click: () => opml.export()
                 },
                 { type: 'separator' },
                 {
@@ -121,30 +112,24 @@ function createWindow() {
                     label: translate('Color Scheme'),
                     submenu: [
                         {
-                            checked: global.getPreference('systemmode', false),
-                            click() {
-                                darkMode.toggleDarkMode('systemmode');
-                            },
                             label: translate('Use system defaults'),
-                            type: 'radio'
+                            type: 'radio',
+                            checked: global.getPreference('systemmode', false),
+                            click: () => win.webContents.send('trigger-menu', 'menu-color:system')
                         },
                         {
-                            accelerator: 'CommandOrControl+Alt+L',
-                            checked: global.getPreference('lightmode', false),
-                            click() {
-                                darkMode.toggleDarkMode('lightmode');
-                            },
                             label: translate('Light Mode'),
-                            type: 'radio'
+                            accelerator: 'CommandOrControl+Alt+L',
+                            type: 'radio',
+                            checked: global.getPreference('lightmode', false),
+                            click: () => win.webContents.send('trigger-menu', 'menu-color:light')
                         },
                         {
-                            accelerator: 'CommandOrControl+Alt+D',
-                            checked: global.getPreference('darkmode', false),
-                            click() {
-                                darkMode.toggleDarkMode('darkmode');
-                            },
                             label: translate('Dark Mode'),
-                            type: 'radio'
+                            accelerator: 'CommandOrControl+Alt+D',
+                            type: 'radio',
+                            checked: global.getPreference('darkmode', false),
+                            click: () => win.webContents.send('trigger-menu', 'menu-color:dark')
                         }
                     ]
                 },
@@ -155,44 +140,31 @@ function createWindow() {
             label: translate('Player'),
             submenu: [
                 {
-                    accelerator: 'Space',
                     label: translate('Play/Pause'),
-                    click() {
-                        // NOTE: if focus is not in any input field (search, playlist)
-                        if (document.activeElement.type === undefined) {
-                            audioPlayer.togglePlayPauseButton();
-                        }
-                    }
+                    accelerator: 'Space',
+                    click: () => win.webContents.send('trigger-menu', 'menu-play-pause')
                 },
                 { type: 'separator' },
                 {
-                    accelerator: 'Left',
                     label: translate('30sec Reply'),
-                    click() {
-                        audioPlayer.playReply();
-                    }
+                    accelerator: 'Left',
+                    click: () => win.webContents.send('trigger-menu', 'menu-reply')
                 },
                 {
-                    accelerator: 'Right',
                     label: translate('30sec Forward'),
-                    click() {
-                        audioPlayer.playForward();
-                    }
+                    accelerator: 'Right',
+                    click: () => win.webContents.send('trigger-menu', 'menu-forward')
                 },
                 { type: 'separator' },
                 {
-                    accelerator: 'Plus',
                     label: translate('Volume Up'),
-                    click() {
-                        audioPlayer.increaseVolume(0.05);
-                    }
+                    accelerator: 'Plus',
+                    click: () => win.webContents.send('trigger-menu', 'menu-volume-up')
                 },
                 {
-                    accelerator: '-',
                     label: translate('Volume Down'),
-                    click() {
-                        audioPlayer.decreaseVolume(0.05);
-                    }
+                    accelerator: '-',
+                    click: () => win.webContents.send('trigger-menu', 'menu-volume-down')
                 }
             ]
         },
@@ -200,52 +172,36 @@ function createWindow() {
             label: translate('Go To'),
             submenu: [
                 {
+                    label: translate('Search'),
                     accelerator: 'CommandOrControl+F',
-                    click() {
-                        global.focusTextField('search-input');
-                    },
-                    label: translate('Search')
+                    click: () => win.webContents.send('trigger-menu', 'menu-search-input')
                 },
                 { type: 'separator' },
                 {
+                    label: translate('New Episodes'),
                     accelerator: 'CommandOrControl+1',
-                    click() {
-                        nav.selectMenuItem('menu-episodes');
-                        nav.showNewEpisodes();
-                    },
-                    label: translate('New Episodes')
+                    click: () => win.webContents.send('trigger-menu', 'menu-episodes')
                 },
                 {
+                    label: translate('Favorites'),
                     accelerator: 'CommandOrControl+2',
-                    click() {
-                        nav.selectMenuItem('menu-favorites');
-                        nav.showFavorites();
-                    },
-                    label: translate('Favorites')
+                    click: () => win.webContents.send('trigger-menu', 'menu-favorites')
                 },
                 {
+                    label: translate('History'),
                     accelerator: 'CommandOrControl+3',
-                    click() {
-                        nav.selectMenuItem('menu-history');
-                        nav.showHistory();
-                    },
-                    label: translate('History')
+                    click: () => win.webContents.send('trigger-menu', 'menu-history')
                 },
                 {
+                    label: translate('Statistics'),
                     accelerator: 'CommandOrControl+4',
-                    click() {
-                        nav.selectMenuItem('menu-statistics');
-                        nav.showStatistics();
-                    },
-                    label: translate('Statistics')
+                    click: () => win.webContents.send('trigger-menu', 'menu-statistics')
                 },
                 { type: 'separator' },
                 {
+                    label: translate('New List'),
                     accelerator: 'CommandOrControl+N',
-                    click() {
-                        global.focusTextField('new_list-input');
-                    },
-                    label: translate('New List')
+                    click: () => win.webContents.send('trigger-menu', 'menu-new_list-input')
                 }
             ]
         },
@@ -253,22 +209,18 @@ function createWindow() {
             label: translate('Settings'),
             submenu: [
                 {
-                    accelerator: 'CommandOrControl+Alt+P',
-                    checked: global.getPreference('proxy_enabled', false),
-                    click() {
-                        global.toggleProxyMode();
-                    },
                     label: translate('Proxy Mode'),
-                    type: 'checkbox'
+                    accelerator: 'CommandOrControl+Alt+P',
+                    type: 'checkbox',
+                    checked: global.getPreference('proxy_enabled', false),
+                    click: () => global.toggleProxyMode()
                 },
                 {
-                    accelerator: 'CommandOrControl+Alt+M',
-                    checked: global.getPreference('minimize', false),
-                    click() {
-                        global.toggleMinimize();
-                    },
                     label: translate('Minimize'),
-                    type: 'checkbox'
+                    accelerator: 'CommandOrControl+Alt+M',
+                    type: 'checkbox',
+                    checked: global.getPreference('minimize', false),
+                    click: () => global.toggleMinimize()
                 },
                 { type: 'separator' },
                 { role: 'toggledevtools' }
