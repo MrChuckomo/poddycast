@@ -94,6 +94,15 @@ contextBridge.exposeInMainWorld('playlistAPI', {
 
 
 /**
+ * IPCs to handle playlist actions
+ */
+contextBridge.exposeInMainWorld('episodeAPI', {
+    add: (self) => feed.addToEpisodes(self),
+    delete: (self) => entries.deleteEntryWithIcon(self)
+});
+
+
+/**
  * IPCs to handle audio player actions
  */
 contextBridge.exposeInMainWorld('audioAPI', {
