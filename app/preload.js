@@ -35,12 +35,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
  * IPCs to handle actions on the left side navigation
  */
 contextBridge.exposeInMainWorld('navAPI', {
-    clickSearch: () => {
-        global.focusTextField('search-input');
-    },
-    searchInput: (value, key) => {
-        search.search(value, key);
-    },
+    clickSearch: () => global.focusTextField('search-input'),
+    searchInput: (value, key) => search.search(value, key),
+    newListInput: (value, key) => playlist.createPlaylist(value, key),
     clickEpisodes: () => {
         nav.selectMenuItem('menu-episodes');
         nav.showNewEpisodes();
@@ -61,15 +58,9 @@ contextBridge.exposeInMainWorld('navAPI', {
         nav.selectMenuItem('menu-statistics');
         nav.showStatistics();
     },
-    clickRefresh: () => {
-        feed.readFeeds();
-    },
-    clickNewList: () => {
-        global.focusTextField('new_list-input');
-    },
-    loseFocus: (element) => {
-        navigation.clearRenameFocus(element);
-    }
+    clickRefresh: () => feed.readFeeds(),
+    clickNewList: () => global.focusTextField('new_list-input'),
+    loseFocus: (element) => navigation.clearRenameFocus(element)
 });
 
 

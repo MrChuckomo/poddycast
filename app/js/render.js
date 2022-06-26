@@ -34,6 +34,15 @@ document.getElementById('search-input').addEventListener('keyup', (event) => {
 });
 
 /**
+ * New playlist field handling
+ */
+document.getElementById('new_list-input').addEventListener('keyup', (event) => {
+    const value = document.getElementById('new_list-input').value;
+    const key = event.code;
+    window.navAPI.newListInput(value, key);
+});
+
+/**
  * Main navigation item actions
  */
 document.getElementById('menu-episodes').addEventListener('click', () => window.navAPI.clickEpisodes());

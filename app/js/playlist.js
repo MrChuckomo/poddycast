@@ -27,15 +27,22 @@ function getInputEntry(_Name) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function createPlaylist(_Self, _Event) {
-    if (_Event.code === 'Enter') {
+/**
+ * Handle creation of a new playlist.
+ * @param {str} _Value coming from the input
+ * @param {str} _KeyCode coming from the keyboard event
+ */
+function createPlaylist(_Value, _KeyCode) {
+    let newListInput = document.getElementById('new_list-input');
+
+    if (_KeyCode === 'Enter') {
         let NewPlaylist = document.createElement('li');
         NewPlaylist.classList.add('mx-2', 'rounded-3', 'fw-light');
         NewPlaylist.addEventListener('dragenter', dragHandler.handleDragEnter, false);
         NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
         NewPlaylist.addEventListener('dragleave', dragHandler.handleDragLeave, false);
         NewPlaylist.addEventListener('drop', dragHandler.handleDrop, false);
-        NewPlaylist.append(getInputEntry(_Self.value));
+        NewPlaylist.append(getInputEntry(_Value));
 
         let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
         PlaylistList.append(NewPlaylist);
@@ -44,12 +51,12 @@ function createPlaylist(_Self, _Event) {
         // setContextMenu(NewPlaylist);
 
         let Playlist = {
-            'playlistName': _Self.value,
+            'playlistName': _Value,
             'podcastList': []
         };
 
-        _Self.innerHTML = heartFilled;
-        _Self.classList.add('set-favorite');
+        newListInput.innerHTML = heartFilled;
+        newListInput.classList.add('set-favorite');
 
         let JsonContent = [];
 
@@ -63,10 +70,10 @@ function createPlaylist(_Self, _Event) {
 
         fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
 
-        global.clearTextField(_Self);
+        global.clearTextField(newListInput);
 
-    } else if (_Event.code === 'Escape') {
-        global.clearTextField(_Self);
+    } else if (_KeyCode === 'Escape') {
+        global.clearTextField(newListInput);
     }
 }
 module.exports.createPlaylist = createPlaylist;
