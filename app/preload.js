@@ -60,7 +60,11 @@ contextBridge.exposeInMainWorld('navAPI', {
     },
     clickRefresh: () => feed.readFeeds(),
     clickNewList: () => global.focusTextField('new_list-input'),
-    loseFocus: (element) => navigation.clearRenameFocus(element)
+    loseFocus: (element) => navigation.clearRenameFocus(element),
+    subscribePodcast: (self, artists, collection, artwork30, artwork60, artwork100, feedUrl) => {
+        favorite.setFavorite(self, artists, collection, artwork30, artwork60, artwork100, feedUrl);
+    },
+    unsubscribePodcast: (self) => entries.unsubscribeListElement(self)
 });
 
 
@@ -85,7 +89,7 @@ contextBridge.exposeInMainWorld('playlistAPI', {
 
 
 /**
- * IPCs to handle playlist actions
+ * IPCs to handle episode actions
  */
 contextBridge.exposeInMainWorld('episodeAPI', {
     add: (self) => feed.addToEpisodes(self),

@@ -8,9 +8,8 @@ const entries = require('./helper/helper_entries');
 const listItem = require('./list_item');
 const request = require('./request');
 const fs = require('fs');
-const { moreOptionIcon, infoIcon, addEpisodeIcon } = require('./icons');
+const { infoIcon, addEpisodeIcon } = require('./icons');
 const { ipcRenderer } = require('electron');
-// const i18n = window.i18n;
 
 let helper = new CContentHelper();
 let player = new CPlayer();

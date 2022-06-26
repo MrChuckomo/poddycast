@@ -107,9 +107,7 @@ function showFavorites() {
 
     if (fs.existsSync(global.saveFilePath) && fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
-
         JsonContent = entries.sortByName(JsonContent);
-
         let List = document.getElementById('list');
 
         navigation.setGridLayout(List, true);

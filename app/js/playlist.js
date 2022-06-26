@@ -11,7 +11,7 @@ const navigation = require('./helper/helper_navigation');
 const entries = require('./helper/helper_entries');
 const dragHandler = require('./drag_handler');
 const listItem = require('./list_item');
-const { heartFilled, checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
+const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
 // const i18n = window.i18n;
 
 /** @private */
@@ -54,9 +54,6 @@ function createPlaylist(_Value, _KeyCode) {
             'playlistName': _Value,
             'podcastList': []
         };
-
-        newListInput.innerHTML = heartFilled;
-        newListInput.classList.add('set-favorite');
 
         let JsonContent = [];
 

@@ -175,7 +175,8 @@ h1 {
 .podcast-favorites-entry svg:hover,
 .set-favorite {
     fill: #E91E63;
-    opacity: 0.7;
+    color: #E91E63;
+    /* opacity: 0.7; */
 }
 
 .podcast-entry img,
