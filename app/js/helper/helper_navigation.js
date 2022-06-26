@@ -106,17 +106,17 @@ module.exports.setGridLayout = setGridLayout;
 
 function setHeaderViewAction(_Mode) {
     switch (_Mode) {
-    case 'list':
-        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-view-list" style="font-size: 1.3rem;"></i>';
-        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("list")');
-        break;
+        case 'list':
+            document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-view-list" style="font-size: 1.3rem;"></i>';
+            document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("list")');
+            break;
 
-    case 'grid':
-        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-grid-3x2-gap" style="font-size: 1.3rem;"></i>';
-        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
-        break;
+        case 'grid':
+            document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-grid-3x2-gap" style="font-size: 1.3rem;"></i>';
+            document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
+            break;
 
-    default: document.getElementById('content-right-header-actions').innerHTML = ''; break;
+        default: document.getElementById('content-right-header-actions').innerHTML = ''; break;
     }
 }
 module.exports.setHeaderViewAction = setHeaderViewAction;
@@ -124,17 +124,17 @@ module.exports.setHeaderViewAction = setHeaderViewAction;
 function toggleList(_View) {
     let List = document.getElementById('list');
     switch (_View) {
-    case 'list':
-        setGridLayout(List, false);
-        setHeaderViewAction('grid');
-        break;
+        case 'list':
+            setGridLayout(List, false);
+            setHeaderViewAction('grid');
+            break;
 
-    case 'grid':
-        setGridLayout(List, true);
-        setHeaderViewAction('list');
-        break;
+        case 'grid':
+            setGridLayout(List, true);
+            setHeaderViewAction('list');
+            break;
 
-    default: break;
+        default: break;
     }
 }
 module.exports.toggleList = toggleList;

@@ -103,7 +103,7 @@ module.exports.showNewEpisodes = showNewEpisodes;
 
 function showFavorites() {
     helper.clearContent();
-    navigation.setHeaderViewAction('list');
+    // navigation.setHeaderViewAction('list'); // NOTE: Toggle button for List and Grid view
 
     if (fs.existsSync(global.saveFilePath) && fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
