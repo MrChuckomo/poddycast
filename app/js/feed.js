@@ -239,6 +239,7 @@ function displayEpisodesInList(podcastObject) {
         listElement.setAttribute('duration', episode.duration);
         listElement.setAttribute('description', global.sanitizeString(episode.description));
         listElement.setAttribute('artworkUrl', artwork);
+        listElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
         list.append(listElement);
     });

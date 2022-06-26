@@ -89,7 +89,7 @@ function showNewEpisodes() {
             ListElement.setAttribute('url', JsonContent[i].episodeUrl);
             ListElement.setAttribute('length', JsonContent[i].episodeLength);
             ListElement.setAttribute('artworkUrl', Artwork);
-
+            ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
             if (player.isPlaying(JsonContent[i].episodeUrl)) {
                 ListElement.classList.add('select-episode');
@@ -130,6 +130,7 @@ function showFavorites() {
 
             HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false);
             HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl);
+            HeaderElement.setAttribute('onclick', 'window.navAPI.clickPodcast(this)');
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {

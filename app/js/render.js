@@ -54,7 +54,7 @@ document.getElementById('content-right-player-speed-down').addEventListener('cli
 document.getElementById('content-right-player-speed-up').addEventListener('click', () => window.audioAPI.clickSpeedUp());
 
 /**
- * Playlist actions
+ * Bundle listern for playlist actions
  */
 document.getElementById('playlists').addEventListener('click', function (event) {
     window.playlistAPI.clickItem(event.target.parentElement);
@@ -72,44 +72,3 @@ document.getElementById('playlists').addEventListener('dblclick', function (even
         });
     }
 });
-
-
-/**
- * Bundle listern for all list items on the right content side
- */
-document.getElementById('list').addEventListener('click', function (event) {
-    if (document.getElementById('menu-favorites').classList.contains('selected')) {
-        openPodcastAllEpisodes(event.target);
-    } else if (document.getElementById('menu-episodes').classList.contains('selected')) {
-        playEpisode(event.target);
-    }
-});
-
-function openPodcastAllEpisodes(element) {
-    switch (element.tagName) {
-        case 'IMG': window.navAPI.clickPodcast(element.parentElement); break;
-        case 'DIV': window.navAPI.clickPodcast(element.parentElement); break;
-        default: break;
-    }
-}
-
-function playEpisode(element) {
-    switch (element.tagName) {
-        case 'IMG': window.audioAPI.clickEpisode(element.parentElement); break;
-        case 'DIV': window.audioAPI.clickEpisode(element.parentElement); break;
-        default: window.audioAPI.clickEpisode(element); break;
-    }
-}
-
-// NOTE: Tests only so far
-// document.getElementById('click_button').addEventListener('click', async () => {
-//     let dark = await window.myAPI.toggle();
-//     console.log(dark);
-// });
-
-// async function geti18n() {
-//     let lang = await window.myAPI.sysLanguage('New Episodes');
-//     console.log(lang);
-// }
-
-// geti18n();

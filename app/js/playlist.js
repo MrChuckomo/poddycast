@@ -332,13 +332,13 @@ function showPlaylistContent(_Self) {
                             ListElement.classList.add('select-episode');
                         }
 
-                        ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
                         ListElement.setAttribute('channel', NewEpisodesJsonContent[a].channelName);
                         ListElement.setAttribute('title', NewEpisodesJsonContent[a].episodeTitle);
                         ListElement.setAttribute('type', NewEpisodesJsonContent[a].episodeType);
                         ListElement.setAttribute('url', NewEpisodesJsonContent[a].episodeUrl);
                         ListElement.setAttribute('length', NewEpisodesJsonContent[a].episodeLength);
                         ListElement.setAttribute('artworkUrl', Artwork);
+                        ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
                         // NOTE: show just episodes of the playlist saved podcast
 
