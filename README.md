@@ -1,4 +1,4 @@
-# Poddycast [BETA] :construction:
+# Poddycast [pre-release] :construction:
 
 A Podcast app made with Electron because I love Podcasts.
 
