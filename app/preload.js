@@ -89,6 +89,21 @@ contextBridge.exposeInMainWorld('playlistAPI', {
 
 
 /**
+ * Receive context-menu command back from main process
+ */
+ipcRenderer.on('ctx-playlist-command', (e, cmd, targetId) => {
+    let target = document.getElementById(targetId);
+
+    switch (cmd) {
+        case 'ctx-cmd-edit': playlist.showEditPage(target); break;
+        case 'ctx-cmd-rename': playlist.enableRename(target); break;
+        case 'ctx-cmd-delete': navigation.deletePlaylist(target.getElementsByTagName('input')[0].value); break;
+        default: break;
+    }
+});
+
+
+/**
  * IPCs to handle episode actions
  */
 contextBridge.exposeInMainWorld('episodeAPI', {

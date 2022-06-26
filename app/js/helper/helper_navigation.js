@@ -57,6 +57,7 @@ function renamePlaylistInline(_Self) {
 
         setPlaylistName(HeaderName, NewName);
         playlist.showPlaylistContent(_Self.parentElement);
+        updatePlaylistId(HeaderName, NewName);
 
         _Self.disabled = true;
     }
@@ -68,6 +69,7 @@ function renamePlaylistInEdit(_Self) {
         let SelectionName = document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value;
         let NewName = _Self.value;
 
+        updatePlaylistId(SelectionName, NewName);
         setPlaylistName(SelectionName, NewName);
         document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value = NewName;
         _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'navigation.deletePlaylist("' + NewName + '")');
@@ -75,6 +77,11 @@ function renamePlaylistInEdit(_Self) {
 }
 module.exports.renamePlaylistInEdit = renamePlaylistInEdit;
 
+/**
+ *
+ * @param {str} _OldName
+ * @param {str} _NewName
+ */
 function setPlaylistName(_OldName, _NewName) {
     if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
@@ -90,6 +97,17 @@ function setPlaylistName(_OldName, _NewName) {
     }
 }
 module.exports.setPlaylistName = setPlaylistName;
+
+/**
+ * @private
+ * @param {str} _OldName
+ * @param {str} _NewName
+ */
+function updatePlaylistId(_OldName, _NewName) {
+    let OldId = 'playlist-' + _OldName.toLocaleLowerCase().replaceAll(' ', '-');
+    let NewId = 'playlist-' + _NewName.toLocaleLowerCase().replaceAll(' ', '-');
+    document.getElementById(OldId).id = NewId;
+}
 
 function setGridLayout(_List, _Enable) {
     if (_Enable) {

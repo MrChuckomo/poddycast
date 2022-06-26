@@ -260,6 +260,26 @@ function createWindow() {
         return true;
     });
 
+    ipcMain.on('show-ctx-menu-playlist', (event, target) => {
+        const template = [
+            {
+                label: translate('Edit'),
+                click: () => event.sender.send('ctx-playlist-command', 'ctx-cmd-edit', target)
+            },
+            { type: 'separator' },
+            {
+                label: translate('Rename'),
+                click: () => event.sender.send('ctx-playlist-command', 'ctx-cmd-rename', target)
+            },
+            {
+                label: translate('Delete'),
+                click: () => event.sender.send('ctx-playlist-command', 'ctx-cmd-delete', target)
+            }
+        ];
+        const menu = Menu.buildFromTemplate(template);
+        menu.popup(BrowserWindow.fromWebContents(event.sender));
+    });
+
     // Create main menu
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);

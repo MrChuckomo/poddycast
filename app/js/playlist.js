@@ -1,5 +1,6 @@
 'use strict';
 
+const { ipcRenderer } = require('electron');
 let CContentHelper = require('./helper/content');
 let helper = new CContentHelper();
 
@@ -37,6 +38,7 @@ function createPlaylist(_Value, _KeyCode) {
 
     if (_KeyCode === 'Enter') {
         let NewPlaylist = document.createElement('li');
+        NewPlaylist.id = 'playlist-' + _Value.toLowerCase().replaceAll(' ', '-');
         NewPlaylist.classList.add('mx-2', 'rounded-3', 'fw-light');
         NewPlaylist.addEventListener('dragenter', dragHandler.handleDragEnter, false);
         NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
@@ -47,8 +49,7 @@ function createPlaylist(_Value, _KeyCode) {
         let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
         PlaylistList.append(NewPlaylist);
 
-        // TODO
-        // setContextMenu(NewPlaylist);
+        setContextMenu(NewPlaylist);
 
         let Playlist = {
             'playlistName': _Value,
@@ -83,6 +84,7 @@ function loadPlaylists() {
 
         for (let i = 0; i < JsonContent.length; i++) {
             let PlaylistEntry = document.createElement('li');
+            PlaylistEntry.id = 'playlist-' + JsonContent[i].playlistName.toLowerCase().replaceAll(' ', '-');
             PlaylistEntry.classList.add('mx-2', 'rounded-3', 'fw-light');
             PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
             PlaylistEntry.addEventListener('dragover', dragHandler.handleDragOver, false);
@@ -90,8 +92,7 @@ function loadPlaylists() {
             PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
             PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
 
-            // TODO
-            // setContextMenu(PlaylistEntry);
+            setContextMenu(PlaylistEntry, JsonContent[i].playlistName);
 
             PlaylistList.append(PlaylistEntry);
         }
@@ -100,39 +101,12 @@ function loadPlaylists() {
 module.exports.loadPlaylists = loadPlaylists;
 
 /** @private */
-// TODO: needs new solution cause of IPC
-// function setContextMenu(_Object) {
-//     const {remote} = require('electron');
-//     const {Menu, MenuItem} = remote;
-//     const ContextMenu = new Menu();
-
-//     // NOTE: Access input field inside the playlist item to get the name.
-
-//     ContextMenu.append(new MenuItem({
-//         click() {
-//             showEditPage(_Object);
-//         },
-//         label: i18n.__('Edit')
-//     }));
-//     ContextMenu.append(new MenuItem({type: 'separator'}));
-//     ContextMenu.append(new MenuItem({
-//         click() {
-//             enableRename(_Object);
-//         },
-//         label: i18n.__('Rename')
-//     }));
-//     ContextMenu.append(new MenuItem({
-//         click() {
-//             navigation.deletePlaylist(_Object.getElementsByTagName('input')[0].value);
-//         },
-//         label: i18n.__('Delete')
-//     }));
-
-//     _Object.addEventListener('contextmenu', (_Event) => {
-//         _Event.preventDefault();
-//         ContextMenu.popup(remote.getCurrentWindow(), { async:true });
-//     }, false);
-// }
+function setContextMenu(_Element) {
+    _Element.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        ipcRenderer.send('show-ctx-menu-playlist', _Element.id);
+    });
+}
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -242,7 +216,6 @@ module.exports.togglePodcast = togglePodcast;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-/** @private */
 function showEditPage(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
     let List = document.getElementById('list');
@@ -273,7 +246,6 @@ function showEditPage(_Self) {
     HeaderSection.append(DeleteButton);
 
     List.append(HeaderSection);
-
     List.append(entries.getStatisticsElement('statistics-header', 'Linked Podcasts', null));
 
     let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
@@ -284,6 +256,7 @@ function showEditPage(_Self) {
         List.append(getPodcastEditItem(JsonContent[i].collectionName, JsonContent[i].artworkUrl30, isInPlaylist(PlaylistName, JsonContent[i].collectionName)));
     }
 }
+module.exports.showEditPage = showEditPage;
 
 function showPlaylistContent(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
