@@ -280,6 +280,36 @@ function createWindow() {
         menu.popup(BrowserWindow.fromWebContents(event.sender));
     });
 
+    ipcMain.on('show-ctx-menu-podcast', (event, target, feedUrl, submenu) => {
+        let submenuTemplate = JSON.parse(submenu);
+
+        for (let index = 0; index < submenuTemplate.length; index++) {
+            const element = submenuTemplate[index];
+            element['click'] = () => event.sender.send('ctx-podcast-command', 'ctx-cmd-add', target, element.label, feedUrl);
+        }
+
+        const template = [
+            {
+                label: translate('Add to playlist'),
+                submenu: submenuTemplate
+            },
+            { type: 'separator' },
+            {
+                label: translate('Push to New Episodes'),
+                type: 'checkbox',
+                checked: global.isAddedToInbox(feedUrl),
+                click: () => event.sender.send('ctx-podcast-command', 'ctx-cmd-push', target, null, feedUrl)
+            },
+            { type: 'separator' },
+            {
+                label: translate('Unsubscribe'),
+                click: () => event.sender.send('ctx-podcast-command', 'ctx-cmd-unsubscribe', target, null, feedUrl)
+            }
+        ];
+        const menu = Menu.buildFromTemplate(template);
+        menu.popup(BrowserWindow.fromWebContents(event.sender));
+    });
+
     // Create main menu
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);

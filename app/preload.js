@@ -46,10 +46,7 @@ contextBridge.exposeInMainWorld('navAPI', {
         nav.selectMenuItem('menu-favorites');
         nav.showFavorites();
     },
-    clickPodcast: (element) => {
-        console.log(element);
-        feed.showAllEpisodes(element);
-    },
+    clickPodcast: (element) => feed.showAllEpisodes(element),
     clickHistory: () => {
         nav.selectMenuItem('menu-history');
         nav.showHistory();
@@ -87,9 +84,9 @@ contextBridge.exposeInMainWorld('playlistAPI', {
     rename: (element, key) => playlist.renamePlaylist(element, key)
 });
 
-
 /**
  * Receive context-menu command back from main process
+ * For the playlist.
  */
 ipcRenderer.on('ctx-playlist-command', (e, cmd, targetId) => {
     let target = document.getElementById(targetId);
@@ -98,6 +95,30 @@ ipcRenderer.on('ctx-playlist-command', (e, cmd, targetId) => {
         case 'ctx-cmd-edit': playlist.showEditPage(target); break;
         case 'ctx-cmd-rename': playlist.enableRename(target); break;
         case 'ctx-cmd-delete': navigation.deletePlaylist(target.getElementsByTagName('input')[0].value); break;
+        default: break;
+    }
+});
+
+/**
+ * Receive context-menu command back from main process
+ * For the podcast settings.
+ */
+ipcRenderer.on('ctx-podcast-command', (e, cmd, podcastName, playlistName, feedUrl) => {
+    switch (cmd) {
+        case 'ctx-cmd-add':
+            feed.addToPlaylist(podcastName, playlistName);
+            playlist.showPlaylistContent(document.getElementById('playlist-' + playlistName.toLowerCase().replaceAll(' ', '-')));
+            break;
+        case 'ctx-cmd-push':
+            global.setIsAddedToInbox(feedUrl, !global.isAddedToInbox(feedUrl));
+            nav.selectMenuItem('menu-favorites');
+            nav.showFavorites();
+            break;
+        case 'ctx-cmd-unsubscribe':
+            if (podcastName !== null && podcastName !== undefined) {
+                entries.unsubscribeContextMenu(podcastName, feedUrl);
+            }
+            break;
         default: break;
     }
 });
