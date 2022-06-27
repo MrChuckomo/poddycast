@@ -2,6 +2,7 @@
 
 const { ipcRenderer, contextBridge } = require('electron');
 const feed = require('./js/feed');
+const opml = require('./js/import_export');
 const search = require('./js/search');
 const global = require('./js/helper/helper_global');
 const navigation = require('./js/helper/helper_navigation');
@@ -149,6 +150,13 @@ contextBridge.exposeInMainWorld('audioAPI', {
     clickEpisode: (self) => audioPlayer.playNow(self)
 });
 
+/**
+ * IPCs to handle ompl actions
+ */
+contextBridge.exposeInMainWorld('opmlAPI', {
+    import: (filePath) => opml.import(filePath),
+    export: (filePath) => opml.export(filePath)
+});
 
 /**
  * NOTE: Used for further implementations

@@ -1,12 +1,11 @@
 'use strict';
 
-const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
 const { getPreference, isDarwin, isLinux, isWindows } = require('./js/helper/helper_global');
-const opml = require('./js/import_export');
 const global = require('./js/helper/helper_global');
 
 // Create variables for appIcon, trayIcon, win
@@ -65,12 +64,34 @@ function createWindow() {
                 {
                     label: translate('Import OPML'),
                     role: 'import',
-                    click: () => opml.import()
+                    click: () => {
+                        let filePath = dialog.showOpenDialogSync(win, {
+                            properties: ['openFile'],
+                            filters: [{ name: 'OPML', extensions: ['opml'] }]
+                        })[0];
+
+                        if (filePath === undefined) {
+                            return;
+                        }
+
+                        win.webContents.send('trigger-menu', 'menu-opml:import', filePath); // opml.import(win)
+                    }
                 },
                 {
                     label: translate('Export OPML'),
                     role: 'export',
-                    click: () => opml.export()
+                    click: () => {
+                        let filePath = dialog.showSaveDialogSync(win, {
+                            filters: [{ name: 'OPML', extensions: ['opml'] }]
+                        });
+
+                        if (filePath === undefined) {
+                            return;
+                        }
+
+                        win.webContents.send('trigger-menu', 'menu-opml:export', filePath); // opml.export(win)
+
+                    }
                 },
                 { type: 'separator' },
                 {

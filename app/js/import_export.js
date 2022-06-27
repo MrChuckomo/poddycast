@@ -1,69 +1,40 @@
 'use strict';
 
-const { dialog, BrowserWindow } = require('electron');
+// const { dialog, BrowserWindow } = require('electron');
 const fs = require('fs');
+const nav = require('./nav');
 const request = require('./request');
-const setFavorite = require('./favorite').setFavorite;
 const global = require('./helper/helper_global');
+const setFavorite = require('./favorite').setFavorite;
 
 module.exports = {
-    import: () => {
-        let filePath = dialog.showOpenDialogSync(BrowserWindow, {
-            properties: ['openFile'],
-            filters: [{ name: 'OPML', extensions: ['opml'] }]
-        })[0];
-
-        if (filePath === undefined) {
-            return;
-        }
-
-        let data = fs.readFileSync(filePath, { encoding: 'utf-8', flag: 'r' });
-
+    import: (filePath) => {
+        let data = fs.readFileSync(filePath, {encoding: 'utf-8', flag: 'r'});
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data, 'text/xml');
 
-        let promises = [];
         Array.from(xmlDoc.getElementsByTagName('outline')).forEach((element) => {
             let feedUrl = element.getAttribute('xmlUrl');
 
             if (feedUrl) {
-                promises.push(request.requestPodcastFeed(feedUrl));
-            }
-        });
-
-        Promise.allSettled(promises).then(results => {
-            let artist = '';
-            let collection = '';
-            let artwork = '';
-            let url = '';
-            results.forEach(result => {
-                if (result.status === 'fulfilled') {
-                    let podcast = result.value;
-                    artist = podcast.items[0].itunes_author || podcast.title;
-                    collection = podcast.title;
-                    artwork = podcast.image;
-                    url = podcast.link;
+                request.requestPodcastFeed(feedUrl).then(result => {
+                    let podcast = result;
+                    let artist = podcast.items[0].author === undefined ? podcast.title : podcast.items[0].author;
+                    let collection = podcast.title;
+                    let artwork = podcast.image;
+                    let url = feedUrl;
                     if (url) {
                         setFavorite(null, artist, collection, artwork, artwork, artwork, url);
+                        nav.selectMenuItem('menu-favorites');
+                        nav.showFavorites();
                     }
-                } else if (result.status === 'rejected') {
-                    console.error(`Failed to add ${result.reason.config.link} due to response ${result.reason.response.status}: ${result.reason.response.statusText}`);
-                }
-            });
+                });
 
-
+            }
         });
     },
 
-    export: () => {
-        let filePath = dialog.showSaveDialogSync(BrowserWindow, {
-            filters: [{ name: 'OPML', extensions: ['opml'] }]
-        });
-
-        if (filePath === undefined) {
-            return;
-        }
-
+    export: (filePath) => {
         const JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
 
         let rootString = '<opml version="1.0"></opml>';
@@ -83,7 +54,6 @@ module.exports = {
         head.appendChild(dateModified);
         let body = xmlDoc.createElement('body');
         root.appendChild(body);
-
 
         JsonContent.forEach(element => {
             let type = xmlDoc.createAttribute('type');
