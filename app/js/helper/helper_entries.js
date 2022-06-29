@@ -2,7 +2,7 @@
 
 const global = require('./helper_global');
 const navigation = require('./helper_navigation');
-const menujs = require('../menu');
+const nav = require('../nav');
 const fs = require('fs');
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -33,8 +33,8 @@ function unsubscribeContextMenu(_PodcastName, _FeedUrl) {
     removeFromFile(global.newEpisodesSaveFilePath, 'channelName', _PodcastName, false);
     removeFromFile(global.saveFilePath, 'feedUrl', _FeedUrl, true);
 
-    menujs.selectMenuItem('menu-favorites');
-    menujs.showFavorites();
+    nav.selectMenuItem('menu-favorites');
+    nav.showFavorites();
     navigation.setItemCounts();
 }
 module.exports.unsubscribeContextMenu = unsubscribeContextMenu;

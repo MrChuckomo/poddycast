@@ -45,7 +45,6 @@ function clearRenameFocus(_Self) {
 
         _Self.value = HeaderName;
     }
-
     renamePlaylistInline(_Self);
 }
 module.exports.clearRenameFocus = clearRenameFocus;
@@ -57,6 +56,7 @@ function renamePlaylistInline(_Self) {
 
         setPlaylistName(HeaderName, NewName);
         playlist.showPlaylistContent(_Self.parentElement);
+        updatePlaylistId(HeaderName, NewName);
 
         _Self.disabled = true;
     }
@@ -68,13 +68,19 @@ function renamePlaylistInEdit(_Self) {
         let SelectionName = document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value;
         let NewName = _Self.value;
 
+        updatePlaylistId(SelectionName, NewName);
         setPlaylistName(SelectionName, NewName);
         document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value = NewName;
-        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'navigation.deletePlaylist("' + NewName + '")');
+        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'window.playlistAPI.delete("' + NewName + '")');
     }
 }
 module.exports.renamePlaylistInEdit = renamePlaylistInEdit;
 
+/**
+ *
+ * @param {str} _OldName
+ * @param {str} _NewName
+ */
 function setPlaylistName(_OldName, _NewName) {
     if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
@@ -91,6 +97,17 @@ function setPlaylistName(_OldName, _NewName) {
 }
 module.exports.setPlaylistName = setPlaylistName;
 
+/**
+ * @private
+ * @param {str} _OldName
+ * @param {str} _NewName
+ */
+function updatePlaylistId(_OldName, _NewName) {
+    let OldId = 'playlist-' + _OldName.toLocaleLowerCase().replaceAll(' ', '-');
+    let NewId = 'playlist-' + _NewName.toLocaleLowerCase().replaceAll(' ', '-');
+    document.getElementById(OldId).id = NewId;
+}
+
 function setGridLayout(_List, _Enable) {
     if (_Enable) {
         _List.classList.add('grid-layout');
@@ -106,17 +123,17 @@ module.exports.setGridLayout = setGridLayout;
 
 function setHeaderViewAction(_Mode) {
     switch (_Mode) {
-    case 'list':
-        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-view-list" style="font-size: 1.3rem;"></i>';
-        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("list")');
-        break;
+        case 'list':
+            document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-view-list" style="font-size: 1.3rem;"></i>';
+            document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("list")');
+            break;
 
-    case 'grid':
-        document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-grid-3x2-gap" style="font-size: 1.3rem;"></i>';
-        document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
-        break;
+        case 'grid':
+            document.getElementById('content-right-header-actions').innerHTML = '<i class="btn btn-light border bi bi-grid-3x2-gap" style="font-size: 1.3rem;"></i>';
+            document.getElementById('content-right-header-actions').getElementsByTagName('i')[0].setAttribute('onclick', 'navigation.toggleList("grid")');
+            break;
 
-    default: document.getElementById('content-right-header-actions').innerHTML = ''; break;
+        default: document.getElementById('content-right-header-actions').innerHTML = ''; break;
     }
 }
 module.exports.setHeaderViewAction = setHeaderViewAction;
@@ -124,17 +141,17 @@ module.exports.setHeaderViewAction = setHeaderViewAction;
 function toggleList(_View) {
     let List = document.getElementById('list');
     switch (_View) {
-    case 'list':
-        setGridLayout(List, false);
-        setHeaderViewAction('grid');
-        break;
+        case 'list':
+            setGridLayout(List, false);
+            setHeaderViewAction('grid');
+            break;
 
-    case 'grid':
-        setGridLayout(List, true);
-        setHeaderViewAction('list');
-        break;
+        case 'grid':
+            setGridLayout(List, true);
+            setHeaderViewAction('list');
+            break;
 
-    default: break;
+        default: break;
     }
 }
 module.exports.toggleList = toggleList;

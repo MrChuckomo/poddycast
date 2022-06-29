@@ -2,7 +2,6 @@
 
 const global = require('./helper/helper_global');
 const { setItemCounts } = require('./helper/helper_navigation');
-const { heartFilled } = require('./icons');
 const fs = require('fs');
 
 function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60, _Artwork100, _FeedUrl) {
@@ -18,8 +17,8 @@ function setFavorite(_Self, _ArtistName, _CollectionName, _Artwork30, _Artwork60
     };
 
     if (_Self !== null) {
-        _Self.innerHTML = heartFilled;
-        _Self.classList.add('set-favorite');
+        _Self.classList.remove('bi-bookmark-heart');
+        _Self.classList.add('set-favorite', 'bi-bookmark-heart-fill');
     }
 
     let JsonContent = [];
