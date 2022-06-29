@@ -41,15 +41,15 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 
 ### All New Episodes
 
-![New Episodes Screenshot](img/new_episodes.png)
+![New Episodes Screenshot](img/new_episodes2.png)
 
 ### Browse Podcast Feeds
 
-![Browse Podcast Feed Screenshot](img/podcast_feed.png)
+![Browse Podcast Feed Screenshot](img/podcast_feed2.png)
 
 ### Edit Playlists
 
-![Edit Playlist Screenshot](img/edit_playlist.png)
+![Edit Playlist Screenshot](img/edit_playlist2.png)
 
 ## Contact
 
