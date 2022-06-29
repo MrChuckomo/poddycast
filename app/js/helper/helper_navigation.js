@@ -45,7 +45,6 @@ function clearRenameFocus(_Self) {
 
         _Self.value = HeaderName;
     }
-
     renamePlaylistInline(_Self);
 }
 module.exports.clearRenameFocus = clearRenameFocus;
@@ -72,7 +71,7 @@ function renamePlaylistInEdit(_Self) {
         updatePlaylistId(SelectionName, NewName);
         setPlaylistName(SelectionName, NewName);
         document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value = NewName;
-        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'navigation.deletePlaylist("' + NewName + '")');
+        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'window.playlistAPI.delete("' + NewName + '")');
     }
 }
 module.exports.renamePlaylistInEdit = renamePlaylistInEdit;

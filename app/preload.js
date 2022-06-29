@@ -82,7 +82,9 @@ contextBridge.exposeInMainWorld('colorAPI', {
 contextBridge.exposeInMainWorld('playlistAPI', {
     clickItem: (self) => playlist.showPlaylistContent(self),
     dblclickItem: (self) => playlist.enableRename(self),
-    rename: (element, key) => playlist.renamePlaylist(element, key)
+    rename: (element, key) => playlist.renamePlaylist(element, key),
+    connectPodcast: (element) => playlist.togglePodcast(element),
+    delete: (playlistName) => navigation.deletePlaylist(playlistName)
 });
 
 /**
@@ -91,7 +93,6 @@ contextBridge.exposeInMainWorld('playlistAPI', {
  */
 ipcRenderer.on('ctx-playlist-command', (e, cmd, targetId) => {
     let target = document.getElementById(targetId);
-
     switch (cmd) {
         case 'ctx-cmd-edit': playlist.showEditPage(target); break;
         case 'ctx-cmd-rename': playlist.enableRename(target); break;

@@ -1,8 +1,7 @@
 'use strict';
 
-// const { BrowserWindow } = require('electron').remote;
+const { ipcRenderer } = require('electron');
 const fs = require('fs');
-
 let CContentHelper = require('./helper/content');
 let CPlayer = require('./helper/player');
 const global = require('./helper/helper_global');
@@ -18,7 +17,6 @@ let slider = undefined;
 const MIN_PLAYER_SPEED = 0.2;
 const MAX_PLAYER_SPEED = 4.0;
 const PLAYER_SPEED_INCREMENT = 0.1;
-// const i18n = window.i18n;
 
 function init() {
     slider = new Slider(this);
@@ -191,26 +189,26 @@ function nextEpisode() {
                 playNow(AllListItems[i + 1]);
 
                 // NOTE: No need to delete it if it's played from the podcast detail view
-
-                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML !== i18n.__('Favorites')) {
-                    entries.deleteFromListView(AllListItems[i]);
-                }
-
+                ipcRenderer.invoke('i18n', 'Favorites').then((title) => {
+                    if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML !== title) {
+                        entries.deleteFromListView(AllListItems[i]);
+                    }
+                });
                 break;
+
             } else if (i === (AllListItems.length - 1)) {
                 // NOTE: Currently playling episode is the last item in the list
                 // NOTE: No need to delete it if it's played from the podcast detail view
-
-                if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML !== i18n.__('Favorites')) {
-                    entries.deleteFromListView(AllListItems[i]);
-                }
-
+                ipcRenderer.invoke('i18n', 'Favorites').then((title) => {
+                    if (document.getElementById('content-right-header').getElementsByTagName('h1')[0].innerHTML !== title) {
+                        entries.deleteFromListView(AllListItems[i]);
+                    }
+                });
                 pausePlayer();
             }
         }
     } else {
         // NOTE: Current list is not the one which contains the currently playing episode
-
         pausePlayer();
     }
 

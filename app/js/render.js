@@ -67,14 +67,9 @@ document.getElementById('content-right-player-speed-up').addEventListener('click
 /**
  * Bundle listern for playlist actions
  */
-document.getElementById('playlists').addEventListener('click', function (event) {
-    window.playlistAPI.clickItem(event.target.parentElement);
-});
-
 document.getElementById('playlists').addEventListener('dblclick', function (event) {
-    window.playlistAPI.dblclickItem(event.target.parentElement);
-
     if (event.target.tagName === 'INPUT') {
+        window.playlistAPI.dblclickItem(event.target.parentElement);
         event.target.addEventListener('keyup', (event) => {
             window.playlistAPI.rename(event.target, event.code);
         });

@@ -91,6 +91,7 @@ function loadPlaylists() {
             PlaylistEntry.addEventListener('dragleave', dragHandler.handleDragLeave, false);
             PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
             PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
+            PlaylistEntry.setAttribute('onclick', 'window.playlistAPI.clickItem(this);');
 
             setContextMenu(PlaylistEntry, JsonContent[i].playlistName);
 
@@ -167,7 +168,7 @@ function getPodcastEditItem(_Name, _Artwork, _IsSet) {
     // Artwork.src = _Artwork
     Name.innerHTML = _Name;
 
-    Container.setAttribute('onclick', 'playlist.togglePodcast(this)');
+    Container.setAttribute('onclick', 'window.playlistAPI.connectPodcast(this)');
     Container.classList.add('podcast-edit-entry');
     Container.innerHTML = CheckBox;
     Container.append(Artwork);
@@ -182,30 +183,35 @@ function getPodcastEditItem(_Name, _Artwork, _IsSet) {
     return Container;
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Action executed if you click on a podcast in the playlist edit page.
+ * @param {Node} _Self
+ */
 function togglePodcast(_Self) {
-    let CheckBox = document.createElement('img');
-    CheckBox.innerHTML = checkBox;
-
-    let CheckBoxOutline = document.createElement('img');
-    CheckBoxOutline.innerHTML = checkBoxOutline;
+    const currentCheckbox = _Self.getElementsByTagName('i')[0];
+    const checkBoxOutlineNode = new DOMParser().parseFromString(checkBoxOutline, 'text/html').body.firstChild;
+    const checkboxNode = new DOMParser().parseFromString(checkBox, 'text/html').body.firstChild;
 
     for (let i = 0; i < _Self.classList.length; i++) {
         switch (_Self.classList[i]) {
             case 'check':
                 _Self.classList.remove('check');
                 _Self.classList.add('uncheck');
-                _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML;
-                navigation.removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
-
+                currentCheckbox.parentNode.replaceChild(checkBoxOutlineNode, currentCheckbox);
+                navigation.removeFromPlaylist(
+                    _Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value,
+                    _Self.getElementsByTagName('span')[0].innerHTML
+                );
                 break;
 
             case 'uncheck':
                 _Self.classList.remove('uncheck');
                 _Self.classList.add('check');
-                _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML;
-                navigation.addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
-
+                currentCheckbox.parentNode.replaceChild(checkboxNode, currentCheckbox);
+                navigation.addToPlaylist(
+                    _Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value,
+                    _Self.getElementsByTagName('span')[0].innerHTML
+                );
                 break;
 
             default: break;
@@ -231,13 +237,14 @@ function showEditPage(_Self) {
     _Self.classList.add('selected');
 
     let NameInput = document.createElement('input');
+    NameInput.id = 'edit-playlist-input';
     NameInput.value = PlaylistName;
     NameInput.classList.add('playlist-edit-input', 'rounded-3');
+    NameInput.setAttribute('onkeyup', 'window.playlistAPI.rename(this, event.code)');
 
     let DeleteButton = document.createElement('button');
-    // DeleteButton.innerHTML = i18n.__('Delete');
-    DeleteButton.innerHTML = 'Delete';
-    DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
+    ipcRenderer.invoke('i18n', 'Delete').then((title) => DeleteButton.innerHTML = title);
+    DeleteButton.setAttribute('onclick', 'window.playlistAPI.delete("' + PlaylistName + '")');
     DeleteButton.classList.add('btn', 'btn-danger', 'rounded-3');
 
     let HeaderSection = document.createElement('div');
