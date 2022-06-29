@@ -2,7 +2,7 @@
 
 A Podcast app made with Electron because I love Podcasts.
 
-![screenshot_1](img/favorites.png)
+![screenshot_1](img/favorites2.png)
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
