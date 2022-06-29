@@ -4,6 +4,9 @@ A Podcast app made with Electron because I love Podcasts.
 
 ![screenshot_1](img/favorites2.png)
 
+[![Support me!](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/poddycastapp)
+
+
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
 - [Install](#install)
@@ -62,3 +65,4 @@ I'd be happy to hear from you guys 💕
 - [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
+- [Buy me a coffee: @poddycastapp](https://www.buymeacoffee.com/poddycastapp)
