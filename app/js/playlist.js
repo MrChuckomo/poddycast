@@ -13,6 +13,7 @@ const dragHandler = require('./drag_handler');
 const listItem = require('./list_item');
 const { heartFilled, checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
 const i18n = window.i18n;
+const PlaylistButtonClickEvent = 'playlist-button-clicked';
 
 /** @private */
 function getInputEntry(_Name) {
@@ -29,8 +30,8 @@ function getInputEntry(_Name) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function createPlaylist(_Self, _Event) {
-    if (_Event.code === 'Enter') {
+function createPlaylist(textInputField, event) {
+    if (event === PlaylistButtonClickEvent || event.code === 'Enter') {
         let NewPlaylist = document.createElement('li');
         NewPlaylist.classList.add('mx-2', 'rounded-3', 'fw-light');
         NewPlaylist.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
@@ -39,7 +40,7 @@ function createPlaylist(_Self, _Event) {
         NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
         NewPlaylist.addEventListener('dragleave', dragHandler.handleDragLeave, false);
         NewPlaylist.addEventListener('drop', dragHandler.handleDrop, false);
-        NewPlaylist.append(getInputEntry(_Self.value));
+        NewPlaylist.append(getInputEntry(textInputField.value));
 
         let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
         PlaylistList.append(NewPlaylist);
@@ -47,12 +48,12 @@ function createPlaylist(_Self, _Event) {
         setContextMenu(NewPlaylist);
 
         let Playlist = {
-            'playlistName': _Self.value,
+            'playlistName': textInputField.value,
             'podcastList': []
         };
 
-        _Self.innerHTML = heartFilled;
-        _Self.classList.add('set-favorite');
+        textInputField.innerHTML = heartFilled;
+        textInputField.classList.add('set-favorite');
 
         let JsonContent = [];
 
@@ -66,13 +67,23 @@ function createPlaylist(_Self, _Event) {
 
         fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
 
-        global.clearTextField(_Self);
+        global.clearTextField(textInputField);
 
-    } else if (_Event.code === 'Escape') {
-        global.clearTextField(_Self);
+    } else if (event.code === 'Escape') {
+        global.clearTextField(textInputField);
     }
 }
 module.exports.createPlaylist = createPlaylist;
+
+function onPlaylistButtonClicked() {
+    let inputField = document.getElementById('new_list-input');
+    if (inputField.value === '') {
+        inputField.focus();
+    } else {
+        createPlaylist(inputField, PlaylistButtonClickEvent);
+    }
+}
+module.exports.onPlaylistButtonClicked = onPlaylistButtonClicked;
 
 function loadPlaylists() {
     let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
