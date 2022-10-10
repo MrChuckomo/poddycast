@@ -4,12 +4,11 @@ let CContentHelper = require('./helper/content');
 let CPlayer = require('./helper/player');
 const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
-const entries = require('./helper/helper_entries');
 const listItem = require('./list_item');
 const request = require('./request');
 const fs = require('fs');
 const { infoIcon, addEpisodeIcon } = require('./icons');
-const i18n = window.i18n;
+const { ipcRenderer } = require('electron');
 
 let helper = new CContentHelper();
 let player = new CPlayer();
@@ -87,7 +86,6 @@ module.exports.showAllEpisodes = showAllEpisodes;
 
 function appendSettingsSection(_PodcastName, _Feed) {
     // NOTE: settings area in front of a podcast episode list
-
     let RightContent = document.getElementById('list');
 
     let SettingsDiv = document.createElement('div');
@@ -109,11 +107,9 @@ function appendSettingsSection(_PodcastName, _Feed) {
     MoreElement.classList.add('settings-unsubscribe', 'btn', 'btn-secondary');
 
     // NOTE: set context menu
-
     setPodcastSettingsMenu(MoreElement, _PodcastName, _Feed);
 
     // NOTE: build layout
-
     SettingsDiv.append(PodcastImage);
     SettingsDiv.append(podcastName);
     SettingsDiv.append(EpisodeCount);
@@ -122,10 +118,8 @@ function appendSettingsSection(_PodcastName, _Feed) {
     RightContent.append(SettingsDiv);
 }
 
-function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
-    const {remote} = require('electron');
-    const {Menu, MenuItem} = remote;
-    const PlaylistMenu = new Menu();
+function setPodcastSettingsMenu(_Element, _PodcastName, _Feed) {
+    const PlaylistMenu = [];
 
     if (fs.existsSync(global.playlistFilePath) && fs.readFileSync(global.playlistFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
@@ -133,57 +127,49 @@ function setPodcastSettingsMenu(_Object, _PodcastName, _Feed) {
         for (let i = 0; i < JsonContent.length; i++) {
             let IsInPlaylist = global.isAlreadyInPlaylist(JsonContent[i].playlistName, _PodcastName);
 
-            PlaylistMenu.append(new MenuItem({
+            PlaylistMenu.push({
                 checked: IsInPlaylist,
-                click(self) {
-                    let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
-
-                    for (let i = 0; i < JsonContent.length; i++) {
-                        if (self.label === JsonContent[i].playlistName) {
-                            let PodcastList = JsonContent[i].podcastList;
-                            let PodcastName = document.getElementsByClassName('settings-header')[0].innerHTML;
-
-                            if (global.isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName)) {
-                                for (let j = PodcastList.length - 1; j >= 0; j--) {
-                                    if (PodcastList[j] === PodcastName) {
-                                        PodcastList.splice(j, 1);
-                                    }
-                                }
-                            } else {
-                                PodcastList.push(PodcastName);
-                            }
-
-                            break;
-                        }
-                    }
-
-                    fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
-                },
                 label: JsonContent[i].playlistName,
                 type: 'checkbox'
-            }));
+            });
         }
     }
 
-    const ContextMenu = new Menu();
-    ContextMenu.append(new MenuItem({label: i18n.__('Add to playlist'), submenu: PlaylistMenu}));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({label: i18n.__('Push to New Episodes'), type: 'checkbox', checked: global.isAddedToInbox(_Feed), click(self) {
-        global.setIsAddedToInbox(_Feed, self.checked);
-    }}));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({label: i18n.__('Unsubscribe'), click() {
-        if (_PodcastName !== null && _PodcastName !== undefined) {
-            entries.unsubscribeContextMenu(_PodcastName, _Feed);
-        }
-    }}));
-
-    _Object.addEventListener('click', (_Event) => {
-        _Event.preventDefault();
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true });
-    }, false);
-
+    _Element.addEventListener('click', (e) => {
+        e.preventDefault();
+        ipcRenderer.send('show-ctx-menu-podcast', _PodcastName, _Feed, JSON.stringify(PlaylistMenu));
+    });
 }
+
+/**
+ * Connect a podcast with playlist e.g. when you use the seetings menu in
+ * the podcast detail view.
+ * @param {str} _PodcastName
+ * @param {str} _PlaylistName
+ */
+function addToPlaylist(_PodcastName, _PlaylistName) {
+    let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+
+    for (let i = 0; i < JsonContent.length; i++) {
+        if (_PlaylistName === JsonContent[i].playlistName) {
+            let PodcastList = JsonContent[i].podcastList;
+            let PodcastName = _PodcastName;
+
+            if (global.isAlreadyInPlaylist(JsonContent[i].playlistName, PodcastName)) {
+                for (let j = PodcastList.length - 1; j >= 0; j--) {
+                    if (PodcastList[j] === PodcastName) {
+                        PodcastList.splice(j, 1);
+                    }
+                }
+            } else {
+                PodcastList.push(PodcastName);
+            }
+            break;
+        }
+    }
+    fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
+}
+module.exports.addToPlaylist = addToPlaylist;
 
 /**
  * Displays all podcast episodes in list view.
@@ -226,7 +212,6 @@ function displayEpisodesInList(podcastObject) {
             listElement.replaceChild(listItem.getIconButtonPart(''), listElement.children[3]);
         }
 
-        listElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
         listElement.setAttribute('channel', global.sanitizeString(channelName));
         listElement.setAttribute('title', global.sanitizeString(episode.title));
         listElement.setAttribute('type', episode.type);
@@ -235,6 +220,7 @@ function displayEpisodesInList(podcastObject) {
         listElement.setAttribute('duration', episode.duration);
         listElement.setAttribute('description', global.sanitizeString(episode.description));
         listElement.setAttribute('artworkUrl', artwork);
+        listElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
         list.append(listElement);
     });

@@ -28,34 +28,34 @@ function makeRequest(_Options, _FallbackOptions, _Callback, _eRequest) {
     let Req = undefined;
 
     switch (_eRequest) {
-    case eRequest.http:
-        Req = http.request(_Options, function (_Res) {
-            let Chunks = [];
+        case eRequest.http:
+            Req = http.request(_Options, function (_Res) {
+                let Chunks = [];
 
-            _Res.on('data', function (_Chunk) {
-                Chunks.push(_Chunk);
+                _Res.on('data', function (_Chunk) {
+                    Chunks.push(_Chunk);
+                });
+
+                updateFeedURLStatus(true, _Options);
             });
+            break;
 
-            updateFeedURLStatus(true, _Options);
-        });
-        break;
+        case eRequest.https:
+        default:
+            Req = https.request(_Options, function (_Res) {
+                let Chunks = [];
 
-    case eRequest.https:
-    default:
-        Req = https.request(_Options, function (_Res) {
-            let Chunks = [];
+                _Res.on('data', function (_Chunk) {
+                    Chunks.push(_Chunk);
+                });
+                _Res.on('end', function () {
+                    _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options);
+                });
 
-            _Res.on('data', function (_Chunk) {
-                Chunks.push(_Chunk);
+                // updateFeedURLStatus(true, _Options);
+
             });
-            _Res.on('end', function () {
-                _Callback(Buffer.concat(Chunks).toString().trim(), _eRequest, _Options);
-            });
-
-            // updateFeedURLStatus(true, _Options);
-
-        });
-        break;
+            break;
     }
 
     // NOTE: In case of any error try the given fallback options (can be proxy settings)

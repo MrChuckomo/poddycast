@@ -5,7 +5,7 @@ const opml = require('./js/import_export');
 const global = require('./js/helper/helper_global');
 const darkMode = require('./js/dark_mode');
 const audioPlayer = require('./js/player');
-const menujs = require('./js/menu');
+const nav = require('./js/nav');
 const i18n = window.i18n;
 
 const template = [
@@ -155,32 +155,32 @@ const template = [
             {
                 accelerator: 'CommandOrControl+1',
                 click() {
-                    menujs.selectMenuItem('menu-episodes');
-                    menujs.showNewEpisodes();
+                    nav.selectMenuItem('menu-episodes');
+                    nav.showNewEpisodes();
                 },
                 label: i18n.__('New Episodes')
             },
             {
                 accelerator: 'CommandOrControl+2',
                 click() {
-                    menujs.selectMenuItem('menu-favorites');
-                    menujs.showFavorites();
+                    nav.selectMenuItem('menu-favorites');
+                    nav.showFavorites();
                 },
                 label: i18n.__('Favorites')
             },
             {
                 accelerator: 'CommandOrControl+3',
                 click() {
-                    menujs.selectMenuItem('menu-history');
-                    menujs.showHistory();
+                    nav.selectMenuItem('menu-history');
+                    nav.showHistory();
                 },
                 label: i18n.__('History')
             },
             {
                 accelerator: 'CommandOrControl+4',
                 click() {
-                    menujs.selectMenuItem('menu-statistics');
-                    menujs.showStatistics();
+                    nav.selectMenuItem('menu-statistics');
+                    nav.showStatistics();
                 },
                 label: i18n.__('Statistics')
             },

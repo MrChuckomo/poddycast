@@ -1,5 +1,6 @@
 'use strict';
 
+const { ipcRenderer } = require('electron');
 let CContentHelper = require('./helper/content');
 let helper = new CContentHelper();
 
@@ -11,9 +12,8 @@ const navigation = require('./helper/helper_navigation');
 const entries = require('./helper/helper_entries');
 const dragHandler = require('./drag_handler');
 const listItem = require('./list_item');
-const { heartFilled, checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
-const i18n = window.i18n;
-const PlaylistButtonClickEvent = 'playlist-button-clicked';
+const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
+// const i18n = window.i18n;
 
 /** @private */
 function getInputEntry(_Name) {
@@ -22,25 +22,29 @@ function getInputEntry(_Name) {
     InputItem.value = _Name;
     InputItem.type = 'text';
     InputItem.disabled = true;
-    InputItem.setAttribute('onfocusout', 'navigation.clearRenameFocus(this)');
-    InputItem.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
 
     return InputItem;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-function createPlaylist(textInputField, event) {
-    if (event === PlaylistButtonClickEvent || event.code === 'Enter') {
+/**
+ * Handle creation of a new playlist.
+ * @param {str} _Value coming from the input
+ * @param {str} _KeyCode coming from the keyboard event
+ */
+function createPlaylist(_Value, _KeyCode) {
+    let newListInput = document.getElementById('new_list-input');
+
+    if (_KeyCode === 'Enter') {
         let NewPlaylist = document.createElement('li');
+        NewPlaylist.id = 'playlist-' + _Value.toLowerCase().replaceAll(' ', '-');
         NewPlaylist.classList.add('mx-2', 'rounded-3', 'fw-light');
-        NewPlaylist.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
-        NewPlaylist.setAttribute('ondblclick', 'playlist.enableRename(this)');
         NewPlaylist.addEventListener('dragenter', dragHandler.handleDragEnter, false);
         NewPlaylist.addEventListener('dragover', dragHandler.handleDragOver, false);
         NewPlaylist.addEventListener('dragleave', dragHandler.handleDragLeave, false);
         NewPlaylist.addEventListener('drop', dragHandler.handleDrop, false);
-        NewPlaylist.append(getInputEntry(textInputField.value));
+        NewPlaylist.append(getInputEntry(_Value));
 
         let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
         PlaylistList.append(NewPlaylist);
@@ -48,12 +52,9 @@ function createPlaylist(textInputField, event) {
         setContextMenu(NewPlaylist);
 
         let Playlist = {
-            'playlistName': textInputField.value,
+            'playlistName': _Value,
             'podcastList': []
         };
-
-        textInputField.innerHTML = heartFilled;
-        textInputField.classList.add('set-favorite');
 
         let JsonContent = [];
 
@@ -67,10 +68,10 @@ function createPlaylist(textInputField, event) {
 
         fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
 
-        global.clearTextField(textInputField);
+        global.clearTextField(newListInput);
 
-    } else if (event.code === 'Escape') {
-        global.clearTextField(textInputField);
+    } else if (_KeyCode === 'Escape') {
+        global.clearTextField(newListInput);
     }
 }
 module.exports.createPlaylist = createPlaylist;
@@ -80,7 +81,8 @@ function onPlaylistButtonClicked() {
     if (inputField.value === '') {
         inputField.focus();
     } else {
-        createPlaylist(inputField, PlaylistButtonClickEvent);
+        // simulated Enter event
+        createPlaylist(inputField.value, 'Enter');
     }
 }
 module.exports.onPlaylistButtonClicked = onPlaylistButtonClicked;
@@ -93,16 +95,16 @@ function loadPlaylists() {
 
         for (let i = 0; i < JsonContent.length; i++) {
             let PlaylistEntry = document.createElement('li');
+            PlaylistEntry.id = 'playlist-' + JsonContent[i].playlistName.toLowerCase().replaceAll(' ', '-');
             PlaylistEntry.classList.add('mx-2', 'rounded-3', 'fw-light');
-            PlaylistEntry.setAttribute('onclick', 'playlist.showPlaylistContent(this)');
-            PlaylistEntry.setAttribute('ondblclick', 'playlist.enableRename(this)');
             PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
             PlaylistEntry.addEventListener('dragover', dragHandler.handleDragOver, false);
             PlaylistEntry.addEventListener('dragleave', dragHandler.handleDragLeave, false);
             PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
             PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
+            PlaylistEntry.setAttribute('onclick', 'window.playlistAPI.clickItem(this);');
 
-            setContextMenu(PlaylistEntry);
+            setContextMenu(PlaylistEntry, JsonContent[i].playlistName);
 
             PlaylistList.append(PlaylistEntry);
         }
@@ -111,37 +113,11 @@ function loadPlaylists() {
 module.exports.loadPlaylists = loadPlaylists;
 
 /** @private */
-function setContextMenu(_Object) {
-    const {remote} = require('electron');
-    const {Menu, MenuItem} = remote;
-    const ContextMenu = new Menu();
-
-    // NOTE: Access input field inside the playlist item to get the name.
-
-    ContextMenu.append(new MenuItem({
-        click() {
-            showEditPage(_Object);
-        },
-        label: i18n.__('Edit')
-    }));
-    ContextMenu.append(new MenuItem({type: 'separator'}));
-    ContextMenu.append(new MenuItem({
-        click() {
-            enableRename(_Object);
-        },
-        label: i18n.__('Rename')
-    }));
-    ContextMenu.append(new MenuItem({
-        click() {
-            navigation.deletePlaylist(_Object.getElementsByTagName('input')[0].value);
-        },
-        label: i18n.__('Delete')
-    }));
-
-    _Object.addEventListener('contextmenu', (_Event) => {
-        _Event.preventDefault();
-        ContextMenu.popup(remote.getCurrentWindow(), { async:true });
-    }, false);
+function setContextMenu(_Element) {
+    _Element.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        ipcRenderer.send('show-ctx-menu-playlist', _Element.id);
+    });
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -157,9 +133,8 @@ function enableRename(_Self) {
 }
 module.exports.enableRename = enableRename;
 
-function renamePlaylist(_Self, _Event) {
-
-    if (_Event.code === 'Enter') {
+function renamePlaylist(_Self, _KeyCode) {
+    if (_KeyCode === 'Enter') {
         if (_Self.classList[0] === 'playlist-edit-input') {
             navigation.renamePlaylistInEdit(_Self);
         } else {
@@ -204,7 +179,7 @@ function getPodcastEditItem(_Name, _Artwork, _IsSet) {
     // Artwork.src = _Artwork
     Name.innerHTML = _Name;
 
-    Container.setAttribute('onclick', 'playlist.togglePodcast(this)');
+    Container.setAttribute('onclick', 'window.playlistAPI.connectPodcast(this)');
     Container.classList.add('podcast-edit-entry');
     Container.innerHTML = CheckBox;
     Container.append(Artwork);
@@ -219,33 +194,38 @@ function getPodcastEditItem(_Name, _Artwork, _IsSet) {
     return Container;
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Action executed if you click on a podcast in the playlist edit page.
+ * @param {Node} _Self
+ */
 function togglePodcast(_Self) {
-    let CheckBox = document.createElement('img');
-    CheckBox.innerHTML = checkBox;
-
-    let CheckBoxOutline = document.createElement('img');
-    CheckBoxOutline.innerHTML = checkBoxOutline;
+    const currentCheckbox = _Self.getElementsByTagName('i')[0];
+    const checkBoxOutlineNode = new DOMParser().parseFromString(checkBoxOutline, 'text/html').body.firstChild;
+    const checkboxNode = new DOMParser().parseFromString(checkBox, 'text/html').body.firstChild;
 
     for (let i = 0; i < _Self.classList.length; i++) {
         switch (_Self.classList[i]) {
-        case 'check':
-            _Self.classList.remove('check');
-            _Self.classList.add('uncheck');
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBoxOutline.getElementsByTagName('svg')[0].innerHTML;
-            navigation.removeFromPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
+            case 'check':
+                _Self.classList.remove('check');
+                _Self.classList.add('uncheck');
+                currentCheckbox.parentNode.replaceChild(checkBoxOutlineNode, currentCheckbox);
+                navigation.removeFromPlaylist(
+                    _Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value,
+                    _Self.getElementsByTagName('span')[0].innerHTML
+                );
+                break;
 
-            break;
+            case 'uncheck':
+                _Self.classList.remove('uncheck');
+                _Self.classList.add('check');
+                currentCheckbox.parentNode.replaceChild(checkboxNode, currentCheckbox);
+                navigation.addToPlaylist(
+                    _Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value,
+                    _Self.getElementsByTagName('span')[0].innerHTML
+                );
+                break;
 
-        case 'uncheck':
-            _Self.classList.remove('uncheck');
-            _Self.classList.add('check');
-            _Self.getElementsByTagName('svg')[0].innerHTML = CheckBox.getElementsByTagName('svg')[0].innerHTML;
-            navigation.addToPlaylist(_Self.parentElement.getElementsByClassName('playlist-edit-input')[0].value, _Self.getElementsByTagName('span')[0].innerHTML);
-
-            break;
-
-        default: break;
+            default: break;
         }
     }
 }
@@ -253,7 +233,6 @@ module.exports.togglePodcast = togglePodcast;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-/** @private */
 function showEditPage(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
     let List = document.getElementById('list');
@@ -269,13 +248,14 @@ function showEditPage(_Self) {
     _Self.classList.add('selected');
 
     let NameInput = document.createElement('input');
+    NameInput.id = 'edit-playlist-input';
     NameInput.value = PlaylistName;
     NameInput.classList.add('playlist-edit-input', 'rounded-3');
-    NameInput.setAttribute('onkeyup', 'playlist.renamePlaylist(this, event)');
+    NameInput.setAttribute('onkeyup', 'window.playlistAPI.rename(this, event.code)');
 
     let DeleteButton = document.createElement('button');
-    DeleteButton.innerHTML = i18n.__('Delete');
-    DeleteButton.setAttribute('onclick', 'navigation.deletePlaylist("' + PlaylistName + '")');
+    ipcRenderer.invoke('i18n', 'Delete').then((title) => DeleteButton.innerHTML = title);
+    DeleteButton.setAttribute('onclick', 'window.playlistAPI.delete("' + PlaylistName + '")');
     DeleteButton.classList.add('btn', 'btn-danger', 'rounded-3');
 
     let HeaderSection = document.createElement('div');
@@ -284,7 +264,6 @@ function showEditPage(_Self) {
     HeaderSection.append(DeleteButton);
 
     List.append(HeaderSection);
-
     List.append(entries.getStatisticsElement('statistics-header', 'Linked Podcasts', null));
 
     let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
@@ -295,6 +274,7 @@ function showEditPage(_Self) {
         List.append(getPodcastEditItem(JsonContent[i].collectionName, JsonContent[i].artworkUrl30, isInPlaylist(PlaylistName, JsonContent[i].collectionName)));
     }
 }
+module.exports.showEditPage = showEditPage;
 
 function showPlaylistContent(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
@@ -347,13 +327,13 @@ function showPlaylistContent(_Self) {
                             ListElement.classList.add('select-episode');
                         }
 
-                        ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
                         ListElement.setAttribute('channel', NewEpisodesJsonContent[a].channelName);
                         ListElement.setAttribute('title', NewEpisodesJsonContent[a].episodeTitle);
                         ListElement.setAttribute('type', NewEpisodesJsonContent[a].episodeType);
                         ListElement.setAttribute('url', NewEpisodesJsonContent[a].episodeUrl);
                         ListElement.setAttribute('length', NewEpisodesJsonContent[a].episodeLength);
                         ListElement.setAttribute('artworkUrl', Artwork);
+                        ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
                         // NOTE: show just episodes of the playlist saved podcast
 

@@ -9,10 +9,32 @@ const entries = require('./helper/helper_entries');
 const listItem = require('./list_item');
 const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./icons');
 const { handleDragStart } = require('./drag_handler');
+const { ipcRenderer } = require('electron');
 
 const helper = new CContentHelper();
 const player = new CPlayer();
 
+
+function initLocalization() {
+    ipcRenderer.invoke('i18n', 'New Episodes').then((title) => translateByClass('new-episodes', title));
+    ipcRenderer.invoke('i18n', 'Favorites').then((title) => translateByClass('favorites', title));
+    ipcRenderer.invoke('i18n', 'History').then((title) => translateByClass('history', title));
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => translateByClass('playlists', title));
+    ipcRenderer.invoke('i18n', 'Refresh').then((title) => translateByClass('refresh', title));
+    ipcRenderer.invoke('i18n', 'Statistics').then((title) => translateByClass('statistics', title));
+    ipcRenderer.invoke('i18n', 'Search').then((title) => document.getElementsByName('search')[0].placeholder = title);
+    ipcRenderer.invoke('i18n', 'New List').then((title) => document.getElementsByName('new_list')[0].placeholder = title);
+    ipcRenderer.invoke('i18n', 'No episode selected').then((title) => document.getElementById('content-right-player-title').innerText = title);
+}
+module.exports.initLocalization = initLocalization;
+
+function translateByClass(className, value) {
+    let els = document.getElementsByClassName(className);
+
+    Array.prototype.forEach.call(els, function (el) {
+        el.innerHTML = value;
+    });
+}
 
 function selectMenuItem(_MenuId) {
     let MenuItem = document.getElementById(_MenuId);
@@ -61,14 +83,13 @@ function showNewEpisodes() {
                 '5em 1fr 6em 1fr 5em 5em'
             ), listItem.eLayout.row);
 
-            ListElement.setAttribute('onclick', 'audioPlayer.playNow(this)');
             ListElement.setAttribute('channel', JsonContent[i].channelName);
             ListElement.setAttribute('title', JsonContent[i].episodeTitle);
             ListElement.setAttribute('type', JsonContent[i].episodeType);
             ListElement.setAttribute('url', JsonContent[i].episodeUrl);
             ListElement.setAttribute('length', JsonContent[i].episodeLength);
             ListElement.setAttribute('artworkUrl', Artwork);
-
+            ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
             if (player.isPlaying(JsonContent[i].episodeUrl)) {
                 ListElement.classList.add('select-episode');
@@ -82,13 +103,11 @@ module.exports.showNewEpisodes = showNewEpisodes;
 
 function showFavorites() {
     helper.clearContent();
-    navigation.setHeaderViewAction('list');
+    // navigation.setHeaderViewAction('list'); // NOTE: Toggle button for List and Grid view
 
     if (fs.existsSync(global.saveFilePath) && fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
-
         JsonContent = entries.sortByName(JsonContent);
-
         let List = document.getElementById('list');
 
         navigation.setGridLayout(List, true);
@@ -109,7 +128,7 @@ function showFavorites() {
 
             HeaderElement.getElementsByTagName('img')[0].setAttribute('draggable', false);
             HeaderElement.setAttribute('feedUrl', JsonContent[i].feedUrl);
-            HeaderElement.setAttribute('onclick', 'feed.showAllEpisodes(this)');
+            HeaderElement.setAttribute('onclick', 'window.navAPI.clickPodcast(this)');
 
             // Display feedUrlStatus indicator
             if (JsonContent[i].feedUrlStatus) {
@@ -195,52 +214,61 @@ function showStatistics() {
 
     let JsonContent = null;
     let List = document.getElementById('list');
-    const i18n = window.i18n;
 
     navigation.setGridLayout(List, false);
 
     List.append(entries.getStatisticsElement('statistics-header', 'Podcasts', null));
 
-    if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
+    ipcRenderer.invoke('i18n', 'Favorite Podcasts').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Favorite Podcasts'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Last Podcast').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent[JsonContent.length - 1].channelName));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 'None'));
+        }
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
+    ipcRenderer.invoke('i18n', 'Episodes').then((title) => {
+        List.append(entries.getStatisticsElement('statistics-header', title, null));
+    });
 
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), JsonContent[JsonContent.length - 1].channelName));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Last Podcast'), 'None'));
-    }
+    ipcRenderer.invoke('i18n', 'History Items').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Episodes'), null));
+    ipcRenderer.invoke('i18n', 'New Episodes').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('History Items'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => {
+        List.append(entries.getStatisticsElement('statistics-header', title, null));
+    });
 
-    if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
-
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('New Episodes'), 0));
-    }
-
-    List.append(entries.getStatisticsElement('statistics-header', i18n.__('Playlists'), null));
-
-    if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
-        JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
-
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), JsonContent.length));
-    } else {
-        List.append(entries.getStatisticsElement('statistics-entry', i18n.__('Playlists'), 0));
-    }
+    ipcRenderer.invoke('i18n', 'Playlists').then((title) => {
+        if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
+            JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+            List.append(entries.getStatisticsElement('statistics-entry', title, JsonContent.length));
+        } else {
+            List.append(entries.getStatisticsElement('statistics-entry', title, 0));
+        }
+    });
 }
 module.exports.showStatistics = showStatistics;

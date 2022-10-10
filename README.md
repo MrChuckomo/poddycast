@@ -1,8 +1,11 @@
-# Poddycast [BETA] :construction:
+# Poddycast [pre-release] :construction:
 
 A Podcast app made with Electron because I love Podcasts.
 
-![screenshot_1](img/favorites.png)
+![screenshot_1](img/favorites2.png)
+
+[![Support me!](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/poddycastapp)
+
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
@@ -41,15 +44,15 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 
 ### All New Episodes
 
-![New Episodes Screenshot](img/new_episodes.png)
+![New Episodes Screenshot](img/new_episodes2.png)
 
 ### Browse Podcast Feeds
 
-![Browse Podcast Feed Screenshot](img/podcast_feed.png)
+![Browse Podcast Feed Screenshot](img/podcast_feed2.png)
 
 ### Edit Playlists
 
-![Edit Playlist Screenshot](img/edit_playlist.png)
+![Edit Playlist Screenshot](img/edit_playlist2.png)
 
 ## Contact
 
@@ -62,3 +65,4 @@ I'd be happy to hear from you guys 💕
 - [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
+- [Buy me a coffee: @poddycastapp](https://www.buymeacoffee.com/poddycastapp)
