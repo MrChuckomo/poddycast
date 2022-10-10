@@ -39,6 +39,7 @@ contextBridge.exposeInMainWorld('navAPI', {
     clickSearch: () => global.focusTextField('search-input'),
     searchInput: (value, key) => search.search(value, key),
     newListInput: (value, key) => playlist.createPlaylist(value, key),
+    newListButtonInput: () => playlist.onPlaylistButtonClicked(),
     clickEpisodes: () => {
         nav.selectMenuItem('menu-episodes');
         nav.showNewEpisodes();
