@@ -43,6 +43,9 @@ document.getElementById('new_list-input').addEventListener('keyup', (event) => {
     const key = event.code;
     window.navAPI.newListInput(value, key);
 });
+document.getElementById('new_list-button').addEventListener('click', () => {
+    window.navAPI.newListButtonInput();
+});
 
 /**
  * Main navigation item actions

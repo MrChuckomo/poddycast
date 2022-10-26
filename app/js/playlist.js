@@ -76,6 +76,17 @@ function createPlaylist(_Value, _KeyCode) {
 }
 module.exports.createPlaylist = createPlaylist;
 
+function onPlaylistButtonClicked() {
+    let inputField = document.getElementById('new_list-input');
+    if (inputField.value === '') {
+        inputField.focus();
+    } else {
+        // simulated Enter event
+        createPlaylist(inputField.value, 'Enter');
+    }
+}
+module.exports.onPlaylistButtonClicked = onPlaylistButtonClicked;
+
 function loadPlaylists() {
     let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
 
