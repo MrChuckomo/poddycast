@@ -221,11 +221,11 @@ function removeFromPlaylist(_PlaylistName, _PodcastName) {
 }
 module.exports.removeFromPlaylist = removeFromPlaylist;
 
-function deletePlaylist(_PlaylistName) {
+function deletePlaylist(playlistName, listItem) {
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
     for (let i = 0; i < JsonContent.length; i++) {
-        if (_PlaylistName === JsonContent[i].playlistName) {
+        if (playlistName === JsonContent[i].playlistName) {
             JsonContent.splice(i, 1);
             break;
         }
@@ -233,9 +233,6 @@ function deletePlaylist(_PlaylistName) {
 
     fs.writeFileSync(global.playlistFilePath, JSON.stringify(JsonContent));
 
-    // TODO: clean remove
-    // TODO: do not simply reload the whole app
-
-    location.reload();
+    listItem.remove();
 }
 module.exports.deletePlaylist = deletePlaylist;
