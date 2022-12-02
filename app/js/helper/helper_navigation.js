@@ -221,8 +221,9 @@ function removeFromPlaylist(_PlaylistName, _PodcastName) {
 }
 module.exports.removeFromPlaylist = removeFromPlaylist;
 
-function deletePlaylist(playlistName, listItem) {
+function deletePlaylist(listItem) {
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+    const playlistName = listItem.getElementsByTagName('input')[0].value;
 
     for (let i = 0; i < JsonContent.length; i++) {
         if (playlistName === JsonContent[i].playlistName) {
