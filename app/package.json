@@ -31,7 +31,7 @@
         "fast-xml-parser": "4.0.2"
     },
     "devDependencies": {
-        "electron-packager": "^14.2.1",
+        "electron-packager": "^17.1.1",
         "electron-rebuild": "2.3.4",
         "eslint": "8.10.0"
     }
