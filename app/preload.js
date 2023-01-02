@@ -97,7 +97,7 @@ ipcRenderer.on('ctx-playlist-command', (e, cmd, targetId) => {
     switch (cmd) {
         case 'ctx-cmd-edit': playlist.showEditPage(target); break;
         case 'ctx-cmd-rename': playlist.enableRename(target); break;
-        case 'ctx-cmd-delete': navigation.deletePlaylist(target.getElementsByTagName('input')[0].value); break;
+        case 'ctx-cmd-delete': navigation.deletePlaylist(target); break;
         default: break;
     }
 });
