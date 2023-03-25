@@ -126,6 +126,14 @@ input {
     fill: #FFF;
 }
 
+#play-pause {
+    color: #ffffff8f !important;
+}
+
+#play-pause:hover {
+    color: #fefefe !important;
+}
+
 svg.set-favorite {
     fill: #E91E63;
     opacity: 0.7;
