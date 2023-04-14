@@ -28,17 +28,23 @@ function readFeeds() {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
 
         let feedUrl = '';
+        let feedPromises = [];
         for (let i = 0; i < JsonContent.length; i++) {
             feedUrl = JsonContent[i].feedUrl;
 
-            request
-                .requestPodcastFeed(feedUrl, false)
-                .then((result) => {
-                    saveLatestEpisodeJson(result);
-                })
-                .catch((error) => {
-                    console.error(error);
-                })
+            feedPromises.push(
+                request
+                    .requestPodcastFeed(feedUrl, false)
+                    .then((result) => {
+                        saveLatestEpisodeJson(result);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    })
+            );
+        }
+        return new Promise((resolve) => {
+            Promise.allSettled(feedPromises)
                 .finally(() => {
                     // stop refreshing on success or failure
                     // includes minimum delay for user feedback
@@ -47,8 +53,9 @@ function readFeeds() {
                             .querySelector('#menu-refresh i')
                             .classList.remove('is-refreshing');
                     }, 1000);
+                    resolve();
                 });
-        }
+        });
     }
 }
 module.exports.readFeeds = readFeeds;
