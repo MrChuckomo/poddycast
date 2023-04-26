@@ -183,13 +183,15 @@ function deleteFromFile(_FeedUrl) {
 
             if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
                 ArchiveJsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
-            } else {
+            } else if (global.getPreference('track_history', true)) {
                 fs.writeFileSync(global.archivedFilePath, JSON.stringify(ArchiveJsonContent));
             }
 
             ArchiveJsonContent.push(Feed);
 
-            fs.writeFileSync(global.archivedFilePath, JSON.stringify(ArchiveJsonContent));
+            if (global.getPreference('track_history', true)) {
+                fs.writeFileSync(global.archivedFilePath, JSON.stringify(ArchiveJsonContent));
+            }
 
             JsonContent.splice(i, 1);
             break;
@@ -199,6 +201,11 @@ function deleteFromFile(_FeedUrl) {
     fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));
 }
 module.exports.deleteFromFile = deleteFromFile;
+
+function clearHistory() {
+    fs.writeFileSync(global.archivedFilePath, JSON.stringify([]));
+}
+module.exports.clearHistory = clearHistory;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Sort And Filter

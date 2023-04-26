@@ -170,11 +170,20 @@ function showHistory() {
     helper.clearContent();
     navigation.setHeaderViewAction();
 
-    if (fs.existsSync(global.archivedFilePath) && fs.readFileSync(global.archivedFilePath, 'utf-8') !== '') {
+    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
         let List = document.getElementById('list');
 
         navigation.setGridLayout(List, false);
+
+        document.getElementById('content-right-header-actions').innerHTML = '<button id="clear-history-button" type="button"></button>';
+        let ClearButton = document.getElementById('clear-history-button');
+        ClearButton.innerText = 'Clear History';
+        ClearButton.className = 'mx-2 px-2 rounded-3 fw-light mt-4 btn btn-outline-secondary border-secondary';
+        ClearButton.onclick = () => {
+            entries.clearHistory();
+            showHistory();
+        };
 
         // NOTE: Show just the last 100 entries in History
         // TODO: The can be loaded after user interaction
