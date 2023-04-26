@@ -235,21 +235,21 @@ function createWindow() {
                     accelerator: 'CommandOrControl+Alt+P',
                     type: 'checkbox',
                     checked: global.getPreference('proxy_enabled', false),
-                    click: () => win.webContents.send('trigger-menu', 'toggle-proxy', 'proxy_enabled')
+                    click: () => win.webContents.send('trigger-menu', 'toggle-property', 'proxy_enabled')
                 },
                 {
                     label: translate('Minimize'),
                     accelerator: 'CommandOrControl+Alt+M',
                     type: 'checkbox',
                     checked: global.getPreference('minimize', false),
-                    click: () => win.webContents.send('trigger-menu', 'toggle-minimize', 'minimize')
+                    click: () => win.webContents.send('trigger-menu', 'toggle-property', 'minimize')
                 },
                 {
                     label: translate('Track History'),
                     accelerator: 'CommandOrControl+Alt+H',
                     type: 'checkbox',
                     checked: global.getPreference('track_history', true),
-                    click: () => win.webContents.send('trigger-menu', 'toggle-history', 'track_history')
+                    click: () => win.webContents.send('trigger-menu', 'toggle-property', 'track_history')
                 },
                 { type: 'separator' },
                 { role: 'toggledevtools' }

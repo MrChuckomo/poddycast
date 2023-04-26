@@ -22,10 +22,7 @@ window.electronAPI.onTriggerMenu((_event, value, ...params) => {
         case 'menu-color:system': window.colorAPI.system(); break;
         case 'menu-color:light': window.colorAPI.light(); break;
         case 'menu-color:dark': window.colorAPI.dark(); break;
-        // allow fall-through for these property setters
-        case 'toggle-proxy' :
-        case 'toggle-minimize' :
-        case 'toggle-history' : window.backendAPI.toggleProperty(params[0]); break;
+        case 'toggle-property' : window.backendAPI.toggleProperty(params[0]); break;
         default: break;
     }
 });
