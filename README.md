@@ -2,7 +2,7 @@
 
 A Podcast app made with Electron because I love Podcasts.
 
-![screenshot_1](img/favorites2.png)
+![screenshot_1](img/favorites3.png)
 
 [![Support me!](https://www.buymeacoffee.com/assets/img/custom_images/yellow_img.png)](https://www.buymeacoffee.com/poddycastapp)
 
