@@ -15,12 +15,15 @@ const nav = require('./js/nav');
 
 window.addEventListener('DOMContentLoaded', () => {
     global.init();
+    audioPlayer.init();
     playlist.loadPlaylists();
-    feed.readFeeds();
-    nav.initLocalization();
     nav.showNewEpisodes();
     navigation.setItemCounts();
-    audioPlayer.init();
+    nav.initLocalization();
+    feed.readFeeds().then(() => {
+        nav.showNewEpisodes();
+        navigation.setItemCounts();
+    });
 });
 
 
