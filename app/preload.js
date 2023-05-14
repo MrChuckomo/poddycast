@@ -21,6 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
     navigation.setItemCounts();
     nav.initLocalization();
     feed.readFeeds().then(() => {
+        nav.selectMenuItem('menu-episodes');
         nav.showNewEpisodes();
         navigation.setItemCounts();
     });
