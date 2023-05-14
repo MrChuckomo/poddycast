@@ -4,10 +4,10 @@
  * Receive menu trigger from main proccess
  * @param {str} value Custom string, defined in the main menu items in main process
  */
-window.electronAPI.onTriggerMenu((_event, value, filePath) => {
+window.electronAPI.onTriggerMenu((_event, value, ...params) => {
     switch (value) {
-        case 'menu-opml:import': window.opmlAPI.import(filePath); break;
-        case 'menu-opml:export': window.opmlAPI.export(filePath); break;
+        case 'menu-opml:import': window.opmlAPI.import(params[0]); break;
+        case 'menu-opml:export': window.opmlAPI.export(params[0]); break;
         case 'menu-play-pause': window.audioAPI.clickPlayPause(); break;
         case 'menu-reply': window.audioAPI.clickReply(); break;
         case 'menu-forward': window.audioAPI.clickForward(); break;
@@ -22,6 +22,7 @@ window.electronAPI.onTriggerMenu((_event, value, filePath) => {
         case 'menu-color:system': window.colorAPI.system(); break;
         case 'menu-color:light': window.colorAPI.light(); break;
         case 'menu-color:dark': window.colorAPI.dark(); break;
+        case 'toggle-property' : window.backendAPI.toggleProperty(params[0]); break;
         default: break;
     }
 });

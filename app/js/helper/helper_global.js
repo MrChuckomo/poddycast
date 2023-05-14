@@ -272,14 +272,6 @@ module.exports.parseFeedEpisodeDuration = parseFeedEpisodeDuration;
 // SETTINGS
 // ---------------------------------------------------------------------------------------------------------------------
 
-function toggleProxyMode() {
-    const proxyValue = isProxySet();
-
-    // set to true if value is undefined, otherwise use the opposite of the current value
-    setPreference('proxy_enabled', proxyValue === undefined ? true : !proxyValue);
-}
-module.exports.toggleProxyMode = toggleProxyMode;
-
 function isProxySet() {
     return getPreference('proxy_enabled', false);
 }
@@ -411,14 +403,6 @@ function setIsAddedToInbox(_FeedUrl, _ToInbox) {
     }
 }
 module.exports.setIsAddedToInbox = setIsAddedToInbox;
-
-function toggleMinimize() {
-    const minimizeValue = getPreference('minimize');
-
-    // set to true if value is undefined, otherwise use the opposite of the current value
-    setPreference('minimize', minimizeValue === undefined ? true : !minimizeValue);
-}
-module.exports.toggleMinimize = toggleMinimize;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // PREFERENCES

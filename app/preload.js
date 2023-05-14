@@ -174,3 +174,12 @@ contextBridge.exposeInMainWorld('myAPI', {
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     sysLanguage : () => ipcRenderer.invoke('sys-language')
 });
+
+contextBridge.exposeInMainWorld('backendAPI', {
+    toggleProperty: (propertyName) => {
+        const value = global.getPreference(propertyName);
+
+        // set to true if value is undefined, otherwise use the opposite of the current value
+        global.setPreference(propertyName, value === undefined ? true : !value);
+    }
+});

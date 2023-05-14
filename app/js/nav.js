@@ -103,7 +103,7 @@ module.exports.showNewEpisodes = showNewEpisodes;
 
 function showFavorites() {
     helper.clearContent();
-    // navigation.setHeaderViewAction('list'); // NOTE: Toggle button for List and Grid view
+    navigation.setHeaderViewAction();
 
     if (fs.existsSync(global.saveFilePath) && fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
         let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
@@ -170,11 +170,20 @@ function showHistory() {
     helper.clearContent();
     navigation.setHeaderViewAction();
 
-    if (fs.existsSync(global.archivedFilePath) && fs.readFileSync(global.archivedFilePath, 'utf-8') !== '') {
+    if (global.fileExistsAndIsNotEmpty(global.archivedFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.archivedFilePath, 'utf-8'));
         let List = document.getElementById('list');
 
         navigation.setGridLayout(List, false);
+
+        document.getElementById('content-right-header-actions').innerHTML = '<button id="clear-history-button" type="button" title="Clear History"></button>';
+        let ClearButton = document.getElementById('clear-history-button');
+        ClearButton.innerHTML = '<i class="bi bi-trash3"></i>';
+        ClearButton.className = 'm-3 px-3 rounded-3 fw-light btn btn-outline-danger';
+        ClearButton.onclick = () => {
+            entries.clearHistory();
+            showHistory();
+        };
 
         // NOTE: Show just the last 100 entries in History
         // TODO: The can be loaded after user interaction
