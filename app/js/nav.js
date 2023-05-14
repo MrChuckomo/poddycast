@@ -176,10 +176,10 @@ function showHistory() {
 
         navigation.setGridLayout(List, false);
 
-        document.getElementById('content-right-header-actions').innerHTML = '<button id="clear-history-button" type="button"></button>';
+        document.getElementById('content-right-header-actions').innerHTML = '<button id="clear-history-button" type="button" title="Clear History"></button>';
         let ClearButton = document.getElementById('clear-history-button');
-        ClearButton.innerText = 'Clear History';
-        ClearButton.className = 'mx-2 px-2 rounded-3 fw-light mt-4 btn btn-outline-secondary border-secondary';
+        ClearButton.innerHTML = '<i class="bi bi-trash3"></i>';
+        ClearButton.className = 'm-3 px-3 rounded-3 fw-light btn btn-outline-danger';
         ClearButton.onclick = () => {
             entries.clearHistory();
             showHistory();
