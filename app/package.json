@@ -28,7 +28,7 @@
         "bootstrap": "5.2.0-beta1",
         "bootstrap-icons": "1.8.3",
         "electron": "22.0.0",
-        "fast-xml-parser": "4.2.4"
+        "fast-xml-parser": "4.2.5"
     },
     "devDependencies": {
         "electron-packager": "^17.1.1",
