@@ -12,3 +12,14 @@ function playListAnimation() {
     });
 }
 module.exports.playListAnimation = playListAnimation;
+
+function playListDeleteAnimation(el) {
+    anime({
+        targets: el,
+        translateX: [0, -500],
+        opacity: [1, 0],
+        duration: 600,
+        easing: 'easeInOutExpo'
+    });
+}
+module.exports.playListDeleteAnimation = playListDeleteAnimation;

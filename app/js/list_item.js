@@ -26,6 +26,7 @@ function buildListItem(_JsonObject, _Layout) {
 
     Container.classList.add(_Layout);
     Container.style.gridTemplateColumns = _JsonObject.LayoutRatio;
+
     animation.playListAnimation();
 
     return Container;
