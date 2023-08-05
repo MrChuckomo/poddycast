@@ -1,3 +1,5 @@
+// https://animejs.com/documentation/#cssSelector
+
 'use strict';
 
 const anime = require('animejs');
