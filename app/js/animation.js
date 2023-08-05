@@ -10,6 +10,7 @@ function playListAnimation() {
         translateX: [-15, 0],
         opacity: [0, 1],
         duration: 600,
+        delay: anime.stagger(20),
         easing: 'easeInOutExpo'
     });
 }
@@ -19,6 +20,7 @@ function playListDeleteAnimation(el) {
     anime({
         targets: el,
         translateX: [0, -500],
+        backgroundColor: '#ff0000',
         opacity: [1, 0],
         duration: 600,
         easing: 'easeInOutExpo'
