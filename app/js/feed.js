@@ -272,7 +272,7 @@ function saveLatestEpisodeJson(content) {
 
     for (let i = 0; i < content.items.length; i++) {
         const item = content.items[i];
-        if (storedRecentDate !== null && item.published > storedRecentDate) {
+        if (storedRecentDate === null || item.published > storedRecentDate) {
             const episode = new Episode(
                 content.title,
                 item.title,
@@ -283,6 +283,10 @@ function saveLatestEpisodeJson(content) {
                 item.duration_formatted
             );
             saveEpisode(episode);
+            // only process one episode if we don't have a previous one stored
+            if (storedRecentDate === null) {
+                break;
+            }
         } else {
             break;
         }
