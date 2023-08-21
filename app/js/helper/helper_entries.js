@@ -1,5 +1,6 @@
 'use strict';
 
+const animation = require('./../animation.js');
 const global = require('./helper_global');
 const navigation = require('./helper_navigation');
 const nav = require('../nav');
@@ -143,7 +144,11 @@ function getStatisticsElement(_Class, _Title, _Value) {
 module.exports.getStatisticsElement = getStatisticsElement;
 
 function deleteEntryWithIcon(_Self) {
-    deleteEntry(_Self.parentElement.parentElement);
+    animation.playListDeleteAnimation(_Self.parentElement.parentElement);
+
+    setTimeout(function () {
+        deleteEntry(_Self.parentElement.parentElement);
+    }, 500);
 }
 module.exports.deleteEntryWithIcon = deleteEntryWithIcon;
 

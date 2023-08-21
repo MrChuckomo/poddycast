@@ -1,6 +1,7 @@
 'use strict';
 
 const global = require('./helper/helper_global');
+const animation = require('./animation.js');
 
 const eLayout = {
     row: 'list-item-row-layout',
@@ -25,6 +26,8 @@ function buildListItem(_JsonObject, _Layout) {
 
     Container.classList.add(_Layout);
     Container.style.gridTemplateColumns = _JsonObject.LayoutRatio;
+
+    animation.playListAnimation();
 
     return Container;
 }
