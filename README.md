@@ -23,7 +23,7 @@ Download the latest release from the [release page](https://github.com/MrChuckom
 
 ## Documentation
 
-For some help and support check out the [documentation](https://www.poddycast.app/docs).
+For some help and support check out the [documentation](https://www.poddycast.app/).
 
 ## Platform Support
 
@@ -66,7 +66,7 @@ You'll also find more useful stuff about the app, like tutorial and blogposts. ð
 
 I'd be happy to hear from you guys ðŸ’•
 
-- [poddycast.app](https://github.com/MrChuckomo/poddycast)
+- [poddycast.app](https://www.poddycast.app/)
 - [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
