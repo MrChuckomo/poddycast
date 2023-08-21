@@ -21,6 +21,10 @@ A Podcast app made with Electron because I love Podcasts.
 
 Download the latest release from the [release page](https://github.com/MrChuckomo/poddycast/releases).
 
+## Documentation
+
+For some help and support check out the [documentation](https://www.poddycast.app/docs).
+
 ## Platform Support
 
 - [x] macOS  
@@ -62,6 +66,7 @@ You'll also find more useful stuff about the app, like tutorial and blogposts. ð
 
 I'd be happy to hear from you guys ðŸ’•
 
+- [poddycast.app](https://github.com/MrChuckomo/poddycast)
 - [Twitter: @poddycastapp](https://twitter.com/poddycastapp)
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
