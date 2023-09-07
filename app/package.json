@@ -11,7 +11,6 @@
     "scripts": {
         "package:all": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=all --arch=all --icon=img/poddycast-app_icon",
         "package:linux": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
-        "package:linux32": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=ia32 --icon=img/poddycast-app_icon",
         "package:linuxArm": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=armv7l --icon=img/poddycast-app_icon",
         "package:linuxArm64": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=arm64 --icon=img/poddycast-app_icon",
         "package:linuxMips64": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=mips64el --icon=img/poddycast-app_icon",
@@ -32,7 +31,7 @@
         "fast-xml-parser": "4.2.5"
     },
     "devDependencies": {
-        "electron-packager": "^17.1.1",
+        "electron-packager": "^17.1.2",
         "electron-rebuild": "3.2.9",
         "eslint": "8.10.0"
     }
