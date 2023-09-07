@@ -13,7 +13,6 @@
         "package:linux": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --icon=img/poddycast-app_icon",
         "package:linuxArm": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=armv7l --icon=img/poddycast-app_icon",
         "package:linuxArm64": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=arm64 --icon=img/poddycast-app_icon",
-        "package:linuxMips64": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=linux --arch=mips64el --icon=img/poddycast-app_icon",
         "package:macappstore": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=mas --icon=img/poddycast-app_icon",
         "package:osx": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=darwin --icon=img/poddycast-app_icon",
         "package:win": "electron-packager ./ Poddycast --out=./builds --overwrite --platform=win32 --arch=x64 --icon=img/poddycast-app_icon",
