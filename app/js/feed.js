@@ -2,6 +2,7 @@
 
 let CContentHelper = require('./helper/content');
 let CPlayer = require('./helper/player');
+const { Episode } = require('./classes/episode');
 const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
 const listItem = require('./list_item');
@@ -240,18 +241,18 @@ function displayEpisodesInList(podcastObject) {
  */
 function addToEpisodes(addEpisodeIconElement) {
     const episodeElement = addEpisodeIconElement.parentElement.parentElement;
-    const episodeObject = {
-        'channelName': episodeElement.getAttribute('channel'),
-        'episodeTitle': episodeElement.getAttribute('title'),
-        'episodeDescription': episodeElement.getAttribute('description'),
-        'episodeLength': episodeElement.getAttribute('length'),
-        'episodeType': episodeElement.getAttribute('type'),
-        'episodeUrl': episodeElement.getAttribute('url'),
-        'duration': episodeElement.getAttribute('duration'),
-        'playbackPosition': 0
-    };
 
-    saveEpisodeObject(episodeObject);
+    const episode = new Episode(
+        episodeElement.getAttribute('channel'),
+        episodeElement.getAttribute('title'),
+        episodeElement.getAttribute('description'),
+        episodeElement.getAttribute('length'),
+        episodeElement.getAttribute('type'),
+        episodeElement.getAttribute('url'),
+        episodeElement.getAttribute('duration')
+    );
+
+    saveEpisode(episode);
     addEpisodeIconElement.remove();
 }
 module.exports.addToEpisodes = addToEpisodes;
@@ -266,29 +267,39 @@ function saveLatestEpisodeJson(content) {
     if (!global.isAddedToInbox(content.link))
         return;
 
-    const episodeObject = {
-        'channelName': content.title,
-        'episodeTitle': content.items[0].title,
-        'episodeDescription': content.items[0].description,
-        'episodeLength': content.items[0].duration,
-        'episodeType': content.items[0].type,
-        'episodeUrl': content.items[0].link,
-        'duration': content.items[0].duration_formatted,
-        'playbackPosition': 0
-    };
+    const storedRecentDate = global.getFeedRecentEpisodeDate(content.link);
+    const latestDate = content.items[0].published;
 
-    // NOTE: save latest episode if not already in History
-    if (global.getValueFromFile(global.archivedFilePath, 'episodeUrl', 'episodeUrl', episodeObject['episodeUrl']) === null) {
-        saveEpisodeObject(episodeObject);
+    for (let i = 0; i < content.items.length; i++) {
+        const item = content.items[i];
+        if (storedRecentDate === null || item.published > storedRecentDate) {
+            const episode = new Episode(
+                content.title,
+                item.title,
+                item.description,
+                item.duration,
+                item.type,
+                item.link,
+                item.duration_formatted
+            );
+            saveEpisode(episode);
+            // only process one episode if we don't have a previous one stored
+            if (storedRecentDate === null) {
+                break;
+            }
+        } else {
+            break;
+        }
     }
+    global.addRecentEpisode(content.link, latestDate);
 }
 
 /**
  * Saves a podcast episode to the new episodes save file.
  * @private
- * @param {JSON} episodeObject Podcast episode data in JSON format.
+ * @param {Episode} episode Podcast episode class.
  */
-function saveEpisodeObject(episodeObject) {
+function saveEpisode(episode) {
     let JsonContent = [];
 
     if (fs.existsSync(global.newEpisodesSaveFilePath) && fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8') !== '') {
@@ -297,8 +308,8 @@ function saveEpisodeObject(episodeObject) {
         fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));
     }
 
-    if (!global.isEpisodeAlreadySaved(episodeObject.episodeTitle)) {
-        JsonContent.push(episodeObject);
+    if (!global.isEpisodeAlreadySaved(episode.title)) {
+        JsonContent.push(episode.toJSON());
     }
 
     fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));

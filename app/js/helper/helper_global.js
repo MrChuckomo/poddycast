@@ -15,6 +15,7 @@ const archivedFilePath = saveDirPath + '/poddycast-archived_episodes.json';
 const playlistFilePath = saveDirPath + '/poddycast-playlists.json';
 const settingsFilePath = saveDirPath + '/poddycast-podcast_settings.json';
 const preferencesFilePath = saveDirPath + '/poddycast-app_preferences.json';
+const recentEpisodePath = saveDirPath + '/poddycast-recent_episodes.json';
 
 module.exports.saveDirPath = saveDirPath;
 module.exports.saveFilePath = saveFilePath;
@@ -23,6 +24,7 @@ module.exports.archivedFilePath = archivedFilePath;
 module.exports.playlistFilePath = playlistFilePath;
 module.exports.settingsFilePath = settingsFilePath;
 module.exports.preferencesFilePath = preferencesFilePath;
+module.exports.recentEpisodePath = recentEpisodePath;
 
 module.exports.isWindows = process.platform === 'win32';
 module.exports.isDarwin = process.platform === 'darwin';
@@ -35,6 +37,10 @@ function init() {
 
     if (!fs.existsSync(saveFilePath)) {
         fs.openSync(saveFilePath, 'w');
+    }
+
+    if (!fs.existsSync(recentEpisodePath)) {
+        fs.openSync(recentEpisodePath, 'w');
     }
 
     if (!fs.existsSync(newEpisodesSaveFilePath)) {
@@ -169,6 +175,28 @@ function isEpisodeAlreadySaved(_EpisodeTitle) {
     return FeedExists;
 }
 module.exports.isEpisodeAlreadySaved = isEpisodeAlreadySaved;
+
+function getFeedRecentEpisodeDate(feedUrl) {
+    if (fileExistsAndIsNotEmpty(recentEpisodePath)) {
+        const jsonContent = JSON.parse(fs.readFileSync(recentEpisodePath, 'utf-8'));
+        return jsonContent[feedUrl];
+    }
+
+    return null;
+}
+module.exports.getFeedRecentEpisodeDate = getFeedRecentEpisodeDate;
+
+function addRecentEpisode(feedUrl, episodeDate) {
+    let jsonContent = {};
+    if (fileExistsAndIsNotEmpty(recentEpisodePath)) {
+        jsonContent = JSON.parse(fs.readFileSync(recentEpisodePath, 'utf-8'));
+    }
+
+    jsonContent[feedUrl] = episodeDate;
+
+    fs.writeFileSync(recentEpisodePath, JSON.stringify(jsonContent));
+}
+module.exports.addRecentEpisode = addRecentEpisode;
 
 function isAlreadyInPlaylist(_ListName, _PodcastName) {
     let JsonContent = JSON.parse(fs.readFileSync(playlistFilePath, 'utf-8'));
