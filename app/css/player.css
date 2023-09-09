@@ -245,6 +245,7 @@ input[id=volume]::-webkit-slider-runnable-track {
     height: 0.5em;
     background: #448AFF;
     border-radius: 5px;
+    pointer-events: none;
 }
 
 input[id=volume]:hover+#volume-fill {
