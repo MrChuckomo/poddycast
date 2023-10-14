@@ -130,6 +130,10 @@ input {
     filter: invert(100%);
 }
 
+#content-right-player-time.active {
+    color: #76a8ff;
+}
+
 #play-pause {
     color: #ffffff8f !important;
 }

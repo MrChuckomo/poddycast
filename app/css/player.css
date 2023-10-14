@@ -134,6 +134,12 @@ button#content-right-player-speed-indicator {
     background-color: #EEE;
 }
 
+#content-right-player-time.active {
+    color: #448AFF;
+    /* font-weight: bold; */
+    opacity: 0.9;
+}
+
 #content-right-player-time,
 #content-right-player-duration {
     display: none;

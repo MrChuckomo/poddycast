@@ -251,6 +251,7 @@ function playPlayer() {
 
     Button.src = './img/pause-outline.svg';
     Button.setAttribute('mode', 'pause');
+    document.getElementById('content-right-player-time').classList.add('active');
 
     Player.play();
 }
@@ -261,6 +262,7 @@ function pausePlayer() {
 
     Button.src = './img/play-outline.svg';
     Button.setAttribute('mode', 'play');
+    document.getElementById('content-right-player-time').classList.remove('active');
 
     Player.pause();
 }
