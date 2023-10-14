@@ -356,10 +356,16 @@ h1 {
 
 .grid-layout .podcast-entry .podcast-entry-header img:hover {
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
+    scale: 1.1;
+    transition: .3s ease-out;
 }
 
 .grid-layout .podcast-entry .podcast-entry-header img:active {
     box-shadow: none;
+    scale: 0.9;
+    filter: grayscale(80%);
+    border: 2px solid #448AFF;
+    transition: none;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
