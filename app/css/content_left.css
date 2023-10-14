@@ -45,6 +45,10 @@
     outline: none;
 }
 
+#menu-refresh:hover {
+    color: #000;
+}
+
 #menu {
     grid-area: menu;
 }

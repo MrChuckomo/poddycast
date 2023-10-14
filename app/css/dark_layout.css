@@ -54,6 +54,10 @@ body {
     fill: #FFF;
 }
 
+#menu-refresh:hover {
+    color: #fff;
+}
+
 #playlist-header h3 {
     border-color: #000;
 }
