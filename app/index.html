@@ -50,6 +50,10 @@
                         <i class="bi bi-clipboard-data-fill text-teal my-auto" style="font-size: 1.3rem;"></i>
                         <span class="statistics">Statistics</span>
                     </li>
+                    <li id="menu-settings" class="mx-2 rounded-3 fw-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <i class="bi bi-sliders2 text-warning my-auto" style="font-size: 1.3rem;"></i>
+                        <span class="settings p-0">Settings</span>
+                    </li>
                     <li id="menu-refresh" class="mx-2 px-2 rounded-3 fw-light mt-4 btn btn-outline-secondary border-secondary">
                         <i class="bi bi-arrow-repeat" style="font-size: 1rem;"></i>
                         <span class="refresh">Refresh</span>
@@ -117,6 +121,26 @@
                     </div>
                     <div id="content-right-player-time">00:00:00</div>
                     <div id="content-right-player-duration">00:00:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal modal-dialog-scrollable fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Settings</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
                 </div>
             </div>
         </div>
