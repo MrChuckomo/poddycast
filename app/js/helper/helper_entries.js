@@ -85,7 +85,7 @@ function getPodcastElement(_Class, _Artwork, _Subtitle, _Title, _IconElement, _T
     ImageElement.src = _Artwork;
 
     TitleElement.innerHTML = _Title;
-    TitleElement.classList.add('podcast-entry-title');
+    TitleElement.classList.add('podcast-entry-title', 'fw-normal');
 
     SubtitleElement.innerHTML = _Subtitle;
     SubtitleElement.classList.add('podcast-entry-subtitle');
