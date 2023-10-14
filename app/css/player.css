@@ -45,14 +45,17 @@
     justify-self: center;
 }
 
-#content-right-player svg {
+#content-right-player svg,
+#content-right-player img {
     width: 36px;
     height: 36px;
     opacity: 0.65;
 }
 
-#content-right-player svg:hover {
+#content-right-player svg:hover,
+#content-right-player img:hover {
     opacity: 1;
+    cursor: pointer;
 }
 
 #content-right-player-img {

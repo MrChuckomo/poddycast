@@ -126,6 +126,10 @@ input {
     fill: #FFF;
 }
 
+#content-right-player img {
+    filter: invert(100%);
+}
+
 #play-pause {
     color: #ffffff8f !important;
 }

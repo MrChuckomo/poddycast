@@ -48,6 +48,7 @@ function playNow(_Self) {
     Player.addEventListener('timeupdate', updateProgress, false);
 
     document.getElementById('content-right-player-img').src = _Self.getAttribute('artworkUrl');
+    document.getElementById('content-right-player-img').style.filter = 'none';
     document.getElementById('content-right-player-title').innerHTML = _Self.getAttribute('title');
     togglePlayPauseButton();
 
@@ -239,21 +240,16 @@ function savePlaybackPosition(_Source, _CurrentTime) {
 
 function togglePlayPauseButton() {
     let Button = document.getElementById('play-pause');
-
-    if (Button.getAttribute('mode') === 'play') {
-        playPlayer();
-    } else {
-        pausePlayer();
-    }
+    (Button.getAttribute('mode') === 'play') ? playPlayer() : pausePlayer();
 }
+
 module.exports.togglePlayPauseButton = togglePlayPauseButton;
 
 function playPlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.classList.remove('bi-play-circle-fill');
-    Button.classList.add('bi-pause-circle-fill');
+    Button.src = './img/pause-outline.svg';
     Button.setAttribute('mode', 'pause');
 
     Player.play();
@@ -263,8 +259,7 @@ function pausePlayer() {
     let Button = document.getElementById('play-pause');
     let Player = document.getElementById('player');
 
-    Button.classList.remove('bi-pause-circle-fill');
-    Button.classList.add('bi-play-circle-fill');
+    Button.src = './img/play-outline.svg';
     Button.setAttribute('mode', 'play');
 
     Player.pause();
@@ -336,14 +331,12 @@ function volumeToggle() {
     let VolumeFill = document.getElementById('volume-fill');
 
     if (volumeOff === true) {
-        VolumeIcon.classList.remove('bi-volume-mute');
-        VolumeIcon.classList.add('bi-volume-up');
+        VolumeIcon.src = './img/volume-high-outline.svg';
         volumeOff = false;
         Player.volume = clamp(Math.exp(6.908 * playerVolume) / 1000);
         VolumeFill.style.width = parseFloat(playerVolume * 100).toFixed(2) + '%';
     } else {
-        VolumeIcon.classList.remove('bi-volume-up');
-        VolumeIcon.classList.add('bi-volume-mute');
+        VolumeIcon.src = './img/volume-mute-outline.svg';
         volumeOff = true;
         Player.volume = 0;
         VolumeFill.style.width = '0%';
@@ -357,8 +350,7 @@ function updateVolume(_VolumeValue) {
     let VolumeFill = document.getElementById('volume-fill');
 
     if (_VolumeValue <= 0.001) {
-        VolumeIcon.classList.remove('bi-volume-up');
-        VolumeIcon.classList.add('bi-volume-mute');
+        VolumeIcon.src = './img/volume-off-outline.svg';
         Player.volume = 0.0;
         VolumeFill.style.width = '0%';
     } else {
@@ -366,13 +358,14 @@ function updateVolume(_VolumeValue) {
         Player.volume = clamp(Math.exp(6.908 * _VolumeValue) / 1000);
         VolumeFill.style.width = parseFloat(_VolumeValue * 100).toFixed(2) + '%';
 
-        if (_VolumeValue <= 0.6) {
-            VolumeIcon.classList.remove('bi-volume-up');
-            VolumeIcon.classList.remove('bi-volume-mute');
-            VolumeIcon.classList.add('bi-volume-down');
+        if (_VolumeValue <= 0.1) {
+            VolumeIcon.src = './img/volume-off-outline.svg';
+        } else if (_VolumeValue <= 0.4) {
+            VolumeIcon.src = './img/volume-low-outline.svg';
+        } else if (_VolumeValue <= 0.6) {
+            VolumeIcon.src = './img/volume-medium-outline.svg';
         } else {
-            VolumeIcon.classList.remove('bi-volume-mute');
-            VolumeIcon.classList.add('bi-volume-up');
+            VolumeIcon.src = './img/volume-high-outline.svg';
         }
     }
 
