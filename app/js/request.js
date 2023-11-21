@@ -9,7 +9,7 @@ const fs = require('fs');
 
 const axiosInstance = axios.create({
     // fixes issue with proxy mode due to how electron apps are packaged
-    adapter: require('axios/lib/adapters/http'),
+    adapter: 'http',
     headers: {
         'Accept': 'application/xml, text/xml'
     }
