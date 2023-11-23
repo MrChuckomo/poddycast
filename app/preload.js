@@ -9,6 +9,7 @@ const navigation = require('./js/helper/helper_navigation');
 const entries = require('./js/helper/helper_entries');
 const audioPlayer = require('./js/player');
 const playlist = require('./js/playlist');
+const preferences = require('./js/preferences');
 const favorite = require('./js/favorite');
 const darkMode = require('./js/dark_mode');
 const nav = require('./js/nav');
@@ -20,6 +21,7 @@ window.addEventListener('DOMContentLoaded', () => {
     nav.showNewEpisodes();
     navigation.setItemCounts();
     nav.initLocalization();
+    preferences.init();
     feed.readFeeds().then(() => {
         nav.selectMenuItem('menu-episodes');
         nav.showNewEpisodes();
