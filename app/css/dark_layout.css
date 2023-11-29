@@ -190,3 +190,19 @@ input[id=volume]::-webkit-slider-runnable-track {
 .slider {
     --theme-slider: #222;
 }
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Modal */
+
+.modal-content {
+    background-color: #222;
+}
+
+.modal-content .modal-header,
+.modal-content .modal-footer {
+    border-color: #333;
+}
+
+.modal-content .modal-body {
+    background-color: #333;
+}
