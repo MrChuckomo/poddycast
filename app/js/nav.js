@@ -89,6 +89,7 @@ function showNewEpisodes() {
             ListElement.setAttribute('url', JsonContent[i].episodeUrl);
             ListElement.setAttribute('length', JsonContent[i].episodeLength);
             ListElement.setAttribute('artworkUrl', Artwork);
+            ListElement.setAttribute('episodeImagekUrl', JsonContent[i].episodeImage);
             ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
             if (player.isPlaying(JsonContent[i].episodeUrl)) {

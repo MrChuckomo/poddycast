@@ -47,7 +47,11 @@ function playNow(_Self) {
     Player.currentTime = getPlaybackPosition(_Self.getAttribute('url'));
     Player.addEventListener('timeupdate', updateProgress, false);
 
-    document.getElementById('content-right-player-img').src = _Self.getAttribute('artworkUrl');
+    let img = (_Self.getAttribute('episodeImagekUrl') === 'undefined')
+        ? _Self.getAttribute('artworkUrl')
+        : _Self.getAttribute('episodeImagekUrl');
+
+    document.getElementById('content-right-player-img').src = img;
     document.getElementById('content-right-player-img').style.filter = 'none';
     document.getElementById('content-right-player-title').innerHTML = _Self.getAttribute('title');
     togglePlayPauseButton();
