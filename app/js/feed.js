@@ -228,6 +228,7 @@ function displayEpisodesInList(podcastObject) {
         listElement.setAttribute('duration', episode.duration);
         listElement.setAttribute('description', global.sanitizeString(episode.description));
         listElement.setAttribute('artworkUrl', artwork);
+        listElement.setAttribute('episodeImagekUrl', episode.itunes_image);
         listElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
         list.append(listElement);
@@ -249,6 +250,7 @@ function addToEpisodes(addEpisodeIconElement) {
         episodeElement.getAttribute('length'),
         episodeElement.getAttribute('type'),
         episodeElement.getAttribute('url'),
+        episodeElement.getAttribute('episodeImagekUrl'),
         episodeElement.getAttribute('duration')
     );
 
@@ -280,6 +282,7 @@ function saveLatestEpisodeJson(content) {
                 item.duration,
                 item.type,
                 item.link,
+                item.itunes_image,
                 item.duration_formatted
             );
             saveEpisode(episode);

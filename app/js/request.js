@@ -255,7 +255,7 @@ function parseXmlToJson(xml) {
             }
             // Captivate Support via @cvburgess
             if (val['podcast:transcript']) {
-                obj.podcast_transcript = val['podcast:transcript'].url;
+                obj.podcast_transcript = val['podcast:transcript']['@_url'];
             }
             if (val['itunes:subtitle']) {
                 obj.itunes_subtitle = val['itunes:subtitle'];
@@ -282,7 +282,7 @@ function parseXmlToJson(xml) {
                 obj.itunes_episode_type = val['itunes:episodeType'];
             }
             if (val['itunes:image']) {
-                obj.itunes_image = val['itunes:image'].href;
+                obj.itunes_image = val['itunes:image']['@_href'];
             }
 
             obj.duration = obj.itunes_duration || '';
