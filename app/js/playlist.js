@@ -333,6 +333,7 @@ function showPlaylistContent(_Self) {
                         ListElement.setAttribute('url', NewEpisodesJsonContent[a].episodeUrl);
                         ListElement.setAttribute('length', NewEpisodesJsonContent[a].episodeLength);
                         ListElement.setAttribute('artworkUrl', Artwork);
+                        ListElement.setAttribute('episodeImagekUrl', NewEpisodesJsonContent[a].episodeImage);
                         ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
 
                         // NOTE: show just episodes of the playlist saved podcast
