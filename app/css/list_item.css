@@ -18,7 +18,7 @@
 }
 
 .select-episode:hover {
-    background-color: #2979FF!important;
+    background-color: var(--primary-color)!important;
 }
 
 .list-item-row-layout img {
@@ -78,6 +78,6 @@
 
 .list-item-progress-container .list-item-progress {
     height: 100%;
-    background-color: #2979FF;
+    background-color: var(--primary-color);
     border-radius: 3px;
 }

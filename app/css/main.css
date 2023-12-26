@@ -15,6 +15,10 @@
     background-color: #bebebe;
 }
 
+:root {
+    --primary-color: #2979FF;
+}
+
 
 body {
     margin: 0;

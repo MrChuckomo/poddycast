@@ -77,7 +77,7 @@ function showNewEpisodes() {
                     listItem.getBoldTextPart(JsonContent[i].episodeTitle),
                     listItem.getSubTextPart((JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration),
                     listItem.getTextPart(JsonContent[i].channelName),
-                    listItem.getProgressPart(JsonContent[i].playbackPosition), // TODO: calc progress based on duration and playbackPosition
+                    listItem.getProgressPart(JsonContent[i].progress),
                     listItem.getDescriptionPart(infoIcon, JsonContent[i].episodeDescription),
                     listItem.getIconButtonPart(deleteIcon)
                 ],

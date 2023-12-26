@@ -123,13 +123,19 @@ function getIconButtonPart(_Icon) {
 }
 module.exports.getIconButtonPart = getIconButtonPart;
 
+
+/**
+ *
+ * @param {string} _Progress - value as string in percentage (0-100)
+ * @returns {DOMElement}
+ */
 function getProgressPart(_Progress) {
     let ProgressElement = document.createElement('div');
     let Progress = document.createElement('div');
 
     ProgressElement.classList.add('list-item-progress-container');
     Progress.classList.add('list-item-progress');
-    Progress.style.width = (_Progress / 100) + '%';
+    Progress.style.width = _Progress ? _Progress + '%' : '0%';
 
     ProgressElement.appendChild(Progress);
 
