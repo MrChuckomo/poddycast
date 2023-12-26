@@ -122,3 +122,17 @@ function getIconButtonPart(_Icon) {
     return IconButtonElement;
 }
 module.exports.getIconButtonPart = getIconButtonPart;
+
+function getProgressPart(_Progress) {
+    let ProgressElement = document.createElement('div');
+    let Progress = document.createElement('div');
+
+    ProgressElement.classList.add('list-item-progress-container');
+    Progress.classList.add('list-item-progress');
+    Progress.style.width = (_Progress / 100) + '%';
+
+    ProgressElement.appendChild(Progress);
+
+    return ProgressElement;
+}
+module.exports.getProgressPart = getProgressPart;

@@ -187,6 +187,6 @@ input[id=volume]::-webkit-slider-runnable-track {
     color: #FFF;
 }
 
-.slider {
+.slider, .list-item-progress-container {
     --theme-slider: #222;
 }

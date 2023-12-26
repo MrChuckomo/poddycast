@@ -67,3 +67,17 @@
 .list-item-sub-text {
     opacity: 0.4;
 }
+
+.list-item-progress-container {
+    width: 100%;
+    height: 15%;
+    align-self: center;
+    background-color: var(--theme-slider);
+    border-radius: 3px;
+}
+
+.list-item-progress-container .list-item-progress {
+    height: 100%;
+    background-color: #2979FF;
+    border-radius: 3px;
+}
