@@ -17,8 +17,14 @@
 
 :root {
     --primary-color: #2979FF;
+    /* --progress-bg-color: #d3d3d3; */
+    --progress-bg-color: #dedcdc50;
+    --progress-color: #b7b7b780;
 }
 
+.fs-7 {
+    font-size: 0.75rem !important;
+}
 
 body {
     margin: 0;
