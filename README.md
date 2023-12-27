@@ -48,7 +48,7 @@ For some help and support check out the [documentation](https://www.poddycast.ap
 
 ### All New Episodes
 
-![New Episodes Screenshot](img/new_episodes2.png)
+![New Episodes Screenshot](img/new_episodes3.png)
 
 ### Browse Podcast Feeds
 
