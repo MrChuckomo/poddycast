@@ -108,13 +108,15 @@ function showNewEpisodes() {
                         'artwork': Artwork,
                         'name': JsonContent[i].episodeTitle,
                         'channel': JsonContent[i].channelName,
+                        'description': JsonContent[i].episodeDescription,
                         'duration': (JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration,
-                        'progress': JsonContent[i].progress
+                        'progress': JsonContent[i].progress,
+                        'selected': (player.isPlaying(JsonContent[i].episodeUrl)) ? 'select-episode' : ''
                     }
                 ],
                 {
                     '<>': 'li',
-                    'class': 'card border-0 m-3',
+                    'class': 'card border-0 m-3 ${selected}',
                     'aria-label': 'main-container',
                     'style': 'background-color: var(--episode-item-bg-color)',
                     'channel': JsonContent[i].channelName,
@@ -163,9 +165,25 @@ function showNewEpisodes() {
                                         }
                                     ]
                                 },
+                                // {
+                                //     '<>': 'a',
+                                //     'class': 'btn btn-primary',
+                                //     'data-bs-toggle': 'collapse',
+                                //     'href': '#collapseExample',
+                                //     'role': 'button',
+                                //     'aria-expanded': 'false',
+                                //     'aria-controls': 'collapseExample',
+                                //     'text': 'Desc'
+                                // },
+                                // {
+                                //     '<>': 'div',
+                                //     'id': 'collapseExample',
+                                //     'class': 'collapse',
+                                //     'html': '${description}'
+                                // },
                                 {
                                     '<>': 'div',
-                                    'class': 'opacity-75',
+                                    'class': 'opacity-75 align-self-center px-3',
                                     'aria-label': 'podcast-actions',
                                     'html': [
                                         // {

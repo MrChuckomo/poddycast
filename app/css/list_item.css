@@ -13,11 +13,13 @@
     margin: .5rem;
 }
 
-.list-item-row-layout:hover {
-    background-color: #F2F2F2;
+.list-item-row-layout:hover, 
+li[aria-label="main-container"]:hover {
+    background-color: #ececec!important;
 }
 
-.select-episode:hover {
+.select-episode:hover,
+li[aria-label="main-container"].select-episode:hover {
     background-color: var(--primary-color)!important;
 }
 

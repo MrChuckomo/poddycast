@@ -117,8 +117,9 @@ input {
 
 .podcast-entry:hover,
 .podcast-edit-entry:hover,
-.list-item-row-layout:hover {
-    background: #222;
+.list-item-row-layout:hover,
+li[aria-label="main-container"]:hover {
+    background: #222!important;
 }
 
 .select-episode:hover {

@@ -237,9 +237,6 @@ function savePlaybackPosition(_Source, _CurrentTime, _Progress) {
     if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
 
-        console.log('save playback');
-        console.log(JsonContent);
-
         JsonContent.find((item) => {
             if (item.episodeUrl === _Source) {
                 item.playbackPosition = _CurrentTime;
@@ -247,14 +244,6 @@ function savePlaybackPosition(_Source, _CurrentTime, _Progress) {
                 fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));
             }
         });
-
-        // for (let i = 0; i < JsonContent.length; i++) {
-        //     if (JsonContent[i].episodeUrl === _Source) {
-        //         JsonContent[i].playbackPosition = _CurrentTime;
-        //         fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));
-        //         break;
-        //     }
-        // }
     }
 }
 
