@@ -116,7 +116,7 @@ function showNewEpisodes() {
                     '<>': 'li',
                     'class': 'card border-0 m-3',
                     'aria-label': 'main-container',
-                    'style': 'background-color: #dedcdc50',
+                    'style': 'background-color: var(--episode-item-bg-color)',
                     'channel': JsonContent[i].channelName,
                     'title': JsonContent[i].episodeTitle,
                     'type': JsonContent[i].episodeType,
@@ -128,7 +128,7 @@ function showNewEpisodes() {
                     'html': [
                         {
                             '<>': 'div', //* NOTE: Row #1
-                            'class': 'd-flex flex-row p-3',
+                            'class': 'd-flex flex-row p-3 pb-2',
                             'aria-label': 'main-layout',
                             'html': [
                                 {
@@ -168,10 +168,10 @@ function showNewEpisodes() {
                                     'class': 'opacity-75',
                                     'aria-label': 'podcast-actions',
                                     'html': [
-                                        {
-                                            '<>': 'i',
-                                            'class': 'bi bi-info-circle fs-5 d-block'
-                                        },
+                                        // {
+                                        //     '<>': 'i',
+                                        //     'class': 'bi bi-info-circle fs-5 d-block'
+                                        // },
                                         {
                                             '<>': 'i',
                                             'class': 'bi bi-trash3 fs-5 d-block'

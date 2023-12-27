@@ -17,6 +17,12 @@ body {
     color: #DDD;
 }
 
+:root {
+    --episode-item-bg-color: #11111150;
+    --progress-bg-color: #20202090;
+    --progress-color: #11111180;
+}
+
 #search,
 #content-right-header,
 #content-right-body,

@@ -17,7 +17,7 @@
 
 :root {
     --primary-color: #2979FF;
-    /* --progress-bg-color: #d3d3d3; */
+    --episode-item-bg-color: #dedcdc50;
     --progress-bg-color: #dedcdc50;
     --progress-color: #b7b7b780;
 }
