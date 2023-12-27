@@ -72,3 +72,10 @@ I'd be happy to hear from you guys 💕
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
 - [Buy me a coffee: @poddycastapp](https://www.buymeacoffee.com/poddycastapp)
+
+
+# Sponsorship
+
+Want advertising space? Get in touch with us!
+
+Get your Podcast promoted directly on the screenshot here and/or on the website: [poddycast.app](https://www.poddycast.app/).
