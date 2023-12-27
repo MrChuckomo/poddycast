@@ -39,6 +39,7 @@ For some help and support check out the [documentation](https://www.poddycast.ap
 - Browse through the **History** of podcasts you've already listened to
 - See some **Statistics**
 - Manage **Playlists** for custom playback
+- Progress indicator for each episode
 - OPML Import & Export
 - Dark mode
 - Speedy playback
