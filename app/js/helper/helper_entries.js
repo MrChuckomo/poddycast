@@ -143,11 +143,27 @@ function getStatisticsElement(_Class, _Title, _Value) {
 }
 module.exports.getStatisticsElement = getStatisticsElement;
 
-function deleteEntryWithIcon(_Self) {
-    animation.playListDeleteAnimation(_Self.parentElement.parentElement);
+/**
+ * Delete an episode list item.
+ * @param {DOMElement} _Self The reference object, usually the deleteicon itself
+ * @param {number} _ParentLevel Control different hierarchy level (for differnt UI-layouts)
+ */
+function deleteEntryWithIcon(_Self, _ParentLevel) {
+    let ListItem = _Self.parentElement.parentElement;
+
+    switch (_ParentLevel) {
+        case 3:
+            ListItem = _Self.parentElement.parentElement.parentElement;
+            break;
+        default:
+            ListItem = _Self.parentElement.parentElement;
+            break;
+    }
+
+    animation.playListDeleteAnimation(ListItem);
 
     setTimeout(function () {
-        deleteEntry(_Self.parentElement.parentElement);
+        deleteEntry(ListItem);
     }, 500);
 }
 module.exports.deleteEntryWithIcon = deleteEntryWithIcon;

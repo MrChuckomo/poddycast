@@ -192,7 +192,7 @@ function showNewEpisodes() {
                                         // },
                                         {
                                             '<>': 'i',
-                                            'class': 'bi bi-trash3 fs-5 d-block'
+                                            'class': 'bi bi-trash3 fs-5 d-block',
                                         }
                                     ]
                                 }
@@ -232,6 +232,7 @@ function showNewEpisodes() {
             template.innerHTML = html.trim();
             let child = template.content.firstElementChild;
             child.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
+            child.querySelector('.bi-trash3').setAttribute('onclick', 'event.stopPropagation(); window.episodeAPI.delete(this, 3)');
             List.append(child);
         }
     }
