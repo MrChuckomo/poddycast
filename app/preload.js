@@ -136,7 +136,7 @@ ipcRenderer.on('ctx-podcast-command', (e, cmd, podcastName, playlistName, feedUr
  */
 contextBridge.exposeInMainWorld('episodeAPI', {
     add: (self) => feed.addToEpisodes(self),
-    delete: (self) => entries.deleteEntryWithIcon(self)
+    delete: (self, parentLevel) => entries.deleteEntryWithIcon(self, parentLevel)
 });
 
 

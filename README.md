@@ -39,6 +39,7 @@ For some help and support check out the [documentation](https://www.poddycast.ap
 - Browse through the **History** of podcasts you've already listened to
 - See some **Statistics**
 - Manage **Playlists** for custom playback
+- Progress indicator for each episode
 - OPML Import & Export
 - Dark mode
 - Speedy playback
@@ -48,7 +49,7 @@ For some help and support check out the [documentation](https://www.poddycast.ap
 
 ### All New Episodes
 
-![New Episodes Screenshot](img/new_episodes2.png)
+![New Episodes Screenshot](img/new_episodes3.png)
 
 ### Browse Podcast Feeds
 
@@ -71,3 +72,10 @@ I'd be happy to hear from you guys 💕
 - [Patreon: @poddycastapp](https://patreon.com/poddycastapp)
 - [Instagram: @poddycastapp](https://instagram.com/poddycastapp)
 - [Buy me a coffee: @poddycastapp](https://www.buymeacoffee.com/poddycastapp)
+
+
+# Sponsorship
+
+Want advertising space? Get in touch with us!
+
+Get your Podcast promoted directly on the screenshot here and/or on the website: [poddycast.app](https://www.poddycast.app/).

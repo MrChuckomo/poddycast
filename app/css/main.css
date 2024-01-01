@@ -15,6 +15,16 @@
     background-color: #bebebe;
 }
 
+:root {
+    --primary-color: #2979FF;
+    --episode-item-bg-color: #dedcdc50;
+    --progress-bg-color: #dedcdc50;
+    --progress-color: #b7b7b780;
+}
+
+.fs-7 {
+    font-size: 0.75rem !important;
+}
 
 body {
     margin: 0;

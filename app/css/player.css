@@ -167,12 +167,15 @@ button#content-right-player-speed-indicator {
     bottom: 3px;
 }
 
+.slider, .list-item-progress-container {
+    --theme-slider: #d3d3d3;
+}
+
 .slider {
     -webkit-appearance: none;
     width: 100%;
     height: 8px;
     border-radius: 5px;
-    --theme-slider: #d3d3d3;
     background: linear-gradient(to right, #448AFF 0%, #448AFF 0%, var(--theme-slider) 0%, var(--theme-slider) 100%);
     outline: none;
     opacity: 0.7;

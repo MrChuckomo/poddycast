@@ -134,7 +134,8 @@ function updateProgress() {
     // NOTE: just save every 10 sec.
 
     if (parseInt(Player.currentTime) % 10 === 0) {
-        savePlaybackPosition(PlayerSource.getAttribute('src'), Player.currentTime);
+        const Progress = Math.floor((100 * Player.currentTime) / Player.duration);
+        savePlaybackPosition(PlayerSource.getAttribute('src'), Player.currentTime, Progress);
     }
 
     if (Player.ended) {
@@ -169,11 +170,15 @@ function updateProgress() {
     // mainAppWindow.setProgressBar(Value / 100);
 }
 
-function seekProgress(value) {
+/**
+ * Handle interaction with the main progressbar.
+ * @param {number} _ProgressValue - value in percentage (0-100)
+ */
+function seekProgress(_ProgressValue) {
     let Player = document.getElementById('player');
     let PlayerSource = Player.getElementsByTagName('source')[0];
-    Player.currentTime = (value / 100) * Player.duration;
-    savePlaybackPosition(PlayerSource.getAttribute('src'), Player.currentTime);
+    Player.currentTime = (_ProgressValue / 100) * Player.duration;
+    savePlaybackPosition(PlayerSource.getAttribute('src'), Player.currentTime, _ProgressValue);
 }
 module.exports.seekProgress = seekProgress;
 
@@ -228,17 +233,17 @@ function setPlaybackTime(_Time, _ElementName) {
         TimeElement.innerHTML = player.getPrettyTime(FullTime.hours) + ':' + player.getPrettyTime(FullTime.minutes) + ':' + player.getPrettyTime(FullTime.seconds);
     }
 }
-function savePlaybackPosition(_Source, _CurrentTime) {
+function savePlaybackPosition(_Source, _CurrentTime, _Progress) {
     if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
         let JsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
 
-        for (let i = 0; i < JsonContent.length; i++) {
-            if (JsonContent[i].episodeUrl === _Source) {
-                JsonContent[i].playbackPosition = _CurrentTime;
+        JsonContent.find((item) => {
+            if (item.episodeUrl === _Source) {
+                item.playbackPosition = _CurrentTime;
+                item.progress = _Progress;
                 fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(JsonContent));
-                break;
             }
-        }
+        });
     }
 }
 

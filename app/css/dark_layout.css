@@ -17,6 +17,12 @@ body {
     color: #DDD;
 }
 
+:root {
+    --episode-item-bg-color: #11111150;
+    --progress-bg-color: #20202090;
+    --progress-color: #11111180;
+}
+
 #search,
 #content-right-header,
 #content-right-body,
@@ -109,10 +115,10 @@ input {
     fill: #FFF;
 }
 
-.podcast-entry:hover,
 .podcast-edit-entry:hover,
-.list-item-row-layout:hover {
-    background: #222;
+.list-item-row-layout:hover,
+li[aria-label="main-container"]:hover {
+    background: #222!important;
 }
 
 .select-episode:hover {
@@ -187,6 +193,6 @@ input[id=volume]::-webkit-slider-runnable-track {
     color: #FFF;
 }
 
-.slider {
+.slider, .list-item-progress-container {
     --theme-slider: #222;
 }

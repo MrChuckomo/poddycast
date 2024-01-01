@@ -71,32 +71,23 @@ function showNewEpisodes() {
                 Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName);
             }
 
-            let ListElement = listItem.buildListItem(new listItem.cListElement (
-                [
-                    listItem.getImagePart(Artwork),
-                    listItem.getBoldTextPart(JsonContent[i].episodeTitle),
-                    listItem.getSubTextPart((JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration),
-                    listItem.getTextPart(JsonContent[i].channelName),
-                    listItem.getDescriptionPart(infoIcon, JsonContent[i].episodeDescription),
-                    listItem.getIconButtonPart(deleteIcon)
-                ],
-                '5em 1fr 6em 1fr 5em 5em'
-            ), listItem.eLayout.row);
+            const JsonData = [
+                {
+                    'artwork': Artwork,
+                    'name': JsonContent[i].episodeTitle,
+                    'channel': JsonContent[i].channelName,
+                    'description': JsonContent[i].episodeDescription,
+                    'duration': (JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration,
+                    'progress': JsonContent[i].progress,
+                    'type': JsonContent[i].episodeType,
+                    'url': JsonContent[i].episodeUrl,
+                    'length': JsonContent[i].episodeLength,
+                    'episodeImagekUrl': JsonContent[i].episodeImage,
+                    'selected': (player.isPlaying(JsonContent[i].episodeUrl)) ? 'select-episode' : ''
+                }
+            ];
 
-            ListElement.setAttribute('channel', JsonContent[i].channelName);
-            ListElement.setAttribute('title', JsonContent[i].episodeTitle);
-            ListElement.setAttribute('type', JsonContent[i].episodeType);
-            ListElement.setAttribute('url', JsonContent[i].episodeUrl);
-            ListElement.setAttribute('length', JsonContent[i].episodeLength);
-            ListElement.setAttribute('artworkUrl', Artwork);
-            ListElement.setAttribute('episodeImagekUrl', JsonContent[i].episodeImage);
-            ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
-
-            if (player.isPlaying(JsonContent[i].episodeUrl)) {
-                ListElement.classList.add('select-episode');
-            }
-
-            List.append(ListElement);
+            List.append(listItem.renderNewEpisodeItem(JsonData));
         }
     }
 }
