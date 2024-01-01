@@ -10,7 +10,6 @@ const listItem = require('./list_item');
 const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./icons');
 const { handleDragStart } = require('./drag_handler');
 const { ipcRenderer } = require('electron');
-const json2html = require('node-json2html');
 
 const helper = new CContentHelper();
 const player = new CPlayer();
@@ -72,168 +71,23 @@ function showNewEpisodes() {
                 Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl100', 'collectionName', JsonContent[i].channelName);
             }
 
-            let ListElement = listItem.buildListItem(new listItem.cListElement (
-                [
-                    listItem.getImagePart(Artwork),
-                    listItem.getBoldTextPart(JsonContent[i].episodeTitle),
-                    listItem.getSubTextPart((JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration),
-                    listItem.getTextPart(JsonContent[i].channelName),
-                    listItem.getProgressPart(JsonContent[i].progress),
-                    listItem.getDescriptionPart(infoIcon, JsonContent[i].episodeDescription),
-                    listItem.getIconButtonPart(deleteIcon)
-                ],
-                '5em 1fr 6em 1fr 5em 5em 5em'
-            ), listItem.eLayout.row);
-
-            ListElement.setAttribute('channel', JsonContent[i].channelName);
-            ListElement.setAttribute('title', JsonContent[i].episodeTitle);
-            ListElement.setAttribute('type', JsonContent[i].episodeType);
-            ListElement.setAttribute('url', JsonContent[i].episodeUrl);
-            ListElement.setAttribute('length', JsonContent[i].episodeLength);
-            ListElement.setAttribute('artworkUrl', Artwork);
-            ListElement.setAttribute('episodeImagekUrl', JsonContent[i].episodeImage);
-            ListElement.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
-
-            if (player.isPlaying(JsonContent[i].episodeUrl)) {
-                ListElement.classList.add('select-episode');
-            }
-
-            // console.log(ListElement);
-
-            // List.append(ListElement);
-
-            let html = json2html.render(
-                [
-                    {
-                        'artwork': Artwork,
-                        'name': JsonContent[i].episodeTitle,
-                        'channel': JsonContent[i].channelName,
-                        'description': JsonContent[i].episodeDescription,
-                        'duration': (JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration,
-                        'progress': JsonContent[i].progress,
-                        'selected': (player.isPlaying(JsonContent[i].episodeUrl)) ? 'select-episode' : ''
-                    }
-                ],
+            const JsonData = [
                 {
-                    '<>': 'li',
-                    'class': 'card border-0 m-3 ${selected}',
-                    'aria-label': 'main-container',
-                    'style': 'background-color: var(--episode-item-bg-color)',
+                    'artwork': Artwork,
+                    'name': JsonContent[i].episodeTitle,
                     'channel': JsonContent[i].channelName,
-                    'title': JsonContent[i].episodeTitle,
+                    'description': JsonContent[i].episodeDescription,
+                    'duration': (JsonContent[i].duration === undefined) ? '' : JsonContent[i].duration,
+                    'progress': JsonContent[i].progress,
                     'type': JsonContent[i].episodeType,
                     'url': JsonContent[i].episodeUrl,
                     'length': JsonContent[i].episodeLength,
-                    'artworkUrl': Artwork,
                     'episodeImagekUrl': JsonContent[i].episodeImage,
-                    // 'onclick': 'window.audioAPI.clickEpisode(this)',
-                    'html': [
-                        {
-                            '<>': 'div', //* NOTE: Row #1
-                            'class': 'd-flex flex-row p-3 pb-2',
-                            'aria-label': 'main-layout',
-                            'html': [
-                                {
-                                    '<>': 'img',
-                                    'class': 'rounded shadow-sm',
-                                    'style': 'width: 55px; height: 55px',
-                                    'src': '${artwork}'
-                                },
-                                {
-                                    '<>': 'div',
-                                    'class': 'flex-fill px-3',
-                                    'aria-label': 'podcast-info',
-                                    'html': [
-                                        {
-                                            '<>': 'div',
-                                            'class': 'text-truncate fw-bold fs-6',
-                                            'style': 'max-width: 450px',
-                                            'text': '${name}'
-                                        },
-                                        {
-                                            '<>': 'div',
-                                            'class': 'fs-7',
-                                            'text': 'by ${channel}'
-                                        },
-                                        {
-                                            '<>': 'div',
-                                            'class': 'fs-7 opacity-75',
-                                            'html': [
-                                                { '<>': 'i', 'class': 'bi bi-stopwatch pe-1' },
-                                                { '<>': 'span', 'text': '${duration}' }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                // {
-                                //     '<>': 'a',
-                                //     'class': 'btn btn-primary',
-                                //     'data-bs-toggle': 'collapse',
-                                //     'href': '#collapseExample',
-                                //     'role': 'button',
-                                //     'aria-expanded': 'false',
-                                //     'aria-controls': 'collapseExample',
-                                //     'text': 'Desc'
-                                // },
-                                // {
-                                //     '<>': 'div',
-                                //     'id': 'collapseExample',
-                                //     'class': 'collapse',
-                                //     'html': '${description}'
-                                // },
-                                {
-                                    '<>': 'div',
-                                    'class': 'opacity-75 align-self-center px-3',
-                                    'aria-label': 'podcast-actions',
-                                    'html': [
-                                        // {
-                                        //     '<>': 'i',
-                                        //     'class': 'bi bi-info-circle fs-5 d-block'
-                                        // },
-                                        {
-                                            '<>': 'i',
-                                            'class': 'bi bi-trash3 fs-5 d-block',
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            '<>': 'div', //* NOTE: Row #2
-                            'class': 'd-flex flex-row',
-                            'aria-label': 'podcast-progress',
-                            'html': [
-                                {
-                                    '<>': 'div',
-                                    'class': 'progress rounded-0',
-                                    'style': 'height: 8px; width: 100%; background-color: var(--progress-bg-color)!important; border-radius: 0 0 0.375rem 0.375rem!important;',
-                                    'role': 'progressbar',
-                                    'aria-valuemin': '0',
-                                    'aria-valuemax': '100',
-                                    'html': [
-                                        {
-                                            '<>': 'div',
-                                            'class': 'progress-bar',
-                                            'style': 'width: ${progress}%; background-color: var(--progress-color)'
-
-                                            // ProgressElement.classList.add('list-item-progress-container');
-                                            // Progress.classList.add('list-item-progress');
-                                            // Progress.style.width = _Progress ? _Progress + '%' : '0%';
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
+                    'selected': (player.isPlaying(JsonContent[i].episodeUrl)) ? 'select-episode' : ''
                 }
-            );
+            ];
 
-            const template = document.createElement('template');
-            template.innerHTML = html.trim();
-            let child = template.content.firstElementChild;
-            child.setAttribute('onclick', 'window.audioAPI.clickEpisode(this)');
-            child.querySelector('.bi-trash3').setAttribute('onclick', 'event.stopPropagation(); window.episodeAPI.delete(this, 3)');
-            List.append(child);
+            List.append(listItem.renderNewEpisodeItem(JsonData));
         }
     }
 }
