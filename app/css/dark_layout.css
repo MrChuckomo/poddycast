@@ -115,7 +115,6 @@ input {
     fill: #FFF;
 }
 
-.podcast-entry:hover,
 .podcast-edit-entry:hover,
 .list-item-row-layout:hover,
 li[aria-label="main-container"]:hover {
