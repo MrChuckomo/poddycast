@@ -39,6 +39,12 @@ li[aria-label="main-container"].select-episode:hover {
     opacity: 0.7;
 }
 
+.list-item-icon:hover .bi-trash3,
+div[aria-label="podcast-actions"] .bi-trash3:hover {
+    color: #dc3545!important;
+    cursor: pointer;
+}
+
 .list-item-flag {
     border-radius: 4px;
     text-align: center;
