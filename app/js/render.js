@@ -50,6 +50,12 @@ document.getElementById('new_list-button').addEventListener('click', () => {
 });
 
 /**
+ * Sidebar toggle
+ */
+document.getElementById('sidebar-toggle').addEventListener('click', () => window.navAPI.toggleSidebar('hide_sidebar'));
+
+
+/**
  * Main navigation item actions
  */
 document.getElementById('menu-episodes').addEventListener('click', () => window.navAPI.clickEpisodes());

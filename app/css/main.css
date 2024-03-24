@@ -62,3 +62,22 @@ body {
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+#sidebar-toggle {
+    position: absolute;
+    top: 49px;
+    left: 288px;
+    z-index: 50;
+    font-size: .9rem;
+}
+
+#sidebar-toggle:hover, #sidebar-toggle i:hover {
+    background-color: #F2F2F2;
+    cursor: pointer;
+    opacity: 1;
+    transition: all .3s;
+}
+
+#sidebar-toggle i {
+    opacity: .5;
+}
