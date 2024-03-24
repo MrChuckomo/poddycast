@@ -59,6 +59,10 @@ For some help and support check out the [documentation](https://www.poddycast.ap
 
 ![Edit Playlist Screenshot](img/edit_playlist2.png)
 
+### Phone Size 
+
+<img src="img/poddycast-phone-size.png" alt="Phone size" style="height: 600px; display: block; margin-left: auto; margin-right: auto"/>
+
 ## Contact
 
 I'm always happy to help, and discuss new features.
