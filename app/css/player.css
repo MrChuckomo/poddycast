@@ -207,13 +207,29 @@ button#content-right-player-speed-indicator {
     transition: width .2s, height .2s;
 }
 
-
+/* Hide certain elements from audio-player */
 @media screen and (max-width: 899px) {
-    .slider {
+    .slider, #volume-button, #volume, #volume-fill {
         display: none;
     }
 }
 
+/* Truncate episode text based on screen width */
+@media screen and (min-width: 1200px) {
+    #list li div[aria-label="podcast-info"] > div.text-truncate {
+        max-width: 730px !important;
+    }
+}
+@media screen and (max-width: 640px) {
+    #list li div[aria-label="podcast-info"] > div.text-truncate {
+        max-width: 300px !important;
+    }
+}
+@media screen and (max-width: 500px) {
+    #list li div[aria-label="podcast-info"] > div.text-truncate {
+        max-width: 200px !important;
+    }
+}
 
 #content-right-player-progress-bar-progress {
     /* background-color: #039BE5; */
