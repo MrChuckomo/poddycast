@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 function CContentHelper () {
     // ---------------------------------------------------------------------------------------------------------------------
@@ -6,22 +6,22 @@ function CContentHelper () {
     // ---------------------------------------------------------------------------------------------------------------------
 
     this.clearContent = function () {
-        document.getElementById('list').innerHTML = ''
+        document.getElementById('list').innerHTML = '';
     }
 
     this.clearListSelection = function () {
-        let ListItems = document.getElementById('list').getElementsByTagName('li')
+        let ListItems = document.getElementById('list').getElementsByTagName('li');
 
         for (let i = 0; i < ListItems.length; i++) {
-            ListItems[i].classList.remove('select-episode')
+            ListItems[i].classList.remove('select-episode');
         }
     }
 
     this.setHeader = function (_Title) {
-        let Header = document.getElementById('content-right').getElementsByTagName('h1')[0]
+        let Header = document.getElementById('content-right').getElementsByTagName('h1')[0];
 
-        Header.innerHTML = _Title
+        Header.innerHTML = _Title;
     }
 }
 
-module.exports = CContentHelper
+module.exports = CContentHelper;
