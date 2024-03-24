@@ -33,7 +33,7 @@ function createWindow() {
         width: 1000,
         icon: trayIcon,
         minHeight: 600,
-        minWidth: 1000,
+        minWidth: 425,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,

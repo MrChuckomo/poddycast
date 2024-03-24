@@ -89,3 +89,11 @@ document.getElementById('playlists').addEventListener('dblclick', function (even
         });
     }
 });
+
+window.onresize = function (event) {
+    if (window.outerWidth <= 900) {
+        window.navAPI.hideSidebar();
+    } else {
+        window.navAPI.showSidebar();
+    }
+};
