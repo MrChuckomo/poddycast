@@ -17,7 +17,6 @@ h1 {
     overflow: auto;
     height: calc(100% - 59px);
     bottom: 59px;
-    border-left: 1px solid #E7E7E7;
     display: grid;
     grid-template-rows: 70px 1fr 0px;
     grid-template-columns: 100%;

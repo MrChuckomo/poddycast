@@ -118,6 +118,14 @@ function createWindow() {
                 },
                 { type: 'separator' },
                 {
+                    label: translate('Hide Sidebar'),
+                    type: 'checkbox',
+                    checked: global.getPreference('hide_sidebar', false),
+                    accelerator: 'CommandOrControl+S',
+                    click: () => win.webContents.send('trigger-menu', 'menu-sidebar:toggle', 'hide_sidebar')
+                },
+                { type: 'separator' },
+                {
                     label: translate('Reset Zoom'),
                     role: 'resetzoom'
                 },
@@ -285,7 +293,6 @@ function createWindow() {
     });
 
     ipcMain.handle('dark-mode:toggle', () => {
-        console.log('dark mode toogle');
         return true;
     });
 

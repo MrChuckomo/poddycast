@@ -3,6 +3,7 @@
     height: auto;
     width: 300px;
     bottom: 59px;
+    border-right: 1px solid #E7E7E7;
     top: 0px;
     display: grid;
     position: fixed;

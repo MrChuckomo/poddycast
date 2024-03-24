@@ -19,6 +19,7 @@ window.electronAPI.onTriggerMenu((_event, value, ...params) => {
         case 'menu-history': window.navAPI.clickHistory(); break;
         case 'menu-statistics': window.navAPI.clickStatistics(); break;
         case 'menu-new_list-input': window.navAPI.clickNewList(); break;
+        case 'menu-sidebar:toggle': window.navAPI.toggleSidebar(params[0]); break;
         case 'menu-color:system': window.colorAPI.system(); break;
         case 'menu-color:light': window.colorAPI.light(); break;
         case 'menu-color:dark': window.colorAPI.dark(); break;

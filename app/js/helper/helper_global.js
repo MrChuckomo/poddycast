@@ -3,6 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const darkMode = require('../dark_mode');
+const ui = require('../ui');
 
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL
@@ -71,6 +72,7 @@ function init() {
     }
 
     darkMode.initDarkMode();
+    ui.initSidebar();
 
     document.getElementById('volume').value = getPreference('volume');
     document.getElementById('volume').dispatchEvent(new Event('input'));
