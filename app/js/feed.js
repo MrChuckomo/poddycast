@@ -31,6 +31,10 @@ function readFeeds() {
         let feedUrl = '';
         let feedPromises = [];
         for (let i = 0; i < JsonContent.length; i++) {
+            // Do not query episodes if user does not want them in their inbox
+            if (!JsonContent[i].addToInbox) {
+                continue;
+            }
             feedUrl = JsonContent[i].feedUrl;
 
             feedPromises.push(
