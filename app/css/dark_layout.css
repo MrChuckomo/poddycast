@@ -130,6 +130,19 @@ li[aria-label="main-container"]:hover {
     border-left: 1px solid #111;
 }
 
+#content-left {
+    border-right: 1px solid #111;
+}
+
+#sidebar-toggle {
+    background: #222 !important;
+    border-color: #111 !important;
+}
+
+#sidebar-toggle:hover, #sidebar-toggle i:hover {
+    background: #222 !important;
+}
+
 #content-right-player svg,
 #content-right-header-actions svg,
 .list-item-icon svg {
