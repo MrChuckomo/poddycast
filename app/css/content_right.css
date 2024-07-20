@@ -23,18 +23,17 @@ h1 {
     grid-template-areas:
         "right-header"
         "list"
-        "audio-player"
+        "audio-player";
 }
 
 #content-right-header {
     grid-area: right-header;
-    background: #FFF;
+    background: #fff;
     padding: 0;
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 85px;
 }
-
 
 #content-right-header-actions {
     /* opacity: 0.8; */
@@ -42,7 +41,7 @@ h1 {
 }
 
 #content-right-header-actions svg {
-    border: 1px solid #EEE;
+    border: 1px solid #eee;
     border-radius: 4px;
     padding: 0.2em;
     padding-left: 0.8em;
@@ -52,16 +51,16 @@ h1 {
 }
 
 #content-right-header-actions svg:hover {
-    border-color: #CCC;
+    border-color: #ccc;
 }
 
 #content-right-header-actions svg:active {
-    background-color: #EEE;
+    background-color: #eee;
 }
 
 #content-right-body {
     grid-area: list;
-    background: #FFF;
+    background: #fff;
     /*height: calc(100% - 4.5em);*/
     overflow: auto;
 }
@@ -87,7 +86,7 @@ h1 {
     margin-bottom: 0.5em;
     font-size: 22px;
     font-weight: bold;
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 }
 
 .statistics-entry {
@@ -99,8 +98,7 @@ h1 {
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-        "stats-title stats-value";
+    grid-template-areas: "stats-title stats-value";
 }
 
 .statistics-entry-title {
@@ -113,7 +111,7 @@ h1 {
 
 .podcast-entry {
     background-color: inherit;
-    border-bottom: 1px solid #DDD;
+    border-bottom: 1px solid #ddd;
     display: grid;
     grid-template-rows: 1fr none;
     grid-template-columns: 1fr 4em;
@@ -157,7 +155,7 @@ h1 {
 .podcast-entry:hover,
 .podcast-episode-entry:hover,
 .podcast-favorites-entry:hover {
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 }
 
 .podcast-entry svg,
@@ -173,8 +171,8 @@ h1 {
 .podcast-episode-entry svg:hover,
 .podcast-favorites-entry svg:hover,
 .set-favorite {
-    fill: #E91E63;
-    color: #E91E63;
+    fill: #e91e63;
+    color: #e91e63;
     /* opacity: 0.7; */
 }
 
@@ -222,8 +220,8 @@ h1 {
     content: "Done";
     font-size: 11px;
     /*background: #039BE5;*/
-    background: #4CAF50;
-    color: #FFF;
+    background: #4caf50;
+    color: #fff;
     padding: 0.3em;
     padding-left: 0.8em;
     padding-right: 0.8em;
@@ -239,7 +237,21 @@ h1 {
 .grid-layout {
     display: grid;
     padding-top: 1em;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+@media screen and (min-width: 600px) {
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 750px) {
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
 }
 
 @media screen and (min-width: 1200px) {
@@ -325,7 +337,8 @@ h1 {
 }
 
 /* Styles for Podcast Feed with working URL */
-.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-working img {}
+.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-working img {
+}
 
 .grid-layout .podcast-entry .podcast-entry-header img {
     grid-area: pimage;
@@ -356,14 +369,14 @@ h1 {
 .grid-layout .podcast-entry .podcast-entry-header img:hover {
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
     scale: 1.1;
-    transition: .3s ease-out;
+    transition: 0.3s ease-out;
 }
 
 .grid-layout .podcast-entry .podcast-entry-header img:active {
     box-shadow: none;
     scale: 0.9;
     filter: grayscale(80%);
-    border: 2px solid #448AFF;
+    border: 2px solid #448aff;
     transition: none;
 }
 
@@ -373,41 +386,39 @@ h1 {
 
 .select-episode {
     /* background: #039BE5; */
-    background-color: #448AFF!important;
+    background-color: #448aff !important;
 }
 
 .select-episode:hover {
     /* background: #0288D1; */
-    background: #2979FF;
+    background: #2979ff;
 }
 
 .select-episode div {
-    color: #FFF;
+    color: #fff;
 }
 
 .select-episode svg {
-    fill: #FFF;
+    fill: #fff;
     opacity: 0.8;
 }
 
 .select-episode svg:hover {
-    fill: #FFF;
+    fill: #fff;
     opacity: 1;
 }
-
 
 /* ------------------------------------------------------------------------------------------------------------------ */
 
 .settings {
-    border-bottom: 1px solid #E0E0E0;
+    border-bottom: 1px solid #e0e0e0;
     padding: 0.5em;
     padding-left: 2em;
     padding-right: 2em;
     display: grid;
     grid-template-columns: 60px 1fr 1fr 45px;
     grid-template-rows: 1fr;
-    grid-template-areas:
-        "image name items button";
+    grid-template-areas: "image name items button";
 }
 
 .settings-image {
@@ -460,9 +471,9 @@ h1 {
 }
 
 .edit-header button:hover {
-    color: #FFF;
-    background: #E53935;
-    border-color: #E53935;
+    color: #fff;
+    background: #e53935;
+    border-color: #e53935;
 }
 
 .podcast-edit-entry {
@@ -475,7 +486,7 @@ h1 {
 }
 
 .podcast-edit-entry:hover {
-    background: #F2F2F2;
+    background: #f2f2f2;
 }
 
 .podcast-edit-entry span {
@@ -488,11 +499,11 @@ h1 {
 }
 
 .uncheck svg {
-    fill: #DDD;
+    fill: #ddd;
 }
 
 .check svg {
-    fill: #448AFF;
+    fill: #448aff;
 }
 
 .playlist-edit-input {
@@ -500,7 +511,7 @@ h1 {
     margin-left: 2em;
     margin-right: 2em;
     outline: none;
-    border: 1px solid #DDD;
+    border: 1px solid #ddd;
     background-color: #f9f9f9;
     font-size: 16px;
     padding: 0.7em;
