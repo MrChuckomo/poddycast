@@ -33,6 +33,7 @@ function getResults(searchData) {
     let List = document.getElementById('list');
 
     navigation.setGridLayout(List, false);
+    navigation.setFlowLayout(List, true);
 
     searchData.results.forEach(episode => {
         let PodcastInfos = {
@@ -40,25 +41,13 @@ function getResults(searchData) {
             'artworkUrl100': episode.artworkUrl100,
             'artworkUrl30': episode.artworkUrl30,
             'artworkUrl60': episode.artworkUrl60,
+            'artworkUrl600': episode.artworkUrl600,
             'collectionName': episode.collectionName,
-            'feedUrl': episode.feedUrl
+            'feedUrl': episode.feedUrl,
         };
 
-        let Icon = getIcon(PodcastInfos);
-
-        if (global.isAlreadySaved(PodcastInfos.feedUrl)) {
-            Icon = getFullIcon(PodcastInfos);
-        }
-
-        List.append(listItem.buildListItem(new listItem.cListElement (
-            [
-                listItem.getImagePart(episode.artworkUrl60),
-                listItem.getBoldTextPart(episode.collectionName),
-                listItem.getSubTextPart(episode.artistName),
-                listItem.getIconButtonPart(Icon)
-            ],
-            '5em 1fr 1fr 5em'
-        ), listItem.eLayout.row));
+        PodcastInfos['isFullIcon'] = global.isAlreadySaved(PodcastInfos.feedUrl)
+        List.append(listItem.renderNewSearchResultItem(PodcastInfos));
     });
 }
 

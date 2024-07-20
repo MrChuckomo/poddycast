@@ -109,6 +109,7 @@ function updatePlaylistId(_OldName, _NewName) {
 }
 
 function setGridLayout(_List, _Enable) {
+    resetLayout(_List);
     if (_Enable) {
         _List.classList.add('grid-layout');
     } else {
@@ -117,8 +118,22 @@ function setGridLayout(_List, _Enable) {
 }
 module.exports.setGridLayout = setGridLayout;
 
+function setFlowLayout(_List, _Enable) {
+    resetLayout(_List);
+    (_Enable)
+        ? _List.classList.add('d-flex', 'flex-wrap')
+        : _List.classList.remove('d-flex', 'flex-wrap');
+}
+module.exports.setFlowLayout = setFlowLayout;
+
+function resetLayout(_List) {
+    _List.classList.remove('grid-layout');
+    _List.classList.remove('d-flex', 'flex-wrap');
+}
+
+
 // ---------------------------------------------------------------------------------------------------------------------
-// RIGHT COLUMN
+// MARK: RIGHT COLUMN
 // ---------------------------------------------------------------------------------------------------------------------
 
 function setHeaderViewAction(_Mode) {
@@ -157,7 +172,7 @@ function toggleList(_View) {
 module.exports.toggleList = toggleList;
 
 // ---------------------------------------------------------------------------------------------------------------------
-// MENU & PLAYLISTS
+// MARK: MENU & PLAYLISTS
 // ---------------------------------------------------------------------------------------------------------------------
 
 function clearMenuSelection() {

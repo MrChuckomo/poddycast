@@ -13,7 +13,7 @@
     margin: .5rem;
 }
 
-.list-item-row-layout:hover, 
+.list-item-row-layout:hover,
 li[aria-label="main-container"]:hover {
     background-color: #ececec!important;
 }
@@ -88,4 +88,8 @@ div[aria-label="podcast-actions"] .bi-trash3:hover {
     height: 100%;
     background-color: var(--primary-color);
     border-radius: 3px;
+}
+
+i.bi.bi-bookmark-heart.opacity-50:hover {
+    opacity: 1!important;
 }

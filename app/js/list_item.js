@@ -145,7 +145,7 @@ function getProgressPart(_Progress) {
 module.exports.getProgressPart = getProgressPart;
 
 // * ---------------------------------------------------------------------------------------------------------------------
-// * NEW Render Section using Json2Html
+// * MARK: NEW Render Section using Json2Html
 
 /**
  * @param {object} _JsonData - Array of objects, keys used in template
@@ -231,7 +231,7 @@ function renderNewEpisodeItem(_JsonData) {
                                 // },
                                 {
                                     '<>': 'i',
-                                    'class': 'bi bi-trash3 fs-5 d-block',
+                                    'class': 'bi bi-trash3 fs-5 d-block'
                                 }
                             ]
                         }
@@ -284,3 +284,91 @@ function renderNewEpisodeItem(_JsonData) {
     return child;
 }
 module.exports.renderNewEpisodeItem = renderNewEpisodeItem;
+
+/**
+ * @param {object} _JsonData - Array of objects, keys used in template
+ * @returns {DOMElement}
+ */
+function renderNewSearchResultItem(_JsonData) {
+    let html = json2html.render(_JsonData,
+        {
+            '<>': 'li',
+            'class': 'card border-0 m-2',
+            'aria-label': 'main-container',
+            'style': 'background-color: var(--episode-item-bg-color)',
+            'title': '${collectionName}',
+            'artist': '${artistName}',
+            'url': '${feedUrl}',
+            'artworkUrl': '${artworkUrl100}',
+            'html': [
+                {
+                    '<>': 'div',
+                    'class': 'd-flex flex-row p-1',
+                    'aria-label': 'main-layout',
+                    'html': [
+                        {
+                            '<>': 'img',
+                            'class': 'rounded shadow-sm',
+                            'style': 'width: 92px; height: 92px',
+                            'src': '${artworkUrl100}'
+                        },
+                        {
+                            '<>': 'div',
+                            'class': 'ps-3 pe-1 d-flex align-items-start flex-column',
+                            'html': [
+                                {
+                                    '<>': 'i',
+                                    'class': (obj, _) => {
+                                        return (obj.isFullIcon)
+                                            ? 'mb-auto ms-auto fs-4 bi bi-bookmark-heart-fill set-favorite'
+                                            : 'mb-auto ms-auto fs-4 bi bi-bookmark-heart opacity-50';
+                                    }
+                                },
+                                {
+                                    '<>': 'div',
+                                    'class': 'd-inline-block text-truncate fw-bold fs-6',
+                                    'style': 'width: 190px',
+                                    'text': '${collectionName}'
+                                },
+                                {
+                                    '<>': 'div',
+                                    'class': 'd-inline-block text-truncate fs-7',
+                                    'style': 'width: 190px',
+                                    'text': '${artistName}'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    );
+
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+
+    let child = template.content.firstElementChild;
+
+    // Action to subscribe to the Podcast
+    child.querySelector('.bi-bookmark-heart')?.setAttribute(
+        'onclick',
+        `window.navAPI.subscribePodcast(
+            this,
+            "${_JsonData.artistName}",
+            "${_JsonData.collectionName}",
+            "${_JsonData.artworkUrl30}",
+            "${_JsonData.artworkUrl60}",
+            "${_JsonData.artworkUrl100}",
+            "${_JsonData.feedUrl}"
+        )`
+    );
+
+    // TODO: Action to unsubscribe to the Podcast
+    // child.querySelector('.bi-bookmark-heart-fill')?.setAttribute(
+    //   'onclick',
+    //   'window.navAPI.subscribePodcast(this)'
+    // )
+
+    return child;
+}
+module.exports.renderNewSearchResultItem = renderNewSearchResultItem;
