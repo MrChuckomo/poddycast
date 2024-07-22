@@ -43,7 +43,7 @@ function getResults(searchData) {
             'artworkUrl60': episode.artworkUrl60,
             'artworkUrl600': episode.artworkUrl600,
             'collectionName': episode.collectionName,
-            'feedUrl': episode.feedUrl,
+            'feedUrl': episode.feedUrl
         };
 
         PodcastInfos['isFullIcon'] = global.isAlreadySaved(PodcastInfos.feedUrl)

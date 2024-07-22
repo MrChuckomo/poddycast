@@ -7,6 +7,7 @@ function CContentHelper () {
 
     this.clearContent = function () {
         document.getElementById('list').innerHTML = '';
+        document.getElementById('detail-sub-content').innerHTML = '';
     }
 
     this.clearListSelection = function () {

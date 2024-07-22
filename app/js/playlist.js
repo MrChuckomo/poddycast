@@ -12,6 +12,7 @@ const navigation = require('./helper/helper_navigation');
 const entries = require('./helper/helper_entries');
 const dragHandler = require('./drag_handler');
 const listItem = require('./list_item');
+const ui = require('./ui');
 const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
 // const i18n = window.i18n;
 
@@ -76,6 +77,9 @@ function createPlaylist(_Value, _KeyCode) {
 }
 module.exports.createPlaylist = createPlaylist;
 
+/**
+ * "Add"-button click handler to create a new playlist.
+ */
 function onPlaylistButtonClicked() {
     let inputField = document.getElementById('new_list-input');
     if (inputField.value === '') {
@@ -87,6 +91,9 @@ function onPlaylistButtonClicked() {
 }
 module.exports.onPlaylistButtonClicked = onPlaylistButtonClicked;
 
+/**
+ * Left panel playlist item loading.
+ */
 function loadPlaylists() {
     let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
 
@@ -276,6 +283,11 @@ function showEditPage(_Self) {
 }
 module.exports.showEditPage = showEditPage;
 
+/**
+ * Load the actual playlist-detail view.
+ * Show all episodes inside the playlist.
+ * @param {this} _Self
+ */
 function showPlaylistContent(_Self) {
     let PlaylistName = _Self.getElementsByTagName('input')[0].value;
 
@@ -293,6 +305,7 @@ function showPlaylistContent(_Self) {
     _Self.classList.add('selected');
 
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
+    let episodeCount = 0;
 
     for (let i = 0; i < JsonContent.length; i++) {
         // if (_Self.innerHTML === JsonContent[i].playlistName)
@@ -341,6 +354,7 @@ function showPlaylistContent(_Self) {
                         for (let j = 0; j < JsonContent[i].podcastList.length; j++) {
                             if (NewEpisodesJsonContent[a].channelName === JsonContent[i].podcastList[j]) {
                                 List.append(ListElement);
+                                episodeCount ++;
                                 break;
                             }
                         }
@@ -351,5 +365,7 @@ function showPlaylistContent(_Self) {
             break;
         }
     }
+
+    ui.setDetailPanelSubContent(episodeCount + ' ITEMS')
 }
 module.exports.showPlaylistContent = showPlaylistContent;

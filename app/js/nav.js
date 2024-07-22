@@ -7,6 +7,7 @@ const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
 const entries = require('./helper/helper_entries');
 const listItem = require('./list_item');
+const ui = require('./ui');
 const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./icons');
 const { handleDragStart } = require('./drag_handler');
 const { ipcRenderer } = require('electron');
@@ -63,6 +64,7 @@ function showNewEpisodes() {
         let List = document.getElementById('list');
 
         navigation.setGridLayout(List, false);
+        ui.setDetailPanelSubContent(JsonContent.length + ' ITEMS');
 
         for (let i = 0; i < JsonContent.length; i++) {
             let Artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl60', 'collectionName', JsonContent[i].channelName);
