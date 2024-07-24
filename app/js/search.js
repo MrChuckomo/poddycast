@@ -10,38 +10,74 @@ const entries = require('./helper/helper_entries');
 const { ipcRenderer } = require('electron');
 
 
-function search(_Value, _Key) {
-    if (_Key === 'Enter') {
-        helper.clearContent();
-        navigation.setHeaderViewAction();
-        navigation.clearMenuSelection();
-        ipcRenderer.invoke('i18n', 'Search').then((title) => helper.setHeader(title));
-        document.getElementById('res').setAttribute('return-value', '');
+// ---------------------------------------------------------------------------------------------------------------------
 
-        if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {
-            getPodcastsFromFeed(_Value);
-        } else {
-            itunes.getPodcasts(_Value);
-        }
-    } else if (_Key === 'Escape') {
-        document.getElementById('search-input').value = '';
+function search(_Value, _Key) {
+    switch (_Key) {
+        case 'Enter': doSearch(_Value); break;
+        case 'Escape': clearSearch(); break;
+        default: break;
     }
 }
 module.exports.search = search;
 
+
 // ---------------------------------------------------------------------------------------------------------------------
 
-function getPodcastsFromFeed(feedUrl) {
-    request.requestPodcastFeed(feedUrl).then(result => {
-        getFeedResults(result);
+/**
+ * @private
+ * Do the actual search work.
+ * @param {string} _Value
+ */
+function doSearch(_Value) {
+    helper.clearContent();
+    navigation.setHeaderViewAction();
+    navigation.clearMenuSelection();
+    ipcRenderer.invoke('i18n', 'Search').then((title) => helper.setHeader(title));
+    document.getElementById('res').setAttribute('return-value', '');
+
+    if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {
+        getPodcastsFromFeed(_Value);
+    } else {
+        itunes.getPodcasts(_Value);
+    }
+}
+
+/**
+ * @private
+ */
+function clearSearch() {
+    document.getElementById('search-input').value = '';
+}
+
+
+// ---------------------------------------------------------------------------------------------------------------------
+// MARK: Patreon feeds
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @private
+ * Handles directly pasted feed URLs in the search field.
+ * @param {string} _FeedUrl
+ */
+function getPodcastsFromFeed(_FeedUrl) {
+    request.requestPodcastFeed(_FeedUrl).then(result => {
+        renderFeedResults(result);
     });
 }
 
-function getFeedResults(podcastObject) {
+/**
+ * @private
+ * Render a search result for the pasted feed.
+ * @param {object} _PodcastObject
+ */
+function renderFeedResults(_PodcastObject) {
 
-    const Image = podcastObject.image;
+    const Image = _PodcastObject.image;
     // this is a catch for Patreon feeds which do not have an author value
-    const Author = podcastObject.items[0].author === undefined ? podcastObject.title : podcastObject.items[0].author;
+    const Author = _PodcastObject.items[0].author === undefined
+        ? _PodcastObject.title
+        : _PodcastObject.items[0].author;
 
     if (Image === undefined || Author === undefined) {
         console.log(podcastObject);
@@ -69,5 +105,11 @@ function getFeedResults(podcastObject) {
         Icon = itunes.getFullIcon(PodcastInfos);
     }
 
-    List.append(entries.getPodcastElement(null, PodcastInfos.artworkUrl60, PodcastInfos.artistName, PodcastInfos.collectionName, Icon));
+    List.append(entries.getPodcastElement(
+        null,
+        PodcastInfos.artworkUrl60,
+        PodcastInfos.artistName,
+        PodcastInfos.collectionName,
+        Icon)
+    );
 }
