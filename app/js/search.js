@@ -37,7 +37,7 @@ function doSearch(_Value) {
     document.getElementById('res').setAttribute('return-value', '');
 
     if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {
-        getPodcastsFromFeed(_Value);
+        processPodcastsFromFeed(_Value);
     } else {
         itunes.getPodcasts(_Value);
     }
@@ -52,15 +52,15 @@ function clearSearch() {
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// MARK: Patreon feeds
+// MARK: RSS feed URLs
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
  * @private
- * Handles directly pasted feed URLs in the search field.
+ * Handles directly pasted feed URLs from the search field.
  * @param {string} _FeedUrl
  */
-function getPodcastsFromFeed(_FeedUrl) {
+function processPodcastsFromFeed(_FeedUrl) {
     request.requestPodcastFeed(_FeedUrl).then(result => {
         renderFeedResults(result);
     });
@@ -80,7 +80,7 @@ function renderFeedResults(_PodcastObject) {
         : _PodcastObject.items[0].author;
 
     if (Image === undefined || Author === undefined) {
-        console.log(podcastObject);
+        console.log(_PodcastObject);
         console.error('Invalid RSS podcast feed');
     }
 
@@ -91,25 +91,23 @@ function renderFeedResults(_PodcastObject) {
     navigation.setGridLayout(List, false);
 
     let PodcastInfos = {
-        'feedUrl': podcastObject.link,
+        'feedUrl': _PodcastObject.link,
         'artistName': Author,
-        'collectionName': podcastObject.title,
+        'collectionName': _PodcastObject.title,
         'artworkUrl30': Image,
         'artworkUrl60': Image,
         'artworkUrl100': Image
     };
 
-    let Icon = itunes.getIcon(PodcastInfos);
-
-    if (global.isAlreadySaved(PodcastInfos.feedUrl)) {
-        Icon = itunes.getFullIcon(PodcastInfos);
-    }
+    let Icon = (global.isAlreadySaved(PodcastInfos.feedUrl))
+        ? itunes.getFullIcon(PodcastInfos)
+        : itunes.getIcon(PodcastInfos);
 
     List.append(entries.getPodcastElement(
         null,
         PodcastInfos.artworkUrl60,
         PodcastInfos.artistName,
         PodcastInfos.collectionName,
-        Icon)
-    );
+        Icon
+    ));
 }
