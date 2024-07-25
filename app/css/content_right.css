@@ -309,14 +309,25 @@ h1 {
     position: relative;
 }
 
+/* MARK: Feed Error State */
 .grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken img {
     border: 2px solid red;
+    filter: grayscale(.6);
 }
 
 .icon-link-broken-wrapper {
-    position: absolute;
-    top: 0;
-    right: 4px;
+    position: absolute!important;
+    /* top: 0;
+    right: 4px; */
+
+    /* inset: 0; */
+
+    top: 24px;
+    /* bottom: 0; */
+    left: 0;
+    right: 0;
+    margin: auto;
+
     background: #fff;
     border-radius: 50%;
     padding: 8px;

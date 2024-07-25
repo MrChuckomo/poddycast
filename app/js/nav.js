@@ -129,7 +129,7 @@ function showFavorites() {
                 if (JsonContent[i].feedUrlStatus >= 400) {
                     let brokenLinkIconElement = document.createElement('span');
                     brokenLinkIconElement.innerHTML = brokenLinkIcon;
-                    brokenLinkIconElement.classList.add('icon-link-broken-wrapper');
+                    brokenLinkIconElement.classList.add('icon-link-broken-wrapper', 'alert', 'alert-danger');
                     brokenLinkIconElement.setAttribute('title', 'Podcast feed URL is broken.');
 
                     HeaderElement.append(brokenLinkIconElement);
