@@ -11,7 +11,8 @@ const axiosInstance = axios.create({
     // fixes issue with proxy mode due to how electron apps are packaged
     adapter: 'http',
     headers: {
-        'Accept': 'application/xml, text/xml'
+        'Accept': 'application/xml, text/xml',
+        'User-Agent': 'Poddcast App'
     }
 });
 
@@ -120,7 +121,7 @@ function requestPodcastFeed(feedUrl, returnRawData) {
                 }
             })
             .catch(function (error) {
-                console.log(feedUrl);
+                console.error('Broken FeedUrl:', feedUrl);
                 updateFeedStatus(feedUrl, 503);
                 reject(error);
             });

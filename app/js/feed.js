@@ -96,8 +96,12 @@ function showAllEpisodes(element) {
 }
 module.exports.showAllEpisodes = showAllEpisodes;
 
+/**
+ * Podcast settings area at the top of the podcast detail view.
+ * @param {string} _PodcastName
+ * @param {*} _Feed
+ */
 function appendSettingsSection(_PodcastName, _Feed) {
-    // NOTE: settings area in front of a podcast episode list
     let RightContent = document.getElementById('list');
 
     let SettingsDiv = document.createElement('div');
@@ -130,6 +134,12 @@ function appendSettingsSection(_PodcastName, _Feed) {
     RightContent.append(SettingsDiv);
 }
 
+/**
+ * Podcast-Feed detail page (three-dot)-"more"-button
+ * @param {*} _Element
+ * @param {*} _PodcastName
+ * @param {*} _Feed
+ */
 function setPodcastSettingsMenu(_Element, _PodcastName, _Feed) {
     const PlaylistMenu = [];
 
@@ -156,8 +166,8 @@ function setPodcastSettingsMenu(_Element, _PodcastName, _Feed) {
 /**
  * Connect a podcast with playlist e.g. when you use the seetings menu in
  * the podcast detail view.
- * @param {str} _PodcastName
- * @param {str} _PlaylistName
+ * @param {string} _PodcastName
+ * @param {string} _PlaylistName
  */
 function addToPlaylist(_PodcastName, _PlaylistName) {
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
