@@ -13,6 +13,7 @@ const entries = require('./helper/helper_entries');
 const dragHandler = require('./drag_handler');
 const listItem = require('./list_item');
 const ui = require('./ui');
+const { loadAllPlaylists } = require('./classes/playlist');
 const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
 // const i18n = window.i18n;
 
@@ -92,30 +93,26 @@ function onPlaylistButtonClicked() {
 module.exports.onPlaylistButtonClicked = onPlaylistButtonClicked;
 
 /**
- * Left panel playlist item loading.
+ * Left panel playlist.
+ * Item loading and DOM element builder.
  */
 function loadPlaylists() {
-    let PlaylistList = document.getElementById('playlists').getElementsByTagName('ul')[0];
+    let allPlaylists = loadAllPlaylists();
+    let ListOfPlaylists = document.getElementById('playlists').getElementsByTagName('ul')[0];
 
-    if (global.fileExistsAndIsNotEmpty(global.playlistFilePath)) {
-        let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
-
-        for (let i = 0; i < JsonContent.length; i++) {
-            let PlaylistEntry = document.createElement('li');
-            PlaylistEntry.id = 'playlist-' + JsonContent[i].playlistName.toLowerCase().replaceAll(' ', '-');
-            PlaylistEntry.classList.add('mx-2', 'rounded-3', 'fw-light');
-            PlaylistEntry.addEventListener('dragenter', dragHandler.handleDragEnter, false);
-            PlaylistEntry.addEventListener('dragover', dragHandler.handleDragOver, false);
-            PlaylistEntry.addEventListener('dragleave', dragHandler.handleDragLeave, false);
-            PlaylistEntry.addEventListener('drop', dragHandler.handleDrop, false);
-            PlaylistEntry.append(getInputEntry(JsonContent[i].playlistName));
-            PlaylistEntry.setAttribute('onclick', 'window.playlistAPI.clickItem(this);');
-
-            setContextMenu(PlaylistEntry, JsonContent[i].playlistName);
-
-            PlaylistList.append(PlaylistEntry);
-        }
-    }
+    allPlaylists.forEach((playlist) => {
+        let PlaylistDomElement = document.createElement('li');
+        PlaylistDomElement.id = playlist.id;
+        PlaylistDomElement.classList.add('mx-2', 'rounded-3', 'fw-light');
+        PlaylistDomElement.addEventListener('dragenter', dragHandler.handleDragEnter, false);
+        PlaylistDomElement.addEventListener('dragover', dragHandler.handleDragOver, false);
+        PlaylistDomElement.addEventListener('dragleave', dragHandler.handleDragLeave, false);
+        PlaylistDomElement.addEventListener('drop', dragHandler.handleDrop, false);
+        PlaylistDomElement.append(getInputEntry(playlist.playlistName));
+        PlaylistDomElement.setAttribute('onclick', 'window.playlistAPI.clickItem(this);');
+        setContextMenu(PlaylistDomElement, playlist.playlistName);
+        ListOfPlaylists.append(PlaylistDomElement);
+    })
 }
 module.exports.loadPlaylists = loadPlaylists;
 
@@ -284,6 +281,7 @@ function showEditPage(_Self) {
 module.exports.showEditPage = showEditPage;
 
 /**
+ * TODO: Replace with new CPlaylist class
  * Load the actual playlist-detail view.
  * Show all episodes inside the playlist.
  * @param {this} _Self
@@ -366,6 +364,6 @@ function showPlaylistContent(_Self) {
         }
     }
 
-    ui.setDetailPanelSubContent(episodeCount + ' ITEMS')
+    ui.setDetailPanelSubContent(episodeCount + ' ITEMS');
 }
 module.exports.showPlaylistContent = showPlaylistContent;
