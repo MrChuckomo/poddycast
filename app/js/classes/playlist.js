@@ -14,8 +14,8 @@ class CPlaylist {
     }
 
     addItem(item) {
-        this.items.push(item)
-        this.items.append(item)
+        this.items.push(item);
+        this.items.append(item);
     }
 
     removeItem(item) {
@@ -31,7 +31,7 @@ class CPlaylist {
 module.exports.CPlaylist = CPlaylist;
 
 function getLatestEpisodePlaylist() {
-    CPlaylist()
+    CPlaylist();
 }
 
 /**
@@ -63,7 +63,7 @@ module.exports.loadAllPlaylists = loadAllPlaylists;
  * @returns {Array}
  */
 function getEpisodesInPlayist(_PlaylistName) {
-    let Episodes = []
+    let Episodes = [];
     let JsonContent = JSON.parse(fs.readFileSync(global.playlistFilePath, 'utf-8'));
 
     for (let i = 0; i < JsonContent.length; i++) {
@@ -98,11 +98,11 @@ function getEpisodesInPlayist(_PlaylistName) {
                 if (NewEpisodesJsonContent[a].channelName !== JsonContent[i].podcastList[j]) {
                     continue;
                 }
-                Episodes.push(EpisodeItem)
+                Episodes.push(EpisodeItem);
             }
         }
     }
 
-    return Episodes
+    return Episodes;
 }
 module.exports.getEpisodesInPlayist = getEpisodesInPlayist;
