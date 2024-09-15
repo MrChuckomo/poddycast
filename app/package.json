@@ -29,7 +29,8 @@
         "bootstrap-icons": "1.8.3",
         "electron": "22.3.25",
         "fast-xml-parser": "4.4.1",
-        "node-json2html": "3.0.0"
+        "node-json2html": "3.0.0",
+        "node-vibrant": "3.2.1-alpha.1"
     },
     "devDependencies": {
         "electron-packager": "^17.1.2",

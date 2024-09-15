@@ -8,6 +8,8 @@ const global = require('./helper/helper_global');
 const entries = require('./helper/helper_entries');
 const navigation = require('./helper/helper_navigation');
 const Slider = require('./slider_class');
+const Vibrant = require('node-vibrant');
+const anime = require('animejs');
 
 let helper = new CContentHelper();
 let player = new CPlayer();
@@ -60,12 +62,39 @@ function playNow(_Self) {
         togglePlayPauseButton();
     }
 
+    activateArtworkAnimation(img);
+
     // TODO: needs new solution cause of IPC
     // const mainAppWindow = BrowserWindow.getAllWindows()[0];
     // mainAppWindow.setTitle(_Self.getAttribute('title'));
 }
 module.exports.playNow = playNow;
 
+
+/**
+ * Pick the most prominent color from the artwork
+ * and setup an animation.
+ *
+ * @param {String} img Artwork URL
+ */
+function activateArtworkAnimation(img) {
+    Vibrant.from(img).getPalette((err, palette) => {
+        document.getElementById('content-right-player-img').style.boxShadow = `
+            ${palette.Vibrant.hex} 0 -2px 10px,
+            ${palette.Muted.hex} 0 -18px 40px
+        `;
+
+        anime({
+            targets: ['#content-right-player-img'],
+            opacity: [.5, 1],
+            duration: 1200,
+            loop: true,
+            direction: 'alternate',
+            easing: 'easeInOutSine'
+        });
+
+    });
+}
 
 /*
     Select a new list item. The current selection is cleared in any case.
