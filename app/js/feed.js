@@ -201,7 +201,9 @@ module.exports.addToPlaylist = addToPlaylist;
 function displayEpisodesInList(podcastObject) {
     const channelName = podcastObject.title;
     const artwork = global.getValueFromFile(global.saveFilePath, 'artworkUrl60', 'collectionName', channelName);
-    document.getElementsByClassName('settings-image')[0].src = global.sanitizeString(artwork);
+    document.getElementsByClassName('settings-image')[0].src = artwork
+        ? global.sanitizeString(artwork)
+        : global.sanitizeString(podcastObject.image);
     document.getElementsByClassName('settings-header')[0].innerHTML = global.sanitizeString(channelName);
     document.getElementsByClassName('settings-count')[0].innerHTML = podcastObject.items.length;
 
