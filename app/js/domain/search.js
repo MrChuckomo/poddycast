@@ -40,7 +40,9 @@ function doSearch(_Value) {
     if (_Value.includes('http') && _Value.includes(':') && _Value.includes('//')) {
         processPodcastsFromFeed(_Value);
     } else {
-        itunes.getPodcasts(_Value);
+        (_Value !== null && _Value !== '')
+            ? itunes.getPodcasts(_Value)
+            : itunes.getDiscover();
     }
 }
 

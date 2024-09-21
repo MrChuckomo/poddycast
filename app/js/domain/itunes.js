@@ -1,26 +1,21 @@
 'use strict';
 
 const request = require('./request');
-const listItem = require('../interface/list_item');
-const global = require('../helper/helper_global');
-const navigation = require('../helper/helper_navigation');
-const CContentHelper = require('../helper/content');
+const { ITunesSearchApi, Categoires } = require('../classes/itunes_search_api');
+const searchView = require('../interface/views/search_view');
 
-const helper = new CContentHelper();
-
-// https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
-// https://itunes.apple.com/search?term=freakshow&media=podcast
-
-
+/**
+ * https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
+ * Search Podcast:  "https://itunes.apple.com/search?media=podcast&term=freakshow"
+ * Search Category: "https://itunes.apple.com/search?media=podcast&limit=10&term=comedy"
+ */
 function getPodcasts(searchTerm) {
+    let itunes = new ITunesSearchApi();
     searchTerm = encodeURIComponent(searchTerm);
-
-    const searchUrl = `https://itunes.apple.com/search?term=${searchTerm}&media=podcast`;
-
     request
-        .requestPodcastFeed(searchUrl, true)
+        .requestPodcastFeed(itunes.podcast(searchTerm), true)
         .then((xml) => {
-            getResults(xml);
+            searchView.buildResults(xml);
         })
         .catch((error) => {
             console.error(error);
@@ -28,53 +23,41 @@ function getPodcasts(searchTerm) {
 }
 module.exports.getPodcasts = getPodcasts;
 
-function getResults(searchData) {
-    helper.clearContent();
-
-    let List = document.getElementById('list');
-
-    navigation.setGridLayout(List, false);
-    navigation.setFlowLayout(List, true);
-
-    searchData.results.forEach(episode => {
-        let PodcastInfos = {
-            'artistName': episode.artistName,
-            'artworkUrl100': episode.artworkUrl100,
-            'artworkUrl30': episode.artworkUrl30,
-            'artworkUrl60': episode.artworkUrl60,
-            'artworkUrl600': episode.artworkUrl600,
-            'collectionName': episode.collectionName,
-            'feedUrl': episode.feedUrl
-        };
-
-        PodcastInfos['isFullIcon'] = global.isAlreadySaved(PodcastInfos.feedUrl);
-        List.append(listItem.renderNewSearchResultItem(PodcastInfos));
-    });
+/**
+ * Pass in a valid Categorie from the itunes_search_api module.
+ * And render the Top10 Results.
+ * @param {itunes_search_api::Categorie} category
+ */
+function getTop10(category) {
+    let itunes = new ITunesSearchApi();
+    request
+        .requestPodcastFeed(itunes.top10(category), true)
+        .then((xml) => {
+            searchView.buildResults(xml);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
+module.exports.getTop10 = getTop10;
 
-// TODO: Remove because it is not being used.
-// eslint-disable-next-line no-unused-vars
-function getCollectionName() {
-    let chunk = document.getElementById('res').innerHTML;
-    let obj = JSON.parse(chunk);
-
-    for (let i = 0; i < obj.results.length; i++) {
-        console.log(obj.results[i].collectionName);
-    }
+/**
+ * A pre-defined search to build the
+ * discover view with different catagories.
+ */
+function getDiscover() {
+    let itunes = new ITunesSearchApi();
+    request
+        .requestPodcastFeed(itunes.top10(Categoires.TECHNOLOGY), true)
+        .then((xml) => {
+            searchView.buildDiscover(xml);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
+module.exports.getDiscover = getDiscover;
 
-// TODO: Remove because it is not being used.
-// eslint-disable-next-line no-unused-vars
-function getArtWork() {
-    let chunk = document.getElementById('res').innerHTML;
-    let obj = JSON.parse(chunk);
-
-    for (let i = 0; i < obj.results.length; i++) {
-        console.log(obj.results[i].artworkUrl30);
-        console.log(obj.results[i].artworkUrl60);
-        console.log(obj.results[i].artworkUrl100);
-    }
-}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // MARK: Image Icons
