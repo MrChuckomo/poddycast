@@ -8,9 +8,9 @@ const search = require('./js/search');
 const global = require('./js/helper/helper_global');
 const navigation = require('./js/helper/helper_navigation');
 const entries = require('./js/helper/helper_entries');
+const favorite = require('./js/helper/favorite');
 const audioPlayer = require('./js/player');
 const playlist = require('./js/playlist');
-const favorite = require('./js/favorite');
 const darkMode = require('./js/dark_mode');
 const nav = require('./js/nav');
 

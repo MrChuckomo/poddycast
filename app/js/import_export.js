@@ -5,7 +5,7 @@ const fs = require('fs');
 const nav = require('./nav');
 const request = require('./request');
 const global = require('./helper/helper_global');
-const setFavorite = require('./favorite').setFavorite;
+const setFavorite = require('./helper/favorite').setFavorite;
 
 module.exports = {
     import: (filePath) => {
