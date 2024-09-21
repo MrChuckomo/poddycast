@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 'use strict';
 
-const global = require('./helper/helper_global');
+const global = require('../helper/helper_global');
 
 /**
  * Toggle the dark mode based on three differnt options:

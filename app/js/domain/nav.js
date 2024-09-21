@@ -1,16 +1,16 @@
 'use strict';
 
-const CContentHelper = require('./helper/content');
-const CPlayer = require('./helper/player');
 const fs = require('fs');
-const global = require('./helper/helper_global');
-const navigation = require('./helper/helper_navigation');
-const entries = require('./helper/helper_entries');
-const listItem = require('./interface/list_item');
-const mainBody = require('./interface/main_body');
-const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('./interface/icons');
-const { handleDragStart } = require('./drag_handler');
 const { ipcRenderer } = require('electron');
+const CContentHelper = require('../helper/content');
+const CPlayer = require('../helper/player');
+const global = require('../helper/helper_global');
+const navigation = require('../helper/helper_navigation');
+const entries = require('../helper/helper_entries');
+const listItem = require('../interface/list_item');
+const mainBody = require('../interface/main_body');
+const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('../interface/icons');
+const { handleDragStart } = require('./drag_handler');
 
 const helper = new CContentHelper();
 const player = new CPlayer();

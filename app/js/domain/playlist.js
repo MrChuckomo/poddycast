@@ -1,20 +1,20 @@
 'use strict';
 
-const { ipcRenderer } = require('electron');
-let CContentHelper = require('./helper/content');
-let helper = new CContentHelper();
-
-let CPlayer = require('./helper/player');
-let player = new CPlayer();
 const fs = require('fs');
-const global = require('./helper/helper_global');
-const navigation = require('./helper/helper_navigation');
-const entries = require('./helper/helper_entries');
+const { ipcRenderer } = require('electron');
+const global = require('../helper/helper_global');
+const navigation = require('../helper/helper_navigation');
+const entries = require('../helper/helper_entries');
 const dragHandler = require('./drag_handler');
-const listItem = require('./interface/list_item');
-const mainBody = require('./interface/main_body');
-const { loadAllPlaylists } = require('./classes/playlist');
-const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./interface/icons');
+const listItem = require('../interface/list_item');
+const mainBody = require('../interface/main_body');
+const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('../interface/icons');
+const { loadAllPlaylists } = require('../classes/playlist');
+const CContentHelper = require('../helper/content');
+
+let helper = new CContentHelper();
+let CPlayer = require('../helper/player');
+let player = new CPlayer();
 // const i18n = window.i18n;
 
 /** @private */

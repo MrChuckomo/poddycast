@@ -1,10 +1,10 @@
 'use strict';
 
-const animation = require('./../animation.js');
+const fs = require('fs');
+const nav = require('../domain/nav');
+const animation = require('../domain/animation.js');
 const global = require('./helper_global');
 const navigation = require('./helper_navigation');
-const nav = require('../nav');
-const fs = require('fs');
 
 // ---------------------------------------------------------------------------------------------------------------------
 // RIGHT COLUMN

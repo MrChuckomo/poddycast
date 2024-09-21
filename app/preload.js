@@ -2,17 +2,17 @@
 
 const { ipcRenderer, contextBridge } = require('electron');
 const sidebar = require('./js/domain/sidebar');
-const feed = require('./js/feed');
-const opml = require('./js/import_export');
-const search = require('./js/search');
+const feed = require('./js/domain/feed');
+const opml = require('./js/domain/import_export');
+const search = require('./js/domain/search');
 const global = require('./js/helper/helper_global');
 const navigation = require('./js/helper/helper_navigation');
 const entries = require('./js/helper/helper_entries');
 const favorite = require('./js/helper/favorite');
-const audioPlayer = require('./js/player');
-const playlist = require('./js/playlist');
-const darkMode = require('./js/dark_mode');
-const nav = require('./js/nav');
+const audioPlayer = require('./js/domain/player');
+const playlist = require('./js/domain/playlist');
+const darkMode = require('./js/domain/dark_mode');
+const nav = require('./js/domain/nav');
 
 window.addEventListener('DOMContentLoaded', () => {
     global.init();

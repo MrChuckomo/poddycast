@@ -1,7 +1,7 @@
 'use strict';
 
 const global = require('../helper/helper_global');
-const animation = require('../animation.js');
+const animation = require('../domain/animation.js');
 const json2html = require('node-json2html');
 
 const eLayout = {

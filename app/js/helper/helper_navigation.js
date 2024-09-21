@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const global = require('./helper_global');
-const playlist = require('../playlist');
+const playlist = require('../domain/playlist');
 
 
 // ---------------------------------------------------------------------------------------------------------------------

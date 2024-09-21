@@ -1,15 +1,15 @@
 'use strict';
 
-let CContentHelper = require('./helper/content');
-let CPlayer = require('./helper/player');
-const { Episode } = require('./classes/episode');
-const global = require('./helper/helper_global');
-const navigation = require('./helper/helper_navigation');
-const listItem = require('./interface/list_item');
-const request = require('./request');
 const fs = require('fs');
-const { infoIcon, addEpisodeIcon } = require('./interface/icons');
 const { ipcRenderer } = require('electron');
+const { Episode } = require('../classes/episode');
+let CContentHelper = require('../helper/content');
+let CPlayer = require('../helper/player');
+const global = require('../helper/helper_global');
+const navigation = require('../helper/helper_navigation');
+const request = require('./request');
+const listItem = require('../interface/list_item');
+const { infoIcon, addEpisodeIcon } = require('../interface/icons');
 
 let helper = new CContentHelper();
 let player = new CPlayer();

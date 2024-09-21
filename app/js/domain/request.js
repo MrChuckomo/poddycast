@@ -1,11 +1,11 @@
 'use strict';
 
+const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const { XMLParser } = require('fast-xml-parser');
-const global = require('./helper/helper_global');
-const fs = require('fs');
+const global = require('../helper/helper_global');
 
 const axiosInstance = axios.create({
     // fixes issue with proxy mode due to how electron apps are packaged

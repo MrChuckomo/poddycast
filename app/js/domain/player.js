@@ -1,15 +1,15 @@
 'use strict';
 
-const { ipcRenderer } = require('electron');
 const fs = require('fs');
-let CContentHelper = require('./helper/content');
-let CPlayer = require('./helper/player');
-const global = require('./helper/helper_global');
-const entries = require('./helper/helper_entries');
-const navigation = require('./helper/helper_navigation');
-const Slider = require('./classes/slider_class');
 const Vibrant = require('node-vibrant');
 const anime = require('animejs');
+const { ipcRenderer } = require('electron');
+const global = require('../helper/helper_global');
+const entries = require('../helper/helper_entries');
+const navigation = require('../helper/helper_navigation');
+const Slider = require('../classes/slider_class');
+let CContentHelper = require('../helper/content');
+let CPlayer = require('../helper/player');
 
 let helper = new CContentHelper();
 let player = new CPlayer();

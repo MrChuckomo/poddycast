@@ -1,6 +1,6 @@
 'use strict';
 
-const navigation = require('./helper/helper_navigation');
+const navigation = require('../helper/helper_navigation');
 
 function handleDragStart(dragEvent) {
     dragEvent.dataTransfer.setData('text/html', this.innerHTML);

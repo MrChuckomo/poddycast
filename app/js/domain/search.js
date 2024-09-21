@@ -1,13 +1,14 @@
 'use strict';
 
-let CContentHelper = require('./helper/content');
-let helper = new CContentHelper();
+const { ipcRenderer } = require('electron');
 const itunes = require('./itunes');
 const request = require('./request');
-const navigation = require('./helper/helper_navigation');
-const global = require('./helper/helper_global');
-const entries = require('./helper/helper_entries');
-const { ipcRenderer } = require('electron');
+const navigation = require('../helper/helper_navigation');
+const global = require('../helper/helper_global');
+const entries = require('../helper/helper_entries');
+let CContentHelper = require('../helper/content');
+
+let helper = new CContentHelper();
 
 
 // ---------------------------------------------------------------------------------------------------------------------
