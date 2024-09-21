@@ -7,7 +7,7 @@ let CPlayer = require('./helper/player');
 const global = require('./helper/helper_global');
 const entries = require('./helper/helper_entries');
 const navigation = require('./helper/helper_navigation');
-const Slider = require('./slider_class');
+const Slider = require('./classes/slider_class');
 const Vibrant = require('node-vibrant');
 const anime = require('animejs');
 
