@@ -1,6 +1,6 @@
 'use strict';
 
-const global = require('./helper/helper_global');
+const global = require('../helper/helper_global');
 
 function init () {
     const hidePref = global.getPreference('hide_sidebar');

@@ -3,7 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const darkMode = require('../dark_mode');
-const sidebar = require('../sidebar');
+const sidebar = require('../domain/sidebar');
 
 // ---------------------------------------------------------------------------------------------------------------------
 // GLOBAL

@@ -1,7 +1,7 @@
 'use strict';
 
 const { ipcRenderer, contextBridge } = require('electron');
-const sidebar = require('./js/sidebar');
+const sidebar = require('./js/domain/sidebar');
 const feed = require('./js/feed');
 const opml = require('./js/import_export');
 const search = require('./js/search');
