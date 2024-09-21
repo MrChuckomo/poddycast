@@ -176,6 +176,7 @@ contextBridge.exposeInMainWorld('myAPI', {
         console.log('settitle');
         return { title: title };
     },
+    lang: () => ipcRenderer.invoke('lang'),
     toggle: () => ipcRenderer.invoke('dark-mode:toggle'),
     sysLanguage : () => ipcRenderer.invoke('sys-language')
 });

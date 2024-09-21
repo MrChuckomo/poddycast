@@ -296,6 +296,10 @@ function createWindow() {
         return true;
     });
 
+    ipcMain.handle('lang', () => {
+        return app.getLocale();
+    });
+
     ipcMain.on('show-ctx-menu-playlist', (event, target) => {
         const template = [
             {
@@ -434,4 +438,3 @@ if (!gotTheLock) {
     // Create win, load the rest of the app, etc...
     app.on('ready', createWindow);
 }
-

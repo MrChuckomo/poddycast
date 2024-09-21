@@ -20,6 +20,10 @@
     <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set the lang attribute to the html tag at the top
+        window.myAPI.lang().then((lang) => {document.documentElement.lang = lang})
+    </script>
 </head>
 <body>
     <div id="content">
