@@ -8,7 +8,7 @@ function CContentHelper () {
     this.clearContent = function () {
         document.getElementById('list').innerHTML = '';
         document.getElementById('detail-sub-content').innerHTML = '';
-    }
+    };
 
     this.clearListSelection = function () {
         let ListItems = document.getElementById('list').getElementsByTagName('li');
@@ -16,13 +16,13 @@ function CContentHelper () {
         for (let i = 0; i < ListItems.length; i++) {
             ListItems[i].classList.remove('select-episode');
         }
-    }
+    };
 
     this.setHeader = function (_Title) {
         let Header = document.getElementById('content-right').getElementsByTagName('h1')[0];
 
         Header.innerHTML = _Title;
-    }
+    };
 }
 
 module.exports = CContentHelper;

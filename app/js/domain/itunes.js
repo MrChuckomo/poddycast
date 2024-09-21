@@ -47,7 +47,7 @@ function getResults(searchData) {
             'feedUrl': episode.feedUrl
         };
 
-        PodcastInfos['isFullIcon'] = global.isAlreadySaved(PodcastInfos.feedUrl)
+        PodcastInfos['isFullIcon'] = global.isAlreadySaved(PodcastInfos.feedUrl);
         List.append(listItem.renderNewSearchResultItem(PodcastInfos));
     });
 }

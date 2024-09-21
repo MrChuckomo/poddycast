@@ -112,7 +112,7 @@ function loadPlaylists() {
         PlaylistDomElement.setAttribute('onclick', 'window.playlistAPI.clickItem(this);');
         setContextMenu(PlaylistDomElement, playlist.playlistName);
         ListOfPlaylists.append(PlaylistDomElement);
-    })
+    });
 }
 module.exports.loadPlaylists = loadPlaylists;
 

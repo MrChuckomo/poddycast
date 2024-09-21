@@ -9,7 +9,7 @@ const navigation = require('../helper/helper_navigation');
 const entries = require('../helper/helper_entries');
 const listItem = require('../interface/list_item');
 const mainBody = require('../interface/main_body');
-const { infoIcon, deleteIcon, brokenLinkIcon, favorite } = require('../interface/icons');
+const { brokenLinkIcon, favorite } = require('../interface/icons');
 const { handleDragStart } = require('./drag_handler');
 
 const helper = new CContentHelper();
