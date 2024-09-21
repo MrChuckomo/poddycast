@@ -1,7 +1,7 @@
 'use strict';
 
 const { ipcRenderer, contextBridge } = require('electron');
-const ui = require('./js/ui');
+const sidebar = require('./js/sidebar');
 const feed = require('./js/feed');
 const opml = require('./js/import_export');
 const search = require('./js/search');
@@ -64,9 +64,9 @@ contextBridge.exposeInMainWorld('navAPI', {
     },
     clickRefresh: () => feed.readFeeds(),
     clickNewList: () => global.focusTextField('new_list-input'),
-    toggleSidebar: (propertyName) => ui.toggleSidebar(global.getPreference(propertyName)),
-    hideSidebar: () => ui.hideSidebar(),
-    showSidebar: () => ui.showSidebar(),
+    toggleSidebar: (propertyName) => sidebar.toggle(global.getPreference(propertyName)),
+    hideSidebar: () => sidebar.hide(),
+    showSidebar: () => sidebar.show(),
     loseFocus: (element) => navigation.clearRenameFocus(element),
     subscribePodcast: (self, artists, collection, artwork30, artwork60, artwork100, feedUrl) => {
         favorite.setFavorite(self, artists, collection, artwork30, artwork60, artwork100, feedUrl);

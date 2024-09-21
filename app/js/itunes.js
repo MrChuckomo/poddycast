@@ -5,7 +5,7 @@ const helper = new CContentHelper();
 const request = require('./request');
 const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
-const listItem = require('./list_item');
+const listItem = require('./interface/list_item');
 
 // https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/#overview
 // https://itunes.apple.com/search?term=freakshow&media=podcast

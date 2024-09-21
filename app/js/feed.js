@@ -5,10 +5,10 @@ let CPlayer = require('./helper/player');
 const { Episode } = require('./classes/episode');
 const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
-const listItem = require('./list_item');
+const listItem = require('./interface/list_item');
 const request = require('./request');
 const fs = require('fs');
-const { infoIcon, addEpisodeIcon } = require('./icons');
+const { infoIcon, addEpisodeIcon } = require('./interface/icons');
 const { ipcRenderer } = require('electron');
 
 let helper = new CContentHelper();

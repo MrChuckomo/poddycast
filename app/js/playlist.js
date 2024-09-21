@@ -11,10 +11,10 @@ const global = require('./helper/helper_global');
 const navigation = require('./helper/helper_navigation');
 const entries = require('./helper/helper_entries');
 const dragHandler = require('./drag_handler');
-const listItem = require('./list_item');
-const ui = require('./ui');
+const listItem = require('./interface/list_item');
+const mainBody = require('./interface/main_body');
 const { loadAllPlaylists } = require('./classes/playlist');
-const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./icons');
+const { checkBox, checkBoxOutline, infoIcon, deleteIcon } = require('./interface/icons');
 // const i18n = window.i18n;
 
 /** @private */
@@ -364,6 +364,6 @@ function showPlaylistContent(_Self) {
         }
     }
 
-    ui.setDetailPanelSubContent(episodeCount + ' ITEMS');
+    mainBody.setDetailPanelSubContent(episodeCount + ' ITEMS');
 }
 module.exports.showPlaylistContent = showPlaylistContent;
