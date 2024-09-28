@@ -1,3 +1,3 @@
-# Interface
+# Domain
 
-For all kinds of representation and UI components.
+Holder for the main business logic.
