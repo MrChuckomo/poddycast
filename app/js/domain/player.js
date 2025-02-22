@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const Vibrant = require('node-vibrant');
+const { Vibrant } = require('node-vibrant/worker');
 const anime = require('animejs');
 const { ipcRenderer } = require('electron');
 const global = require('../helper/helper_global');
