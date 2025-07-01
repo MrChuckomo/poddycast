@@ -27,7 +27,7 @@
         "axios": "1.7.4",
         "bootstrap": "5.2.0-beta1",
         "bootstrap-icons": "1.8.3",
-        "electron": "22.3.25",
+        "electron": "28.3.2",
         "fast-xml-parser": "4.4.1",
         "node-json2html": "3.0.0",
         "node-vibrant": "4.0.3"
