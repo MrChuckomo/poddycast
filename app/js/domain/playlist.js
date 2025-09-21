@@ -322,7 +322,7 @@ function showPlaylistContent(_Self) {
                     }
 
                     if (Artwork !== null) {
-                        let ListElement = listItem.buildListItem(new listItem.cListElement (
+                        let ListElement = listItem.buildListItem(new listItem.cListElement(
                             [
                                 listItem.getImagePart(Artwork),
                                 listItem.getBoldTextPart(NewEpisodesJsonContent[a].episodeTitle),
@@ -352,7 +352,7 @@ function showPlaylistContent(_Self) {
                         for (let j = 0; j < JsonContent[i].podcastList.length; j++) {
                             if (NewEpisodesJsonContent[a].channelName === JsonContent[i].podcastList[j]) {
                                 List.append(ListElement);
-                                episodeCount ++;
+                                episodeCount++;
                                 break;
                             }
                         }
