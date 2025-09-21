@@ -93,7 +93,8 @@ contextBridge.exposeInMainWorld('playlistAPI', {
     dblclickItem: (self) => playlist.enableRename(self),
     rename: (element, key) => playlist.renamePlaylist(element, key),
     connectPodcast: (element) => playlist.togglePodcast(element),
-    delete: (playlistName) => navigation.deletePlaylist(playlistName)
+    delete: (element) => navigation.deletePlaylist(element),
+    deleteByName: (playlistName) => navigation.deletePlaylistByName(playlistName)
 });
 
 /**

@@ -259,7 +259,7 @@ function showEditPage(_Self) {
 
     let DeleteButton = document.createElement('button');
     ipcRenderer.invoke('i18n', 'Delete').then((title) => DeleteButton.innerHTML = title);
-    DeleteButton.setAttribute('onclick', 'window.playlistAPI.delete("' + PlaylistName + '")');
+    DeleteButton.setAttribute('onclick', 'window.playlistAPI.deleteByName("' + PlaylistName + '")');
     DeleteButton.classList.add('btn', 'btn-danger', 'rounded-3');
 
     let HeaderSection = document.createElement('div');
