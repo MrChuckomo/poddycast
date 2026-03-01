@@ -71,7 +71,7 @@ function renamePlaylistInEdit(_Self) {
         updatePlaylistId(SelectionName, NewName);
         setPlaylistName(SelectionName, NewName);
         document.getElementById('playlists').getElementsByClassName('selected')[0].getElementsByTagName('input')[0].value = NewName;
-        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'window.playlistAPI.delete("' + NewName + '")');
+        _Self.parentElement.getElementsByTagName('button')[0].setAttribute('onclick', 'window.playlistAPI.deleteByName("' + NewName + '")');
     }
 }
 module.exports.renamePlaylistInEdit = renamePlaylistInEdit;
@@ -221,8 +221,8 @@ function removeFromPlaylist(_PlaylistName, _PodcastName) {
             let PodcastList = JsonContent[i].podcastList;
 
             if (global.isAlreadyInPlaylist(_PlaylistName, _PodcastName)) {
-                for (let j = PodcastList.length - 1; j >= 0 ; j--) {
-                    if(PodcastList[j] === _PodcastName) {
+                for (let j = PodcastList.length - 1; j >= 0; j--) {
+                    if (PodcastList[j] === _PodcastName) {
                         PodcastList.splice(j, 1);
                     }
                 }
@@ -252,3 +252,10 @@ function deletePlaylist(listItem) {
     listItem.remove();
 }
 module.exports.deletePlaylist = deletePlaylist;
+
+function deletePlaylistByName(playlistName) {
+    const playlistId = 'playlist-' + playlistName.toLowerCase().replaceAll(' ', '-');
+    const listItem = document.getElementById(playlistId);
+    deletePlaylist(listItem);
+}
+module.exports.deletePlaylistByName = deletePlaylistByName;

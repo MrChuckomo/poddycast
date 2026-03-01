@@ -23,7 +23,7 @@ window.electronAPI.onTriggerMenu((_event, value, ...params) => {
         case 'menu-color:system': window.colorAPI.system(); break;
         case 'menu-color:light': window.colorAPI.light(); break;
         case 'menu-color:dark': window.colorAPI.dark(); break;
-        case 'toggle-property' : window.backendAPI.toggleProperty(params[0]); break;
+        case 'toggle-property': window.backendAPI.toggleProperty(params[0]); break;
         default: break;
     }
 });
@@ -79,13 +79,16 @@ document.getElementById('content-right-player-speed-up').addEventListener('click
  * Bundle listern for playlist actions
  */
 document.getElementById('playlists').addEventListener('dblclick', function (event) {
-    if (event.target.tagName === 'INPUT') {
-        window.playlistAPI.dblclickItem(event.target.parentElement);
-        event.target.addEventListener('keyup', (event) => {
-            window.playlistAPI.rename(event.target, event.code);
+    if (event.target.tagName === 'LI') {
+        const listElement = event.target.closest('li');
+        const inputElement = listElement.querySelector('input');
+
+        window.playlistAPI.dblclickItem(listElement);
+        inputElement.addEventListener('keyup', (event) => {
+            window.playlistAPI.rename(inputElement, event.code);
         });
-        event.target.addEventListener('focusout', () => {
-            window.navAPI.loseFocus(event.target);
+        inputElement.addEventListener('focusout', () => {
+            window.navAPI.loseFocus(inputElement);
         });
     }
 });
