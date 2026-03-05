@@ -21,7 +21,7 @@ class FolderUI {
         li.innerHTML = `
             <div class="podcast-entry-header" data-foldername="${folderObj.folderName || ''}">
                 <i class="bi bi-folder-fill folder-icon"></i>
-                <div class="podcast-entry-title fw-normal" style="text-align:center; margin-top:0.6rem;">${folderObj.folderName || 'Folder'}</div>
+                <div class="podcast-entry-title fw-normal">${folderObj.folderName || 'Folder'}</div>
                 <div class="podcast-entry-tail"></div>
             </div>
             <div class="podcast-entry-actions"></div>
