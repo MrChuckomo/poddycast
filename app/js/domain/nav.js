@@ -11,9 +11,12 @@ const entries = require('../helper/helper_entries');
 const listItem = require('../interface/list_item');
 const mainBody = require('../interface/main_body');
 const { brokenLinkIcon, favorite } = require('../interface/icons');
-const { handleDragStart } = require('./drag_handler');
 const { Episode } = require('../classes/episode');
 const { Podcast } = require('../classes/podcast');
+const { FolderUI } = require('../classes/folder');
+const { NewFolderButton } = require('../classes/new_folder_button');
+const favoritesManager = require('../helper/favorites_manager');
+const dndHelper = require('../domain/drag_handler');
 
 const helper = new CContentHelper();
 const player = new CPlayer();
@@ -102,13 +105,102 @@ function showFavorites() {
     helper.clearContent();
     navigation.setHeaderViewAction();
 
-    const podcasts = data.getPodcasts();
     const favoritesList = document.getElementById('list');
     navigation.setGridLayout(favoritesList, true);
+    favoritesList.classList.add('favorites-view');
+    // ensure drag/drop handlers are added only once per page load
+    if (!favoritesList.dataset.dndInit) {
+        // also accept drops on the surrounding containers (empty space)
+        const resContainer = document.getElementById('res');
+        const rightContainer = document.getElementById('content-right');
 
-    podcasts.forEach(podcast => {
-        favoritesList.appendChild(podcast.getFavoriteElement());
+        function handleContainerDragOver(e) {
+            e.preventDefault();
+            dndHelper.setMoveEffect(e);
+            if (favoritesList) favoritesList.classList.add('drag-over');
+        }
+
+        function handleContainerDrop(e) {
+            e.preventDefault();
+            try { if (favoritesList) favoritesList.classList.remove('drag-over'); } catch (err) {}
+            const feedUrl = dndHelper.safeReadDataTransfer(e);
+            if (feedUrl) {
+                favoritesManager.movePodcastToRoot(feedUrl);
+                showFavorites();
+            }
+        }
+
+        if (resContainer) {
+            resContainer.addEventListener('dragover', handleContainerDragOver);
+            resContainer.addEventListener('drop', handleContainerDrop);
+        }
+        if (rightContainer) {
+            rightContainer.addEventListener('dragover', handleContainerDragOver);
+            rightContainer.addEventListener('drop', handleContainerDrop);
+        }
+
+        // allow dropping podcasts onto the main favorites list to move them to top-level
+        favoritesList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dndHelper.setMoveEffect(e);
+            favoritesList.classList.add('drag-over');
+        });
+        favoritesList.addEventListener('dragleave', (e) => {
+            favoritesList.classList.remove('drag-over');
+        });
+        favoritesList.addEventListener('drop', (e) => {
+            e.preventDefault();
+            favoritesList.classList.remove('drag-over');
+            const feedUrl = dndHelper.safeReadDataTransfer(e);
+            if (feedUrl) {
+                favoritesManager.movePodcastToRoot(feedUrl);
+                showFavorites();
+            }
+        });
+
+        favoritesList.dataset.dndInit = '1';
+    }
+    // header actions: add New Folder button (delegated to NewFolderButton class)
+    const headerActions = document.getElementById('content-right-header-actions');
+    headerActions.innerHTML = '';
+    const newFolderComp = new NewFolderButton({
+        onCreate: () => {
+            // re-render favorites view after create or cancel
+            showFavorites();
+            // restore focus to the recreated button for keyboard users
+            setTimeout(() => {
+                const btn = document.getElementById('new-folder-button');
+                if (btn) btn.focus();
+            }, 0);
+        }
     });
+    newFolderComp.attachTo(headerActions);
+
+    const saveContent = favoritesManager.readSaveFile();
+
+    // Use shared DnD helper for DOM moves (keeps logic centralized)
+
+    function renderPodcastItem(p, parent) {
+        const podcast = new Podcast(p);
+        parent.appendChild(podcast.getFavoriteElement());
+    }
+
+    function renderFolder(folderObj) {
+        // delegate folder UI to FolderUI class
+        const f = new FolderUI(folderObj);
+        return f.getElement();
+    }
+
+    saveContent.forEach(item => {
+        if (item === null || item === undefined) return;
+        if (item.folderName) {
+            favoritesList.appendChild(renderFolder(item));
+        } else if (item.feedUrl) {
+            renderPodcastItem(item, favoritesList);
+        }
+    });
+    // refresh left-menu counts (favorites/new episodes)
+    navigation.setItemCounts && navigation.setItemCounts();
 }
 module.exports.showFavorites = showFavorites;
 

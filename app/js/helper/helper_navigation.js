@@ -21,7 +21,23 @@ function setItemCounts() {
     let FavoritesCount = document.getElementById('menu-favorites').getElementsByClassName('menu-count')[0];
 
     if (global.fileExistsAndIsNotEmpty(global.saveFilePath)) {
-        FavoritesCount.innerHTML = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8')).length;
+        try {
+            const structure = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8')) || [];
+            // Count podcast entries both at top-level and inside folders (recursive)
+            function countPodcasts(arr) {
+                let c = 0;
+                for (let i = 0; i < arr.length; i++) {
+                    const it = arr[i];
+                    if (!it) continue;
+                    if (it.feedUrl) c++;
+                    if (it.items && Array.isArray(it.items)) c += countPodcasts(it.items);
+                }
+                return c;
+            }
+            FavoritesCount.innerHTML = countPodcasts(structure);
+        } catch (e) {
+            FavoritesCount.innerHTML = 0;
+        }
     } else {
         FavoritesCount.innerHTML = 0;
     }

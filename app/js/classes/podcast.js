@@ -1,6 +1,7 @@
 'use strict';
 
 const { brokenLinkIcon, favorite } = require('../interface/icons');
+const data = require('../helper/data_handler');
 
 class Podcast {
     constructor(jsonObject) {
@@ -20,57 +21,91 @@ class Podcast {
         this.feedStatusElement = null;
     }
 
+    loadNewEpisodes() {
+        if (!this.addToInbox) {
+            return;
+        }
+        const storedRecentDate = global.getFeedRecentEpisodeDate(content.link);
+        request.requestPodcastFeed(podcast.feedUrl, false)
+            .then((content) => {
+                const latestDate = content.items[0].published;
+            
+                for (let i = 0; i < content.items.length; i++) {
+                    const item = content.items[i];
+                    if (storedRecentDate === null || item.published > storedRecentDate) {
+                        this.addNewEpisode(item);
+                        // only process one episode if we don't have a previous one stored
+                        if (storedRecentDate === null) {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                global.addRecentEpisode(content.link, latestDate);
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+            .finally(() => {
+                if (this.newEpisodes.length !== 0) {
+                    this.data.saveNewEpisodes(this.newEpisodes);
+                }
+            });
+    }
+
+    addNewEpisode(episodeData) {
+        this.newEpisodes.push(new Episode(
+            this.collectionName,
+            episodeData.title,
+            episodeData.description,
+            episodeData.duration,
+            episodeData.type,
+            episodeData.link,
+            episodeData.itunes_image,
+            episodeData.duration_formatted
+        ));
+    }
+
     getFavoriteElement() {
-        let baseList = document.createElement('li');
-        this.favoriteElement = baseList;
-        // HTML setup
-        baseList.classList.add('podcast-entry');
-        baseList.draggable = true;
+        const li = document.createElement('li');
+        this.favoriteElement = li;
+        li.className = 'podcast-entry';
+        li.draggable = true;
 
-        let outerDiv = document.createElement('div');
-        outerDiv.classList.add('podcast-entry-header');
-        outerDiv.setAttribute('feedurl', this.feedUrl);
-        outerDiv.setAttribute('onclick', 'window.navAPI.clickPodcast(this)');
-        baseList.appendChild(outerDiv);
+        const safeTitle = this.collectionName || '';
+        const safeImage = this.artworkUrl100 || '';
+        const safeFeedUrl = this.feedUrl || '';
 
-        let image = document.createElement('img');
-        image.src = this.artworkUrl100;
-        image.draggable = false;
-        outerDiv.appendChild(image);
+        li.innerHTML = `
+            <div class="podcast-entry-header" feedurl="${safeFeedUrl}" onclick="window.navAPI.clickPodcast(this)">
+                <img src="${safeImage}" draggable="false" />
+                <div class="podcast-entry-title fw-normal">${safeTitle}</div>
+                <div class="podcast-entry-tail"></div>
+            </div>
+            <div class="podcast-entry-actions">${favorite}</div>
+            <div class="podcast-entry-body"></div>
+        `;
 
-        let titleDiv = document.createElement('div');
-        titleDiv.classList.add('podcast-entry-title', 'fw-normal');
-        titleDiv.innerHTML = this.collectionName;
-        outerDiv.appendChild(titleDiv);
-
-        let tailDiv = document.createElement('div');
-        tailDiv.classList.add('podcast-entry-tail');
-        outerDiv.appendChild(tailDiv);
-
-        let actionDiv = document.createElement('div');
-        actionDiv.classList.add('podcast-entry-actions');
-        actionDiv.innerHTML = favorite;
-        baseList.appendChild(actionDiv);
-
-        let bodyDiv = document.createElement('div');
-        bodyDiv.classList.add('podcast-entry-body');
-        baseList.appendChild(bodyDiv);
-        
+        const outerDiv = li.querySelector('.podcast-entry-header');
 
         if (this.feedUrlStatus && this.feedUrlStatus >= 400) {
-            // Display feedUrlStatus indicator
-            let brokenLinkIconElement = document.createElement('span');
+            const brokenLinkIconElement = document.createElement('span');
             brokenLinkIconElement.innerHTML = brokenLinkIcon;
             brokenLinkIconElement.classList.add('icon-link-broken-wrapper', 'alert', 'alert-danger');
             brokenLinkIconElement.setAttribute('title', 'Podcast feed URL is broken.');
             outerDiv.append(brokenLinkIconElement);
-            outerDiv.classList.add('podcast-feed-url-broken')
+            outerDiv.classList.add('podcast-feed-url-broken');
         }
-        
-        // store as a variable for easy use later
-        this.feedStatusElement = outerDiv;
 
-        return baseList;
+        this.feedStatusElement = outerDiv;
+        // set drag data so folders can accept podcasts
+        const dndHelper = require('../domain/drag_handler');
+        li.addEventListener('dragstart', (ev) => {
+            dndHelper.setDragData(ev, safeFeedUrl, 'text/plain', 'move');
+        });
+
+        return li;
     }
 
     toJson() {

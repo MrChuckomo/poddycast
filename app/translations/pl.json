@@ -43,5 +43,11 @@
   "Last Podcast": "Ostatni Podcast",
   "Episodes": "Epizody",
   "Refresh Feeds": "Odświeżanie pasz",
-  "Refresh": "Odświeżyć"
+  "Refresh": "Odświeżyć",
+  "Folder": "Katalog",
+  "Folder Name": "Nazwa folderu",
+  "Move podcasts to top-level": "Przenieś podcasty na najwyższy poziom",
+  "Delete podcasts with folder": "Usuń podcasty wraz z folderem",
+  "Cancel": "Anuluj",
+  "New Folder": "Nowy folder"
 }

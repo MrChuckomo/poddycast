@@ -111,6 +111,15 @@ input {
     background: #111;
 }
 
+.settings-actions button {
+    background: transparent;
+    border: none; /* remove visible border in dark theme */
+}
+.settings-actions button:hover {
+    background: transparent; /* remove hover box */
+    box-shadow: none !important;
+}
+
 .podcast-entry-actions svg {
     fill: #FFF;
 }

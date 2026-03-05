@@ -43,5 +43,11 @@
     "Last Podcast": "Последний подкаст",
     "Episodes": "Эпизоды",
     "Refresh Feeds": "Обновить ленты",
-    "Refresh": "Обновить"
+    "Refresh": "Обновить",
+    "Folder": "Папка",
+    "Folder Name": "Имя папки",
+    "Move podcasts to top-level": "Переместить подкасты в верхний уровень",
+    "Delete podcasts with folder": "Удалить подкасты вместе с папкой",
+    "Cancel": "Отмена",
+    "New Folder": "Новая папка"
 }

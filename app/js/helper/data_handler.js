@@ -4,6 +4,7 @@ const fs = require('fs');
 const global = require('./helper_global');
 const entries = require('./helper_entries');
 const { Podcast } = require('../classes/podcast');
+const { Episode } = require('../classes/episode');
 
 let podcasts = []
 
@@ -53,4 +54,23 @@ function savePodcasts() {
         fs.writeFileSync(global.saveFilePath, JSON.stringify(output));
     }
 }
-module.exports.savePodcasts = savePodcasts
+module.exports.savePodcasts = savePodcasts;
+
+function saveNewEpisodes(episodeList) {
+    let jsonContent = [];
+
+    if (global.fileExistsAndIsNotEmpty(global.newEpisodesSaveFilePath)) {
+        jsonContent = JSON.parse(fs.readFileSync(global.newEpisodesSaveFilePath, 'utf-8'));
+    } else {
+        fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(jsonContent));
+    }
+
+    episodeList.forEach(episode => {
+        if (episode instanceof Episode && !global.isEpisodeAlreadySaved(episode.title)) {
+            jsonContent.push(episode.toJSON());
+        }
+    });
+
+    fs.writeFileSync(global.newEpisodesSaveFilePath, JSON.stringify(jsonContent));
+}
+module.exports.saveNewEpisodes = saveNewEpisodes;

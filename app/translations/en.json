@@ -43,5 +43,11 @@
 	"Last Podcast": "Last Podcast",
 	"Episodes": "Episodes",
 	"Refresh Feeds": "Refresh Feeds",
-	"Refresh":"Refresh"
+	"Refresh":"Refresh",
+	"Folder": "Folder",
+	"Folder Name": "Folder Name",
+	"Move podcasts to top-level": "Move podcasts to top-level",
+	"Delete podcasts with folder": "Delete podcasts with folder",
+	"Cancel": "Cancel",
+	"New Folder": "New Folder"
 }

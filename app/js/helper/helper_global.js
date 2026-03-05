@@ -145,15 +145,25 @@ function upgradeSettingsFile() {
 function isAlreadySaved(_FeedUrl) {
     let FeedExists = false;
 
-    if (fs.readFileSync(saveFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'));
-
-        for (let i = 0; i < JsonContent.length; i ++) {
-            if (JsonContent[i].feedUrl === _FeedUrl) {
-                FeedExists = true;
-                break;
+    // Recursively search nested items for an entry whose feedUrl matches _FeedUrl.
+    // Returns true if a matching feed is found, otherwise false.
+    function searchArray(arr) {
+        for (let i = 0; i < arr.length; i++) {
+            const item = arr[i];
+            if (item === null || item === undefined) continue;
+            if (item.feedUrl && item.feedUrl === _FeedUrl) {
+                return true;
+            }
+            if (item.items && Array.isArray(item.items)) {
+                if (searchArray(item.items)) return true;
             }
         }
+        return false;
+    }
+
+    if (fs.readFileSync(saveFilePath, 'utf-8') !== '') {
+        let JsonContent = JSON.parse(fs.readFileSync(saveFilePath, 'utf-8'));
+        FeedExists = searchArray(JsonContent);
     }
 
     return FeedExists;
@@ -223,15 +233,26 @@ module.exports.isAlreadyInPlaylist = isAlreadyInPlaylist;
 function getValueFromFile(_File, _DestinationTag, _ReferenceTag, _Value) {
     let DestinationValue = null;
 
-    if (fileExistsAndIsNotEmpty(_File)) {
-        let JsonContent = JSON.parse(fs.readFileSync(_File, 'utf-8'));
-
-        for (let i = 0; i < JsonContent.length; i++) {
-            if (JsonContent[i][_ReferenceTag] === _Value) {
-                DestinationValue = JsonContent[i][_DestinationTag];
-                break;
+    // Recursively search nested items for an object where _ReferenceTag equals _Value.
+    // Returns the associated _DestinationTag value if found, otherwise null.
+    function searchArray(arr) {
+        for (let i = 0; i < arr.length; i++) {
+            const item = arr[i];
+            if (item === null || item === undefined) continue;
+            if (item[_ReferenceTag] === _Value) {
+                return item[_DestinationTag];
+            }
+            if (item.items && Array.isArray(item.items)) {
+                const found = searchArray(item.items);
+                if (found !== null && found !== undefined) return found;
             }
         }
+        return null;
+    }
+
+    if (fileExistsAndIsNotEmpty(_File)) {
+        let JsonContent = JSON.parse(fs.readFileSync(_File, 'utf-8'));
+        DestinationValue = searchArray(JsonContent);
     }
 
     return DestinationValue;
