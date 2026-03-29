@@ -43,5 +43,11 @@
   "Last Podcast": "Laatste Podcast",
   "Episodes": "Afleveringen",
   "Refresh Feeds": "Verfrissingen",
-  "Refresh": "Vernieuwen"
+  "Refresh": "Vernieuwen",
+  "Folder": "Map",
+  "Folder Name": "Mapnaam",
+  "Move podcasts to top-level": "Podcasts naar hoofdniveau verplaatsen",
+  "Delete podcasts with folder": "Podcasts samen met map verwijderen",
+  "Cancel": "Annuleren",
+  "New Folder": "Nieuwe map"
 }

@@ -6,7 +6,9 @@ function CContentHelper () {
     // ---------------------------------------------------------------------------------------------------------------------
 
     this.clearContent = function () {
-        document.getElementById('list').innerHTML = '';
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        list.classList.remove('favorites-view');
         document.getElementById('detail-sub-content').innerHTML = '';
     };
 

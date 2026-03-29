@@ -240,6 +240,11 @@ h1 {
     grid-template-columns: 1fr 1fr 1fr;
 }
 
+/* Center items horizontally inside the favorites grid columns */
+.favorites-view.grid-layout {
+    justify-items: center;
+}
+
 @media screen and (min-width: 600px) {
     .grid-layout {
         display: grid;
@@ -289,13 +294,23 @@ h1 {
     }
 }
 
-.grid-layout .podcast-entry {
+.favorites-view.grid-layout .podcast-entry {
     display: grid;
     grid-template-columns: 1fr 0px;
     border-bottom: none;
 }
 
-.grid-layout .podcast-entry .podcast-entry-header {
+.favorites-view.grid-layout .podcast-entry {
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.favorites-view.grid-layout .podcast-entry:hover {
+    transform: translateY(-4px) scale(1.02);
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 2fr 1fr;
@@ -305,12 +320,12 @@ h1 {
 }
 
 /* Styles for Podcast Feed with broken URL */
-.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken {
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken {
     position: relative;
 }
 
 /* MARK: Feed Error State */
-.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken img {
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-broken img {
     border: 2px solid red;
     filter: grayscale(.6);
 }
@@ -348,10 +363,10 @@ h1 {
 }
 
 /* Styles for Podcast Feed with working URL */
-.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-working img {
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header.podcast-feed-url-working img {
 }
 
-.grid-layout .podcast-entry .podcast-entry-header img {
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header img {
     grid-area: pimage;
     width: 90px;
     height: 90px;
@@ -362,33 +377,60 @@ h1 {
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
-.grid-layout .podcast-entry .podcast-entry-title {
+
+/* Favorites grid: keep podcast tiles consistent with other grid tiles */
+.favorites-view.grid-layout .podcast-entry {
+    display: grid;
+    grid-template-columns: 1fr 0px;
+    border-bottom: none;
+}
+
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+    grid-template-areas:
+        "pimage"
+        "ptitle";
+}
+
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header img {
+    grid-area: pimage;
+    width: 90px;
+    height: 90px;
+    margin: 0;
+    padding: 0;
+    align-self: center;
+    justify-self: center;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+/* Folder icon should behave like podcast image: center and fill its grid area */
+.favorites-view.grid-layout .podcast-entry .podcast-entry-header .folder-icon {
+    grid-area: pimage;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    margin: 0;
+    padding: 0;
+    border-radius: 6px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+    font-size: 2.8rem;
+    color: inherit;
+}
+
+.favorites-view.grid-layout .podcast-entry .podcast-entry-title {
     grid-area: ptitle;
     text-align: center;
     font-size: 14px;
     color: #777;
 }
 
-.grid-layout .podcast-entry .podcast-entry-actions {
+.favorites-view.grid-layout .podcast-entry .podcast-entry-actions {
     display: none;
-}
-
-.grid-layout .podcast-entry:hover {
-    background-color: inherit;
-}
-
-.grid-layout .podcast-entry .podcast-entry-header img:hover {
-    box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.75);
-    scale: 1.1;
-    transition: 0.3s ease-out;
-}
-
-.grid-layout .podcast-entry .podcast-entry-header img:active {
-    box-shadow: none;
-    scale: 0.9;
-    filter: grayscale(80%);
-    border: 2px solid #448aff;
-    transition: none;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */
@@ -436,7 +478,12 @@ h1 {
     width: 60px;
     height: 60px;
     border-radius: 6px;
-    background: rgb(134, 142, 150);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: inherit;
 }
 
 .settings-header {
@@ -463,6 +510,162 @@ h1 {
 .settings-unsubscribe {
     grid-area: button;
     align-self: center;
+}
+
+/* container for multiple action buttons in settings header */
+.settings-actions {
+    grid-area: button;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-actions button {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none; /* remove box border so only icon remains */
+    background: transparent;
+}
+
+.settings-actions button i {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+/* Remove any hover/focus background or outline that may come from global button styles */
+.settings-actions button:hover,
+.settings-actions button:focus,
+.settings-actions button:active,
+.settings-actions button:focus-visible {
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* Ensure the inner icon doesn't get a background from parent states */
+.settings-actions button:hover i,
+.settings-actions button:focus i,
+.settings-actions button:active i {
+    background: transparent !important;
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+/* Favorites folder styles */
+.favorites-folder-entry {
+    background-color: inherit;
+    border-bottom: 1px solid #ddd;
+    display: grid;
+    grid-template-rows: 1fr none;
+    grid-template-columns: 1fr 4em;
+    grid-template-areas:
+        "header actions"
+        "body body";
+}
+
+.favorites-folder {
+    padding: 0.4rem;
+    margin: 0.6rem;
+    background: #ffffff22;
+    border-radius: 10px;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.favorites-folder-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4em 0.6em;
+    width: 100%;
+}
+
+.favorites-folder-title {
+    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.favorites-folder-actions button {
+    padding: 0.25rem 0.4rem;
+}
+
+/* center overlay actions for folder (hidden until hover) */
+.favorites-folder-actions {
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: center;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.favorites-folder:hover .favorites-folder-actions {
+    display: flex;
+}
+
+.favorites-folder-title {
+    color: #ddd;
+    font-size: 12px;
+}
+
+/* Context menu shared style (match podcast menu appearance) */
+.ctx-menu {
+    background: #2b2b2b;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 6px;
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    color: #ddd;
+}
+.ctx-menu-item {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #ddd;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.ctx-menu-item:last-child { margin-bottom: 0; }
+.ctx-menu-item:hover {
+    background: rgba(255,255,255,0.03);
+}
+.ctx-menu-item.danger {
+    color: #ff6b6b;
+}
+.ctx-menu-item.danger:hover {
+    background: rgba(255,107,107,0.06);
+}
+
+.favorites-folder-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em 0 0 0;
+    display: grid;
+    gap: 0.25em;
+}
+
+.favorites-folder .podcast-entry {
+    border-bottom: none;
+    padding: 0.3em 0;
+}
+
+.favorites-folder.drag-over, .favorites-folder-entry.drag-over {
+    outline: 2px dashed #448aff;
 }
 
 /* ------------------------------------------------------------------------------------------------------------------ */

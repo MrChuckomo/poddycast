@@ -81,3 +81,14 @@ body {
 #sidebar-toggle i {
     opacity: .5;
 }
+
+.new-folder-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: relative;
+}
+
+.new-folder-input {
+    z-index: 2000;
+}
