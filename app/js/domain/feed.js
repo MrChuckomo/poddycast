@@ -7,6 +7,7 @@ let CContentHelper = require('../helper/content');
 let CPlayer = require('../helper/player');
 const global = require('../helper/helper_global');
 const navigation = require('../helper/helper_navigation');
+const data = require('../helper/data_handler');
 const request = require('./request');
 const listItem = require('../interface/list_item');
 const { infoIcon, addEpisodeIcon } = require('../interface/icons');
@@ -25,29 +26,22 @@ function readFeeds() {
     // Add animation to notify the user about fetching new episodes
     document.querySelector('#menu-refresh i').classList.add('is-refreshing');
 
-    if (fs.readFileSync(global.saveFilePath, 'utf-8') !== '') {
-        let JsonContent = JSON.parse(fs.readFileSync(global.saveFilePath, 'utf-8'));
-
-        let feedUrl = '';
-        let feedPromises = [];
-        for (let i = 0; i < JsonContent.length; i++) {
-            // Do not query episodes if user does not want them in their inbox
-            if (!JsonContent[i].addToInbox) {
-                continue;
-            }
-            feedUrl = JsonContent[i].feedUrl;
-
-            feedPromises.push(
-                request
-                    .requestPodcastFeed(feedUrl, false)
-                    .then((result) => {
-                        saveLatestEpisodeJson(result);
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    })
-            );
+    const podcasts = data.getPodcasts();
+    let feedPromises = [];
+    podcasts.forEach(podcast => {
+        if (!podcast.addToInbox) {
+            return;
         }
+        feedPromises.push(
+            request.requestPodcastFeed(podcast.feedUrl, false)
+            .then((result) => {
+                saveLatestEpisodeJson(result);
+            })
+            .catch((error) => {
+                console.error(error);
+            }));
+    });
+    if (feedPromises.length != 0) {
         return new Promise((resolve) => {
             Promise.allSettled(feedPromises)
                 .finally(() => {

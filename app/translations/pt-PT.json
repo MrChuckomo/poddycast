@@ -43,5 +43,11 @@
 	"Last Podcast": "Last Podcast",
 	"Episodes": "Episodes",
 	"Refresh Feeds": "Atualizar Feeds",
-	"Refresh": "Atualizar"
+	"Refresh": "Atualizar",
+	"Folder": "Pasta",
+	"Folder Name": "Nome da pasta",
+	"Move podcasts to top-level": "Mover podcasts para nível superior",
+	"Delete podcasts with folder": "Eliminar podcasts com a pasta",
+	"Cancel": "Cancelar",
+	"New Folder": "Nova pasta"
 }

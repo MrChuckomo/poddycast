@@ -43,5 +43,11 @@
   "Last Podcast": "Last Podcast",
   "Episodes": "Episodes",
   "Refresh Feeds": "Refresh Feeds",
-  "Refresh": "Refresh"
+  "Refresh": "Refresh",
+  "Folder": "Cartella",
+  "Folder Name": "Nome cartella",
+  "Move podcasts to top-level": "Sposta i podcast al livello principale",
+  "Delete podcasts with folder": "Elimina i podcast con la cartella",
+  "Cancel": "Annulla",
+  "New Folder": "Nuova cartella"
 }

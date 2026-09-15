@@ -93,7 +93,7 @@ document.getElementById('playlists').addEventListener('dblclick', function (even
     }
 });
 
-window.onresize = function (event) {
+window.onresize = function () {
     if (window.outerWidth <= 900) {
         window.navAPI.hideSidebar();
     } else {

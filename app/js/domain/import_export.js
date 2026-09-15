@@ -6,31 +6,92 @@ const nav = require('./nav');
 const request = require('./request');
 const global = require('../helper/helper_global');
 const setFavorite = require('../helper/favorite').setFavorite;
+const favoritesManager = require('../helper/favorites_manager');
 
 module.exports = {
     import: (filePath) => {
         let data = fs.readFileSync(filePath, {encoding: 'utf-8', flag: 'r'});
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data, 'text/xml');
+        const body = xmlDoc.getElementsByTagName('body')[0];
+        const tasks = [];
 
-        Array.from(xmlDoc.getElementsByTagName('outline')).forEach((element) => {
-            let feedUrl = element.getAttribute('xmlUrl');
+        body.childNodes.forEach((element) => {
+            if (element.nodeName !== 'outline') return;
 
+            const feedUrl = element.getAttribute('xmlUrl');
+
+            // Simple outline with xmlUrl -> top-level favorite
             if (feedUrl) {
-                request.requestPodcastFeed(feedUrl).then(result => {
-                    let podcast = result;
-                    let artist = podcast.items[0].author === undefined ? podcast.title : podcast.items[0].author;
-                    let collection = podcast.title;
-                    let artwork = podcast.image;
-                    let url = feedUrl;
-                    if (url) {
-                        setFavorite(null, artist, collection, artwork, artwork, artwork, url);
-                        nav.selectMenuItem('menu-favorites');
-                        nav.showFavorites();
-                    }
-                });
-
+                // if feed already saved, skip fetching and log
+                if (global.isAlreadySaved(feedUrl)) {
+                    console.log('[OPML] import: feed already saved, skipping:', feedUrl);
+                } else {
+                    request.requestPodcastFeed(feedUrl).then(result => {
+                        const podcast = result;
+                        const artist = (podcast.items && podcast.items[0] && podcast.items[0].author) === undefined ? podcast.title : podcast.items[0].author;
+                        const collection = podcast.title || '';
+                        const artwork = podcast.image || '';
+                        const url = feedUrl;
+                        if (url) {
+                            setFavorite(null, artist, collection, artwork, artwork, artwork, url);
+                        }
+                    }).catch(err => console.error('[OPML] import feed error for', feedUrl, err));
+                }
+                return;
             }
+
+            // Outline without xmlUrl may represent a folder containing child outlines
+            const folderName = element.getAttribute('text') || element.getAttribute('title') || 'Folder';
+            // create folder synchronously
+            favoritesManager.createFolder(folderName);
+
+            // collect child outline feeds and add them to the newly created folder
+            element.childNodes.forEach((child) => {
+                if (child.nodeName !== 'outline') return;
+                const childFeed = child.getAttribute('xmlUrl');
+                if (!childFeed) return;
+                // If feed already exists, move it into the folder and log; otherwise fetch and add
+                if (global.isAlreadySaved(childFeed)) {
+                    console.log('[OPML] import: feed already saved, moving into folder', folderName, childFeed);
+                    try {
+                        const moved = favoritesManager.movePodcastToFolder(childFeed, folderName);
+                        if (!moved) {
+                            // fallback: attempt to fetch and add
+                            console.log('[OPML] import: move to folder failed, fetching to add instead:', childFeed);
+                        }
+                    } catch (ex) {
+                        console.error('[OPML] import: error moving existing feed to folder', childFeed, ex);
+                    }
+                }
+
+                const p = request.requestPodcastFeed(childFeed).then(result => {
+                    const podcast = result;
+                    const artist = (podcast.items && podcast.items[0] && podcast.items[0].author) === undefined ? podcast.title : podcast.items[0].author;
+                    const collection = podcast.title || '';
+                    const artwork = podcast.image || '';
+                    const feedObj = {
+                        'artistName': global.sanitizeString(artist),
+                        'collectionName': global.sanitizeString(collection),
+                        'artworkUrl30': global.sanitizeString(artwork),
+                        'artworkUrl60': global.sanitizeString(artwork),
+                        'artworkUrl100': global.sanitizeString(artwork),
+                        'feedUrl': childFeed,
+                        'addToInbox': true,
+                        'feedUrlStatus': 200
+                    };
+                    // If not already saved, add; if already saved, addPodcastToFolder will remove existing then add (keeps single copy)
+                    favoritesManager.addPodcastToFolder(childFeed, folderName, feedObj);
+                }).catch(err => console.error('[OPML] import child feed error for', childFeed, err));
+
+                tasks.push(p);
+            });
+        });
+
+        // When all async adds finish, show favorites
+        Promise.allSettled(tasks).then(() => {
+            nav.selectMenuItem('menu-favorites');
+            nav.showFavorites();
         });
     },
 

@@ -43,5 +43,11 @@
   "Last Podcast": "最後のポッドキャスト",
   "Episodes": "エピソード",
   "Refresh Feeds": "リフレッシュフィード",
-  "Refresh": "リフレッシュ"
+  "Refresh": "リフレッシュ",
+  "Folder": "フォルダー",
+  "Folder Name": "フォルダー名",
+  "Move podcasts to top-level": "ポッドキャストをトップレベルに移動",
+  "Delete podcasts with folder": "フォルダーごとポッドキャストを削除",
+  "Cancel": "キャンセル",
+  "New Folder": "新しいフォルダー"
 }
